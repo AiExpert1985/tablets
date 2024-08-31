@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 // global variable for firebase authentication
 final _firebase = FirebaseAuth.instance;
@@ -107,6 +108,10 @@ class _LoginScreenScreenState extends State<LoginScreen> {
                           onPressed: _submitForm,
                           child: const Text('Login'),
                         ),
+                        TextButton(
+                          onPressed: () => context.pushNamed('/signup'),
+                          child: const Text('New Account'),
+                        )
                       ],
                     ),
                   ),
