@@ -30,6 +30,7 @@ class RoutingService {
 
     // redirect to the login page if the user is not logged in
     redirect: (BuildContext context, GoRouterState state) async {
+      // check whether user is logged in
       final bool loggedIn = FirebaseAuth.instance.currentUser != null;
       // if user not logged in, and press 'signup' button, will be taken to signup screen
       if (!loggedIn && state.matchedLocation == '/signup') return '/signup';
