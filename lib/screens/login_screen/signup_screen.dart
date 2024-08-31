@@ -1,22 +1,42 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+// global variable for firebase authentication
+final _firebase = FirebaseAuth.instance;
+
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenScreenState extends State<SignupScreen> {
   final _loginForm = GlobalKey<FormState>(); // the key used to access the form
 
   String _userEmail = '';
   String _userPassword = '';
 
-  void _submitForm() {
+  void _submitForm() async {
     final isValid = _loginForm.currentState!.validate(); // runs validator
-    if (isValid) {
-      _loginForm.currentState!.save(); // runs onSave inside form
+    if (!isValid) {
+      return;
+    }
+    _loginForm.currentState!.save(); // runs onSave inside form
+    try {
+      await _firebase.createUserWithEmailAndPassword(
+        email: _userEmail,
+        password: _userPassword,
+      );
+    } on FirebaseAuthException catch (error) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).clearSnackBars();
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.message ?? 'Firebase Signup failed'),
+        ),
+      );
     }
   }
 
@@ -85,11 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         ElevatedButton(
                           onPressed: _submitForm,
-                          child: const Text('Login'),
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text('Create a new account'),
+                          child: const Text('Signup'),
                         ),
                       ],
                     ),
