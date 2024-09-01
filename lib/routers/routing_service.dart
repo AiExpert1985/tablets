@@ -35,11 +35,15 @@ class RoutingService {
       final bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
       final String currentLocation = state.uri.path;
       if (isLoggedIn) {
-        if (currentLocation == '/login') {
+        if (currentLocation == '/login' || currentLocation == 'signup') {
           return '/home';
         }
       } else {
-        return '/login';
+        if (currentLocation == '/signup') {
+          return '/signup';
+        } else {
+          return '/login';
+        }
       }
       return null;
     },
