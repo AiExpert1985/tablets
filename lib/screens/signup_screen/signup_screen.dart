@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/screens/signup_screen/widgets/image_picker.dart';
 
 // global variable for firebase authentication
 final _firebase = FirebaseAuth.instance;
@@ -70,6 +71,7 @@ class _SignupScreenScreenState extends State<SignupScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        const UserImagePicker(),
                         TextFormField(
                           decoration: const InputDecoration(labelText: 'Email'),
                           keyboardType: TextInputType.emailAddress,
