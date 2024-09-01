@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/providers/firebase_auth_provider.dart';
 import 'package:tablets/routers/go_router_refresh_stream.dart';
 import 'package:tablets/screens/login_screen/login_screen.dart';
 import 'package:tablets/screens/signup_screen/signup_screen.dart';
@@ -9,10 +10,11 @@ import 'package:tablets/screens/home_screen/home_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>(
   (ref) {
+    final firebaseAuth = ref.watch(firebaseAuthProvider);
     return GoRouter(
       initialLocation: '/home',
       redirect: (context, state) {
-        final bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
+        final bool isLoggedIn = firebaseAuth.currentUser != null;
         final String currentLocation = state.uri.path;
         if (isLoggedIn) {
           if (currentLocation == '/login' || currentLocation == '/signup') {
@@ -27,7 +29,7 @@ final goRouterProvider = Provider<GoRouter>(
         }
         return null;
       },
-      refreshListenable: GoRouterRefreshStream(FirebaseAuth.instance.authStateChanges()),
+      refreshListenable: GoRouterRefreshStream(firebaseAuth.authStateChanges()),
       routes: <GoRoute>[
         GoRoute(
           name: '/home',
