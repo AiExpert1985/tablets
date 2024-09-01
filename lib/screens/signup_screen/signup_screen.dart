@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +28,6 @@ class _SignupScreenScreenState extends ConsumerState<SignupScreen> {
     final firebaseStorage = ref.read(firebaseStorageProvider);
     final firebaseAuth = ref.read(firebaseAuthProvider);
     final firebaseFirestore = ref.read(firebaseFirestoreProvider);
-    // TODO: Later I want to add an empty image for user.
     if (!isValid || pickedImage == null) {
       return;
     }
