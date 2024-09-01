@@ -109,7 +109,7 @@ class _LoginScreenScreenState extends State<LoginScreen> {
                           child: const Text('Login'),
                         ),
                         TextButton(
-                          onPressed: () => context.pushNamed('/signup'),
+                          onPressed: () => context.go('/signup'),
                           child: const Text('New Account'),
                         )
                       ],
