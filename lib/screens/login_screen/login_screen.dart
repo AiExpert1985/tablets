@@ -1,18 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 // global variable for firebase authentication
 final _firebase = FirebaseAuth.instance;
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenScreenState();
 }
 
-class _LoginScreenScreenState extends State<LoginScreen> {
+class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
   final _loginForm = GlobalKey<FormState>(); // the key used to access the form
 
   String _userEmail = '';
