@@ -26,7 +26,7 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
     }
     _loginForm.currentState!.save(); // runs onSave inside form
     try {
-      final userCredentials = await _firebase.signInWithEmailAndPassword(
+      await _firebase.signInWithEmailAndPassword(
         email: _userEmail,
         password: _userPassword,
       );

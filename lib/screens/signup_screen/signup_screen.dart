@@ -1,14 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/providers/firebase_auth_provider.dart';
+import 'package:tablets/providers/firebase_firestore_provider.dart';
 import 'package:tablets/providers/firebase_storage_provider.dart';
 import 'package:tablets/providers/picked_image_file_provider.dart';
 import 'package:tablets/screens/signup_screen/widgets/image_picker.dart';
-
-// global variable for firebase authentication
-final _firebase = FirebaseAuth.instance;
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -22,25 +21,39 @@ class _SignupScreenScreenState extends ConsumerState<SignupScreen> {
 
   String _userEmail = '';
   String _userPassword = '';
+  String _username = '';
 
   void _submitForm() async {
     final isValid = _loginForm.currentState!.validate(); // runs validator
     final pickedImage = ref.read(pickedImageFileProvider);
-    //TODO: later I want to add an empty image for user.
+    final firebaseStorage = ref.read(firebaseStorageProvider);
+    final firebaseAuth = ref.read(firebaseAuthProvider);
+    final firebaseFirestore = ref.read(firebaseFirestoreProvider);
+    // TODO: Later I want to add an empty image for user.
     if (!isValid || pickedImage == null) {
       return;
     }
     _loginForm.currentState!.save(); // runs onSave inside form
     try {
-      final userCredentials = await _firebase.createUserWithEmailAndPassword(
+      final userCredentials = await firebaseAuth.createUserWithEmailAndPassword(
         email: _userEmail,
         password: _userPassword,
       );
-      final firebaseStorage = ref.read(firebaseStorageProvider);
-      final storageRef = firebaseStorage.ref().child('user_iamges').child('${userCredentials.user!.uid}.jpg');
+      final storageRef = firebaseStorage
+          .ref()
+          .child('user_iamges')
+          .child('${userCredentials.user!.uid}.jpg');
       await storageRef.putFile(pickedImage);
-      final imageUrl = await storageRef.getDownloadURL(); // used later to donwload the image
-      print(imageUrl);
+      final imageUrl =
+          await storageRef.getDownloadURL(); // used later to donwload the image
+      await firebaseFirestore
+          .collection('users')
+          .doc(userCredentials.user!.uid)
+          .set({
+        'username': _username,
+        'email': _userEmail,
+        'image_url': imageUrl,
+      });
     } on FirebaseAuthException catch (error) {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).clearSnackBars();
@@ -83,6 +96,19 @@ class _SignupScreenScreenState extends ConsumerState<SignupScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const UserImagePicker(),
+                        TextFormField(
+                          decoration: const InputDecoration(labelText: 'Name'),
+                          enableSuggestions: false,
+                          validator: (value) {
+                            if (value == null || value.trim().length < 4) {
+                              return 'Name should be more than 4 characters';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _username = value!; // value can't be null
+                          },
+                        ),
                         TextFormField(
                           decoration: const InputDecoration(labelText: 'Email'),
                           keyboardType: TextInputType.emailAddress,
