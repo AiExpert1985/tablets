@@ -1,19 +1,13 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tablets/providers/picked_image_file_provider.dart';
 
-class UserImagePicker extends StatefulWidget {
+class UserImagePicker extends ConsumerWidget {
   const UserImagePicker({super.key});
 
-  @override
-  State<UserImagePicker> createState() => _UserImagePickerState();
-}
-
-class _UserImagePickerState extends State<UserImagePicker> {
-  File? _pickedImageFile;
-
-  void _pickImage() async {
+  void _pickImage(WidgetRef ref) async {
     final pickedImage = await ImagePicker().pickImage(
         source: ImageSource.camera,
         imageQuality: 50,
@@ -23,24 +17,23 @@ class _UserImagePickerState extends State<UserImagePicker> {
     if (pickedImage == null) {
       return;
     }
-    setState(() {
-      _pickedImageFile = File(pickedImage.path);
-    });
+    ref
+        .read(pickedImageFileProvider.notifier)
+        .update((state) => File(pickedImage.path));
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pickedImageFile = ref.watch(pickedImageFileProvider);
     return Column(
       children: [
         CircleAvatar(
           radius: 40,
           backgroundColor: Colors.grey,
-          foregroundImage: _pickedImageFile != null
-              ? FileImage(_pickedImageFile!)
-              : null, // we make sure we have image
+          foregroundImage: pickedImageFile != null? FileImage(pickedImageFile): null,
         ),
         TextButton.icon(
-          onPressed: _pickImage,
+          onPressed: () => _pickImage(ref),
           icon: const Icon(Icons.image),
           label: Text(
             'Add image',
