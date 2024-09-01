@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/providers/firebase_storage_provider.dart';
+import 'package:tablets/providers/picked_image_file_provider.dart';
 import 'package:tablets/screens/signup_screen/widgets/image_picker.dart';
 
 // global variable for firebase authentication
@@ -22,15 +25,22 @@ class _SignupScreenScreenState extends ConsumerState<SignupScreen> {
 
   void _submitForm() async {
     final isValid = _loginForm.currentState!.validate(); // runs validator
-    if (!isValid) {
+    final pickedImage = ref.read(pickedImageFileProvider);
+    //TODO: later I want to add an empty image for user.
+    if (!isValid || pickedImage == null) {
       return;
     }
     _loginForm.currentState!.save(); // runs onSave inside form
     try {
-      await _firebase.createUserWithEmailAndPassword(
+      final userCredentials = await _firebase.createUserWithEmailAndPassword(
         email: _userEmail,
         password: _userPassword,
       );
+      final firebaseStorage = ref.read(firebaseStorageProvider);
+      final storageRef = firebaseStorage.ref().child('user_iamges').child('${userCredentials.user!.uid}.jpg');
+      await storageRef.putFile(pickedImage);
+      final imageUrl = await storageRef.getDownloadURL(); // used later to donwload the image
+      print(imageUrl);
     } on FirebaseAuthException catch (error) {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).clearSnackBars();
