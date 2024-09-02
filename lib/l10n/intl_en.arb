@@ -1,0 +1,13 @@
+{
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "login": "Login",
+    "signup": "Sign up",
+    "create_new_account": "Create a new account",
+    "i_already_have_account": "I already have account",
+    "user_email_validation_error": "Please enter a valid email adress",
+    "user_name_validation_error": "Name should be at least 4 characters",
+    "user_password_validation_error": "Password should be at least 6 characters",
+    "add_image": "Add image"
+}

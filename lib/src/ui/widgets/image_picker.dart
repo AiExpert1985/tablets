@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:tablets/providers/picked_image_file_provider.dart';
+import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/providers/picked_image_file_provider.dart';
 
 class UserImagePicker extends ConsumerWidget {
   const UserImagePicker({super.key});
@@ -36,7 +37,7 @@ class UserImagePicker extends ConsumerWidget {
           onPressed: () => _pickImage(ref),
           icon: const Icon(Icons.image),
           label: Text(
-            'Add image',
+            S.of(context).add_image,
             style: TextStyle(color: Theme.of(context).colorScheme.primary),
           ),
         )

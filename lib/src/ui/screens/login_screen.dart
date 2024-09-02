@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/generated/l10n.dart';
 
 // global variable for firebase authentication
 final _firebase = FirebaseAuth.instance;
@@ -58,8 +59,6 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
             ),
             SizedBox(
               width: 400,
-              child: Directionality(
-                textDirection: TextDirection.rtl,
                 child: Card(
                   margin: const EdgeInsets.all(20),
                   child: SingleChildScrollView(
@@ -72,7 +71,7 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
                           children: [
                             TextFormField(
                               decoration:
-                                  const InputDecoration(labelText: 'البريد الالكتروني'),
+                                  InputDecoration(labelText: S.of(context).email),
                               keyboardType: TextInputType.emailAddress,
                               autocorrect: false,
                               textCapitalization: TextCapitalization.none,
@@ -80,7 +79,7 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
                                 if (value == null ||
                                     value.trim().isEmpty ||
                                     !value.contains('@')) {
-                                  return 'Please enter a valid email adress';
+                                  return S.of(context).user_email_validation_error;
                                 }
                                 return null;
                               },
@@ -90,11 +89,11 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
                             ),
                             TextFormField(
                               decoration:
-                                  const InputDecoration(labelText: 'كلمة المرور'),
+                                  InputDecoration(labelText: S.of(context).password),
                               obscureText: true,
                               validator: (value) {
                                 if (value == null || value.trim().length < 6) {
-                                  return 'Password must be 6 character at least';
+                                  return S.of(context).user_password_validation_error;
                                 }
                                 return null;
                               },
@@ -107,11 +106,11 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
                             ),
                             ElevatedButton(
                               onPressed: _submitForm,
-                              child: const Text('دخول'),
+                              child: Text(S.of(context).login),
                             ),
                             TextButton(
                               onPressed: () => context.go('/signup'),
-                              child: const Text('انشاء حساب جديد'),
+                              child: Text(S.of(context).create_new_account),
                             )
                           ],
                         ),
@@ -120,7 +119,6 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
               ),
-            ),
           ],
         ),
       )),

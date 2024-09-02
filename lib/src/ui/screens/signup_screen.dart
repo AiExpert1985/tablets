@@ -2,11 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/providers/firebase_auth_provider.dart';
-import 'package:tablets/providers/firebase_firestore_provider.dart';
-import 'package:tablets/providers/firebase_storage_provider.dart';
-import 'package:tablets/providers/picked_image_file_provider.dart';
-import 'package:tablets/screens/signup_screen/widgets/image_picker.dart';
+import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/providers/firebase_auth_provider.dart';
+import 'package:tablets/src/providers/firebase_firestore_provider.dart';
+import 'package:tablets/src/providers/firebase_storage_provider.dart';
+import 'package:tablets/src/providers/picked_image_file_provider.dart';
+import 'package:tablets/src/ui/widgets/image_picker.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -85,11 +86,11 @@ class _SignupScreenScreenState extends ConsumerState<SignupScreen> {
                       children: [
                         const UserImagePicker(),
                         TextFormField(
-                          decoration: const InputDecoration(labelText: 'Name'),
+                          decoration: InputDecoration(labelText: S.of(context).name),
                           enableSuggestions: false,
                           validator: (value) {
                             if (value == null || value.trim().length < 4) {
-                              return 'Name should be more than 4 characters';
+                              return S.of(context).user_name_validation_error;
                             }
                             return null;
                           },
@@ -98,7 +99,7 @@ class _SignupScreenScreenState extends ConsumerState<SignupScreen> {
                           },
                         ),
                         TextFormField(
-                          decoration: const InputDecoration(labelText: 'Email'),
+                          decoration: InputDecoration(labelText: S.of(context).email),
                           keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
                           textCapitalization: TextCapitalization.none,
@@ -106,7 +107,7 @@ class _SignupScreenScreenState extends ConsumerState<SignupScreen> {
                             if (value == null ||
                                 value.trim().isEmpty ||
                                 !value.contains('@')) {
-                              return 'Please enter a valid email adress';
+                              return S.of(context).user_email_validation_error;
                             }
                             return null;
                           },
@@ -116,11 +117,11 @@ class _SignupScreenScreenState extends ConsumerState<SignupScreen> {
                         ),
                         TextFormField(
                           decoration:
-                              const InputDecoration(labelText: 'Password'),
+                              InputDecoration(labelText: S.of(context).password),
                           obscureText: true,
                           validator: (value) {
                             if (value == null || value.trim().length < 6) {
-                              return 'Password must be 6 character at least';
+                              return S.of(context).user_password_validation_error;
                             }
                             return null;
                           },
@@ -133,11 +134,11 @@ class _SignupScreenScreenState extends ConsumerState<SignupScreen> {
                         ),
                         ElevatedButton(
                           onPressed: _submitForm,
-                          child: const Text('Signup'),
+                          child: Text(S.of(context).signup),
                         ),
                         TextButton(
                           onPressed: () => context.go('/login'),
-                          child: const Text('I already have an account'),
+                          child: Text(S.of(context).i_already_have_account),
                         )
                       ],
                     ),

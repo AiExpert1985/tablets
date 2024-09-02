@@ -2,15 +2,20 @@ Tasks Examples:
     ✘ new task @cancelled (7/28/2024, 6:59:29 PM)
     ✔ anther task @done (7/28/2024, 6:59:34 PM)
 
-Riverpod : 
-    https://www.youtube.com/watch?v=pwflXIA-6YQ
+Learning Resources:
+    Localization (Arabic language):
+        https://www.youtube.com/watch?v=DMmvd5LAHuA
 
-GoRouter:
-    https://www.youtube.com/watch?v=h_zfsFKm5MY
-    https://www.youtube.com/watch?v=_l6z9Qp5g5U
-    https://www.youtube.com/watch?v=BgcXHA3EHJU&t=3s
-    https://medium.com/@vimehraa29/flutter-go-router-the-crucial-guide-41dc615045bb
-    https://medium.com/@antonio.tioypedro1234/flutter-go-router-the-essential-guide-349ef39ec5b3
+    Riverpod:
+        https://www.youtube.com/watch?v=pwflXIA-6YQ
+    
+    GoRouter:
+        https://www.youtube.com/watch?v=h_zfsFKm5MY
+        https://www.youtube.com/watch?v=_l6z9Qp5g5U
+        https://www.youtube.com/watch?v=BgcXHA3EHJU&t=3s
+        https://medium.com/@vimehraa29/flutter-go-router-the-crucial-guide-41dc615045bb
+        https://medium.com/@antonio.tioypedro1234/flutter-go-router-the-essential-guide-349ef39ec5b3
+        
 
 Dependancies:
     https://www.dhiwise.com/post/flutter-pub-get-how-to-sync-and-manage-dependencies
@@ -33,6 +38,8 @@ Project Structure:
 Study:
     6:00 = 2
     8:15 = 4
-    9:45 = 
+    9:45 = 4
+    11:30 = 3
+
     
     
