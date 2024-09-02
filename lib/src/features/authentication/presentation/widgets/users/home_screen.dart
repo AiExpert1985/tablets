@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/ui/widgets/reversed_logout_icon.dart';
+import 'package:tablets/src/common_widgets/reversed_logout_icon.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});

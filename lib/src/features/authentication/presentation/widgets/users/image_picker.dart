@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/providers/picked_image_file_provider.dart';
+import 'package:tablets/src/features/authentication/presentation/controllers/picked_image_file_provider.dart';
 
 class UserImagePicker extends ConsumerWidget {
   const UserImagePicker({super.key});

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/providers/firebase_auth_provider.dart';
+import 'package:tablets/src/features/authentication/presentation/controllers/firebase_auth_provider.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
-import 'package:tablets/src/ui/screens/login_screen.dart';
-import 'package:tablets/src/ui/screens/signup_screen.dart';
-import 'package:tablets/src/ui/screens/home_screen.dart';
+import 'package:tablets/src/features/authentication/presentation/widgets/login/login_screen.dart';
+import 'package:tablets/src/features/authentication/presentation/widgets/users/signup_screen.dart';
+import 'package:tablets/src/features/authentication/presentation/widgets/users/home_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>(
   (ref) {

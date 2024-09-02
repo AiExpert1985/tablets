@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/providers/firebase_auth_provider.dart';
-import 'package:tablets/src/providers/firebase_firestore_provider.dart';
-import 'package:tablets/src/providers/firebase_storage_provider.dart';
-import 'package:tablets/src/providers/picked_image_file_provider.dart';
-import 'package:tablets/src/ui/widgets/image_picker.dart';
+import 'package:tablets/src/features/authentication/presentation/controllers/firebase_auth_provider.dart';
+import 'package:tablets/src/features/authentication/presentation/controllers/firebase_firestore_provider.dart';
+import 'package:tablets/src/features/authentication/presentation/controllers/firebase_storage_provider.dart';
+import 'package:tablets/src/features/authentication/presentation/controllers/picked_image_file_provider.dart';
+import 'package:tablets/src/features/authentication/presentation/widgets/users/image_picker.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
