@@ -159,6 +159,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Add a new user`
+  String get add_new_user {
+    return Intl.message(
+      'Add a new user',
+      name: 'add_new_user',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

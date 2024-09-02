@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/authentication/presentation/controllers/firebase_auth_provider.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/presentation/widgets/login/login_screen.dart';
-import 'package:tablets/src/features/authentication/presentation/widgets/users/signup_screen.dart';
+import 'package:tablets/src/features/authentication/presentation/widgets/users/add_user_popup.dart';
 import 'package:tablets/src/features/authentication/presentation/widgets/users/home_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>(
@@ -46,10 +46,9 @@ final goRouterProvider = Provider<GoRouter>(
           name: '/signup',
           path: '/signup',
           builder: (BuildContext context, GoRouterState state) =>
-              const SignupScreen(),
+              const AddUserPopup(),
         ),
       ],
-
     );
   },
 );

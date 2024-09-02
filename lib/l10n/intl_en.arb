@@ -9,5 +9,6 @@
     "user_email_validation_error": "Please enter a valid email adress",
     "user_name_validation_error": "Name should be at least 4 characters",
     "user_password_validation_error": "Password should be at least 6 characters",
-    "add_image": "Add image"
+    "add_image": "Add image",
+    "add_new_user": "Add a new user"
 }
