@@ -1,12 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/features/authentication/presentation/controllers/firebase_auth_provider.dart';
-import 'package:tablets/src/features/authentication/presentation/controllers/firebase_firestore_provider.dart';
-import 'package:tablets/src/features/authentication/presentation/controllers/firebase_storage_provider.dart';
 import 'package:tablets/src/features/authentication/presentation/controllers/picked_image_file_provider.dart';
 import 'package:tablets/src/features/authentication/presentation/widgets/users/image_picker.dart';
+import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
 
 class AddUserPopup extends ConsumerStatefulWidget {
   const AddUserPopup({super.key});
@@ -22,42 +19,15 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
   String _userPassword = '';
   String _username = '';
 
-  bool isSubmitSuccessful = false; // used to close add user if successful
-
   void _submitForm() async {
     final isValid = _loginForm.currentState!.validate(); // runs validator
     final pickedImage = ref.read(pickedImageFileProvider);
-    final firebaseStorage = ref.read(firebaseStorageProvider);
-    final firebaseAuth = ref.read(firebaseAuthProvider);
-    final firebaseFirestore = ref.read(firebaseFirestoreProvider);
     if (!isValid || pickedImage == null) {
       return;
     }
     _loginForm.currentState!.save(); // runs onSave inside form
-    try {
-      final userCredentials = await firebaseAuth.createUserWithEmailAndPassword(
-        email: _userEmail,
-        password: _userPassword,
-      );
-      final storageRef = firebaseStorage
-          .ref()
-          .child('user_iamges')
-          .child('${userCredentials.user!.uid}.jpg');
-      await storageRef.putFile(pickedImage);
-      final imageUrl =
-          await storageRef.getDownloadURL(); // used later to donwload the image
-      await firebaseFirestore
-          .collection('users')
-          .doc(userCredentials.user!.uid)
-          .set({
-        'username': _username,
-        'email': _userEmail,
-        'image_url': imageUrl,
-      });
-      isSubmitSuccessful = true;
-    } on FirebaseAuthException catch (error) {
-      debugPrint(error.message);
-    }
+    ref.watch(authRepositoryProvider).createUserWithoutLogin(
+        _userEmail, _userPassword, _username, pickedImage);
   }
 
   @override
@@ -68,8 +38,8 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
       // title: Text(S.of(context).add_new_user),
       content: Container(
         padding: const EdgeInsets.all(30),
-        width: MediaQuery.of(context).size.width * 0.6, // 80% of screen width,
-        height: MediaQuery.of(context).size.height * 0.6, // 60% of screen height,
+        width: MediaQuery.of(context).size.width * 0.6,
+        height: MediaQuery.of(context).size.height * 0.6,
         child: Form(
           key: _loginForm,
           child: SingleChildScrollView(
@@ -78,7 +48,9 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const UserImagePicker(),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 TextFormField(
                   decoration: InputDecoration(labelText: S.of(context).name),
                   enableSuggestions: false,
@@ -110,7 +82,8 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: S.of(context).password),
+                  decoration:
+                      InputDecoration(labelText: S.of(context).password),
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.trim().length < 6) {
@@ -134,9 +107,7 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
             ElevatedButton(
               onPressed: () {
                 _submitForm();
-                if (isSubmitSuccessful) {
-                  Navigator.of(context).pop(); // close the popup
-                }
+                Navigator.of(context).pop();
               },
               child: Text(S.of(context).save),
             ),
@@ -152,5 +123,3 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
     );
   }
 }
-
-
