@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
 
