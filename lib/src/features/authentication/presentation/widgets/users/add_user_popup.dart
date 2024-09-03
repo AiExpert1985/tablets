@@ -26,8 +26,14 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
       return;
     }
     _loginForm.currentState!.save(); // runs onSave inside form
-    ref.watch(authRepositoryProvider).createUserWithoutLogin(
-        _userEmail, _userPassword, _username, pickedImage);
+    bool isSuccessful = await ref
+        .watch(authRepositoryProvider)
+        .createUserWithoutLogin(
+            _userEmail, _userPassword, _username, pickedImage);
+    if (isSuccessful) {
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -38,8 +44,8 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
       // title: Text(S.of(context).add_new_user),
       content: Container(
         padding: const EdgeInsets.all(30),
-        width: MediaQuery.of(context).size.width * 0.6,
-        height: MediaQuery.of(context).size.height * 0.6,
+        width: MediaQuery.of(context).size.width * 0.5,
+        height: MediaQuery.of(context).size.height * 0.5,
         child: Form(
           key: _loginForm,
           child: SingleChildScrollView(
@@ -105,16 +111,11 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
           alignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () {
-                _submitForm();
-                Navigator.of(context).pop();
-              },
+              onPressed: _submitForm,
               child: Text(S.of(context).save),
             ),
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
+              onPressed: () => Navigator.of(context).pop(), // Close the dialog
               child: Text(S.of(context).cancel),
             ),
           ],

@@ -9,8 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class AuthRepository {
   AuthRepository();
 
-  Future<void> createUserWithoutLogin(
+  Future<bool> createUserWithoutLogin(
       String email, String password, String userName, File? pickedImage) async {
+    bool isUserCreatedSuccessfully = false;
     try {
       // Create a secondary app
       FirebaseApp secondaryApp = await Firebase.initializeApp(
@@ -39,12 +40,14 @@ class AuthRepository {
         'imageUrl': imageUrl,
         'privilage': 'admin',
       });
+      isUserCreatedSuccessfully = true;
     } on FirebaseAuthException catch (e) {
       debugPrint('User Creation Error: ${e.message}');
     }
+    return isUserCreatedSuccessfully;
   }
 
-   void signUserIn (String email, String password) async {    
+  void signUserIn(String email, String password) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
@@ -54,7 +57,6 @@ class AuthRepository {
       debugPrint('User Login Error: ${e.message}');
     }
   }
-
 }
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
