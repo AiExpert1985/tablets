@@ -10,5 +10,7 @@
     "user_name_validation_error": "يجب ان يحتوي الاسم على 4 احرف على الاقل",
     "user_password_validation_error": "يجب ان تكون كلمة المرور 6 رموز على الاقل",
     "add_image": "اضافة صورة",
-    "add_new_user": "اضافة مستخدم جديد"
+    "add_new_user": "اضافة مستخدم جديد",
+        "save": "حفظ",
+    "cancel": "الغاء"
 }

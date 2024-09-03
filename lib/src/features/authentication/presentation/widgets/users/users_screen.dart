@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/reversed_logout_icon.dart';
 import 'package:tablets/src/features/authentication/presentation/widgets/users/add_user_popup.dart';
 
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+class UsersScreen extends ConsumerWidget {
+  const UsersScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

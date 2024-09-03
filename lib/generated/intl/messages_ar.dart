@@ -25,6 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_image": MessageLookupByLibrary.simpleMessage("اضافة صورة"),
         "add_new_user":
             MessageLookupByLibrary.simpleMessage("اضافة مستخدم جديد"),
+        "cancel": MessageLookupByLibrary.simpleMessage("الغاء"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
         "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
@@ -33,6 +34,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
+        "save": MessageLookupByLibrary.simpleMessage("حفظ"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
         "user_email_validation_error":
             MessageLookupByLibrary.simpleMessage("ادخل بريد الكتروني صحيح"),

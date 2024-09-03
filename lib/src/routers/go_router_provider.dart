@@ -5,7 +5,7 @@ import 'package:tablets/src/features/authentication/presentation/controllers/fir
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/presentation/widgets/login/login_screen.dart';
 import 'package:tablets/src/features/authentication/presentation/widgets/users/add_user_popup.dart';
-import 'package:tablets/src/features/authentication/presentation/widgets/users/home_screen.dart';
+import 'package:tablets/src/features/authentication/presentation/widgets/users/users_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>(
   (ref) {
@@ -34,7 +34,7 @@ final goRouterProvider = Provider<GoRouter>(
           name: '/home',
           path: '/home',
           builder: (BuildContext context, GoRouterState state) =>
-              const HomeScreen(),
+              const UsersScreen(),
         ),
         GoRoute(
           name: '/login',

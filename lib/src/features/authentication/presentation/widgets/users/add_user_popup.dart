@@ -66,71 +66,91 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
       scrollable: true,
       contentPadding: const EdgeInsets.all(16.0),
       // title: Text(S.of(context).add_new_user),
-      content: Form(
-        key: _loginForm,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
+      content: Container(
+        padding: const EdgeInsets.all(30),
+        width: MediaQuery.of(context).size.width * 0.6, // 80% of screen width,
+        height: MediaQuery.of(context).size.height * 0.6, // 60% of screen height,
+        child: Form(
+          key: _loginForm,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const UserImagePicker(),
+                const SizedBox(height: 20,),
+                TextFormField(
+                  decoration: InputDecoration(labelText: S.of(context).name),
+                  enableSuggestions: false,
+                  validator: (value) {
+                    if (value == null || value.trim().length < 4) {
+                      return S.of(context).user_name_validation_error;
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _username = value!; // value can't be null
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: S.of(context).email),
+                  keyboardType: TextInputType.emailAddress,
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
+                  validator: (value) {
+                    if (value == null ||
+                        value.trim().isEmpty ||
+                        !value.contains('@')) {
+                      return S.of(context).user_email_validation_error;
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _userEmail = value!; // value can't be null
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(labelText: S.of(context).password),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.trim().length < 6) {
+                      return S.of(context).user_password_validation_error;
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _userPassword = value!; // value can't be null
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      actions: [
+        OverflowBar(
+          alignment: MainAxisAlignment.center,
           children: [
-            const UserImagePicker(),
-            TextFormField(
-              decoration: InputDecoration(labelText: S.of(context).name),
-              enableSuggestions: false,
-              validator: (value) {
-                if (value == null || value.trim().length < 4) {
-                  return S.of(context).user_name_validation_error;
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _username = value!; // value can't be null
-              },
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: S.of(context).email),
-              keyboardType: TextInputType.emailAddress,
-              autocorrect: false,
-              textCapitalization: TextCapitalization.none,
-              validator: (value) {
-                if (value == null ||
-                    value.trim().isEmpty ||
-                    !value.contains('@')) {
-                  return S.of(context).user_email_validation_error;
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _userEmail = value!; // value can't be null
-              },
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: S.of(context).password),
-              obscureText: true,
-              validator: (value) {
-                if (value == null || value.trim().length < 6) {
-                  return S.of(context).user_password_validation_error;
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _userPassword = value!; // value can't be null
-              },
-            ),
-            const SizedBox(
-              height: 12,
-            ),
             ElevatedButton(
               onPressed: () {
                 _submitForm();
                 if (isSubmitSuccessful) {
-                  Navigator.pop(context); // close the popup
+                  Navigator.of(context).pop(); // close the popup
                 }
               },
-              child: Text(S.of(context).signup),
+              child: Text(S.of(context).save),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(S.of(context).cancel),
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 }
+
+

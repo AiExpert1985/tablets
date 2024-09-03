@@ -23,14 +23,14 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       routerConfig: goRouter,
       locale: const Locale('ar'),
-      theme: ThemeData(primarySwatch: Colors.indigo),
+      theme: ThemeData(colorSchemeSeed: const Color.fromARGB(255, 11, 4, 70)),
       localizationsDelegates: const [
-                S.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: S.delegate.supportedLocales,
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
     );
   }
 }
