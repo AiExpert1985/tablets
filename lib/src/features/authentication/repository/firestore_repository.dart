@@ -1,12 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/features/authentication/repository/app_user.dart';
 
 class FireStoreRepository {
   FireStoreRepository(this._firestore);
   final FirebaseFirestore _firestore;
 
-  Query<Map<String, dynamic>> usersQuery() {
-    return _firestore.collection('users');
+  Query<AppUser> usersQuery() {
+    return _firestore.collection('users').withConverter(
+          fromFirestore: (snapshot, _) => AppUser.fromMap(snapshot.data()!),
+          toFirestore: (appUser, _) => appUser.toMap(),
+        );
   }
 }
 
