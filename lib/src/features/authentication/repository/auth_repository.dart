@@ -43,6 +43,18 @@ class AuthRepository {
       debugPrint('User Creation Error: ${e.message}');
     }
   }
+
+   void signUserIn (String email, String password) async {    
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      debugPrint('User Login Error: ${e.message}');
+    }
+  }
+
 }
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {

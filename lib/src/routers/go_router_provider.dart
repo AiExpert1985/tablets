@@ -1,11 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/features/authentication/presentation/controllers/firebase_auth_provider.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/presentation/widgets/login/login_screen.dart';
 import 'package:tablets/src/features/authentication/presentation/widgets/users/add_user_popup.dart';
 import 'package:tablets/src/features/authentication/presentation/widgets/users/users_screen.dart';
+
+final firebaseAuthProvider = Provider<FirebaseAuth>((ref)=>FirebaseAuth.instance);
 
 final goRouterProvider = Provider<GoRouter>(
   (ref) {
