@@ -12,5 +12,7 @@
     "add_image": "Add image",
     "add_new_user": "Add a new user",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "greeting": "hi",
+    "logout": "logout"
 }

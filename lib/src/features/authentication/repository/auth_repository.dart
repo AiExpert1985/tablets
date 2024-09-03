@@ -57,6 +57,10 @@ class AuthRepository {
       debugPrint('User Login Error: ${e.message}');
     }
   }
+
+  void logout() async {
+    await FirebaseAuth.instance.signOut();
+  }
 }
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {

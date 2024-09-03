@@ -189,6 +189,26 @@ class S {
       args: [],
     );
   }
+
+  /// `hi`
+  String get greeting {
+    return Intl.message(
+      'hi',
+      name: 'greeting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `logout`
+  String get logout {
+    return Intl.message(
+      'logout',
+      name: 'logout',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

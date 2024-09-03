@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_widgets/reversed_logout_icon.dart';
+import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common_widgets/locale_aware_logout_icon.dart';
 import 'package:tablets/src/features/authentication/presentation/widgets/users/add_user_popup.dart';
+import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
 
 class UsersScreen extends ConsumerWidget {
   const UsersScreen({super.key});
@@ -11,12 +12,19 @@ class UsersScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('معلومات المستخدمين',
-            style: TextStyle(color: Colors.white)),
+        title: Text(
+          S.of(context).greeting,
+          style: const TextStyle(color: Colors.white),
+        ),
         actions: [
-          IconButton(
-              onPressed: () => FirebaseAuth.instance.signOut(),
-              icon: const ReversedLogoutIcon()),
+          TextButton.icon(
+            onPressed: ref.read(authRepositoryProvider).logout,
+            icon: const LocaleAwareLogoutIcon(),
+            label: Text(
+              S.of(context).logout,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
         ],
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),

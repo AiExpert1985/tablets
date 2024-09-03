@@ -12,5 +12,7 @@
     "add_image": "اضافة صورة",
     "add_new_user": "اضافة مستخدم جديد",
         "save": "حفظ",
-    "cancel": "الغاء"
+    "cancel": "الغاء",
+     "greeting": "مرحباً",
+     "logout": "خروج"
 }

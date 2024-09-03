@@ -29,9 +29,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
         "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
+        "greeting": MessageLookupByLibrary.simpleMessage("مرحباً"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("لدي حساب في البرنامج"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
+        "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
