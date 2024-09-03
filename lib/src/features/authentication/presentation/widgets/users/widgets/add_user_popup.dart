@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/authentication/presentation/controllers/picked_image_file_provider.dart';
-import 'package:tablets/src/features/authentication/presentation/widgets/users/image_picker.dart';
+import 'package:tablets/src/features/authentication/presentation/widgets/users/widgets/image_picker.dart';
 import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
 
 class AddUserPopup extends ConsumerStatefulWidget {

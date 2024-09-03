@@ -5,17 +5,8 @@ class FireStoreRepository {
   FireStoreRepository(this._firestore);
   final FirebaseFirestore _firestore;
 
-  Future<void> addUser({
-    required String uid,
-    required String email,
-    required String userName,
-    required String imageUrl,
-  }) async {
-    await _firestore.collection('users').doc(uid).set({
-      "email": email,
-      "username": userName,
-      "image_url": imageUrl,
-    });
+  Query<Map<String, dynamic>> usersQuery() {
+    return _firestore.collection('users');
   }
 }
 

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/locale_aware_logout_icon.dart';
-import 'package:tablets/src/features/authentication/presentation/widgets/users/add_user_popup.dart';
+import 'package:tablets/src/features/authentication/presentation/widgets/users/widgets/add_user_popup.dart';
+import 'package:tablets/src/features/authentication/presentation/widgets/users/widgets/users_list.dart';
 import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
 
 class UsersScreen extends ConsumerWidget {
@@ -18,7 +19,7 @@ class UsersScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton.icon(
-            onPressed: ref.read(authRepositoryProvider).logout,
+            onPressed: ref.read(authRepositoryProvider).signout,
             icon: const LocaleAwareLogoutIcon(),
             label: Text(
               S.of(context).logout,
@@ -39,9 +40,7 @@ class UsersScreen extends ConsumerWidget {
         },
         child: const Icon(Icons.add),
       ),
-      body: const Center(
-        child: Text('هنا سيتم اضافة اسماء المستخدمين'),
-      ),
+      body: const UsersList(),
     );
   }
 }
