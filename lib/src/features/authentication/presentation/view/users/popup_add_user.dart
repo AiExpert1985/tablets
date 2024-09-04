@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/authentication/presentation/controllers/picked_image_file_provider.dart';
-import 'package:tablets/src/features/authentication/presentation/view/users/image_picker.dart';
+import 'package:tablets/src/features/authentication/presentation/view/users/widget_image_picker.dart';
 import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
 import 'package:tablets/src/features/authentication/repository/firestore_repository.dart';
 import 'package:tablets/src/features/authentication/repository/storage_repository.dart';
@@ -47,6 +47,8 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                 imageUrl: imageUrl,
                 privilage: _userPrivilage);
           }
+          // after uploading image, we must reset it
+          ref.read(pickedImageFileProvider.notifier).update((state)=>null);
           // ignore: use_build_context_synchronously
           Navigator.of(context).pop();
         }

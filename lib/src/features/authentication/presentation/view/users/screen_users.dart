@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/locale_aware_logout_icon.dart';
-import 'package:tablets/src/features/authentication/presentation/view/users/add_user_popup.dart';
-import 'package:tablets/src/features/authentication/presentation/view/users/users_list.dart';
+import 'package:tablets/src/features/authentication/presentation/view/users/popup_add_user.dart';
+import 'package:tablets/src/features/authentication/presentation/view/users/widget_users_list.dart';
 import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
+import 'package:tablets/src/utils/debug_utils.dart';
 
 class UsersScreen extends ConsumerWidget {
   const UsersScreen({super.key});
@@ -14,7 +15,7 @@ class UsersScreen extends ConsumerWidget {
     try {
       ref.read(authRepositoryProvider).signout;
     } on FirebaseException catch (e) {
-      debugPrint('User Creation Error: ${e.message}');
+      customDebugPrint('User Creation Error: ${e.message}');
     }
   }
 
