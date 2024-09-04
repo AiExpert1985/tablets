@@ -42,6 +42,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "user_name_validation_error": MessageLookupByLibrary.simpleMessage(
             "Name should be at least 4 characters"),
         "user_password_validation_error": MessageLookupByLibrary.simpleMessage(
-            "Password should be at least 6 characters")
+            "Password should be at least 6 characters"),
+        "user_privilage": MessageLookupByLibrary.simpleMessage("Privilage"),
+        "user_privilage_validation_error": MessageLookupByLibrary.simpleMessage(
+            "You must select user privilage")
       };
 }

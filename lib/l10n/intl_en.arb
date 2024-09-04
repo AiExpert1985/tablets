@@ -14,5 +14,7 @@
     "save": "Save",
     "cancel": "Cancel",
     "greeting": "hi",
-    "logout": "logout"
+    "logout": "logout",
+    "user_privilage": "Privilage",
+    "user_privilage_validation_error": "You must select user privilage"
 }

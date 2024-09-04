@@ -43,6 +43,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "user_name_validation_error": MessageLookupByLibrary.simpleMessage(
             "يجب ان يحتوي الاسم على 4 احرف على الاقل"),
         "user_password_validation_error": MessageLookupByLibrary.simpleMessage(
-            "يجب ان تكون كلمة المرور 6 رموز على الاقل")
+            "يجب ان تكون كلمة المرور 6 رموز على الاقل"),
+        "user_privilage": MessageLookupByLibrary.simpleMessage("الصلاحيات"),
+        "user_privilage_validation_error":
+            MessageLookupByLibrary.simpleMessage("يجب تحديد صلاحيات المستخدم")
       };
 }

@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/authentication/presentation/controllers/picked_image_file_provider.dart';
-import 'package:tablets/src/features/authentication/presentation/widgets/users/widgets/image_picker.dart';
+import 'package:tablets/src/features/authentication/presentation/view/users/image_picker.dart';
 import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
+import 'package:tablets/src/features/authentication/repository/firestore_repository.dart';
+import 'package:tablets/src/features/authentication/repository/storage_repository.dart';
 
 class AddUserPopup extends ConsumerStatefulWidget {
   const AddUserPopup({super.key});
@@ -17,22 +20,39 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
 
   String _userEmail = '';
   String _userPassword = '';
-  String _username = '';
+  String _userName = '';
+  String _userPrivilage = '';
 
   void _submitForm() async {
     final isValid = _loginForm.currentState!.validate(); // runs validator
     final pickedImage = ref.read(pickedImageFileProvider);
-    if (!isValid || pickedImage == null) {
-      return;
-    }
-    _loginForm.currentState!.save(); // runs onSave inside form
-    bool isSuccessful = await ref
-        .watch(authRepositoryProvider)
-        .createUserWithoutLogin(
-            _userEmail, _userPassword, _username, pickedImage);
-    if (isSuccessful) {
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).pop();
+    if (isValid && pickedImage != null) {
+      _loginForm.currentState!.save(); // runs onSave inside form
+      try {
+        final uid =
+            await ref.read(authRepositoryProvider).createUserWithoutLogin(
+                  email: _userEmail,
+                  password: _userPassword,
+                  userName: _userName,
+                );
+        if (uid != null) {
+          final imageUrl = await ref
+              .read(storageRepositoryProvider)
+              .addFile(uid: uid, file: pickedImage);
+          if (imageUrl != null) {
+            ref.read(firestoreRepositoryProvider).addUser(
+                uid: uid,
+                userName: _userName,
+                email: _userEmail,
+                imageUrl: imageUrl,
+                privilage: _userPrivilage);
+          }
+          // ignore: use_build_context_synchronously
+          Navigator.of(context).pop();
+        }
+      } on FirebaseException catch (e) {
+        debugPrint('User Creation Error: ${e.message}');
+      }
     }
   }
 
@@ -45,7 +65,7 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
       content: Container(
         padding: const EdgeInsets.all(30),
         width: MediaQuery.of(context).size.width * 0.5,
-        height: MediaQuery.of(context).size.height * 0.5,
+        height: MediaQuery.of(context).size.height * 0.7,
         child: Form(
           key: _loginForm,
           child: SingleChildScrollView(
@@ -67,7 +87,7 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                     return null;
                   },
                   onSaved: (value) {
-                    _username = value!; // value can't be null
+                    _userName = value!; // value can't be null
                   },
                 ),
                 TextFormField(
@@ -99,6 +119,19 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   },
                   onSaved: (value) {
                     _userPassword = value!; // value can't be null
+                  },
+                ),
+                TextFormField(
+                  decoration:
+                      InputDecoration(labelText: S.of(context).user_privilage),
+                  validator: (value) {
+                    if (value == null) {
+                      return S.of(context).user_privilage_validation_error;
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _userPrivilage = value!; // value can't be null
                   },
                 ),
               ],

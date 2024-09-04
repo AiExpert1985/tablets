@@ -209,6 +209,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Privilage`
+  String get user_privilage {
+    return Intl.message(
+      'Privilage',
+      name: 'user_privilage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You must select user privilage`
+  String get user_privilage_validation_error {
+    return Intl.message(
+      'You must select user privilage',
+      name: 'user_privilage_validation_error',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

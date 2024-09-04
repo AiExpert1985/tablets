@@ -12,6 +12,22 @@ class FireStoreRepository {
           toFirestore: (appUser, _) => appUser.toMap(),
         );
   }
+
+  Future<void> addUser({
+    required String uid,
+    required String userName,
+    required String email,
+    required String imageUrl,
+    required String privilage,
+  }) async {
+    CollectionReference users = _firestore.collection('users');
+    await users.doc(uid).set({
+      'userName': userName,
+      'email': email,
+      'imageUrl': imageUrl,
+      'privilage': privilage,
+    });
+  }
 }
 
 final firestoreRepositoryProvider = Provider<FireStoreRepository>((ref) {

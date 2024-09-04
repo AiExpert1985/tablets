@@ -1,13 +1,22 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/locale_aware_logout_icon.dart';
-import 'package:tablets/src/features/authentication/presentation/widgets/users/widgets/add_user_popup.dart';
-import 'package:tablets/src/features/authentication/presentation/widgets/users/widgets/users_list.dart';
+import 'package:tablets/src/features/authentication/presentation/view/users/add_user_popup.dart';
+import 'package:tablets/src/features/authentication/presentation/view/users/users_list.dart';
 import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
 
 class UsersScreen extends ConsumerWidget {
   const UsersScreen({super.key});
+
+  void signout(WidgetRef ref) {
+    try {
+      ref.read(authRepositoryProvider).signout;
+    } on FirebaseException catch (e) {
+      debugPrint('User Creation Error: ${e.message}');
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,7 +28,7 @@ class UsersScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton.icon(
-            onPressed: ref.read(authRepositoryProvider).signout,
+            onPressed: () => signout(ref),
             icon: const LocaleAwareLogoutIcon(),
             label: Text(
               S.of(context).logout,
@@ -30,14 +39,10 @@ class UsersScreen extends ConsumerWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return const AddUserPopup();
-            },
-          );
-        },
+        onPressed: () => showDialog(
+          context: context,
+          builder: (BuildContext context) => const AddUserPopup(),
+        ),
         child: const Icon(Icons.add),
       ),
       body: const UsersList(),
