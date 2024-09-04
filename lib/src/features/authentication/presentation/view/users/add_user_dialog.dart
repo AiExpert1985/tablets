@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/authentication/presentation/controllers/picked_image_file_provider.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/widgets/image_picker.dart';
-import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
-import 'package:tablets/src/features/authentication/repository/firestore_repository.dart';
-import 'package:tablets/src/features/authentication/repository/storage_repository.dart';
+import 'package:tablets/src/features/authentication/data/auth_repository.dart';
+import 'package:tablets/src/features/authentication/data/firestore_repository.dart';
+import 'package:tablets/src/features/authentication/data/storage_repository.dart';
 
 class AddUserPopup extends ConsumerStatefulWidget {
   const AddUserPopup({super.key});
@@ -29,11 +29,10 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
     if (isValid && pickedImage != null) {
       _loginForm.currentState!.save(); // runs onSave inside form
       try {
-        final uid =
-            await ref.read(authRepositoryProvider).newUser(
-                  email: _userEmail,
-                  password: _userPassword,
-                );
+        final uid = await ref.read(authRepositoryProvider).newUser(
+              email: _userEmail,
+              password: _userPassword,
+            );
         if (uid != null) {
           final imageUrl = await ref
               .read(storageRepositoryProvider)
@@ -47,7 +46,7 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                 privilage: _userPrivilage);
           }
           // after uploading image, we must reset it
-          ref.read(pickedImageFileProvider.notifier).update((state)=>null);
+          ref.read(pickedImageFileProvider.notifier).update((state) => null);
           // ignore: use_build_context_synchronously
           Navigator.of(context).pop();
         }

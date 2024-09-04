@@ -5,20 +5,9 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/locale_aware_logout_icon.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/add_user_dialog.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/widgets/users_list.dart';
-import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
-import 'package:tablets/src/utils/debug_utils.dart';
 
 class UsersScreen extends ConsumerWidget {
   const UsersScreen({super.key});
-
-  void signout(WidgetRef ref) {
-    try {
-      ref.read(authRepositoryProvider).signUserOut;
-      customDebugPrint(FirebaseAuth.instance.currentUser!.uid);
-    } on FirebaseException catch (e) {
-      customDebugPrint('User Creation Error: ${e.message}');
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

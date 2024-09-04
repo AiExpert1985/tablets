@@ -2,10 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/src/features/transaction/presentation/view/transaction_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/presentation/view/login/login_screen.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/add_user_dialog.dart';
-import 'package:tablets/src/features/authentication/presentation/view/users/screen_users.dart';
+import 'package:tablets/src/features/authentication/presentation/view/users/users_screen.dart';
 
 final firebaseAuthProvider =
     Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
@@ -37,7 +38,7 @@ final goRouterProvider = Provider<GoRouter>(
           name: '/home',
           path: '/home',
           builder: (BuildContext context, GoRouterState state) =>
-              const UsersScreen(),
+              const TransactionsScreen(),
         ),
         GoRoute(
           name: '/login',
