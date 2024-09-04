@@ -34,7 +34,7 @@ class UsersList extends ConsumerWidget {
             background: const ColoredBox(color:Colors.red),
             direction: DismissDirection.startToEnd,
             onDismissed: (direction){
-              deleteUser()
+              deleteUser(ref, uid);
             },
             child: ListTile(
               title: Text(appUser.userName),

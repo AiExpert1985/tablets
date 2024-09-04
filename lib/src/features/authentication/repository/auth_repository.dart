@@ -37,6 +37,10 @@ class AuthRepository {
   Future<void> signUserOut() async {
     await FirebaseAuth.instance.signOut();
   }
+
+  Future<void> deleteUser() asynch {
+    await FirebaseAuth.instance
+  }
 }
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
