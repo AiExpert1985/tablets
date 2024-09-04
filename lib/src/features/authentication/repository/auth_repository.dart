@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+
 class AuthRepository {
   AuthRepository();
 
@@ -10,7 +11,6 @@ class AuthRepository {
   Future<String?> createUserWithoutLogin({
     required String email,
     required String password,
-    required String userName,
   }) async {
     // Create a secondary app
     FirebaseApp secondaryApp = await Firebase.initializeApp(
@@ -22,8 +22,9 @@ class AuthRepository {
         await FirebaseAuth.instanceFor(app: secondaryApp)
             .createUserWithEmailAndPassword(email: email, password: password);
     // close second app after creating the user
+    final newUserId = newUserCredential.user!.uid;
     await secondaryApp.delete();
-    return newUserCredential.user!.uid;
+    return newUserId;
   }
 
   void signUserIn(String email, String password) async {
@@ -33,7 +34,7 @@ class AuthRepository {
     );
   }
 
-  Future<void> signout() async {
+  Future<void> signUserOut() async {
     await FirebaseAuth.instance.signOut();
   }
 }

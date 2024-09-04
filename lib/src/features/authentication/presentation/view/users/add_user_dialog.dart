@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/authentication/presentation/controllers/picked_image_file_provider.dart';
-import 'package:tablets/src/features/authentication/presentation/view/users/widget_image_picker.dart';
+import 'package:tablets/src/features/authentication/presentation/view/users/widgets/image_picker.dart';
 import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
 import 'package:tablets/src/features/authentication/repository/firestore_repository.dart';
 import 'package:tablets/src/features/authentication/repository/storage_repository.dart';
@@ -33,7 +33,6 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
             await ref.read(authRepositoryProvider).createUserWithoutLogin(
                   email: _userEmail,
                   password: _userPassword,
-                  userName: _userName,
                 );
         if (uid != null) {
           final imageUrl = await ref

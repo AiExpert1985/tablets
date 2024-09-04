@@ -17,6 +17,13 @@ class UsersList extends ConsumerWidget {
           return ListTile(
             title: Text(appUser.userName),
             subtitle: Text(appUser.email),
+            onTap: () => ref.read(firestoreRepositoryProvider).updateUser(
+                  uid: appUser.uid,
+                  userName: 'userName',
+                  email: 'email',
+                  imageUrl: 'imageUrl',
+                  privilage: 'privilage',
+                ),
           );
         });
   }

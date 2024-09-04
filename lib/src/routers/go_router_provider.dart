@@ -4,8 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/presentation/view/login/login_screen.dart';
-import 'package:tablets/src/features/authentication/presentation/view/users/popup_add_user.dart';
+import 'package:tablets/src/features/authentication/presentation/view/users/add_user_dialog.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/screen_users.dart';
+import 'package:tablets/src/utils/debug_utils.dart';
 
 final firebaseAuthProvider =
     Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
@@ -19,10 +20,12 @@ final goRouterProvider = Provider<GoRouter>(
         final bool isLoggedIn = firebaseAuth.currentUser != null;
         final String currentLocation = state.uri.path;
         if (isLoggedIn) {
+          customDebugPrint('inside redirect');
           if (currentLocation == '/login' || currentLocation == '/signup') {
             return '/home';
           }
         } else {
+          
           if (currentLocation == '/signup') {
             return '/signup';
           } else {

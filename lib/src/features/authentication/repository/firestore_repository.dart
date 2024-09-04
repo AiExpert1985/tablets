@@ -28,6 +28,23 @@ class FireStoreRepository {
       'privilage': privilage,
     });
   }
+
+  Future<void> updateUser({
+    required String uid,
+    required String userName,
+    required String email,
+    required String imageUrl,
+    required String privilage,
+  }) async {
+    CollectionReference users = _firestore.collection('users');
+    await users.doc(uid).update({
+      'userName': userName,
+      'email': email,
+      'imageUrl': imageUrl,
+      'privilage': privilage,
+    });
+  }
+
 }
 
 final firestoreRepositoryProvider = Provider<FireStoreRepository>((ref) {
