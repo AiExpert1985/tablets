@@ -30,7 +30,7 @@ class UsersScreen extends ConsumerWidget {
         ),
         actions: [
           TextButton.icon(
-            onPressed: () => signout(ref),
+            onPressed: () => FirebaseAuth.instance.signOut(), //signout(ref),
             icon: const LocaleAwareLogoutIcon(),
             label: Text(
               S.of(context).logout,

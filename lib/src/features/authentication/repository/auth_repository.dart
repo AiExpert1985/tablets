@@ -2,12 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class AuthRepository {
   AuthRepository();
 
   ///creates a new user without log him in
-  /// return the userId of the newly created user 
+  /// return the userId of the newly created user
   Future<String?> newUser({
     required String email,
     required String password,
@@ -36,10 +35,6 @@ class AuthRepository {
 
   Future<void> signUserOut() async {
     await FirebaseAuth.instance.signOut();
-  }
-
-  Future<void> deleteUser() asynch {
-    await FirebaseAuth.instance
   }
 }
 

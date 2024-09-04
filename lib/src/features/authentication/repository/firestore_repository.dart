@@ -45,10 +45,12 @@ class FireStoreRepository {
     });
   }
 
-  Future<void> deleteUser({required String uid}) async{
-    await _firestore.collection('users').doc(uid).delete();
+  Future<void> deleteUser({required String uid}) async {
+    // TODO: I should implement delete user using firebase admin
+    // which means I need to use firebase functions
+    // I will do it at the end of app because it isn't essential task
+    // and I can create and delete users manually
   }
-
 }
 
 final firestoreRepositoryProvider = Provider<FireStoreRepository>((ref) {
