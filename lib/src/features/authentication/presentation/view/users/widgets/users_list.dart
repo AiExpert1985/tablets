@@ -7,6 +7,20 @@ import 'package:tablets/src/features/authentication/repository/firestore_reposit
 class UsersList extends ConsumerWidget {
   const UsersList({super.key});
 
+  void updateUser(WidgetRef ref, String uid, String userName, String userEmail, String imageUrl, String privilage){
+    ref.read(firestoreRepositoryProvider).updateUser(
+                  uid: uid,
+                  userName: userName,
+                  email: userEmail,
+                  imageUrl: imageUrl,
+                  privilage: privilage,
+                );
+  }
+
+  void deleteUser(WidgetRef ref, String uid){
+    ref.read(firestoreRepositoryProvider).deleteUser(uid: uid);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final firestoreRepository = ref.watch(firestoreRepositoryProvider);
@@ -14,16 +28,19 @@ class UsersList extends ConsumerWidget {
         query: firestoreRepository.usersQuery(),
         itemBuilder: (ctx, doc) {
           final appUser = doc.data();
-          return ListTile(
-            title: Text(appUser.userName),
-            subtitle: Text(appUser.email),
-            onTap: () => ref.read(firestoreRepositoryProvider).updateUser(
-                  uid: appUser.uid,
-                  userName: 'userName',
-                  email: 'email',
-                  imageUrl: 'imageUrl',
-                  privilage: 'privilage',
-                ),
+          final uid = doc.id;
+          return Dismissible(
+            key: Key(doc.id),
+            background: const ColoredBox(color:Colors.red),
+            direction: DismissDirection.startToEnd,
+            onDismissed: (direction){
+              deleteUser()
+            },
+            child: ListTile(
+              title: Text(appUser.userName),
+              subtitle: Text(appUser.email),
+              onTap: () => updateUser(ref, uid, 'newName', 'newEmail', 'newImageUrl', 'newPrivilage'),
+            ),
           );
         });
   }

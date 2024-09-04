@@ -30,7 +30,7 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
       _loginForm.currentState!.save(); // runs onSave inside form
       try {
         final uid =
-            await ref.read(authRepositoryProvider).createUserWithoutLogin(
+            await ref.read(authRepositoryProvider).newUser(
                   email: _userEmail,
                   password: _userPassword,
                 );

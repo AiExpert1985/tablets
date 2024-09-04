@@ -45,6 +45,10 @@ class FireStoreRepository {
     });
   }
 
+  Future<void> deleteUser({required String uid}) async{
+    await _firestore.collection('users').doc(uid).delete();
+  }
+
 }
 
 final firestoreRepositoryProvider = Provider<FireStoreRepository>((ref) {

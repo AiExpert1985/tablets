@@ -8,7 +8,7 @@ class AuthRepository {
 
   ///creates a new user without log him in
   /// return the userId of the newly created user 
-  Future<String?> createUserWithoutLogin({
+  Future<String?> newUser({
     required String email,
     required String password,
   }) async {
