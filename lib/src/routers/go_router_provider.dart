@@ -6,7 +6,6 @@ import 'package:tablets/src/features/transaction/presentation/view/transaction_s
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/presentation/view/login/login_screen.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/add_user_dialog.dart';
-import 'package:tablets/src/features/authentication/presentation/view/users/users_screen.dart';
 
 final firebaseAuthProvider =
     Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
