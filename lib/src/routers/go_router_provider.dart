@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/features/transaction/presentation/view/transaction_screen.dart';
+import 'package:tablets/src/features/transaction/presentation/transaction_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/presentation/view/login/login_screen.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/add_user_dialog.dart';
@@ -15,6 +15,7 @@ final goRouterProvider = Provider<GoRouter>(
     final firebaseAuth = ref.watch(firebaseAuthProvider);
     return GoRouter(
       initialLocation: '/home',
+      debugLogDiagnostics: true, // print route in the console
       redirect: (context, state) {
         final bool isLoggedIn = firebaseAuth.currentUser != null;
         final String currentLocation = state.uri.path;

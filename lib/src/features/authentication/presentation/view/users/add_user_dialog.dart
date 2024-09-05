@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/authentication/presentation/controllers/picked_image_file_provider.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/widgets/image_picker.dart';
-import 'package:tablets/src/features/authentication/data/auth_repository.dart';
+import 'package:tablets/src/features/authentication/data/auth_repository_old.dart';
 import 'package:tablets/src/features/authentication/data/firestore_repository.dart';
 import 'package:tablets/src/features/authentication/data/storage_repository.dart';
 

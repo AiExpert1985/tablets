@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-class AppUser {
+class ApplicationUser {
   final String uid;
   final String userName;
   final String email;
   final String imageUrl;
   final String privilage;
-  AppUser({
+  ApplicationUser({
     required this.uid,
     required this.userName,
     required this.email,
@@ -24,8 +24,8 @@ class AppUser {
     };
   }
 
-  factory AppUser.fromMap(Map<String, dynamic> map) {
-    return AppUser(
+  factory ApplicationUser.fromMap(Map<String, dynamic> map) {
+    return ApplicationUser(
       uid: map['uid'] ?? '',
       userName: map['userName'] ?? '',
       email: map['email'] ?? '',
@@ -36,6 +36,6 @@ class AppUser {
 
   String toJson() => json.encode(toMap());
 
-  factory AppUser.fromJson(String source) =>
-      AppUser.fromMap(json.decode(source));
+  factory ApplicationUser.fromJson(String source) =>
+      ApplicationUser.fromMap(json.decode(source));
 }
