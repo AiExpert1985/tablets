@@ -25,7 +25,7 @@ class UsersList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final firestoreRepository = ref.watch(firestoreRepositoryProvider);
-    return FirestoreListView<AppUser>(
+    return FirestoreListView<ApplicationUser>(
         query: firestoreRepository.usersQuery(),
         itemBuilder: (ctx, doc) {
           final appUser = doc.data();

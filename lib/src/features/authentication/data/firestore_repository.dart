@@ -6,9 +6,9 @@ class FireStoreRepository {
   FireStoreRepository(this._firestore);
   final FirebaseFirestore _firestore;
 
-  Query<AppUser> usersQuery() {
+  Query<ApplicationUser> usersQuery() {
     return _firestore.collection('users').withConverter(
-          fromFirestore: (snapshot, _) => AppUser.fromMap(snapshot.data()!),
+          fromFirestore: (snapshot, _) => ApplicationUser.fromMap(snapshot.data()!),
           toFirestore: (appUser, _) => appUser.toMap(),
         );
   }
