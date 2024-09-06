@@ -17,19 +17,13 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -59,4 +53,23 @@ class DefaultFirebaseOptions {
     projectId: 'tablets-519a0',
     storageBucket: 'tablets-519a0.appspot.com',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyD0mLO4QjR10H92fO0ZnbWJBQEpqC8Z-wU',
+    appId: '1:10059288829:web:8ba2348e76b143d44fae94',
+    messagingSenderId: '10059288829',
+    projectId: 'tablets-519a0',
+    authDomain: 'tablets-519a0.firebaseapp.com',
+    storageBucket: 'tablets-519a0.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyD0s6M7BvhRMLieDAiB0a6I9jTHegEFTz0',
+    appId: '1:10059288829:ios:88f2193af4b470f44fae94',
+    messagingSenderId: '10059288829',
+    projectId: 'tablets-519a0',
+    storageBucket: 'tablets-519a0.appspot.com',
+    iosBundleId: 'com.tablets.app',
+  );
+
 }

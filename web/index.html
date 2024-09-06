@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -27,12 +28,41 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>tablets</title>
   <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
+
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js"></script>
+
+  <!-- below configuration added by hamandi based on tablet project in firebase>
+       https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdFNl04r8FF0-LyHBUhip_n_AIABKmoxw",
+      authDomain: "",
+      projectId: "tablets-519a0",
+      storageBucket: "tablets-519a0.appspot.com",
+      messagingSenderId: "",
+      appId: "com.tablets.app",
+      measurementId: ""
+    };
+
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const analytics = firebase.analytics();
+  </script>
+  <!-- end of configuration added by hamandi -->
+
   <script src="flutter_bootstrap.js" async></script>
 </body>
+
 </html>
