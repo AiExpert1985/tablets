@@ -16,5 +16,9 @@
     "greeting": "مرحباً",
     "logout": "خروج",
     "user_privilage": "الصلاحيات",
-    "user_privilage_validation_error": "يجب تحديد صلاحيات المستخدم"
+    "user_privilage_validation_error": "يجب تحديد صلاحيات المستخدم",
+    "page_not_found": "لم يتم العثور على الصفحة المطلوبة",
+    "go_home_page": "العودة الى الصفحة الرئيسية",
+    "transactions": "التعاملات",
+    "products": "المواد"
 }

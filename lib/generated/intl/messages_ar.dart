@@ -29,15 +29,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
         "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
+        "go_home_page":
+            MessageLookupByLibrary.simpleMessage("العودة الى الصفحة الرئيسية"),
         "greeting": MessageLookupByLibrary.simpleMessage("مرحباً"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("لدي حساب في البرنامج"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
+        "page_not_found": MessageLookupByLibrary.simpleMessage(
+            "لم يتم العثور على الصفحة المطلوبة"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
+        "products": MessageLookupByLibrary.simpleMessage("المواد"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
+        "transactions": MessageLookupByLibrary.simpleMessage("التعاملات"),
         "user_email_validation_error":
             MessageLookupByLibrary.simpleMessage("ادخل بريد الكتروني صحيح"),
         "user_name_validation_error": MessageLookupByLibrary.simpleMessage(

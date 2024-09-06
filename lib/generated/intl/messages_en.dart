@@ -28,15 +28,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("Create a new account"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
+        "go_home_page":
+            MessageLookupByLibrary.simpleMessage("Go back to home page"),
         "greeting": MessageLookupByLibrary.simpleMessage("hi"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("I already have account"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "page_not_found":
+            MessageLookupByLibrary.simpleMessage("Page is not found"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
+        "products": MessageLookupByLibrary.simpleMessage("Products"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign up"),
+        "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
         "user_email_validation_error": MessageLookupByLibrary.simpleMessage(
             "Please enter a valid email adress"),
         "user_name_validation_error": MessageLookupByLibrary.simpleMessage(

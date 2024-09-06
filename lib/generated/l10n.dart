@@ -229,6 +229,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Page is not found`
+  String get page_not_found {
+    return Intl.message(
+      'Page is not found',
+      name: 'page_not_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go back to home page`
+  String get go_home_page {
+    return Intl.message(
+      'Go back to home page',
+      name: 'go_home_page',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transactions`
+  String get transactions {
+    return Intl.message(
+      'Transactions',
+      name: 'transactions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Products`
+  String get products {
+    return Intl.message(
+      'Products',
+      name: 'products',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

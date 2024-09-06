@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/locale_aware_logout_icon.dart';
+import 'package:tablets/src/common_widgets/various/locale_aware_logout_icon.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/add_user_dialog.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/widgets/users_list.dart';
 

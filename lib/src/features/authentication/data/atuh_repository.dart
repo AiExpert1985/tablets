@@ -40,6 +40,6 @@ class AuthRepository {
       : null;
 }
 
-AuthRepository authRepository(AuthRepositoryRef ref) {
-  return AuthRepository(FirebaseAuth.instance);
-}
+// AuthRepository authRepository(AuthRepositoryRef ref) {
+//   return AuthRepository(FirebaseAuth.instance);
+// }

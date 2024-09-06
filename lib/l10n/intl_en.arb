@@ -16,5 +16,9 @@
     "greeting": "hi",
     "logout": "logout",
     "user_privilage": "Privilage",
-    "user_privilage_validation_error": "You must select user privilage"
+    "user_privilage_validation_error": "You must select user privilage",
+    "page_not_found": "Page is not found",
+    "go_home_page": "Go back to home page",
+    "transactions": "Transactions",
+    "products": "Products"
 }
