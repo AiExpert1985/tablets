@@ -22,5 +22,9 @@
     "transactions": "التعاملات",
     "products": "المواد",
     "salesmen_movement": "المندوبين",
-    "login_error": "حدث خطأ اثناء تسجيل الدخول"
+    "login_error": "حدث خطأ اثناء تسجيل الدخول",
+    "failure": "فشل",
+    "success": "نجاح",
+    "info": "معلومات",
+    "warning": "تحذير"
 }

@@ -22,5 +22,9 @@
     "transactions": "Transactions",
     "products": "Products",
     "salesmen_movement": "Salesmen",
-    "login_error": "Error happened while login"
+    "login_error": "Error happened while login",
+    "failure": "Failure",
+    "success": "Success",
+    "info": "info",
+    "warning": "Warning"
 }

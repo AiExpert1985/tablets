@@ -29,11 +29,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
         "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
+        "failure": MessageLookupByLibrary.simpleMessage("فشل"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("العودة الى الصفحة الرئيسية"),
         "greeting": MessageLookupByLibrary.simpleMessage("مرحباً"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("لدي حساب في البرنامج"),
+        "info": MessageLookupByLibrary.simpleMessage("معلومات"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "login_error":
             MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء تسجيل الدخول"),
@@ -46,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
+        "success": MessageLookupByLibrary.simpleMessage("نجاح"),
         "transactions": MessageLookupByLibrary.simpleMessage("التعاملات"),
         "user_email_validation_error":
             MessageLookupByLibrary.simpleMessage("ادخل بريد الكتروني صحيح"),
@@ -55,6 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "يجب ان تكون كلمة المرور 6 رموز على الاقل"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("الصلاحيات"),
         "user_privilage_validation_error":
-            MessageLookupByLibrary.simpleMessage("يجب تحديد صلاحيات المستخدم")
+            MessageLookupByLibrary.simpleMessage("يجب تحديد صلاحيات المستخدم"),
+        "warning": MessageLookupByLibrary.simpleMessage("تحذير")
       };
 }

@@ -1,11 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/various/custom_snackbar.dart';
 import 'package:tablets/src/features/authentication/data/auth_repository_old.dart';
-import 'package:tablets/src/utils/debug_utils.dart';
+import 'package:toastification/toastification.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -31,16 +29,15 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
         .watch(authRepositoryProvider)
         .signUserIn(_userEmail, _userPassword);
     if (!isSuccessful) {
-      customDebugPrint('an error happened while login');
-      NewCustomSnackBar.show(
-          context: context,
-          type: MessageType.failure,
-          message: S.of(context).login_error);
-    } else {
-      NewCustomSnackBar.show(
-          context: context,
-          type: MessageType.success,
-          message: 'logged in successfully');
+      toastification.show(
+        context: context, // optional if you use ToastificationWrapper
+        title: Text(S.of(context).login_error),
+        autoCloseDuration: const Duration(seconds: 5),
+        type: ToastificationType.error,
+        style: ToastificationStyle.flatColored,
+        alignment: Alignment.topCenter,
+        showProgressBar: false,
+      );
     }
   }
 

@@ -28,11 +28,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("Create a new account"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
+        "failure": MessageLookupByLibrary.simpleMessage("Failure"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("Go back to home page"),
         "greeting": MessageLookupByLibrary.simpleMessage("hi"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("I already have account"),
+        "info": MessageLookupByLibrary.simpleMessage("info"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "login_error":
             MessageLookupByLibrary.simpleMessage("Error happened while login"),
@@ -45,6 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("Salesmen"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign up"),
+        "success": MessageLookupByLibrary.simpleMessage("Success"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
         "user_email_validation_error": MessageLookupByLibrary.simpleMessage(
             "Please enter a valid email adress"),
@@ -54,6 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Password should be at least 6 characters"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("Privilage"),
         "user_privilage_validation_error": MessageLookupByLibrary.simpleMessage(
-            "You must select user privilage")
+            "You must select user privilage"),
+        "warning": MessageLookupByLibrary.simpleMessage("Warning")
       };
 }
