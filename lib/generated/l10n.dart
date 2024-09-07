@@ -269,6 +269,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Salesmen`
+  String get salesmen_movement {
+    return Intl.message(
+      'Salesmen',
+      name: 'salesmen_movement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error happened while login`
+  String get login_error {
+    return Intl.message(
+      'Error happened while login',
+      name: 'login_error',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

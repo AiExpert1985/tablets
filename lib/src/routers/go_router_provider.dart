@@ -9,7 +9,6 @@ import 'package:tablets/src/features/transaction/presentation/transaction_screen
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/presentation/view/login/login_screen.dart';
 import 'package:tablets/src/routers/not_found_screen.dart';
-import 'package:tablets/src/utils/debug_utils.dart';
 
 enum AppRoute {
   home,
@@ -26,7 +25,7 @@ final goRouterProvider = Provider<GoRouter>(
   (ref) {
     final firebaseAuth = ref.watch(firebaseAuthProvider);
     return GoRouter(
-      initialLocation: '/home',
+      initialLocation: '/login',
       debugLogDiagnostics: true, // print route in the console
       redirect: (context, state) {
         final bool isLoggedIn = firebaseAuth.currentUser != null;

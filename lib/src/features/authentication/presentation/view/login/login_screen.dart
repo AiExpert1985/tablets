@@ -1,7 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common_widgets/various/custom_snackbar.dart';
 import 'package:tablets/src/features/authentication/data/auth_repository_old.dart';
+import 'package:tablets/src/utils/debug_utils.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -21,8 +25,23 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
     if (!isValid) {
       return;
     }
+
     _loginForm.currentState!.save(); // runs onSave inside form
-    ref.watch(authRepositoryProvider).signUserIn(_userEmail, _userPassword);
+    final isSuccessful = await ref
+        .watch(authRepositoryProvider)
+        .signUserIn(_userEmail, _userPassword);
+    if (!isSuccessful) {
+      customDebugPrint('an error happened while login');
+      NewCustomSnackBar.show(
+          context: context,
+          type: MessageType.failure,
+          message: S.of(context).login_error);
+    } else {
+      NewCustomSnackBar.show(
+          context: context,
+          type: MessageType.success,
+          message: 'logged in successfully');
+    }
   }
 
   @override

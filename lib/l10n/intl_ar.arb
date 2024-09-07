@@ -20,5 +20,7 @@
     "page_not_found": "لم يتم العثور على الصفحة المطلوبة",
     "go_home_page": "العودة الى الصفحة الرئيسية",
     "transactions": "التعاملات",
-    "products": "المواد"
+    "products": "المواد",
+    "salesmen_movement": "المندوبين",
+    "login_error": "حدث خطأ اثناء تسجيل الدخول"
 }

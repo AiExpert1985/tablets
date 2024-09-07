@@ -26,11 +26,18 @@ class AuthRepository {
     return newUserId;
   }
 
-  void signUserIn(String email, String password) async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+  /// to login user using his email and password
+  /// return true if login was successful, otherwise return false
+  Future<bool> signUserIn(String email, String password) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   Future<void> signUserOut() async {

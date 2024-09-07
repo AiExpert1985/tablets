@@ -20,5 +20,7 @@
     "page_not_found": "Page is not found",
     "go_home_page": "Go back to home page",
     "transactions": "Transactions",
-    "products": "Products"
+    "products": "Products",
+    "salesmen_movement": "Salesmen",
+    "login_error": "Error happened while login"
 }
