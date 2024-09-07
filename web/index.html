@@ -35,32 +35,34 @@
 </head>
 
 <body>
-
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app.js"></script>
 
-  <!-- below configuration added by hamandi based on tablet project in firebase>
-       https://firebase.google.com/docs/web/setup#available-libraries -->
-  <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-analytics.js"></script>
-
+  <!-- firebase web configurations added by hamandi -->
   <script>
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "firebase/app";
+    // (hamandi) they use import {} "firebase/auth";   to import specific functions
+    // (hamandi) but since I am not sure what would i used, I imported all the packages
+    import "firebase/auth";
+    import 'firebase/functions';
+    import 'firebase/storage';
+    import 'firebase/firestore';
+    import 'firebase/messaging';
+    // https://firebase.google.com/docs/web/setup#available-libraries
     // Your web app's Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyDdFNl04r8FF0-LyHBUhip_n_AIABKmoxw",
+      apiKey: "AIzaSyD0mLO4QjR10H92fO0ZnbWJBQEpqC8Z-wU",
       authDomain: "tablets-519a0.firebaseapp.com",
       projectId: "tablets-519a0",
       storageBucket: "tablets-519a0.appspot.com",
-      messagingSenderId: "",
-      appId: "com.tablets.app",
-      measurementId: ""
+      messagingSenderId: "10059288829",
+      appId: "1:10059288829:web:8ba2348e76b143d44fae94"
     };
-
-
     // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const analytics = firebase.analytics();
+    const app = initializeApp(firebaseConfig);
   </script>
-  <!-- end of configuration added by hamandi -->
+  <!-- end of firebase web configurations added by hamandi -->
 
   <script src="flutter_bootstrap.js" async></script>
 </body>

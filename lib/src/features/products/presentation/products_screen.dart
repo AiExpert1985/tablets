@@ -18,7 +18,7 @@ class ProductsScreen extends ConsumerWidget {
         child: const Icon(Icons.add),
       ),
       drawer: const MainDrawer(),
-      body: const Text('TODO: Products view'),
+      body: const Center(child: Text('TODO: Products view')),
     );
   }
 }

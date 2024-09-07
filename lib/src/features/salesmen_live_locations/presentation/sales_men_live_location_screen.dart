@@ -18,7 +18,7 @@ class SalesmenLiveLocationScreen extends ConsumerWidget {
         child: const Icon(Icons.add),
       ),
       drawer: const MainDrawer(),
-      body: const Text('TODO: Salesmen gps live locations'),
+      body: const Center(child: Text('TODO: Salesmen gps live locations')),
     );
   }
 }

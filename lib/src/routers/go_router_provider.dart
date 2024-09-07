@@ -2,13 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/src/features/authentication/presentation/view/users/users_screen.dart';
 import 'package:tablets/src/features/products/presentation/products_screen.dart';
 import 'package:tablets/src/features/salesmen_live_locations/presentation/sales_men_live_location_screen.dart';
 import 'package:tablets/src/features/transaction/presentation/transaction_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/presentation/view/login/login_screen.dart';
-import 'package:tablets/src/features/authentication/presentation/view/users/add_user_dialog.dart';
 import 'package:tablets/src/routers/not_found_screen.dart';
+import 'package:tablets/src/utils/debug_utils.dart';
 
 enum AppRoute {
   home,
@@ -25,23 +26,23 @@ final goRouterProvider = Provider<GoRouter>(
   (ref) {
     final firebaseAuth = ref.watch(firebaseAuthProvider);
     return GoRouter(
-      initialLocation: AppRoute.login.name,
+      initialLocation: '/home',
       debugLogDiagnostics: true, // print route in the console
       redirect: (context, state) {
         final bool isLoggedIn = firebaseAuth.currentUser != null;
         final String currentLocation = state.uri.path;
-        if (isLoggedIn) {
-          if (currentLocation == '/login' || currentLocation == '/signup') {
-            return AppRoute.home.name;
-          }
-        } else {
-          if (currentLocation == '/signup') {
-            return AppRoute.signup.name;
-          } else {
-            return AppRoute.login.name;
-          }
+        // if user isn't logged in, redirect to login page
+        if (!isLoggedIn) {
+          return '/login';
         }
+        // if user is just logged in, redirect to home page
+        if (currentLocation == '/login') {
+          return '/home';
+        }
+        // otherwise, no redirection is needed, user will go as he intended
         return null;
+        // i didn't use and redirect to signup, because user can't signup
+        // only addmin can create new accounts
       },
       refreshListenable: GoRouterRefreshStream(firebaseAuth.authStateChanges()),
       routes: <GoRoute>[
@@ -61,7 +62,7 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/signup',
           name: AppRoute.signup.name,
           builder: (BuildContext context, GoRouterState state) =>
-              const AddUserPopup(),
+              const UsersScreen(),
         ),
         GoRoute(
           path: '/products',

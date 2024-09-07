@@ -18,7 +18,7 @@ class TransactionsScreen extends ConsumerWidget {
         child: const Icon(Icons.add),
       ),
       drawer: const MainDrawer(),
-      body: const Text('TODO: Transactiosn here'),
+      body: const Center(child: Text('TODO: Transactiosn here')),
     );
   }
 }
