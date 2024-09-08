@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tablets/src/common_widgets/main_drawer/buttons/main_drawer_mobile_products_button.dart';
 import 'package:tablets/src/common_widgets/main_drawer/buttons/main_drawer_salesmen_gps_button.dart';
 import 'package:tablets/src/common_widgets/main_drawer/header/main_drawer_header.dart';
 import 'package:tablets/src/common_widgets/main_drawer/buttons/main_drawer_products_button.dart';
@@ -19,6 +20,8 @@ class MainDrawer extends StatelessWidget {
           MainDrawerTransactionsButton(),
           SizedBox(height: 10),
           MainDrawerSalesmenMovementButton(),
+          SizedBox(height: 10),
+          MainDrawerMobileProductsButton(),
         ],
       ),
     );
