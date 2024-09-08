@@ -13,12 +13,12 @@ class MainDrawerHeader extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color.fromARGB(255, 59, 58, 70),
-            const Color.fromARGB(255, 59, 58, 70).withOpacity(0.7),
+            Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.primary.withOpacity(0.7),
           ],
         ),
       ),
-        child: Expanded(
+
           child: Column(
             children: [
               SizedBox(
@@ -29,11 +29,11 @@ class MainDrawerHeader extends StatelessWidget {
                 ),
               Text(
                 S.of(context).slogan,
-                style: const TextStyle(fontSize: 12, color: Colors.white),
+                style: const TextStyle(fontSize: 14, color: Colors.white),
               ),
             ],
           ),
-        ),
+
     );
   }
 }
