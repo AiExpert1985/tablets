@@ -329,6 +329,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Tablets, where accounting started`
+  String get slogan {
+    return Intl.message(
+      'Tablets, where accounting started',
+      name: 'slogan',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

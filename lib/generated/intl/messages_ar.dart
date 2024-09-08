@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
+        "slogan":
+            MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
         "transactions": MessageLookupByLibrary.simpleMessage("التعاملات"),
         "user_email_validation_error":

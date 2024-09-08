@@ -56,62 +56,57 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
               child: Image.asset('assets/images/tablets.png'),
             ),
             SizedBox(
-              width: 400,
-              child: Card(
-                margin: const EdgeInsets.all(20),
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Form(
-                      key: _loginForm,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextFormField(
-                            decoration:
-                                InputDecoration(labelText: S.of(context).email),
-                            keyboardType: TextInputType.emailAddress,
-                            autocorrect: false,
-                            textCapitalization: TextCapitalization.none,
-                            validator: (value) {
-                              if (value == null ||
-                                  value.trim().isEmpty ||
-                                  !value.contains('@')) {
-                                return S
-                                    .of(context)
-                                    .user_email_validation_error;
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _userEmail = value!; // value can't be null
-                            },
-                          ),
-                          TextFormField(
-                            decoration: InputDecoration(
-                                labelText: S.of(context).password),
-                            obscureText: true,
-                            validator: (value) {
-                              if (value == null || value.trim().length < 6) {
-                                return S
-                                    .of(context)
-                                    .user_password_validation_error;
-                              }
-                              return null;
-                            },
-                            onSaved: (value) {
-                              _userPassword = value!; // value can't be null
-                            },
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          ElevatedButton(
-                            onPressed: _submitForm,
-                            child: Text(S.of(context).login),
-                          ),
-                        ],
-                      ),
+              width: 300,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Form(
+                    key: _loginForm,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextFormField(
+                          decoration:
+                              InputDecoration(labelText: S.of(context).email),
+                          keyboardType: TextInputType.emailAddress,
+                          autocorrect: false,
+                          textCapitalization: TextCapitalization.none,
+                          validator: (value) {
+                            if (value == null ||
+                                value.trim().isEmpty ||
+                                !value.contains('@')) {
+                              return S.of(context).user_email_validation_error;
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _userEmail = value!; // value can't be null
+                          },
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                              labelText: S.of(context).password),
+                          obscureText: true,
+                          validator: (value) {
+                            if (value == null || value.trim().length < 6) {
+                              return S
+                                  .of(context)
+                                  .user_password_validation_error;
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            _userPassword = value!; // value can't be null
+                          },
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        ElevatedButton(
+                          onPressed: _submitForm,
+                          child: Text(S.of(context).login),
+                        ),
+                      ],
                     ),
                   ),
                 ),

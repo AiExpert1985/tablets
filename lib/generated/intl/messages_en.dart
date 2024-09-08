@@ -47,6 +47,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("Salesmen"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign up"),
+        "slogan": MessageLookupByLibrary.simpleMessage(
+            "Tablets, where accounting started"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
         "user_email_validation_error": MessageLookupByLibrary.simpleMessage(
