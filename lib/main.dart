@@ -13,10 +13,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // usePathUrlStrategy();
+  usePathUrlStrategy();
   // * Register error handlers. For more info, see:
   // * https://docs.flutter.dev/testing/errors
-  // registerErrorHandlers();
+  registerErrorHandlers();
   runApp(const ProviderScope(child: MyApp()));
 }
 
