@@ -12,18 +12,19 @@ class AddProductDialog extends ConsumerStatefulWidget {
 }
 
 class _AddProductDialogState extends ConsumerState<AddProductDialog> {
-  final _loginForm = GlobalKey<FormState>(); // the key used to access the form
+  final _newProductForm =
+      GlobalKey<FormState>(); // the key used to access the form
 
   String _productName = '';
   String _productCode = '';
 
   void _submitForm() async {
-    final isValid = _loginForm.currentState!.validate(); //
+    final isValid = _newProductForm.currentState!.validate(); //
     if (!isValid) {
       return;
     }
+    _newProductForm.currentState!.save(); // runs onSave inside form
     Navigator.of(context).pop();
-    _loginForm.currentState!.save(); // runs onSave inside form
     await ref.read(productRepositoryProvider).addProduct(
           itemCode: _productName,
           itemName: _productCode,
@@ -41,7 +42,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
         width: MediaQuery.of(context).size.width * 0.5,
         height: MediaQuery.of(context).size.height * 0.7,
         child: Form(
-          key: _loginForm,
+          key: _newProductForm,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
