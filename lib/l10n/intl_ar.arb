@@ -27,5 +27,20 @@
     "success": "نجاح",
     "info": "معلومات",
     "warning": "تحذير",
-    "slogan": "الواح ... حيث بدأت المحاسبة"
+    "slogan": "الواح ... حيث بدأت المحاسبة",
+    "product_code": "رمز المادة",
+    "product_name": "اسم المادة",
+    "product_sell_setail_price": "سعر المفرد",
+    "product_sell_whole_price": "سعر الجملة",
+    "product_package_type": "نوع التعبئة",
+    "product_package_weight": "وزن التعبئة",
+    "product_num_items_inside_package": "عدد القطع في التعبئة",
+    "product_alert_when_exceeds": " تنبيه عندما يتجاوز العدد المتوفر عن",
+    "product_altert_when_less_than": "تنبيه عندما يقل العدد المتوفر عن",
+    "product_salesman_comission": "عمولة المندوب",
+    "product_photos": "صور المنتج",
+    "product_category": "التصنيف الرئيسي للمنتج",
+    "product_subcategory": "التصنيف الفرعي للمنتج ",
+    "input_validation_error_message_for_numbers": "يجب ادخال رقم",
+    "input_validation_error_message_for_names": "يجب ادخال اسم صحيح"
 }

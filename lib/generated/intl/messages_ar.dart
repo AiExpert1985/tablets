@@ -36,6 +36,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("لدي حساب في البرنامج"),
         "info": MessageLookupByLibrary.simpleMessage("معلومات"),
+        "input_validation_error_message_for_names":
+            MessageLookupByLibrary.simpleMessage("يجب ادخال اسم صحيح"),
+        "input_validation_error_message_for_numbers":
+            MessageLookupByLibrary.simpleMessage("يجب ادخال رقم"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "login_error":
             MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء تسجيل الدخول"),
@@ -44,6 +48,29 @@ class MessageLookup extends MessageLookupByLibrary {
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
+        "product_alert_when_exceeds": MessageLookupByLibrary.simpleMessage(
+            " تنبيه عندما يتجاوز العدد المتوفر عن"),
+        "product_altert_when_less_than": MessageLookupByLibrary.simpleMessage(
+            "تنبيه عندما يقل العدد المتوفر عن"),
+        "product_category":
+            MessageLookupByLibrary.simpleMessage("التصنيف الرئيسي للمنتج"),
+        "product_code": MessageLookupByLibrary.simpleMessage("رمز المادة"),
+        "product_name": MessageLookupByLibrary.simpleMessage("اسم المادة"),
+        "product_num_items_inside_package":
+            MessageLookupByLibrary.simpleMessage("عدد القطع في التعبئة"),
+        "product_package_type":
+            MessageLookupByLibrary.simpleMessage("نوع التعبئة"),
+        "product_package_weight":
+            MessageLookupByLibrary.simpleMessage("وزن التعبئة"),
+        "product_photos": MessageLookupByLibrary.simpleMessage("صور المنتج"),
+        "product_salesman_comission":
+            MessageLookupByLibrary.simpleMessage("عمولة المندوب"),
+        "product_sell_setail_price":
+            MessageLookupByLibrary.simpleMessage("سعر المفرد"),
+        "product_sell_whole_price":
+            MessageLookupByLibrary.simpleMessage("سعر الجملة"),
+        "product_subcategory":
+            MessageLookupByLibrary.simpleMessage("التصنيف الفرعي للمنتج "),
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),

@@ -35,6 +35,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("I already have account"),
         "info": MessageLookupByLibrary.simpleMessage("info"),
+        "input_validation_error_message_for_names":
+            MessageLookupByLibrary.simpleMessage(
+                "You should enter a valid name"),
+        "input_validation_error_message_for_numbers":
+            MessageLookupByLibrary.simpleMessage(
+                "You should enter a valid number"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "login_error":
             MessageLookupByLibrary.simpleMessage("Error happened while login"),
@@ -43,6 +49,31 @@ class MessageLookup extends MessageLookupByLibrary {
         "page_not_found":
             MessageLookupByLibrary.simpleMessage("Page is not found"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
+        "product_alert_when_exceeds": MessageLookupByLibrary.simpleMessage(
+            "Alert when available more than"),
+        "product_altert_when_less_than": MessageLookupByLibrary.simpleMessage(
+            "Alert when available is less than"),
+        "product_category":
+            MessageLookupByLibrary.simpleMessage("Product category"),
+        "product_code": MessageLookupByLibrary.simpleMessage("code"),
+        "product_name": MessageLookupByLibrary.simpleMessage("Name"),
+        "product_num_items_inside_package":
+            MessageLookupByLibrary.simpleMessage(
+                "Number of item in eacch package"),
+        "product_package_type":
+            MessageLookupByLibrary.simpleMessage("Packaging type"),
+        "product_package_weight":
+            MessageLookupByLibrary.simpleMessage("Package weight"),
+        "product_photos":
+            MessageLookupByLibrary.simpleMessage("Product photos"),
+        "product_salesman_comission":
+            MessageLookupByLibrary.simpleMessage("Salesman commision"),
+        "product_sell_setail_price":
+            MessageLookupByLibrary.simpleMessage("Retail price"),
+        "product_sell_whole_price":
+            MessageLookupByLibrary.simpleMessage("Wholesale price"),
+        "product_subcategory":
+            MessageLookupByLibrary.simpleMessage("Product subcategory"),
         "products": MessageLookupByLibrary.simpleMessage("Products"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("Salesmen"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),

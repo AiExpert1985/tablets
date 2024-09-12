@@ -339,6 +339,156 @@ class S {
       args: [],
     );
   }
+
+  /// `code`
+  String get product_code {
+    return Intl.message(
+      'code',
+      name: 'product_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get product_name {
+    return Intl.message(
+      'Name',
+      name: 'product_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retail price`
+  String get product_sell_setail_price {
+    return Intl.message(
+      'Retail price',
+      name: 'product_sell_setail_price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wholesale price`
+  String get product_sell_whole_price {
+    return Intl.message(
+      'Wholesale price',
+      name: 'product_sell_whole_price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Packaging type`
+  String get product_package_type {
+    return Intl.message(
+      'Packaging type',
+      name: 'product_package_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Package weight`
+  String get product_package_weight {
+    return Intl.message(
+      'Package weight',
+      name: 'product_package_weight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Number of item in eacch package`
+  String get product_num_items_inside_package {
+    return Intl.message(
+      'Number of item in eacch package',
+      name: 'product_num_items_inside_package',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Alert when available more than`
+  String get product_alert_when_exceeds {
+    return Intl.message(
+      'Alert when available more than',
+      name: 'product_alert_when_exceeds',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Alert when available is less than`
+  String get product_altert_when_less_than {
+    return Intl.message(
+      'Alert when available is less than',
+      name: 'product_altert_when_less_than',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Salesman commision`
+  String get product_salesman_comission {
+    return Intl.message(
+      'Salesman commision',
+      name: 'product_salesman_comission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Product photos`
+  String get product_photos {
+    return Intl.message(
+      'Product photos',
+      name: 'product_photos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Product category`
+  String get product_category {
+    return Intl.message(
+      'Product category',
+      name: 'product_category',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Product subcategory`
+  String get product_subcategory {
+    return Intl.message(
+      'Product subcategory',
+      name: 'product_subcategory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You should enter a valid number`
+  String get input_validation_error_message_for_numbers {
+    return Intl.message(
+      'You should enter a valid number',
+      name: 'input_validation_error_message_for_numbers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You should enter a valid name`
+  String get input_validation_error_message_for_names {
+    return Intl.message(
+      'You should enter a valid name',
+      name: 'input_validation_error_message_for_names',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

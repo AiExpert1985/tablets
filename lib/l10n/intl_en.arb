@@ -27,5 +27,20 @@
     "success": "Success",
     "info": "info",
     "warning": "Warning",
-    "slogan": "Tablets, where accounting started"
+    "slogan": "Tablets, where accounting started",
+    "product_code": "code",
+    "product_name": "Name",
+    "product_sell_setail_price": "Retail price",
+    "product_sell_whole_price": "Wholesale price",
+    "product_package_type": "Packaging type",
+    "product_package_weight": "Package weight",
+    "product_num_items_inside_package": "Number of item in eacch package",
+    "product_alert_when_exceeds": "Alert when available more than",
+    "product_altert_when_less_than": "Alert when available is less than",
+    "product_salesman_comission": "Salesman commision",
+    "product_photos": "Product photos",
+    "product_category": "Product category",
+    "product_subcategory": "Product subcategory",
+    "input_validation_error_message_for_numbers": "You should enter a valid number",
+    "input_validation_error_message_for_names": "You should enter a valid name"
 }

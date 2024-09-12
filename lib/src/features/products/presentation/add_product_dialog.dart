@@ -7,7 +7,6 @@ import 'package:tablets/src/features/authentication/presentation/view/users/widg
 import 'package:tablets/src/features/authentication/data/auth_repository_old.dart';
 import 'package:tablets/src/features/authentication/data/firestore_repository.dart';
 import 'package:tablets/src/features/authentication/data/storage_repository.dart';
-import 'package:tablets/src/utils/debug_utils.dart';
 
 class AddProductDialog extends ConsumerStatefulWidget {
   const AddProductDialog({super.key});
@@ -19,9 +18,9 @@ class AddProductDialog extends ConsumerStatefulWidget {
 class _AddProductDialogState extends ConsumerState<AddProductDialog> {
   final _loginForm = GlobalKey<FormState>(); // the key used to access the form
 
-  String _userEmail = '';
+  String _productName = '';
   String _userPassword = '';
-  String _userName = '';
+  String _productCode = '';
   String _userPrivilage = '';
 
   void _submitForm() async {
@@ -31,7 +30,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
       _loginForm.currentState!.save(); // runs onSave inside form
       try {
         final uid = await ref.read(authRepositoryProvider).newUser(
-              email: _userEmail,
+              email: _productName,
               password: _userPassword,
             );
         if (uid != null) {
@@ -41,8 +40,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
           if (imageUrl != null) {
             ref.read(firestoreRepositoryProvider).addUser(
                 uid: uid,
-                userName: _userName,
-                email: _userEmail,
+                userName: _productCode,
+                email: _productName,
                 imageUrl: imageUrl,
                 privilage: _userPrivilage);
           }
@@ -79,35 +78,42 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
               ),
               Row(
                 children: [
-                  TextFormField(
-                    decoration: InputDecoration(labelText: S.of(context).name),
-                    enableSuggestions: false,
-                    validator: (value) {
-                      if (value == null || value.trim().length < 4) {
-                        return S.of(context).user_name_validation_error;
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _userName = value!; // value can't be null
-                    },
+                  //! product code
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          labelText: S.of(context).product_code),
+                      validator: (value) {
+                        if (value == null || double.tryParse(value) == null) {
+                          return S
+                              .of(context)
+                              .input_validation_error_message_for_numbers;
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _productCode = value!; // value can't be null
+                      },
+                    ),
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: S.of(context).email),
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    textCapitalization: TextCapitalization.none,
-                    validator: (value) {
-                      if (value == null ||
-                          value.trim().isEmpty ||
-                          !value.contains('@')) {
-                        return S.of(context).user_email_validation_error;
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _userEmail = value!; // value can't be null
-                    },
+                  const SizedBox(width: 20),
+                  //! prodcut name
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                          labelText: S.of(context).product_name),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return S
+                              .of(context)
+                              .input_validation_error_message_for_names;
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _productName = value!; // value can't be null
+                      },
+                    ),
                   ),
                 ],
               ),

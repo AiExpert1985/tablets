@@ -11,7 +11,7 @@ class Product {
   double salesManComission;
   List<String> photos;
   String category;
-  String gourp;
+  String subCategory;
 
   Product({
     required this.itemCode,
@@ -26,6 +26,6 @@ class Product {
     required this.salesManComission,
     required this.photos,
     required this.category,
-    required this.gourp,
+    required this.subCategory,
   });
 }
