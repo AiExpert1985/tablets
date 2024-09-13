@@ -17,6 +17,7 @@ class ProductRepository {
       await productsRef.set({
         'itemCode': itemCode,
         'itemName': itemName,
+        'creationTime': FieldValue.serverTimestamp(),
       });
       return true;
     } catch (e) {
