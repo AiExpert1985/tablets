@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/utils/debug_utils.dart';
+import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductRepository {
   ProductRepository(this._firestore);
@@ -20,7 +20,7 @@ class ProductRepository {
       });
       return true;
     } catch (e) {
-      customDebugPrint(e);
+      utils.CustomDebug.print(e);
       return false;
     }
   }

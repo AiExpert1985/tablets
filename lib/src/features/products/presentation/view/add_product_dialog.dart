@@ -5,8 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/widgets/image_picker.dart';
 import 'package:tablets/src/features/products/data/product_repository_provider.dart';
-import 'package:tablets/src/utils/form_validation.dart';
-import 'package:tablets/src/utils/user_messages.dart';
+import 'package:tablets/src/utils/utils.dart' as utils;
 
 class AddProductDialog extends ConsumerStatefulWidget {
   const AddProductDialog({super.key});
@@ -34,12 +33,12 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
     if (!context.mounted) return;
     if (isSuccessful) {
       Navigator.of(context).pop();
-      showSuccessSnackbar(
+      utils.UserMessages.success(
         context: context,
         message: S.of(context).success_adding_doc_to_db,
       );
     } else {
-      showFailureSnackbar(
+      utils.UserMessages.failure(
         context: context,
         message: S.of(context).error_adding_doc_to_db,
       );
@@ -73,8 +72,9 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                     child: TextFormField(
                       decoration: InputDecoration(
                           labelText: S.of(context).product_code),
-                      validator: (value) => validateNumberFields(
-                          fieldValue: value, context: context),
+                      validator: (value) =>
+                          utils.FormValidation.validateNumberField(
+                              fieldValue: value, context: context),
                       onSaved: (value) {
                         _productCode = value!; // value can't be null
                       },
@@ -86,8 +86,9 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                     child: TextFormField(
                       decoration: InputDecoration(
                           labelText: S.of(context).product_name),
-                      validator: (value) => validateNameFields(
-                          fieldValue: value, context: context),
+                      validator: (value) =>
+                          utils.FormValidation.validateNameField(
+                              fieldValue: value, context: context),
                       onSaved: (value) {
                         _productName = value!; // value can't be null
                       },

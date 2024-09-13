@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/users_screen.dart';
-import 'package:tablets/src/features/products/presentation/products_screen.dart';
+import 'package:tablets/src/features/products/presentation/view/products_screen.dart';
 import 'package:tablets/src/features/salesmen_live_locations/presentation/sales_men_live_location_screen.dart';
 import 'package:tablets/src/features/transaction/presentation/transaction_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
