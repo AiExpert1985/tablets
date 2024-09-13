@@ -29,6 +29,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
         "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
+        "error_adding_doc_to_db": MessageLookupByLibrary.simpleMessage(
+            "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات"),
+        "error_login_to_db":
+            MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء تسجيل الدخول"),
         "failure": MessageLookupByLibrary.simpleMessage("فشل"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("العودة الى الصفحة الرئيسية"),
@@ -36,13 +40,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("لدي حساب في البرنامج"),
         "info": MessageLookupByLibrary.simpleMessage("معلومات"),
+        "input_validation_error_message_for_email":
+            MessageLookupByLibrary.simpleMessage("ادخل بريد الكتروني صحيح"),
         "input_validation_error_message_for_names":
-            MessageLookupByLibrary.simpleMessage("يجب ادخال اسم صحيح"),
+            MessageLookupByLibrary.simpleMessage("يجب ادخال الاسم بصورة صحيحة"),
         "input_validation_error_message_for_numbers":
-            MessageLookupByLibrary.simpleMessage("يجب ادخال رقم"),
+            MessageLookupByLibrary.simpleMessage("يجب ادخال الرقم بصورة صحيحة"),
+        "input_validation_error_message_for_password":
+            MessageLookupByLibrary.simpleMessage(
+                "يجب ان تكون كلمة المرور 6 رموز على الاقل"),
+        "input_validation_error_message_for_user_name":
+            MessageLookupByLibrary.simpleMessage(
+                "يجب ان يحتوي الاسم على 4 احرف على الاقل"),
+        "input_validation_error_message_for_user_privilage":
+            MessageLookupByLibrary.simpleMessage("يجب تحديد صلاحيات المستخدم"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
-        "login_error":
-            MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء تسجيل الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "page_not_found": MessageLookupByLibrary.simpleMessage(
@@ -78,16 +90,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "slogan":
             MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
+        "success_adding_doc_to_db":
+            MessageLookupByLibrary.simpleMessage("تمت الاضافة بنجاح"),
         "transactions": MessageLookupByLibrary.simpleMessage("التعاملات"),
-        "user_email_validation_error":
-            MessageLookupByLibrary.simpleMessage("ادخل بريد الكتروني صحيح"),
-        "user_name_validation_error": MessageLookupByLibrary.simpleMessage(
-            "يجب ان يحتوي الاسم على 4 احرف على الاقل"),
-        "user_password_validation_error": MessageLookupByLibrary.simpleMessage(
-            "يجب ان تكون كلمة المرور 6 رموز على الاقل"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("الصلاحيات"),
-        "user_privilage_validation_error":
-            MessageLookupByLibrary.simpleMessage("يجب تحديد صلاحيات المستخدم"),
         "warning": MessageLookupByLibrary.simpleMessage("تحذير")
       };
 }

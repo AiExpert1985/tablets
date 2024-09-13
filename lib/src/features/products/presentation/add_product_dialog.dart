@@ -1,8 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/widgets/image_picker.dart';
 import 'package:tablets/src/features/products/data/product_repository_provider.dart';
+import 'package:tablets/src/utils/form_validation.dart';
+import 'package:tablets/src/utils/user_messages.dart';
 
 class AddProductDialog extends ConsumerStatefulWidget {
   const AddProductDialog({super.key});
@@ -19,16 +23,27 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
   String _productCode = '';
 
   void _submitForm() async {
-    final isValid = _newProductForm.currentState!.validate(); //
-    if (!isValid) {
-      return;
-    }
+    final isValid =
+        _newProductForm.currentState!.validate(); // runs validation inside form
+    if (!isValid) return;
     _newProductForm.currentState!.save(); // runs onSave inside form
-    Navigator.of(context).pop();
-    await ref.read(productRepositoryProvider).addProduct(
-          itemCode: _productName,
-          itemName: _productCode,
+    bool isSuccessful = await ref.read(productRepositoryProvider).addProduct(
+          itemCode: _productCode,
+          itemName: _productName,
         );
+    if (!context.mounted) return;
+    if (isSuccessful) {
+      Navigator.of(context).pop();
+      showSuccessSnackbar(
+        context: context,
+        message: S.of(context).success_adding_doc_to_db,
+      );
+    } else {
+      showFailureSnackbar(
+        context: context,
+        message: S.of(context).error_adding_doc_to_db,
+      );
+    }
   }
 
   @override
@@ -58,14 +73,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                     child: TextFormField(
                       decoration: InputDecoration(
                           labelText: S.of(context).product_code),
-                      validator: (value) {
-                        if (value == null || double.tryParse(value) == null) {
-                          return S
-                              .of(context)
-                              .input_validation_error_message_for_numbers;
-                        }
-                        return null;
-                      },
+                      validator: (value) => validateNumberFields(
+                          fieldValue: value, context: context),
                       onSaved: (value) {
                         _productCode = value!; // value can't be null
                       },
@@ -77,14 +86,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                     child: TextFormField(
                       decoration: InputDecoration(
                           labelText: S.of(context).product_name),
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return S
-                              .of(context)
-                              .input_validation_error_message_for_names;
-                        }
-                        return null;
-                      },
+                      validator: (value) => validateNameFields(
+                          fieldValue: value, context: context),
                       onSaved: (value) {
                         _productName = value!; // value can't be null
                       },

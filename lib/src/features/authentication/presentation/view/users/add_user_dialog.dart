@@ -82,7 +82,9 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   enableSuggestions: false,
                   validator: (value) {
                     if (value == null || value.trim().length < 4) {
-                      return S.of(context).user_name_validation_error;
+                      return S
+                          .of(context)
+                          .input_validation_error_message_for_user_name;
                     }
                     return null;
                   },
@@ -99,7 +101,9 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                     if (value == null ||
                         value.trim().isEmpty ||
                         !value.contains('@')) {
-                      return S.of(context).user_email_validation_error;
+                      return S
+                          .of(context)
+                          .input_validation_error_message_for_email;
                     }
                     return null;
                   },
@@ -113,7 +117,9 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.trim().length < 6) {
-                      return S.of(context).user_password_validation_error;
+                      return S
+                          .of(context)
+                          .input_validation_error_message_for_password;
                     }
                     return null;
                   },
@@ -126,7 +132,9 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                       InputDecoration(labelText: S.of(context).user_privilage),
                   validator: (value) {
                     if (value == null) {
-                      return S.of(context).user_privilage_validation_error;
+                      return S
+                          .of(context)
+                          .input_validation_error_message_for_user_privilage;
                     }
                     return null;
                   },

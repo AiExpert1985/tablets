@@ -16,6 +16,7 @@ enum AppRoute {
   signup,
   transactions,
   products,
+  salesmen,
 }
 
 final firebaseAuthProvider =
@@ -49,7 +50,7 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/home',
           name: AppRoute.home.name,
           builder: (BuildContext context, GoRouterState state) =>
-              const SalesmenLiveLocationScreen(),
+              const ProductsScreen(),
         ),
         GoRoute(
           path: '/login',
@@ -74,6 +75,12 @@ final goRouterProvider = Provider<GoRouter>(
           name: AppRoute.transactions.name,
           builder: (BuildContext context, GoRouterState state) =>
               const TransactionsScreen(),
+        ),
+        GoRoute(
+          path: '/salesmen',
+          name: AppRoute.salesmen.name,
+          builder: (BuildContext context, GoRouterState state) =>
+              const SalesmenLiveLocationScreen(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),

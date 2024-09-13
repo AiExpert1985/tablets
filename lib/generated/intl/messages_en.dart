@@ -28,6 +28,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("Create a new account"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
+        "error_adding_doc_to_db": MessageLookupByLibrary.simpleMessage(
+            "An error happened while adding a document to the database"),
+        "error_login_to_db":
+            MessageLookupByLibrary.simpleMessage("Error happened while login"),
         "failure": MessageLookupByLibrary.simpleMessage("Failure"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("Go back to home page"),
@@ -35,15 +39,25 @@ class MessageLookup extends MessageLookupByLibrary {
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("I already have account"),
         "info": MessageLookupByLibrary.simpleMessage("info"),
+        "input_validation_error_message_for_email":
+            MessageLookupByLibrary.simpleMessage(
+                "Please enter a valid email adress"),
         "input_validation_error_message_for_names":
             MessageLookupByLibrary.simpleMessage(
                 "You should enter a valid name"),
         "input_validation_error_message_for_numbers":
             MessageLookupByLibrary.simpleMessage(
                 "You should enter a valid number"),
+        "input_validation_error_message_for_password":
+            MessageLookupByLibrary.simpleMessage(
+                "Password should be at least 6 characters"),
+        "input_validation_error_message_for_user_name":
+            MessageLookupByLibrary.simpleMessage(
+                "Name should be at least 4 characters"),
+        "input_validation_error_message_for_user_privilage":
+            MessageLookupByLibrary.simpleMessage(
+                "You must select user privilage"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
-        "login_error":
-            MessageLookupByLibrary.simpleMessage("Error happened while login"),
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "page_not_found":
@@ -81,16 +95,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "slogan": MessageLookupByLibrary.simpleMessage(
             "Tablets, where accounting started"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
+        "success_adding_doc_to_db": MessageLookupByLibrary.simpleMessage(
+            "Document was successfuly added to the database"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
-        "user_email_validation_error": MessageLookupByLibrary.simpleMessage(
-            "Please enter a valid email adress"),
-        "user_name_validation_error": MessageLookupByLibrary.simpleMessage(
-            "Name should be at least 4 characters"),
-        "user_password_validation_error": MessageLookupByLibrary.simpleMessage(
-            "Password should be at least 6 characters"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("Privilage"),
-        "user_privilage_validation_error": MessageLookupByLibrary.simpleMessage(
-            "You must select user privilage"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning")
       };
 }

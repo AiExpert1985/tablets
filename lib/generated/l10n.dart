@@ -120,36 +120,6 @@ class S {
     );
   }
 
-  /// `Please enter a valid email adress`
-  String get user_email_validation_error {
-    return Intl.message(
-      'Please enter a valid email adress',
-      name: 'user_email_validation_error',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Name should be at least 4 characters`
-  String get user_name_validation_error {
-    return Intl.message(
-      'Name should be at least 4 characters',
-      name: 'user_name_validation_error',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Password should be at least 6 characters`
-  String get user_password_validation_error {
-    return Intl.message(
-      'Password should be at least 6 characters',
-      name: 'user_password_validation_error',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Add image`
   String get add_image {
     return Intl.message(
@@ -220,16 +190,6 @@ class S {
     );
   }
 
-  /// `You must select user privilage`
-  String get user_privilage_validation_error {
-    return Intl.message(
-      'You must select user privilage',
-      name: 'user_privilage_validation_error',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Page is not found`
   String get page_not_found {
     return Intl.message(
@@ -275,16 +235,6 @@ class S {
     return Intl.message(
       'Salesmen',
       name: 'salesmen_movement',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Error happened while login`
-  String get login_error {
-    return Intl.message(
-      'Error happened while login',
-      name: 'login_error',
       desc: '',
       args: [],
     );
@@ -470,6 +420,46 @@ class S {
     );
   }
 
+  /// `Password should be at least 6 characters`
+  String get input_validation_error_message_for_password {
+    return Intl.message(
+      'Password should be at least 6 characters',
+      name: 'input_validation_error_message_for_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name should be at least 4 characters`
+  String get input_validation_error_message_for_user_name {
+    return Intl.message(
+      'Name should be at least 4 characters',
+      name: 'input_validation_error_message_for_user_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid email adress`
+  String get input_validation_error_message_for_email {
+    return Intl.message(
+      'Please enter a valid email adress',
+      name: 'input_validation_error_message_for_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You must select user privilage`
+  String get input_validation_error_message_for_user_privilage {
+    return Intl.message(
+      'You must select user privilage',
+      name: 'input_validation_error_message_for_user_privilage',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `You should enter a valid number`
   String get input_validation_error_message_for_numbers {
     return Intl.message(
@@ -485,6 +475,36 @@ class S {
     return Intl.message(
       'You should enter a valid name',
       name: 'input_validation_error_message_for_names',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error happened while login`
+  String get error_login_to_db {
+    return Intl.message(
+      'Error happened while login',
+      name: 'error_login_to_db',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An error happened while adding a document to the database`
+  String get error_adding_doc_to_db {
+    return Intl.message(
+      'An error happened while adding a document to the database',
+      name: 'error_adding_doc_to_db',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document was successfuly added to the database`
+  String get success_adding_doc_to_db {
+    return Intl.message(
+      'Document was successfuly added to the database',
+      name: 'success_adding_doc_to_db',
       desc: '',
       args: [],
     );

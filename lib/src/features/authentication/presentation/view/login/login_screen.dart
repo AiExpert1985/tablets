@@ -31,7 +31,7 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
     if (!isSuccessful) {
       toastification.show(
         context: context, // optional if you use ToastificationWrapper
-        title: Text(S.of(context).login_error),
+        title: Text(S.of(context).error_login_to_db),
         autoCloseDuration: const Duration(seconds: 5),
         type: ToastificationType.error,
         style: ToastificationStyle.flatColored,
@@ -75,7 +75,9 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
                             if (value == null ||
                                 value.trim().isEmpty ||
                                 !value.contains('@')) {
-                              return S.of(context).user_email_validation_error;
+                              return S
+                                  .of(context)
+                                  .input_validation_error_message_for_email;
                             }
                             return null;
                           },
@@ -91,7 +93,7 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
                             if (value == null || value.trim().length < 6) {
                               return S
                                   .of(context)
-                                  .user_password_validation_error;
+                                  .input_validation_error_message_for_password;
                             }
                             return null;
                           },
