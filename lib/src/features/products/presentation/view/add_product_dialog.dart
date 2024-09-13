@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/widgets/image_picker.dart';
-import 'package:tablets/src/features/products/data/product_repository_provider.dart';
+import 'package:tablets/src/features/products/presentation/controller/products_controller.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class AddProductDialog extends ConsumerStatefulWidget {
@@ -15,38 +15,9 @@ class AddProductDialog extends ConsumerStatefulWidget {
 }
 
 class _AddProductDialogState extends ConsumerState<AddProductDialog> {
-  final _newProductForm =
-      GlobalKey<FormState>(); // the key used to access the form
-
-  String _productName = '';
-  String _productCode = '';
-
-  void _submitForm() async {
-    final isValid =
-        _newProductForm.currentState!.validate(); // runs validation inside form
-    if (!isValid) return;
-    _newProductForm.currentState!.save(); // runs onSave inside form
-    bool isSuccessful = await ref.read(productRepositoryProvider).addProduct(
-          itemCode: _productCode,
-          itemName: _productName,
-        );
-    if (!context.mounted) return;
-    if (isSuccessful) {
-      Navigator.of(context).pop();
-      utils.UserMessages.success(
-        context: context,
-        message: S.of(context).success_adding_doc_to_db,
-      );
-    } else {
-      utils.UserMessages.failure(
-        context: context,
-        message: S.of(context).error_adding_doc_to_db,
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final productController = ref.read(productsControllerProvider);
     return AlertDialog(
       scrollable: true,
       contentPadding: const EdgeInsets.all(16.0),
@@ -56,7 +27,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
         width: MediaQuery.of(context).size.width * 0.5,
         height: MediaQuery.of(context).size.height * 0.7,
         child: Form(
-          key: _newProductForm,
+          key: productController.formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -74,9 +45,13 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                           labelText: S.of(context).product_code),
                       validator: (value) =>
                           utils.FormValidation.validateNumberField(
-                              fieldValue: value, context: context),
+                              fieldValue: value,
+                              errorMessage: S
+                                  .of(context)
+                                  .input_validation_error_message_for_numbers),
                       onSaved: (value) {
-                        _productCode = value!; // value can't be null
+                        productController.productCode =
+                            value!; // value can't be null
                       },
                     ),
                   ),
@@ -88,9 +63,13 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                           labelText: S.of(context).product_name),
                       validator: (value) =>
                           utils.FormValidation.validateNameField(
-                              fieldValue: value, context: context),
+                              fieldValue: value,
+                              errorMessage: S
+                                  .of(context)
+                                  .input_validation_error_message_for_names),
                       onSaved: (value) {
-                        _productName = value!; // value can't be null
+                        productController.productName =
+                            value!; // value can't be null
                       },
                     ),
                   ),
@@ -106,7 +85,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
           alignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: _submitForm,
+              onPressed: () => productController.addProduct(context),
               child: Text(S.of(context).save),
             ),
             TextButton(
@@ -114,7 +93,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
               child: Text(S.of(context).cancel),
             ),
           ],
-        ),
+        )
       ],
     );
   }

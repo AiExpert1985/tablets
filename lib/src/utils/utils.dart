@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tablets/generated/l10n.dart';
 import 'package:toastification/toastification.dart';
 
 class CustomDebug {
@@ -51,10 +50,10 @@ class UserMessages {
 class FormValidation {
   static String? validateNumberField({
     required String? fieldValue,
-    required BuildContext context,
+    required String errorMessage,
   }) {
     if (fieldValue == null || double.tryParse(fieldValue) == null) {
-      return S.of(context).input_validation_error_message_for_numbers;
+      return errorMessage;
     }
     return null;
   }
@@ -62,12 +61,12 @@ class FormValidation {
   /// used in form validation to check if entered name is valid
   static String? validateNameField({
     required String? fieldValue,
-    required BuildContext context,
+    required String errorMessage,
   }) {
     if (fieldValue == null ||
         fieldValue.trim().isEmpty ||
         fieldValue.trim().length < 2) {
-      return S.of(context).input_validation_error_message_for_names;
+      return errorMessage;
     }
     return null;
   }
