@@ -34,7 +34,7 @@
     "product_altert_when_less_than": "تنبيه عندما يقل عن",
     "product_salesman_comission": "عمولة المندوب",
     "product_photos": "الصور",
-    "product_category": "التصنيف الرئيسي",
+    "product_category": "التصنيف",
     "product_subcategory": "التصنيف الفرعي ",
     "product_initial_quantitiy": "العدد الاولي",
     "input_validation_error_message_for_email": "ادخل بريد الكتروني صحيح",

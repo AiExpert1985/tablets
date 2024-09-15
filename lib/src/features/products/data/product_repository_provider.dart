@@ -20,7 +20,6 @@ class ProductRepository {
     required double productAltertWhenLessThan,
     required double productSalesmanComission,
     required String productCategory,
-    required String productSubCategory,
     required double productInitialQuantity,
   }) async {
     final productsRef = _firestore.collection('products').doc();
@@ -38,7 +37,6 @@ class ProductRepository {
         'productAltertWhenLessThan': productAltertWhenLessThan,
         'productSalesmanComission': productSalesmanComission,
         'productCategory': productCategory,
-        'productSubCategory': productSubCategory,
         'productInitialQuantity': productInitialQuantity,
       });
       return true;

@@ -64,8 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(" تنبيه عندما يتجاوز"),
         "product_altert_when_less_than":
             MessageLookupByLibrary.simpleMessage("تنبيه عندما يقل عن"),
-        "product_category":
-            MessageLookupByLibrary.simpleMessage("التصنيف الرئيسي"),
+        "product_category": MessageLookupByLibrary.simpleMessage("التصنيف"),
         "product_code": MessageLookupByLibrary.simpleMessage("رمز المادة"),
         "product_initial_quantitiy":
             MessageLookupByLibrary.simpleMessage("العدد الاولي"),

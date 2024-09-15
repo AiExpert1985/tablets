@@ -20,7 +20,6 @@ class ProductsController {
   late double productAltertWhenLessThan;
   late double productSalesmanComission;
   late String productCategory;
-  late String productSubCategory;
   late double productInitialQuantity;
 
   void addProduct(context) async {
@@ -40,7 +39,6 @@ class ProductsController {
       productAltertWhenLessThan: productAltertWhenLessThan,
       productSalesmanComission: productSalesmanComission,
       productCategory: productCategory,
-      productSubCategory: productSubCategory,
       productInitialQuantity: productInitialQuantity,
     );
     if (isSuccessful) {
