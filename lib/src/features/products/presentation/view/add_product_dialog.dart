@@ -77,7 +77,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                     ),
                   ),
                   FormFieldsSpacing.horizontal,
-                  //! product Main Category
+                  //! product Category
                   Expanded(
                     child: TextFormField(
                       decoration: InputDecoration(
@@ -94,7 +94,6 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                       },
                     ),
                   ),
-                  FormFieldsSpacing.horizontal,
                 ],
               ),
               FormFieldsSpacing.vertical,
