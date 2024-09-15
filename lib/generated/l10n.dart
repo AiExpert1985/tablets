@@ -311,10 +311,10 @@ class S {
   }
 
   /// `Retail price`
-  String get product_sell_setail_price {
+  String get product_sell_retail_price {
     return Intl.message(
       'Retail price',
-      name: 'product_sell_setail_price',
+      name: 'product_sell_retail_price',
       desc: '',
       args: [],
     );
@@ -415,6 +415,16 @@ class S {
     return Intl.message(
       'Product subcategory',
       name: 'product_subcategory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Product initial quantity`
+  String get product_initial_quantitiy {
+    return Intl.message(
+      'Product initial quantity',
+      name: 'product_initial_quantitiy',
       desc: '',
       args: [],
     );

@@ -8,10 +8,11 @@ class Product {
   double numItemsInsidePackage;
   double alertWhenExceeds;
   double altertWhenLessThan;
-  double salesManComission;
+  double salesmanComission;
   List<String> photos;
   String category;
   String subCategory;
+  double initialQuantity;
 
   Product({
     required this.itemCode,
@@ -23,9 +24,10 @@ class Product {
     required this.numItemsInsidePackage,
     required this.alertWhenExceeds,
     required this.altertWhenLessThan,
-    required this.salesManComission,
+    required this.salesmanComission,
     required this.photos,
     required this.category,
     required this.subCategory,
+    required this.initialQuantity,
   });
 }

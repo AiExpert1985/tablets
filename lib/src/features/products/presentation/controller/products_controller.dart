@@ -9,8 +9,19 @@ class ProductsController {
   final ProductRepository productRepositoryProvider;
   final formKey = GlobalKey<FormState>();
 
-  String productCode = '';
-  String productName = '';
+  late double productCode;
+  late String productName;
+  late double productSellRetailPrice;
+  late double productSellWholePrice;
+  late String productPackageType;
+  late double productPackageWeight;
+  late double productNumItemsInsidePackage;
+  late double productAlertWhenExceeds;
+  late double productAltertWhenLessThan;
+  late double productSalesmanComission;
+  late String productCategory;
+  late String productSubCategory;
+  late double productInitialQuantity;
 
   void addProduct(context) async {
     final isValid =
@@ -20,6 +31,17 @@ class ProductsController {
     bool isSuccessful = await productRepositoryProvider.addProduct(
       itemCode: productCode,
       itemName: productName,
+      productSellRetailPrice: productSellRetailPrice,
+      productSellWholePrice: productSellWholePrice,
+      productPackageType: productPackageType,
+      productPackageWeight: productPackageWeight,
+      productNumItemsInsidePackage: productNumItemsInsidePackage,
+      productAlertWhenExceeds: productAlertWhenExceeds,
+      productAltertWhenLessThan: productAltertWhenLessThan,
+      productSalesmanComission: productSalesmanComission,
+      productCategory: productCategory,
+      productSubCategory: productSubCategory,
+      productInitialQuantity: productInitialQuantity,
     );
     if (isSuccessful) {
       Navigator.of(context).pop();

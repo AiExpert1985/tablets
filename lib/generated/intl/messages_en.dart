@@ -70,6 +70,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "product_category":
             MessageLookupByLibrary.simpleMessage("Product category"),
         "product_code": MessageLookupByLibrary.simpleMessage("code"),
+        "product_initial_quantitiy":
+            MessageLookupByLibrary.simpleMessage("Product initial quantity"),
         "product_name": MessageLookupByLibrary.simpleMessage("Name"),
         "product_num_items_inside_package":
             MessageLookupByLibrary.simpleMessage(
@@ -82,7 +84,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Product photos"),
         "product_salesman_comission":
             MessageLookupByLibrary.simpleMessage("Salesman commision"),
-        "product_sell_setail_price":
+        "product_sell_retail_price":
             MessageLookupByLibrary.simpleMessage("Retail price"),
         "product_sell_whole_price":
             MessageLookupByLibrary.simpleMessage("Wholesale price"),

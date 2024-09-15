@@ -9,15 +9,37 @@ class ProductRepository {
   /// add item to firebase products document
   /// return true if added successfully, otherwise returns false
   Future<bool> addProduct({
-    required String itemCode,
+    required double itemCode,
     required String itemName,
+    required double productSellRetailPrice,
+    required double productSellWholePrice,
+    required String productPackageType,
+    required double productPackageWeight,
+    required double productNumItemsInsidePackage,
+    required double productAlertWhenExceeds,
+    required double productAltertWhenLessThan,
+    required double productSalesmanComission,
+    required String productCategory,
+    required String productSubCategory,
+    required double productInitialQuantity,
   }) async {
     final productsRef = _firestore.collection('products').doc();
     try {
       await productsRef.set({
+        'creationTime': FieldValue.serverTimestamp(),
         'itemCode': itemCode,
         'itemName': itemName,
-        'creationTime': FieldValue.serverTimestamp(),
+        'productSellRetailPrice': productSellRetailPrice,
+        'productSellWholePrice': productSellWholePrice,
+        'productPackageType': productPackageType,
+        'productPackageWeight': productPackageWeight,
+        'productNumItemsInsidePackage': productNumItemsInsidePackage,
+        'productAlertWhenExceeds': productAlertWhenExceeds,
+        'productAltertWhenLessThan': productAltertWhenLessThan,
+        'productSalesmanComission': productSalesmanComission,
+        'productCategory': productCategory,
+        'productSubCategory': productSubCategory,
+        'productInitialQuantity': productInitialQuantity,
       });
       return true;
     } catch (e) {

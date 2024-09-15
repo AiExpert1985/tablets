@@ -60,13 +60,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
-        "product_alert_when_exceeds": MessageLookupByLibrary.simpleMessage(
-            " تنبيه عندما يتجاوز العدد المتوفر عن"),
-        "product_altert_when_less_than": MessageLookupByLibrary.simpleMessage(
-            "تنبيه عندما يقل العدد المتوفر عن"),
+        "product_alert_when_exceeds":
+            MessageLookupByLibrary.simpleMessage(" تنبيه عندما يتجاوز"),
+        "product_altert_when_less_than":
+            MessageLookupByLibrary.simpleMessage("تنبيه عندما يقل عن"),
         "product_category":
-            MessageLookupByLibrary.simpleMessage("التصنيف الرئيسي للمنتج"),
+            MessageLookupByLibrary.simpleMessage("التصنيف الرئيسي"),
         "product_code": MessageLookupByLibrary.simpleMessage("رمز المادة"),
+        "product_initial_quantitiy":
+            MessageLookupByLibrary.simpleMessage("العدد الاولي"),
         "product_name": MessageLookupByLibrary.simpleMessage("اسم المادة"),
         "product_num_items_inside_package":
             MessageLookupByLibrary.simpleMessage("عدد القطع في التعبئة"),
@@ -74,15 +76,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("نوع التعبئة"),
         "product_package_weight":
             MessageLookupByLibrary.simpleMessage("وزن التعبئة"),
-        "product_photos": MessageLookupByLibrary.simpleMessage("صور المنتج"),
+        "product_photos": MessageLookupByLibrary.simpleMessage("الصور"),
         "product_salesman_comission":
             MessageLookupByLibrary.simpleMessage("عمولة المندوب"),
-        "product_sell_setail_price":
+        "product_sell_retail_price":
             MessageLookupByLibrary.simpleMessage("سعر المفرد"),
         "product_sell_whole_price":
             MessageLookupByLibrary.simpleMessage("سعر الجملة"),
         "product_subcategory":
-            MessageLookupByLibrary.simpleMessage("التصنيف الفرعي للمنتج "),
+            MessageLookupByLibrary.simpleMessage("التصنيف الفرعي "),
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
