@@ -45,5 +45,6 @@
     "input_validation_error_message_for_names": "You should enter a valid name",
     "error_login_to_db": "Error happened while login",
     "error_adding_doc_to_db": "An error happened while adding a document to the database",
-    "success_adding_doc_to_db": "Document was successfuly added to the database"
+    "success_adding_doc_to_db": "Document was successfuly added to the database",
+    "settings": "Settings"
 }

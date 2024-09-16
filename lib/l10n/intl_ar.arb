@@ -45,5 +45,6 @@
     "input_validation_error_message_for_names": "يجب ادخال الاسم بصورة صحيحة",
     "error_login_to_db": "حدث خطأ اثناء تسجيل الدخول",
     "error_adding_doc_to_db": "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات",
-    "success_adding_doc_to_db": "تمت الاضافة بنجاح"
+    "success_adding_doc_to_db": "تمت الاضافة بنجاح",
+    "settings": "الاعدادات"
 }

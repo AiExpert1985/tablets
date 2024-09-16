@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/users_screen.dart';
 import 'package:tablets/src/features/products/presentation/view/products_screen.dart';
 import 'package:tablets/src/features/salesmen_live_locations/presentation/sales_men_live_location_screen.dart';
+import 'package:tablets/src/features/settings/presentation/settings_screen.dart';
 import 'package:tablets/src/features/transaction/presentation/transaction_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/presentation/view/login/login_screen.dart';
@@ -17,6 +18,7 @@ enum AppRoute {
   transactions,
   products,
   salesmen,
+  settings,
 }
 
 final firebaseAuthProvider =
@@ -81,6 +83,12 @@ final goRouterProvider = Provider<GoRouter>(
           name: AppRoute.salesmen.name,
           builder: (BuildContext context, GoRouterState state) =>
               const SalesmenLiveLocationScreen(),
+        ),
+        GoRoute(
+          path: '/settings',
+          name: AppRoute.settings.name,
+          builder: (BuildContext context, GoRouterState state) =>
+              const SettingsScreen(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),
