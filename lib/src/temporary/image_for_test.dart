@@ -13,11 +13,17 @@ class CategoryImage extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
-          FadeInImage(
-            placeholder: MemoryImage(kTransparentImage),
-            image: const NetworkImage(
-                'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/user_iamges%2Fcategories%2Ftablets.png?alt=media&token=acba659a-384d-4f35-864d-cd1397efa73a'),
+          Container(
+            width: 20,
+            height: 20,
+            child: FadeInImage(
+              fit: BoxFit.cover,
+              placeholder: MemoryImage(kTransparentImage),
+              image: const NetworkImage(
+                  'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/user_iamges%2Fcategories%2Ftablets.png?alt=media&token=acba659a-384d-4f35-864d-cd1397efa73a'),
+            ),
           ),
+
           Positioned(
             bottom: 0,
             left: 0,
