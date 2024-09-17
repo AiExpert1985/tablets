@@ -2,11 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/features/authentication/presentation/controllers/picked_image_file_provider.dart';
-import 'package:tablets/src/features/authentication/presentation/view/users/widgets/image_picker.dart';
+import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/features/authentication/data/auth_repository_old.dart';
 import 'package:tablets/src/features/authentication/data/firestore_repository.dart';
-import 'package:tablets/src/features/authentication/data/storage_repository.dart';
+import 'package:tablets/src/common_providers/storage_repository.dart';
 
 class AddUserPopup extends ConsumerStatefulWidget {
   const AddUserPopup({super.key});
@@ -36,7 +35,7 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
         if (uid != null) {
           final imageUrl = await ref
               .read(storageRepositoryProvider)
-              .addFile(uid: uid, file: pickedImage);
+              .addFile(group: 'users', name: uid, file: pickedImage);
           if (imageUrl != null) {
             ref.read(firestoreRepositoryProvider).addUser(
                 uid: uid,
@@ -73,7 +72,7 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const UserImagePicker(),
+                const GeneralImagePicker(),
                 const SizedBox(
                   height: 20,
                 ),

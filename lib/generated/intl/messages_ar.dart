@@ -23,9 +23,12 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "add_image": MessageLookupByLibrary.simpleMessage("اضافة صورة"),
+        "add_new_category":
+            MessageLookupByLibrary.simpleMessage("أضافة صنف جديد"),
         "add_new_user":
             MessageLookupByLibrary.simpleMessage("اضافة مستخدم جديد"),
         "cancel": MessageLookupByLibrary.simpleMessage("الغاء"),
+        "category": MessageLookupByLibrary.simpleMessage("الصنف"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
         "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),

@@ -1,11 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/constants/constants.dart';
-// import 'package:tablets/src/features/authentication/presentation/view/users/widgets/image_picker.dart';
+import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/features/products/presentation/controller/products_controller.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
@@ -19,7 +18,6 @@ class AddProductDialog extends ConsumerStatefulWidget {
 class _AddProductDialogState extends ConsumerState<AddProductDialog> {
   @override
   Widget build(BuildContext context) {
-    final firestore = FirebaseFirestore.instance;
     final productController = ref.read(productsControllerProvider);
     return AlertDialog(
       scrollable: true,
@@ -35,8 +33,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // const UserImagePicker(),
-              // const SizedBox(height: 20),
+              const GeneralImagePicker(),
+              const SizedBox(height: 20),
               //! 1st Row
               Row(
                 children: [

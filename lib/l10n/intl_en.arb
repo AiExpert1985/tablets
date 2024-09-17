@@ -46,5 +46,7 @@
     "error_login_to_db": "Error happened while login",
     "error_adding_doc_to_db": "An error happened while adding a document to the database",
     "success_adding_doc_to_db": "Document was successfuly added to the database",
-    "settings": "Settings"
+    "settings": "Settings",
+    "category": "Category",
+    "add_new_category": "Add a new Category"
 }

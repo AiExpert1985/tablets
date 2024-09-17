@@ -46,5 +46,7 @@
     "error_login_to_db": "حدث خطأ اثناء تسجيل الدخول",
     "error_adding_doc_to_db": "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات",
     "success_adding_doc_to_db": "تمت الاضافة بنجاح",
-    "settings": "الاعدادات"
+    "settings": "الاعدادات",
+    "category": "الصنف",
+    "add_new_category": "أضافة صنف جديد"
 }
