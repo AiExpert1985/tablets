@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class CategoryImage extends StatelessWidget {
-  const CategoryImage({super.key});
+class CategoryItem extends StatelessWidget {
+  const CategoryItem({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(6),
+      margin: const EdgeInsets.all(15),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       elevation: 2,
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
-          Container(
-            width: 20,
-            height: 20,
-            child: FadeInImage(
-              fit: BoxFit.cover,
-              placeholder: MemoryImage(kTransparentImage),
-              image: const NetworkImage(
-                  'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/user_iamges%2Fcategories%2Ftablets.png?alt=media&token=acba659a-384d-4f35-864d-cd1397efa73a'),
-            ),
+          FadeInImage(
+            // fit: BoxFit.cover,
+            placeholder: MemoryImage(kTransparentImage),
+            image: const NetworkImage(
+                'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/user_iamges%2Fcategories%2Ftablets.png?alt=media&token=acba659a-384d-4f35-864d-cd1397efa73a'),
           ),
 
           Positioned(
@@ -29,8 +25,9 @@ class CategoryImage extends StatelessWidget {
             left: 0,
             right: 0,
             child: Container(
+                height: MediaQuery.of(context).size.height * 0.07,
                 color: Colors.black54,
-                padding: const EdgeInsets.all(30),
+                padding: const EdgeInsets.all(5),
                 child: const Text(
                   'منضفات منزلية',
                   maxLines: 2,

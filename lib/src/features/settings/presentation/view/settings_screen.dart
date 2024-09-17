@@ -20,17 +20,20 @@ class SettingsScreen extends ConsumerWidget {
         child: const Icon(Icons.add),
       ),
       drawer: const MainDrawer(),
-      body: Center(
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4, // Adjust the number of columns as needed
-            crossAxisSpacing: 2,
-            mainAxisSpacing: 2,
+      body: Container(
+        padding: const EdgeInsets.all(30),
+        child: Center(
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5, // Adjust the number of columns as needed
+              // crossAxisSpacing: 2,
+              // mainAxisSpacing: 2,
+            ),
+            itemCount: 20,
+            itemBuilder: (BuildContext ctx, int index) {
+              return const CategoryItem();
+            },
           ),
-          itemCount: 20,
-          itemBuilder: (BuildContext ctx, int index) {
-            return const CategoryImage();
-          },
         ),
       ),
     );
