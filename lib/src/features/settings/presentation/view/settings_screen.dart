@@ -13,8 +13,8 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.read(categoryControllerProvider).fetchAllCategories();
-    final categories = ref.read(categoryControllerProvider).categories;
+    ref.watch(categoryControllerProvider).fetchAllCategories();
+    final categories = ref.watch(categoryControllerProvider).categories;
     CustomDebug.print(categories);
     Widget screenContent;
     if (categories.isEmpty) {

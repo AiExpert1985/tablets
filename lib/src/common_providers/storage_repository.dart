@@ -30,6 +30,7 @@ class StorageRepository {
       List<Map<String, String>> categories = [];
       Reference folderRef = _storage.ref().child(folderName);
       ListResult result = await folderRef.listAll();
+
       for (var file in result.items) {
         String fileName = file.name;
         String filePath = file.fullPath;
@@ -38,11 +39,9 @@ class StorageRepository {
         Reference downloadRef = _storage.ref().child(filePath);
         var downloadedUrl = await downloadRef.getDownloadURL();
         categories.add({'imageUrl': downloadedUrl, 'fileName': fileName});
-        CustomDebug.print('Successful firebase storage');
       }
       return categories;
     } catch (e) {
-      CustomDebug.print('failed firebase storage');
       return [];
     }
   }
