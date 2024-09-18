@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/features/settings/data/category_repository_provider.dart';
+import 'package:tablets/src/features/settings/initial_categories/controller/old_init_category_db_controller.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class CategoryController {

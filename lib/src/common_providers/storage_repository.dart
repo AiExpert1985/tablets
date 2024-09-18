@@ -1,11 +1,10 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/utils/utils.dart';
 
 class StorageRepository {
-  StorageRepository(this._storage);
-  final FirebaseStorage _storage;
+  StorageRepository();
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // put a file referenced by the userId
   // returns the url of the file or null
@@ -48,5 +47,5 @@ class StorageRepository {
 }
 
 final storageRepositoryProvider = Provider<StorageRepository>((ref) {
-  return StorageRepository(FirebaseStorage.instance);
+  return StorageRepository();
 });

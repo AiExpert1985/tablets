@@ -3,17 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/common_providers/image_picker.dart';
-import 'package:tablets/src/features/settings/presentation/controller/category_controller.dart';
+import 'package:tablets/src/features/settings/initial_categories/controller/old_init_category_form_controller.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
-class AddCategoryDialog extends ConsumerStatefulWidget {
-  const AddCategoryDialog({super.key});
+class CreateCategoryDialog extends ConsumerStatefulWidget {
+  const CreateCategoryDialog({super.key});
 
   @override
-  ConsumerState<AddCategoryDialog> createState() => _AddProductDialogState();
+  ConsumerState<CreateCategoryDialog> createState() => _AddProductDialogState();
 }
 
-class _AddProductDialogState extends ConsumerState<AddCategoryDialog> {
+class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
   @override
   Widget build(BuildContext context) {
     final categoryController = ref.read(categoryControllerProvider);
