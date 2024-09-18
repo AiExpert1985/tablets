@@ -11,7 +11,7 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final stream = ref.watch(firestoreStreamProvider);
+    final categoriesStream = ref.watch(categoriesStreamProvider);
     return Scaffold(
       appBar: const MainAppBar(),
       floatingActionButton: FloatingActionButton(
@@ -25,7 +25,7 @@ class SettingsScreen extends ConsumerWidget {
       body: Container(
         padding: const EdgeInsets.all(30),
         child: Center(
-          child: stream.when(
+          child: categoriesStream.when(
             data: (querySnapshot) {
               return GridView.builder(
                 itemCount: querySnapshot.docs.length,
