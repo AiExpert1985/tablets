@@ -90,6 +90,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
+        "screen_is_empty":
+            MessageLookupByLibrary.simpleMessage("لا يوجد بيانات"),
         "settings": MessageLookupByLibrary.simpleMessage("الاعدادات"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
         "slogan":

@@ -48,5 +48,6 @@
     "success_adding_doc_to_db": "تمت الاضافة بنجاح",
     "settings": "الاعدادات",
     "category": "الصنف",
-    "add_new_category": "أضافة صنف جديد"
+    "add_new_category": "أضافة صنف جديد",
+    "screen_is_empty": "لا يوجد بيانات"
 }

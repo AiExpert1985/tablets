@@ -5,9 +5,10 @@ import 'package:tablets/src/features/settings/data/category_repository_provider.
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class CategoryController {
-  CategoryController(this.categoryRepository);
-  final CategoryRepository categoryRepository;
+  CategoryController(this._ref);
+  final ProviderRef _ref;
   final formKey = GlobalKey<FormState>();
+  List<Map<String, String>> categories = [];
 
   late String category;
 
@@ -17,8 +18,9 @@ class CategoryController {
         formKey.currentState!.validate(); // runs validation inside form
     if (!isValid) return;
     formKey.currentState!.save(); // runs onSave inside form
-    bool isSuccessful =
-        await categoryRepository.addCategory(category: category);
+    bool isSuccessful = await _ref
+        .read(categoryRepositoryProvider)
+        .addNewCategory(category: category);
     if (isSuccessful) {
       Navigator.of(context).pop();
       utils.UserMessages.success(
@@ -32,9 +34,14 @@ class CategoryController {
       );
     }
   }
+
+  // return all photos in the category folder inside firebase storage as a list of maps
+  // {'imageUrl': downloadedUrl, 'fileName': fileName}
+  void fetchAllCategories() async {
+    categories = await _ref.read(categoryRepositoryProvider).getAllCategories();
+  }
 }
 
 final categoryControllerProvider = Provider<CategoryController>((ref) {
-  final categoryRepository = ref.read(categoryRepositoryProvider);
-  return CategoryController(categoryRepository);
+  return CategoryController(ref);
 });

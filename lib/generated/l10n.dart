@@ -549,6 +549,16 @@ class S {
       args: [],
     );
   }
+
+  /// `There is no contents`
+  String get screen_is_empty {
+    return Intl.message(
+      'There is no contents',
+      name: 'screen_is_empty',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

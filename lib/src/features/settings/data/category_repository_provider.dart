@@ -11,7 +11,7 @@ class CategoryRepository {
 
   /// add item to firebase products document
   /// return true if added successfully, otherwise returns false
-  Future<bool> addCategory({
+  Future<bool> addNewCategory({
     required String category,
   }) async {
     final pickedImage = _ref.read(pickedImageFileProvider);
@@ -33,6 +33,14 @@ class CategoryRepository {
       utils.CustomDebug.print(e);
       return false;
     }
+  }
+
+  // return all photos in the category folder inside firebase storage as a list of maps
+  // {'imageUrl': downloadedUrl, 'fileName': fileName}
+  Future<List<Map<String, String>>> getAllCategories() async {
+    return await _ref
+        .read(storageRepositoryProvider)
+        .getFilesInFolder('category');
   }
 }
 

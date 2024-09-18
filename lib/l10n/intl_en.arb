@@ -48,5 +48,6 @@
     "success_adding_doc_to_db": "Document was successfuly added to the database",
     "settings": "Settings",
     "category": "Category",
-    "add_new_category": "Add a new Category"
+    "add_new_category": "Add a new Category",
+    "screen_is_empty": "There is no contents"
 }
