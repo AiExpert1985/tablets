@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tablets/src/features/settings/categories/model/product_category.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class CategoryItem extends StatelessWidget {
-  const CategoryItem({super.key, required this.imageUrl, required this.title});
-  final String imageUrl;
-  final String title;
+  const CategoryItem(this.category, {super.key});
+  final ProductCategory category;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class CategoryItem extends StatelessWidget {
             FadeInImage(
               // fit: BoxFit.cover,
               placeholder: MemoryImage(kTransparentImage),
-              image: NetworkImage(imageUrl),
+              image: NetworkImage(category.imageUrl!),
               fit: BoxFit.cover,
               height: 150,
               width: double.infinity,
@@ -36,15 +36,12 @@ class CategoryItem extends StatelessWidget {
                   color: Colors.black54,
                   padding: const EdgeInsets.all(5),
                   child: Text(
-                    title,
+                    category.name,
                     maxLines: 2,
                     textAlign: TextAlign.center,
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+                    style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                   )),
             ),
             // Replace with your image

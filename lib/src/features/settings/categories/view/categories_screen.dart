@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/main_app_bar/main_app_bar.dart';
 import 'package:tablets/src/common_widgets/main_drawer/main_drawer.dart';
-import 'package:tablets/src/features/settings/initial_categories/controller/init_category_db_controller.dart';
-import 'package:tablets/src/features/settings/initial_categories/view/add_category_dialog.dart';
-import 'package:tablets/src/temporary/image_for_test.dart';
+import 'package:tablets/src/features/settings/categories/controller/category_controller.dart';
+import 'package:tablets/src/features/settings/categories/view/create_category_dialog.dart';
+import 'package:tablets/src/features/settings/categories/view/category_item_widget.dart';
+import 'package:tablets/src/features/settings/categories/model/product_category.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -38,10 +39,8 @@ class SettingsScreen extends ConsumerWidget {
                   final documentSnapshot = querySnapshot.docs[index];
                   // Access data from the document
                   final data = documentSnapshot.data();
-                  return CategoryItem(
-                    imageUrl: data['imageUrl']!,
-                    title: data['category']!,
-                  );
+                  final category = ProductCategory(name: data['name']!, imageUrl: data['imageUrl']);
+                  return CategoryItem(category);
                 },
               );
             },

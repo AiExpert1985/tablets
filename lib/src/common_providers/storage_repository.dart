@@ -9,13 +9,13 @@ class StorageRepository {
   // put a file referenced by the userId
   // returns the url of the file or null
   Future<String?> addFile({
-    required String group,
-    required String name,
+    required String folder,
+    required String fileName,
     required File? file,
   }) async {
     try {
       String? imageUrl;
-      final storageRef = _storage.ref().child(group).child('$name.jpg');
+      final storageRef = _storage.ref().child(folder).child('$fileName.jpg');
       await storageRef.putFile(file!);
       imageUrl = await storageRef.getDownloadURL();
       return imageUrl;
@@ -23,29 +23,8 @@ class StorageRepository {
       return null;
     }
   }
-
-  Future<List<Map<String, String>>> getFilesInFolder(String folderName) async {
-    try {
-      List<Map<String, String>> categories = [];
-      Reference folderRef = _storage.ref().child(folderName);
-      ListResult result = await folderRef.listAll();
-
-      for (var file in result.items) {
-        String fileName = file.name;
-        String filePath = file.fullPath;
-
-        // Download the file
-        Reference downloadRef = _storage.ref().child(filePath);
-        var downloadedUrl = await downloadRef.getDownloadURL();
-        categories.add({'imageUrl': downloadedUrl, 'fileName': fileName});
-      }
-      return categories;
-    } catch (e) {
-      return [];
-    }
-  }
 }
 
-final storageRepositoryProvider = Provider<StorageRepository>((ref) {
+final fileStorageProvider = Provider<StorageRepository>((ref) {
   return StorageRepository();
 });

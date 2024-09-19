@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/common_providers/image_picker.dart';
-import 'package:tablets/src/features/settings/initial_categories/controller/old_init_category_form_controller.dart';
+import 'package:tablets/src/features/settings/categories/controller/category_controller.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class CreateCategoryDialog extends ConsumerStatefulWidget {
@@ -42,12 +42,8 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
                     labelText: S.of(context).category,
                   ),
                   validator: (value) => utils.FormValidation.validateNameField(
-                      fieldValue: value,
-                      errorMessage: S
-                          .of(context)
-                          .input_validation_error_message_for_numbers),
-                  onSaved: (value) => categoryController.category =
-                      value! // value is double (never null)
+                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
+                  onSaved: (value) => categoryController.category.name = value! // value is double (never null)
                   ,
                 ),
               ),
@@ -60,7 +56,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
           alignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () => categoryController.addCategory(context),
+              onPressed: () => categoryController.createCategory(context),
               child: Text(S.of(context).save),
             ),
             TextButton(
