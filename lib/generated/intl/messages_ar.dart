@@ -34,6 +34,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
         "error_adding_doc_to_db": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات"),
+        "error_importing_image":
+            MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء استيراد الصور"),
         "error_login_to_db":
             MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء تسجيل الدخول"),
         "failure": MessageLookupByLibrary.simpleMessage("فشل"),

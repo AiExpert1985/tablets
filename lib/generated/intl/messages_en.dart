@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "error_adding_doc_to_db": MessageLookupByLibrary.simpleMessage(
             "An error happened while adding a document to the database"),
+        "error_importing_image": MessageLookupByLibrary.simpleMessage(
+            "An error happend while importing images"),
         "error_login_to_db":
             MessageLookupByLibrary.simpleMessage("Error happened while login"),
         "failure": MessageLookupByLibrary.simpleMessage("Failure"),

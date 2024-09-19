@@ -510,6 +510,16 @@ class S {
     );
   }
 
+  /// `An error happend while importing images`
+  String get error_importing_image {
+    return Intl.message(
+      'An error happend while importing images',
+      name: 'error_importing_image',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Document was successfuly added to the database`
   String get success_adding_doc_to_db {
     return Intl.message(

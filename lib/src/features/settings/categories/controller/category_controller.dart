@@ -12,18 +12,31 @@ class CategoryController {
   final ProviderRef _ref;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final formKey = GlobalKey<FormState>();
-  final ProductCategory category = ProductCategory();
+  late ProductCategory category;
 
-  void createCategory(context) async {
+  // create a new ProductCategory object with default image url
+  void createCategory(String name) {
+    category = ProductCategory(name: name);
+  }
+
+  // add an image to firebase storage
+  // and create a new document in categories collection
+  // store the category name and image url
+  void addCategoryDocument(context) async {
     final isValid = formKey.currentState!.validate(); // runs validation inside form
     if (!isValid) return;
     formKey.currentState!.save(); // runs onSave inside form
     try {
       final pickedImage = _ref.read(pickedImageFileProvider);
-      if (pickedImage == null) return;
-
-      category.imageUrl =
-          await _ref.read(fileStorageProvider).addFile(folder: 'category', fileName: category.name, file: pickedImage);
+      // if an image is picked, we will store it and use its url
+      // otherwise, we will use the default item image url
+      if (pickedImage != null) {
+        // first we clear the image picker from the picked image
+        _ref.read(pickedImageFileProvider.notifier).update((state) => null);
+        category.imageUrl = await _ref
+            .read(fileStorageProvider)
+            .addFile(folder: 'category', fileName: category.name, file: pickedImage);
+      }
 
       final docRef = _firestore.collection('categories').doc();
 

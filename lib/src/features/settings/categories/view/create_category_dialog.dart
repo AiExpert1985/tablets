@@ -43,7 +43,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
                   ),
                   validator: (value) => utils.FormValidation.validateNameField(
                       fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
-                  onSaved: (value) => categoryController.category.name = value! // value is double (never null)
+                  onSaved: (value) => categoryController.createCategory(value!) // value is double (never null)
                   ,
                 ),
               ),
@@ -56,7 +56,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
           alignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () => categoryController.createCategory(context),
+              onPressed: () => categoryController.addCategoryDocument(context),
               child: Text(S.of(context).save),
             ),
             TextButton(

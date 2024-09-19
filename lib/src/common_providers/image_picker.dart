@@ -9,15 +9,12 @@ import 'package:tablets/src/utils/utils.dart';
 class GeneralImagePicker extends ConsumerWidget {
   final String imageSourse;
   final String shape;
-  const GeneralImagePicker(
-      {super.key, this.imageSourse = 'camera', this.shape = 'rectangular'});
+  const GeneralImagePicker({super.key, this.imageSourse = 'galary', this.shape = 'rectangular'});
 
   void _pickImage(WidgetRef ref, imageSourse, ctx) async {
     try {
       final pickedImage = await ImagePicker().pickImage(
-          source: imageSourse == 'camera'
-              ? ImageSource.camera
-              : ImageSource.gallery,
+          source: imageSourse == 'camera' ? ImageSource.camera : ImageSource.gallery,
           imageQuality: 50,
           maxWidth: 150); // can use ImageSource.gallery
 
@@ -29,8 +26,7 @@ class GeneralImagePicker extends ConsumerWidget {
             (state) => File(pickedImage.path),
           );
     } catch (e) {
-      UserMessages.failure(
-          context: ctx, message: 'error while uploading image');
+      UserMessages.failure(context: ctx, message: S.of(ctx).error_importing_image);
     }
   }
 
@@ -43,8 +39,7 @@ class GeneralImagePicker extends ConsumerWidget {
           CircleAvatar(
             radius: 40,
             backgroundColor: Colors.grey,
-            foregroundImage:
-                pickedImageFile != null ? FileImage(pickedImageFile) : null,
+            foregroundImage: pickedImageFile != null ? FileImage(pickedImageFile) : null,
           ),
         TextButton.icon(
           onPressed: () => _pickImage(ref, imageSourse, context),
