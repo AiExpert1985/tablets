@@ -108,6 +108,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "success_adding_doc_to_db": MessageLookupByLibrary.simpleMessage(
             "Document was successfuly added to the database"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
+        "update_category":
+            MessageLookupByLibrary.simpleMessage("Update category"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("Privilage"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning")
       };

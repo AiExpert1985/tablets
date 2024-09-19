@@ -102,6 +102,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "success_adding_doc_to_db":
             MessageLookupByLibrary.simpleMessage("تمت الاضافة بنجاح"),
         "transactions": MessageLookupByLibrary.simpleMessage("التعاملات"),
+        "update_category":
+            MessageLookupByLibrary.simpleMessage("تعديل معلومات الصنف"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("الصلاحيات"),
         "warning": MessageLookupByLibrary.simpleMessage("تحذير")
       };

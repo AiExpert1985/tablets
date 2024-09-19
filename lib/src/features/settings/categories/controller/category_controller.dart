@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
 import 'package:tablets/src/features/settings/categories/model/product_category.dart';
+import 'package:tablets/src/features/settings/categories/view/update_category_dialog.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -55,6 +56,19 @@ class CategoryController {
         message: S.of(context).error_adding_doc_to_db,
       );
     }
+  }
+
+  void updateCategoryDocument(context) async {
+    utils.CustomDebug.print(category.name);
+  }
+
+  void prepareCategoryUpdate(context, cat) {
+    category = cat;
+    utils.CustomDebug.print(category.name);
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => const UpdateCategoryDialog(),
+    );
   }
 }
 

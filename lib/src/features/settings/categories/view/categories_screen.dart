@@ -6,6 +6,7 @@ import 'package:tablets/src/features/settings/categories/controller/category_con
 import 'package:tablets/src/features/settings/categories/view/create_category_dialog.dart';
 import 'package:tablets/src/features/settings/categories/view/category_item_widget.dart';
 import 'package:tablets/src/features/settings/categories/model/product_category.dart';
+import 'package:tablets/src/utils/utils.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -40,7 +41,13 @@ class SettingsScreen extends ConsumerWidget {
                   // Access data from the document
                   final data = documentSnapshot.data();
                   final category = ProductCategory(name: data['name']!, imageUrl: data['imageUrl']);
-                  return CategoryItem(category);
+                  return InkWell(
+                    onTap: () {
+                      CustomDebug.print('basic');
+                      ref.read(categoryControllerProvider).prepareCategoryUpdate(context, category);
+                    },
+                    child: CategoryItem(category),
+                  );
                 },
               );
             },

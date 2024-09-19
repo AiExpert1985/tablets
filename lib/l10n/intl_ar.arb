@@ -50,5 +50,6 @@
     "settings": "الاعدادات",
     "category": "الصنف",
     "add_new_category": "أضافة صنف جديد",
+    "update_category": "تعديل معلومات الصنف",
     "screen_is_empty": "لا يوجد بيانات"
 }

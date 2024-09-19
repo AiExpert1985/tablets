@@ -50,5 +50,6 @@
     "settings": "Settings",
     "category": "Category",
     "add_new_category": "Add a new Category",
+    "update_category": "Update category",
     "screen_is_empty": "There is no contents"
 }

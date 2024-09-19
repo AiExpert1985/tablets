@@ -560,6 +560,16 @@ class S {
     );
   }
 
+  /// `Update category`
+  String get update_category {
+    return Intl.message(
+      'Update category',
+      name: 'update_category',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `There is no contents`
   String get screen_is_empty {
     return Intl.message(
