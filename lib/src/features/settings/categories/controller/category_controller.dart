@@ -24,19 +24,19 @@ class CategoryController {
   // and create a new document in categories collection
   // store the category name and image url
   void addCategoryDocument(context) async {
-    final isValid = formKey.currentState!.validate(); // runs validation inside form
+    final isValid =
+        formKey.currentState!.validate(); // runs validation inside form
     if (!isValid) return;
     formKey.currentState!.save(); // runs onSave inside form
     try {
-      final pickedImage = _ref.read(pickedImageFileProvider);
+      final pickedImage = _ref.read(pickedImageNotifierProvider).pickedImage;
       // if an image is picked, we will store it and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
         // first we clear the image picker from the picked image
-        _ref.read(pickedImageFileProvider.notifier).update((state) => null);
-        category.imageUrl = await _ref
-            .read(fileStorageProvider)
-            .addFile(folder: 'category', fileName: category.name, file: pickedImage);
+        _ref.read(pickedImageNotifierProvider.notifier).reset();
+        category.imageUrl = await _ref.read(fileStorageProvider).addFile(
+            folder: 'category', fileName: category.name, file: pickedImage);
       }
 
       final docRef = _firestore.collection('categories').doc();
@@ -59,12 +59,16 @@ class CategoryController {
   }
 
   void updateCategoryDocument(context) async {
-    utils.CustomDebug.print(category.name);
+    utils.CustomDebug.print(
+        message: category.name,
+        callerName: 'CategoryController.updateCategoryDocument()');
   }
 
   void prepareCategoryUpdate(context, cat) {
     category = cat;
-    utils.CustomDebug.print(category.name);
+    utils.CustomDebug.print(
+        message: category.name,
+        callerName: 'CategoryController.prepareCategoryUpdate()');
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const UpdateCategoryDialog(),
@@ -76,9 +80,17 @@ final categoryControllerProvider = Provider<CategoryController>((ref) {
   return CategoryController(ref);
 });
 
-final categoriesStreamProvider = StreamProvider<QuerySnapshot<Map<String, dynamic>>>(
+final categoriesStreamProvider =
+    StreamProvider<QuerySnapshot<Map<String, dynamic>>>(
   (ref) async* {
-    final querySnapshot = FirebaseFirestore.instance.collection('categories').snapshots();
-    yield* querySnapshot;
+    try {
+      final querySnapshot =
+          FirebaseFirestore.instance.collection('categories').snapshots();
+      yield* querySnapshot;
+    } catch (e) {
+      utils.CustomDebug.print(
+          message: 'an error happened while streaming categories',
+          callerName: 'categoriesStreamProvider');
+    }
   },
 );

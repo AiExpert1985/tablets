@@ -24,7 +24,7 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
 
   void _submitForm() async {
     final isValid = _loginForm.currentState!.validate(); // runs validator
-    final pickedImage = ref.read(pickedImageFileProvider);
+    final pickedImage = ref.read(pickedImageNotifierProvider).pickedImage;
     if (isValid && pickedImage != null) {
       _loginForm.currentState!.save(); // runs onSave inside form
       try {
@@ -33,14 +33,19 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
               password: _userPassword,
             );
         if (uid != null) {
-          final imageUrl =
-              await ref.read(fileStorageProvider).addFile(folder: 'users', fileName: uid, file: pickedImage);
+          final imageUrl = await ref
+              .read(fileStorageProvider)
+              .addFile(folder: 'users', fileName: uid, file: pickedImage);
           if (imageUrl != null) {
             ref.read(firestoreRepositoryProvider).addUser(
-                uid: uid, userName: _userName, email: _userEmail, imageUrl: imageUrl, privilage: _userPrivilage);
+                uid: uid,
+                userName: _userName,
+                email: _userEmail,
+                imageUrl: imageUrl,
+                privilage: _userPrivilage);
           }
           // after uploading image, we must reset it
-          ref.read(pickedImageFileProvider.notifier).update((state) => null);
+          ref.read(pickedImageNotifierProvider.notifier).reset();
           // ignore: use_build_context_synchronously
           Navigator.of(context).pop();
         }
@@ -76,7 +81,9 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   enableSuggestions: false,
                   validator: (value) {
                     if (value == null || value.trim().length < 4) {
-                      return S.of(context).input_validation_error_message_for_user_name;
+                      return S
+                          .of(context)
+                          .input_validation_error_message_for_user_name;
                     }
                     return null;
                   },
@@ -90,8 +97,12 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   autocorrect: false,
                   textCapitalization: TextCapitalization.none,
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty || !value.contains('@')) {
-                      return S.of(context).input_validation_error_message_for_email;
+                    if (value == null ||
+                        value.trim().isEmpty ||
+                        !value.contains('@')) {
+                      return S
+                          .of(context)
+                          .input_validation_error_message_for_email;
                     }
                     return null;
                   },
@@ -100,11 +111,14 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: S.of(context).password),
+                  decoration:
+                      InputDecoration(labelText: S.of(context).password),
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.trim().length < 6) {
-                      return S.of(context).input_validation_error_message_for_password;
+                      return S
+                          .of(context)
+                          .input_validation_error_message_for_password;
                     }
                     return null;
                   },
@@ -113,10 +127,13 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: S.of(context).user_privilage),
+                  decoration:
+                      InputDecoration(labelText: S.of(context).user_privilage),
                   validator: (value) {
                     if (value == null) {
-                      return S.of(context).input_validation_error_message_for_user_privilage;
+                      return S
+                          .of(context)
+                          .input_validation_error_message_for_user_privilage;
                     }
                     return null;
                   },

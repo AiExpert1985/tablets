@@ -52,7 +52,7 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/home',
           name: AppRoute.home.name,
           builder: (BuildContext context, GoRouterState state) =>
-              const ProductsScreen(),
+              const SettingsScreen(),
         ),
         GoRoute(
           path: '/login',

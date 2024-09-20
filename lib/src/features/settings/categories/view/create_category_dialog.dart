@@ -35,6 +35,21 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const GeneralImagePicker(),
+              TextButton.icon(
+                onPressed: () {
+                  final pickedImageNotifier =
+                      ref.read(pickedImageNotifierProvider.notifier);
+                  pickedImageNotifier.updateUserPickedImage();
+                  pickedImageNotifier.updatePlaceHolderImageUrl(
+                      categoryController.category.imageUrl);
+                },
+                icon: const Icon(Icons.image),
+                label: Text(
+                  S.of(context).add_image,
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.primary),
+                ),
+              ),
               constants.FormFieldsSpacing.vertical,
               Expanded(
                 child: TextFormField(
@@ -42,8 +57,12 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
                     labelText: S.of(context).category,
                   ),
                   validator: (value) => utils.FormValidation.validateNameField(
-                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
-                  onSaved: (value) => categoryController.createCategory(value!) // value is double (never null)
+                      fieldValue: value,
+                      errorMessage: S
+                          .of(context)
+                          .input_validation_error_message_for_numbers),
+                  onSaved: (value) => categoryController
+                      .createCategory(value!) // value is double (never null)
                   ,
                 ),
               ),

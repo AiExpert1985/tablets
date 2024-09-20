@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/common_widgets/main_app_bar/main_app_bar.dart';
 import 'package:tablets/src/common_widgets/main_drawer/main_drawer.dart';
 import 'package:tablets/src/features/settings/categories/controller/category_controller.dart';
 import 'package:tablets/src/features/settings/categories/view/create_category_dialog.dart';
 import 'package:tablets/src/features/settings/categories/view/category_item_widget.dart';
 import 'package:tablets/src/features/settings/categories/model/product_category.dart';
-import 'package:tablets/src/utils/utils.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -32,7 +32,7 @@ class SettingsScreen extends ConsumerWidget {
               return GridView.builder(
                 itemCount: querySnapshot.docs.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5,
+                  crossAxisCount: 6,
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
                 ),
@@ -40,11 +40,19 @@ class SettingsScreen extends ConsumerWidget {
                   final documentSnapshot = querySnapshot.docs[index];
                   // Access data from the document
                   final data = documentSnapshot.data();
-                  final category = ProductCategory(name: data['name']!, imageUrl: data['imageUrl']);
+                  final category = ProductCategory(
+                      name: data['name']!, imageUrl: data['imageUrl']);
                   return InkWell(
+                    hoverColor: const Color.fromARGB(255, 173, 170, 170),
                     onTap: () {
-                      CustomDebug.print('basic');
-                      ref.read(categoryControllerProvider).prepareCategoryUpdate(context, category);
+                      // first update the image in image picker to show current image
+                      ref
+                          .read(pickedImageNotifierProvider.notifier)
+                          .updatePlaceHolderImageUrl(category.imageUrl);
+                      // then open the update dialog
+                      ref
+                          .read(categoryControllerProvider)
+                          .prepareCategoryUpdate(context, category);
                     },
                     child: CategoryItem(category),
                   );
