@@ -34,7 +34,6 @@ class CategoryController {
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
         // first we clear the image picker from the picked image
-        _ref.read(pickedImageNotifierProvider.notifier).reset();
         category.imageUrl = await _ref.read(fileStorageProvider).addFile(
             folder: 'category', fileName: category.name, file: pickedImage);
       }
@@ -55,6 +54,9 @@ class CategoryController {
         context: context,
         message: S.of(context).error_adding_doc_to_db,
       );
+    } finally {
+      // reset the image picker
+      _ref.read(pickedImageNotifierProvider.notifier).reset();
     }
   }
 
