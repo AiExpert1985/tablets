@@ -1,53 +1,9 @@
 Tasks Examples:
+    ☐ use modular_ui 'carosels' in product images in mobile application
+    ☐ use modular_ui 'switches' for custom switchs in settings
     ✘ new task @cancelled (7/28/2024, 6:59:29 PM)
     ✔ anther task @done (7/28/2024, 6:59:34 PM)
 
-Learning Resources:
-    Localization (Arabic language):
-        https://www.youtube.com/watch?v=DMmvd5LAHuA
-
-    Riverpod:
-        https://www.youtube.com/watch?v=pwflXIA-6YQ
-    
-    GoRouter:
-        https://www.youtube.com/watch?v=h_zfsFKm5MY
-        https://www.youtube.com/watch?v=_l6z9Qp5g5U
-        https://www.youtube.com/watch?v=BgcXHA3EHJU&t=3s
-        https://medium.com/@vimehraa29/flutter-go-router-the-crucial-guide-41dc615045bb
-        https://medium.com/@antonio.tioypedro1234/flutter-go-router-the-essential-guide-349ef39ec5b3
-
-    UI Design:
-        https://www.youtube.com/watch?v=qZ6uZ4SHRIg
-        https://www.youtube.com/watch?v=vrRb74l8Nks
-        https://www.youtube.com/watch?v=YQip3CtLXFU&list=PLGVaNq6mHiniedDoXJd35XFBNvJAoq-xe
-
-    App Deployment:
-        https://www.youtube.com/watch?v=deYP56Ud8U4
-
-    Constraints (Widget Placement):
-        https://docs.flutter.dev/ui/layout/constraints
-        
-        
-
-Dependancies:
-    https://www.dhiwise.com/post/flutter-pub-get-how-to-sync-and-manage-dependencies
-    https://dart.dev/tools/pub/cmd/pub-add
-
-Flutter Commands:
-    https://docs.flutter.dev/reference/flutter-cli
-
-Packages to try:
-    modular_ui
-        > create better (animated) Widgets
-    single_import_generator
-        > simplifies the import of packages (when there are too much)
-
-Project Structure:
-    https://www.youtube.com/watch?v=m-PuVqNo_qk
-    https://www.youtube.com/watch?v=wR1cMW1hSzM
-
-
-Study:
   
     
     

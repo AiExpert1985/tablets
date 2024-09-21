@@ -1,0 +1,23 @@
+Images:
+    flutter_image_compress:
+        ☐ easy way to compress images & reduce its size before uploading to server
+        ☐ https://pub.dev/packages/flutter_image_compress
+
+Popups & Pickers:
+    flutter_material_color_picker:
+        ☐ show a color picker for the user
+        ☐ https://pub.dev/packages/flutter_material_color_picker
+
+Widgets:
+    modular_ui:
+        ☐ create better (animated) Widgets
+        ☐ https://pub.dev/packages/modular_ui
+
+
+imports:
+    single_import_generator
+        ☐ simplifies the import of packages (when there are too much)
+        ☐ https://pub.dev/packages/single_import_generator/license
+
+    
+    

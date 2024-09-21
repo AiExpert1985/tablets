@@ -8,6 +8,9 @@ import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
 
+/// the controller works with category forms (through its 'formKey') to update its category variable
+/// and gets images from a 'pickedImageNotifierProvider' where image file is stored when
+/// user pick image (inside form)
 class CategoryController {
   CategoryController(this._ref);
   final ProviderRef _ref;
@@ -20,10 +23,11 @@ class CategoryController {
     category = ProductCategory(name: name);
   }
 
-  // add an image to firebase storage
-  // and create a new document in categories collection
-  // store the category name and image url
-  void addCategoryDocument(context) async {
+  /// add an image to firebase storage
+  /// (the image is from pickedImageNotifierProvider which already picked by user)
+  /// then create a new document in categories collection
+  /// to store the category name and url of uploaded image
+  void addCategoryToFirebase(context) async {
     final isValid =
         formKey.currentState!.validate(); // runs validation inside form
     if (!isValid) return;
@@ -82,6 +86,9 @@ final categoryControllerProvider = Provider<CategoryController>((ref) {
   return CategoryController(ref);
 });
 
+/// Responsible for streaming categorys from firestore 'categories' collection.
+/// categoris are steamed separately (I didn't include it in 'categoryController')
+///  because it is easy for me to implement
 final categoriesStreamProvider =
     StreamProvider<QuerySnapshot<Map<String, dynamic>>>(
   (ref) async* {
