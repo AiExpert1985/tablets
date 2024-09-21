@@ -3,8 +3,7 @@ import 'package:tablets/src/constants/constants.dart';
 enum ProductCategoryDbKeys { name, imageUrl }
 
 class ProductCategory {
-  ProductCategory(
-      {required this.name, this.imageUrl = DefaultImageUrl.defaultImageUrl});
+  ProductCategory({required this.name, this.imageUrl = DefaultImage.imageUrl});
   String name;
   String? imageUrl;
 

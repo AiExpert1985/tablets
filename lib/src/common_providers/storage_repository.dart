@@ -37,8 +37,7 @@ class StorageRepository {
     try {
       // delete the old photo unless it is the default photo
       // and then add the new photo and return its url
-      if (fileUrl != constants.DefaultImageUrl.defaultImageUrl) {
-        print('file will be deleted');
+      if (fileUrl != constants.DefaultImage.imageUrl) {
         deleteFile(fileUrl);
       }
       final newUrl =
@@ -52,14 +51,13 @@ class StorageRepository {
   /// delete photo from storage using its url
   Future<void> deleteFile(String imageUrl) async {
     try {
-      CustomDebug.print(
-          message: 'image will be deleted',
+      CustomDebug.print('image will be deleted',
           callerName: 'StorageRepository.deleteFile()');
       final storageRef = _storage.refFromURL(imageUrl);
       await storageRef.delete();
     } catch (e) {
       CustomDebug.print(
-          message: 'error happened while deleting file from firebase storage',
+          'error happened while deleting file from firebase storage',
           callerName: 'StorageRepository.deleteFile()');
     }
   }

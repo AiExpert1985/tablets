@@ -3,14 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/utils/utils.dart' as utils;
 
-/// this widget shows an imge and a button to upload image
+/// this widget shows an image and a button to upload image
 /// it takes its image from the pickedImageNotifierProvider
-/// in case pickedImageNotifierProvider is null, it shows a default image
 class GeneralImagePicker extends ConsumerWidget {
   const GeneralImagePicker({super.key});
 
@@ -22,9 +20,9 @@ class GeneralImagePicker extends ConsumerWidget {
         CircleAvatar(
           radius: 60,
           backgroundColor: Colors.grey,
-          foregroundImage: pickedImageProvider.pickedImage == null
-              ? NetworkImage(pickedImageProvider.placeHolderImageUrl)
-              : FileImage(pickedImageProvider.pickedImage!),
+          foregroundImage: pickedImageProvider.pickedImage != null
+              ? FileImage(pickedImageProvider.pickedImage!)
+              : null,
         ),
         TextButton.icon(
           onPressed: () => ref
@@ -42,21 +40,8 @@ class GeneralImagePicker extends ConsumerWidget {
 }
 
 class UserPickedImage {
-  UserPickedImage(
-      {this.pickedImage,
-      this.placeHolderImageUrl = constants.DefaultImageUrl.defaultImageUrl});
   File? pickedImage;
-  String placeHolderImageUrl;
-
-  UserPickedImage copyWith({
-    File? pickedImage,
-    String? placeHolderImageUrl,
-  }) {
-    return UserPickedImage(
-      pickedImage: pickedImage ?? this.pickedImage,
-      placeHolderImageUrl: placeHolderImageUrl ?? this.placeHolderImageUrl,
-    );
-  }
+  UserPickedImage(this.pickedImage);
 }
 
 class PickedImageNotifier extends StateNotifier<UserPickedImage> {
@@ -74,26 +59,23 @@ class PickedImageNotifier extends StateNotifier<UserPickedImage> {
       if (pickedImage == null) {
         return;
       }
-      state = state.copyWith(pickedImage: File(pickedImage.path));
+      state = UserPickedImage(File(pickedImage.path));
     } catch (e) {
-      utils.CustomDebug.print(
-          message: 'error while importing images',
+      utils.CustomDebug.print('error while importing images',
           callerName: 'PickedImageNotifier.updateUserPickedImage()');
     }
-  }
-
-  void updatePlaceHolderImageUrl(url) {
-    state = state.copyWith(placeHolderImageUrl: url);
   }
 
   // url is the default image
   // file is null
   void reset() {
-    state = UserPickedImage();
+    state = UserPickedImage(constants.DefaultImage.imageFile);
   }
 }
 
 final pickedImageNotifierProvider =
-    StateNotifierProvider<PickedImageNotifier, UserPickedImage>(
-  (ref) => PickedImageNotifier(UserPickedImage()),
-);
+    StateNotifierProvider<PickedImageNotifier, UserPickedImage>((ref) {
+  // I didn't find any way to initialize class variable except below outside call
+  constants.DefaultImage.initializDefaultImageFile();
+  return PickedImageNotifier(UserPickedImage(constants.DefaultImage.imageFile));
+});

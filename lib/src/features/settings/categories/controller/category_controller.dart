@@ -158,8 +158,7 @@ final categoriesStreamProvider =
           FirebaseFirestore.instance.collection('categories').snapshots();
       yield* querySnapshot;
     } catch (e) {
-      utils.CustomDebug.print(
-          message: 'an error happened while streaming categories',
+      utils.CustomDebug.print('an error happened while streaming categories',
           callerName: 'categoriesStreamProvider');
     }
   },

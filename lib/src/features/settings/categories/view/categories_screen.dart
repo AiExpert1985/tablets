@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/common_widgets/main_layout/app_bar/main_app_bar.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/main_drawer.dart';
 import 'package:tablets/src/features/settings/categories/controller/category_controller.dart';
@@ -45,16 +44,9 @@ class SettingsScreen extends ConsumerWidget {
                       imageUrl: data[ProductCategory.dbKeyImageUrl]);
                   return InkWell(
                     hoverColor: const Color.fromARGB(255, 173, 170, 170),
-                    onTap: () {
-                      // first update the image in image picker to show current image
-                      ref
-                          .read(pickedImageNotifierProvider.notifier)
-                          .updatePlaceHolderImageUrl(category.imageUrl);
-                      // then open the update dialog
-                      ref
-                          .read(categoryControllerProvider)
-                          .showCategoryUpdateForm(ctx, category);
-                    },
+                    onTap: () => ref
+                        .read(categoryControllerProvider)
+                        .showCategoryUpdateForm(ctx, category),
                     child: CategoryItem(
                       imageUrl: category.imageUrl!,
                       title: category.name,

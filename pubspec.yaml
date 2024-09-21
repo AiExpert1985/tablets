@@ -47,6 +47,8 @@ dependencies:
   firebase_ui_firestore: ^1.6.4
   toastification: ^2.2.0
   transparent_image: ^2.0.1
+  path_provider: ^2.1.4
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
