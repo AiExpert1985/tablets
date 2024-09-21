@@ -56,5 +56,6 @@
     "db_success_adding_doc": "Document was added successfuly",
     "db_success_updaging_doc": "Document was updated successfully ",
     "db_success_deleting_doc": "Document was deleted successfully",
-    "db_error_deleting_doc": "An error happened whilde deleting from db"
+    "db_error_deleting_doc": "An error happened while deleting from db",
+    "db_error_downloading_files": "An error happened while downloading files from database"
 }

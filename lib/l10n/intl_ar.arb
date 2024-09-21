@@ -56,5 +56,6 @@
     "db_success_adding_doc": "تمت الاضافة بنجاح",
     "db_success_updaging_doc": "تم التعديل بنجاح",
     "db_success_deleting_doc": "تم الحذف بنجاح",
-    "db_error_deleting_doc": "حدث خطأ اثناء حذف المستند من قاعدة البيانات"
+    "db_error_deleting_doc": "حدث خطأ اثناء حذف المستند من قاعدة البيانات",
+    "db_error_downloading_files": "حدث خطأ اثناء تحميل الملفات من قاعدة البيانات"
 }

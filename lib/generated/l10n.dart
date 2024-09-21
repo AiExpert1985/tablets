@@ -620,11 +620,21 @@ class S {
     );
   }
 
-  /// `An error happened whilde deleting from db`
+  /// `An error happened while deleting from db`
   String get db_error_deleting_doc {
     return Intl.message(
-      'An error happened whilde deleting from db',
+      'An error happened while deleting from db',
       name: 'db_error_deleting_doc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An error happened while downloading files from database`
+  String get db_error_downloading_files {
+    return Intl.message(
+      'An error happened while downloading files from database',
+      name: 'db_error_downloading_files',
       desc: '',
       args: [],
     );

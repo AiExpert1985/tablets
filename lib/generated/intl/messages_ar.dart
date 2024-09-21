@@ -35,6 +35,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات"),
         "db_error_deleting_doc": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ اثناء حذف المستند من قاعدة البيانات"),
+        "db_error_downloading_files": MessageLookupByLibrary.simpleMessage(
+            "حدث خطأ اثناء تحميل الملفات من قاعدة البيانات"),
         "db_error_login":
             MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء تسجيل الدخول"),
         "db_error_updating_doc": MessageLookupByLibrary.simpleMessage(

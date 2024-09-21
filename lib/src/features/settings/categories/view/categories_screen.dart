@@ -36,7 +36,7 @@ class SettingsScreen extends ConsumerWidget {
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
                 ),
-                itemBuilder: (context, index) {
+                itemBuilder: (ctx, index) {
                   final documentSnapshot = querySnapshot.docs[index];
                   // Access data from the document
                   final data = documentSnapshot.data();
@@ -53,7 +53,7 @@ class SettingsScreen extends ConsumerWidget {
                       // then open the update dialog
                       ref
                           .read(categoryControllerProvider)
-                          .showCategoryUpdateForm(context, category);
+                          .showCategoryUpdateForm(ctx, category);
                     },
                     child: CategoryItem(category),
                   );
