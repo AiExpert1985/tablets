@@ -52,13 +52,13 @@ class StorageRepository {
   Future<void> deleteFile(String imageUrl) async {
     try {
       CustomDebug.print('image will be deleted',
-          callerName: 'StorageRepository.deleteFile()');
+          callerMethod: 'StorageRepository.deleteFile()');
       final storageRef = _storage.refFromURL(imageUrl);
       await storageRef.delete();
     } catch (e) {
       CustomDebug.print(
           'error happened while deleting file from firebase storage',
-          callerName: 'StorageRepository.deleteFile()');
+          callerMethod: 'StorageRepository.deleteFile()');
     }
   }
 }

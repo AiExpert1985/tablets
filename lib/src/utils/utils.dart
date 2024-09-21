@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 
 class CustomDebug {
-  static void print(message, {callerName = 'Caller not specified'}) {
-    debugPrint('Hamandi: =======> $message ====== inside: $callerName');
+  static void print(message, {callerMethod = 'Caller not specified'}) {
+    debugPrint('||== Hamandi == $message == inside: $callerMethod ===||');
   }
 }
 

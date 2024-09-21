@@ -159,7 +159,7 @@ final categoriesStreamProvider =
       yield* querySnapshot;
     } catch (e) {
       utils.CustomDebug.print('an error happened while streaming categories',
-          callerName: 'categoriesStreamProvider');
+          callerMethod: 'categoriesStreamProvider');
     }
   },
 );

@@ -30,7 +30,7 @@ class DefaultImage {
       imageFile = file;
     } catch (e) {
       utils.CustomDebug.print('Error downloading file: $e',
-          callerName: 'UserPickedImage.defaultImageFile()');
+          callerMethod: 'UserPickedImage.defaultImageFile()');
     }
   }
 }

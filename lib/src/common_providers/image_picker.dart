@@ -62,7 +62,7 @@ class PickedImageNotifier extends StateNotifier<UserPickedImage> {
       state = UserPickedImage(File(pickedImage.path));
     } catch (e) {
       utils.CustomDebug.print('error while importing images',
-          callerName: 'PickedImageNotifier.updateUserPickedImage()');
+          callerMethod: 'PickedImageNotifier.updateUserPickedImage()');
     }
   }
 

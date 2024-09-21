@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/utils/utils.dart' as utils;
 
 class AuthRepository {
   AuthRepository();
@@ -36,6 +37,7 @@ class AuthRepository {
       );
       return true;
     } catch (error) {
+      utils.CustomDebug.print(error, callerMethod: StackTrace.current);
       return false;
     }
   }
