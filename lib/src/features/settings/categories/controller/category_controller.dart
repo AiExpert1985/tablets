@@ -33,6 +33,13 @@ class CategoryController {
     return true;
   }
 
+  void cancelForm(context) {
+    // close the form
+    Navigator.of(context).pop();
+    // reset the image picker
+    _ref.read(pickedImageNotifierProvider.notifier).reset();
+  }
+
   ///  take the data & image in the 'add form' and using this data to
   /// add an image to firebase storage & a document in the firestore
   /// (the image is from pickedImageNotifierProvider which already picked by user)
@@ -46,8 +53,9 @@ class CategoryController {
       // if an image is picked, we will store it and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        category.imageUrl = await _ref.read(fileStorageProvider).addFile(
+        final newUrl = await _ref.read(fileStorageProvider).addFile(
             folder: 'category', fileName: category.name, file: pickedImage);
+        category.imageUrl = newUrl;
       }
 
       final docRef = _firestore.collection('categories').doc();
@@ -66,10 +74,7 @@ class CategoryController {
         message: S.of(context).db_error_adding_doc,
       );
     } finally {
-      // close the form
-      Navigator.of(context).pop();
-      // reset the image picker
-      _ref.read(pickedImageNotifierProvider.notifier).reset();
+      cancelForm(context);
     }
   }
 
@@ -89,9 +94,15 @@ class CategoryController {
       // if an image is picked, we will store it and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        await _ref
-            .read(fileStorageProvider)
-            .updateFile(file: pickedImage, fileUrl: category.imageUrl!);
+        final newUrl = await _ref.read(fileStorageProvider).updateFile(
+            folder: 'category',
+            fileName: category.name,
+            file: pickedImage,
+            fileUrl: category.imageUrl!);
+        utils.CustomDebug.print(message: 'url before ${category.imageUrl}');
+        //we must update the category imageUrl based on the new url
+        category.imageUrl = newUrl;
+        utils.CustomDebug.print(message: 'url after ${category.imageUrl}');
       }
       // then update the category document
       final query = _firestore

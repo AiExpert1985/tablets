@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tablets/src/common_widgets/main_app_bar/main_app_bar.dart';
-import 'package:tablets/src/common_widgets/main_drawer/main_drawer.dart';
+import 'package:tablets/src/common_widgets/main_layout/app_bar/main_app_bar.dart';
+import 'package:tablets/src/common_widgets/main_layout/drawer/main_drawer.dart';
 
 /// this screen is just a place holder, where i use it for testing
 /// before I create the real screen

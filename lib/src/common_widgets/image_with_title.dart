@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tablets/src/features/settings/categories/model/product_category.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class CategoryItem extends StatelessWidget {
-  const CategoryItem(this.category, {super.key});
-  final ProductCategory category;
+  const CategoryItem({required this.imageUrl, required this.title, super.key});
 
+  final String imageUrl;
+  final String title;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -18,22 +18,22 @@ class CategoryItem extends StatelessWidget {
           FadeInImage(
             // fit: BoxFit.cover,
             placeholder: MemoryImage(kTransparentImage),
-            image: NetworkImage(category.imageUrl!),
+            image: NetworkImage(imageUrl),
             fit: BoxFit.cover,
             height: 150,
             width: double.infinity,
           ),
 
           Positioned(
-            bottom: 0,
+            bottom: 12,
             left: 0,
             right: 0,
             child: Container(
-                height: MediaQuery.of(context).size.height * 0.07,
-                color: Colors.black54,
+                height: MediaQuery.of(context).size.height * 0.05,
+                color: Colors.black45,
                 padding: const EdgeInsets.all(5),
                 child: Text(
-                  category.name,
+                  title,
                   maxLines: 2,
                   textAlign: TextAlign.center,
                   softWrap: true,

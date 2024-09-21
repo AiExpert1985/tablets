@@ -4,7 +4,7 @@ enum ProductCategoryDbKeys { name, imageUrl }
 
 class ProductCategory {
   ProductCategory(
-      {required this.name, this.imageUrl = DefaultImageUrl.defaultItemUrl});
+      {required this.name, this.imageUrl = DefaultImageUrl.defaultImageUrl});
   String name;
   String? imageUrl;
 

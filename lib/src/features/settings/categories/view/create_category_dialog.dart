@@ -64,7 +64,9 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
               child: Text(S.of(context).save),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Close the dialog
+              onPressed: () {
+                categoryController.cancelForm(context);
+              },
               child: Text(S.of(context).cancel),
             ),
           ],

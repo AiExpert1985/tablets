@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/constants/constants.dart' as constants;
 
 class StorageRepository {
   StorageRepository();
@@ -25,18 +26,24 @@ class StorageRepository {
   }
 
   // update and existing file referenced by the url
-  // returns bool for sucess or failure
-  Future<bool> updateFile({
+  // returns the new url if successed or null if failed
+  Future<String?> updateFile({
+    required String folder,
+    required String fileName,
     required File file,
     required String fileUrl,
   }) async {
     try {
+      // if the photo used is the default, then we add the new photo
+      // otherwise we change the photo with the new one
+      if (fileUrl == constants.DefaultImageUrl.defaultImageUrl) {
+        return await addFile(folder: folder, fileName: fileName, file: file);
+      }
       final storageRef = _storage.refFromURL(fileUrl);
-
-      await storageRef.putFile(file);
-      return true;
+      final ref = await storageRef.putFile(file);
+      return await ref.ref.getDownloadURL();
     } catch (e) {
-      return false;
+      return null;
     }
   }
 }

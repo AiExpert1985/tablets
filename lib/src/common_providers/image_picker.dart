@@ -8,68 +8,9 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/utils/utils.dart' as utils;
 
-// class GeneralImagePicker extends ConsumerWidget {
-//   final String imageSourse;
-//   final String shape;
-//   final String placeHolderImageUrl;
-//   const GeneralImagePicker(
-//       {super.key,
-//       this.imageSourse = 'galary',
-//       this.shape = 'rectangular',
-//       required this.placeHolderImageUrl});
-
-//   void _pickImage(WidgetRef ref, imageSourse, ctx) async {
-//     try {
-//       final pickedImage = await ImagePicker().pickImage(
-//           source: imageSourse == 'camera'
-//               ? ImageSource.camera
-//               : ImageSource.gallery,
-//           imageQuality: 50,
-//           maxWidth: 150); // can use ImageSource.gallery
-
-//       // if camera is closed without taking a photo, we just return and do nothing
-//       if (pickedImage == null) {
-//         return;
-//       }
-//       ref.read(pickedImageFileProvider.notifier).update(
-//             (state) => File(pickedImage.path),
-//           );
-//     } catch (e) {
-//       UserMessages.failure(
-//           context: ctx, message: S.of(ctx).error_importing_image);
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     final pickedImageFile = ref.watch(pickedImageFileProvider);
-//     return Column(
-//       children: [
-//         if (shape != 'circular')
-//           CircleAvatar(
-//             radius: 60,
-//             backgroundColor: Colors.grey,
-//             foregroundImage: pickedImageFile != null
-//                 ? FileImage(pickedImageFile)
-//                 : NetworkImage(placeHolderImageUrl),
-//           ),
-//         TextButton.icon(
-//           onPressed: () => _pickImage(ref, imageSourse, context),
-//           icon: const Icon(Icons.image),
-//           label: Text(
-//             S.of(context).add_image,
-//             style: TextStyle(color: Theme.of(context).colorScheme.primary),
-//           ),
-//         )
-//       ],
-//     );
-//   }
-// }
-
-// final pickedImageFileProvider = StateProvider<File?>((ref) {
-//   return null;
-// });
-
+/// this widget shows an imge and a button to upload image
+/// it takes its image from the pickedImageNotifierProvider
+/// in case pickedImageNotifierProvider is null, it shows a default image
 class GeneralImagePicker extends ConsumerWidget {
   const GeneralImagePicker({super.key});
 
@@ -81,9 +22,9 @@ class GeneralImagePicker extends ConsumerWidget {
         CircleAvatar(
           radius: 60,
           backgroundColor: Colors.grey,
-          foregroundImage: pickedImageProvider.pickedImage != null
-              ? FileImage(pickedImageProvider.pickedImage!)
-              : NetworkImage(pickedImageProvider.placeHolderImageUrl),
+          foregroundImage: pickedImageProvider.pickedImage == null
+              ? NetworkImage(pickedImageProvider.placeHolderImageUrl)
+              : FileImage(pickedImageProvider.pickedImage!),
         ),
         TextButton.icon(
           onPressed: () => ref
@@ -103,7 +44,7 @@ class GeneralImagePicker extends ConsumerWidget {
 class UserPickedImage {
   UserPickedImage(
       {this.pickedImage,
-      this.placeHolderImageUrl = constants.DefaultImageUrl.defaultItemUrl});
+      this.placeHolderImageUrl = constants.DefaultImageUrl.defaultImageUrl});
   File? pickedImage;
   String placeHolderImageUrl;
 
@@ -120,7 +61,7 @@ class UserPickedImage {
 
 class PickedImageNotifier extends StateNotifier<UserPickedImage> {
   PickedImageNotifier(super.state);
-  Future<void> updateUserPickedImage({imageSource = 'galary'}) async {
+  Future<void> updateUserPickedImage({imageSource = 'gallery'}) async {
     try {
       final pickedImage = await ImagePicker().pickImage(
           source: imageSource == 'camera'
@@ -145,6 +86,8 @@ class PickedImageNotifier extends StateNotifier<UserPickedImage> {
     state = state.copyWith(placeHolderImageUrl: url);
   }
 
+  // url is the default image
+  // file is null
   void reset() {
     state = UserPickedImage();
   }

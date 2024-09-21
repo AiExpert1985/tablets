@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_widgets/various/blank_screen.dart';
+import 'package:tablets/src/common_widgets/blank_screen.dart';
 
 class SalesmenLiveLocationScreen extends ConsumerWidget {
   const SalesmenLiveLocationScreen({super.key});
