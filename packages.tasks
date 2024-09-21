@@ -19,5 +19,21 @@ imports:
         ☐ simplifies the import of packages (when there are too much)
         ☐ https://pub.dev/packages/single_import_generator/license
 
+Local Storage:
+    flutter_secure_storage
+        ☐ store secure data on the device (encrypted)
+        ☐ https://pub.dev/packages/flutter_secure_storage
+
+    shared_preferences
+        ☐ https://pub.dev/packages/shared_preferences
+
+    sqflite 
+        ☐ https://pub.dev/packages/sqflite
+
+    get_storage
+        ☐ A fast, extra light and synchronous key-value in memory
+        ☐ https://pub.dev/packages/get_storage
+
+
     
     

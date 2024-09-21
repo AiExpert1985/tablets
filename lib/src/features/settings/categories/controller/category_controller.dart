@@ -8,9 +8,9 @@ import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
 
-///! the controller works with category forms (through its 'formKey') to update its category object
-///! and gets images from a 'pickedImageNotifierProvider' where image file is stored when
-///! user pick image (inside form)
+/// the controller works with category forms (through its 'formKey') to update its category object
+/// and gets images from a 'pickedImageNotifierProvider' where image file is stored when
+/// user pick image (inside form)
 class CategoryController {
   CategoryController(this._ref);
   final ProviderRef _ref;
@@ -18,8 +18,8 @@ class CategoryController {
   final formKey = GlobalKey<FormState>();
   late ProductCategory category;
 
-  ///! create a new ProductCategory object with default image url
-  ///! this category will be updated later with create & update forms
+  /// create a new ProductCategory object with default image url
+  /// this category will be updated later with create & update forms
   void createCategory(String name) {
     category = ProductCategory(name: name);
   }
@@ -33,8 +33,8 @@ class CategoryController {
     return true;
   }
 
-  ///!  take the data & image in the 'add form' and using this data to
-  ///! add an image to firebase storage & a document in the firestore
+  ///  take the data & image in the 'add form' and using this data to
+  /// add an image to firebase storage & a document in the firestore
   /// (the image is from pickedImageNotifierProvider which already picked by user)
   /// then create a new document in categories collection
   /// to store the category name and url of uploaded image
@@ -46,7 +46,6 @@ class CategoryController {
       // if an image is picked, we will store it and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        // first we clear the image picker from the picked image
         category.imageUrl = await _ref.read(fileStorageProvider).addFile(
             folder: 'category', fileName: category.name, file: pickedImage);
       }
@@ -74,7 +73,7 @@ class CategoryController {
     }
   }
 
-  ///! updates category in the DB where it updates the document in firestore & image in storage
+  /// updates category in the DB where it updates the document in firestore & image in storage
   /// use pickedImageNotifierProvider to update category image in firebase storage
   /// and CategoryController.category to update category document in the firestore
   /// before calling this method, both pickedImageNotifierProvider and CategoryController.category
@@ -83,9 +82,18 @@ class CategoryController {
   /// note that this method receives the previous category name to use to when searching db to
   /// get the document that will be updated.
   void updateCategoryInDB(context, previousCategoryName) async {
-    bool isSuccessful = saveForm();
-    if (!isSuccessful) return;
+    if (!saveForm()) return;
     try {
+      // first update the photo
+      final pickedImage = _ref.read(pickedImageNotifierProvider).pickedImage;
+      // if an image is picked, we will store it and use its url
+      // otherwise, we will use the default item image url
+      if (pickedImage != null) {
+        await _ref
+            .read(fileStorageProvider)
+            .updateFile(file: pickedImage, fileUrl: category.imageUrl!);
+      }
+      // then update the category document
       final query = _firestore
           .collection('categories')
           .where('name', isEqualTo: previousCategoryName);
@@ -113,7 +121,7 @@ class CategoryController {
     }
   }
 
-  ///! showing the pre-filled update form, using the passed ProductCategory object
+  /// showing the pre-filled update form, using the passed ProductCategory object
   /// the category passed to it comes from the selected category widget (in the grid)
   /// it uses category.iamgeUrl to get an image from firebase storage
   /// and uses category.name to show the category name
@@ -130,7 +138,7 @@ final categoryControllerProvider = Provider<CategoryController>((ref) {
   return CategoryController(ref);
 });
 
-///! Streaming categorys from firestore 'categories' collection.
+/// Streaming categorys from firestore 'categories' collection.
 /// categoris are steamed separately (I didn't include it in 'categoryController')
 ///  because it is easy for me to implement
 final categoriesStreamProvider =
