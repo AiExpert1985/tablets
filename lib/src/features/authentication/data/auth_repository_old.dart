@@ -37,7 +37,7 @@ class AuthRepository {
       );
       return true;
     } catch (error) {
-      utils.CustomDebug.print(error, callerMethod: StackTrace.current);
+      utils.CustomDebug.print(message: error, stackTrace: StackTrace.current);
       return false;
     }
   }

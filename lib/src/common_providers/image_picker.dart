@@ -61,8 +61,9 @@ class PickedImageNotifier extends StateNotifier<UserPickedImage> {
       }
       state = UserPickedImage(File(pickedImage.path));
     } catch (e) {
-      utils.CustomDebug.print('error while importing images',
-          callerMethod: 'PickedImageNotifier.updateUserPickedImage()');
+      utils.CustomDebug.print(
+          message: 'error while importing images',
+          stackTrace: StackTrace.current);
     }
   }
 
@@ -75,7 +76,5 @@ class PickedImageNotifier extends StateNotifier<UserPickedImage> {
 
 final pickedImageNotifierProvider =
     StateNotifierProvider<PickedImageNotifier, UserPickedImage>((ref) {
-  // I didn't find any way to initialize class variable except below outside call
-  constants.DefaultImage.initializDefaultImageFile();
   return PickedImageNotifier(UserPickedImage(constants.DefaultImage.imageFile));
 });

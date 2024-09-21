@@ -41,8 +41,7 @@ class ProductRepository {
       });
       return true;
     } catch (e) {
-      utils.CustomDebug.print(e,
-          callerMethod: 'ProductRepository.addProduct()');
+      utils.CustomDebug.print(message: e, stackTrace: StackTrace.current);
       return false;
     }
   }

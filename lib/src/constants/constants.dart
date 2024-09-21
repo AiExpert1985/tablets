@@ -5,6 +5,10 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:http/http.dart' as http;
 import 'package:tablets/src/utils/utils.dart' as utils;
 
+void initializeStaticMethods() {
+  DefaultImage.initializDefaultImageFile();
+}
+
 class FormFieldsSpacing {
   static const vertical = SizedBox(height: 25);
   static const horizontal = SizedBox(width: 40);
@@ -17,7 +21,9 @@ class DefaultImage {
 
   static Future<void> initializDefaultImageFile() async {
     try {
-      utils.CustomDebug.print('hi form _useDefaultImageFile');
+      utils.CustomDebug.print(
+          message: 'hi form _useDefaultImageFile',
+          stackTrace: StackTrace.current);
       final tempDir = await path_provider.getTemporaryDirectory();
       final filePath = '${tempDir.path}/default_image.tmp';
 
@@ -29,8 +35,9 @@ class DefaultImage {
 
       imageFile = file;
     } catch (e) {
-      utils.CustomDebug.print('Error downloading file: $e',
-          callerMethod: 'UserPickedImage.defaultImageFile()');
+      utils.CustomDebug.print(
+          message: 'Error downloading file: $e',
+          stackTrace: StackTrace.current);
     }
   }
 }
