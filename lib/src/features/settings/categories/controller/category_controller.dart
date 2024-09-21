@@ -99,10 +99,8 @@ class CategoryController {
             fileName: category.name,
             file: pickedImage,
             fileUrl: category.imageUrl!);
-        utils.CustomDebug.print(message: 'url before ${category.imageUrl}');
         //we must update the category imageUrl based on the new url
         category.imageUrl = newUrl;
-        utils.CustomDebug.print(message: 'url after ${category.imageUrl}');
       }
       // then update the category document
       final query = _firestore

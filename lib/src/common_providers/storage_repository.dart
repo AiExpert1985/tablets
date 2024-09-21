@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/utils/utils.dart';
 
 class StorageRepository {
   StorageRepository();
@@ -25,8 +26,8 @@ class StorageRepository {
     }
   }
 
-  // update and existing file referenced by the url
-  // returns the new url if successed or null if failed
+  /// update and existing file referenced by the url
+  /// returns the new url if successed or null if failed
   Future<String?> updateFile({
     required String folder,
     required String fileName,
@@ -34,16 +35,32 @@ class StorageRepository {
     required String fileUrl,
   }) async {
     try {
-      // if the photo used is the default, then we add the new photo
-      // otherwise we change the photo with the new one
-      if (fileUrl == constants.DefaultImageUrl.defaultImageUrl) {
-        return await addFile(folder: folder, fileName: fileName, file: file);
+      // delete the old photo unless it is the default photo
+      // and then add the new photo and return its url
+      if (fileUrl != constants.DefaultImageUrl.defaultImageUrl) {
+        print('file will be deleted');
+        deleteFile(fileUrl);
       }
-      final storageRef = _storage.refFromURL(fileUrl);
-      final ref = await storageRef.putFile(file);
-      return await ref.ref.getDownloadURL();
+      final newUrl =
+          await addFile(folder: folder, fileName: fileName, file: file);
+      return newUrl;
     } catch (e) {
       return null;
+    }
+  }
+
+  /// delete photo from storage using its url
+  Future<void> deleteFile(String imageUrl) async {
+    try {
+      CustomDebug.print(
+          message: 'image will be deleted',
+          callerName: 'StorageRepository.deleteFile()');
+      final storageRef = _storage.refFromURL(imageUrl);
+      await storageRef.delete();
+    } catch (e) {
+      CustomDebug.print(
+          message: 'error happened while deleting file from firebase storage',
+          callerName: 'StorageRepository.deleteFile()');
     }
   }
 }
