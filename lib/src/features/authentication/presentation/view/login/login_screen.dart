@@ -31,7 +31,7 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
     if (!isSuccessful) {
       toastification.show(
         context: context, // optional if you use ToastificationWrapper
-        title: Text(S.of(context).error_login_to_db),
+        title: Text(S.of(context).db_error_login),
         autoCloseDuration: const Duration(seconds: 5),
         type: ToastificationType.error,
         style: ToastificationStyle.flatColored,

@@ -41,7 +41,8 @@ class SettingsScreen extends ConsumerWidget {
                   // Access data from the document
                   final data = documentSnapshot.data();
                   final category = ProductCategory(
-                      name: data['name']!, imageUrl: data['imageUrl']);
+                      name: data[ProductCategory.dbKeyName]!,
+                      imageUrl: data[ProductCategory.dbKeyImageUrl]);
                   return InkWell(
                     hoverColor: const Color.fromARGB(255, 173, 170, 170),
                     onTap: () {
@@ -52,7 +53,7 @@ class SettingsScreen extends ConsumerWidget {
                       // then open the update dialog
                       ref
                           .read(categoryControllerProvider)
-                          .prepareCategoryUpdate(context, category);
+                          .showCategoryUpdateForm(context, category);
                     },
                     child: CategoryItem(category),
                   );

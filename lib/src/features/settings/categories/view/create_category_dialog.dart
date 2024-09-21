@@ -60,8 +60,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
           alignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () =>
-                  categoryController.addCategoryToFirebase(context),
+              onPressed: () => categoryController.addCategoryToDB(context),
               child: Text(S.of(context).save),
             ),
             TextButton(

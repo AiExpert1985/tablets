@@ -43,13 +43,18 @@
     "input_validation_error_message_for_user_privilage": "You must select user privilage",
     "input_validation_error_message_for_numbers": "You should enter a valid number",
     "input_validation_error_message_for_names": "You should enter a valid name",
-    "error_login_to_db": "Error happened while login",
-    "error_adding_doc_to_db": "An error happened while adding a document to the database",
     "error_importing_image": "An error happend while importing images",
-    "success_adding_doc_to_db": "Document was successfuly added to the database",
     "settings": "Settings",
     "category": "Category",
     "add_new_category": "Add a new Category",
     "update_category": "Update category",
-    "screen_is_empty": "There is no contents"
+    "screen_is_empty": "There is no contents",
+    "search_not_found_in_db": "Not found in database",
+    "db_error_login": "Error happened while login",
+    "db_error_adding_doc": "An error happened while adding to the database",
+    "db_error_updating_doc": "An error happened while updating the database",
+    "db_success_adding_doc": "Document was added successfuly",
+    "db_success_updaging_doc": "Document was updated successfully ",
+    "db_success_deleting_doc": "Document was deleted successfully",
+    "db_error_deleting_doc": "An error happened whilde deleting from db"
 }

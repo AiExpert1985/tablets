@@ -38,19 +38,18 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
               constants.FormFieldsSpacing.vertical,
               Expanded(
                 child: TextFormField(
-                  initialValue: categoryController.category.name,
-                  decoration: InputDecoration(
-                    labelText: S.of(context).category,
-                  ),
-                  validator: (value) => utils.FormValidation.validateNameField(
-                      fieldValue: value,
-                      errorMessage: S
-                          .of(context)
-                          .input_validation_error_message_for_numbers),
-                  onSaved: (value) => categoryController
-                      .createCategory(value!) // value is double (never null)
-                  ,
-                ),
+                    initialValue: categoryController.category.name,
+                    decoration: InputDecoration(
+                      labelText: S.of(context).category,
+                    ),
+                    validator: (value) =>
+                        utils.FormValidation.validateNameField(
+                            fieldValue: value,
+                            errorMessage: S
+                                .of(context)
+                                .input_validation_error_message_for_numbers),
+                    onSaved: (value) =>
+                        categoryController.category.name = value!),
               ),
             ],
           ),
@@ -61,8 +60,11 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
           alignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: () =>
-                  categoryController.updateCategoryDocument(context),
+              onPressed: () {
+                final previousCategoryName = categoryController.category.name;
+                categoryController.updateCategoryInDB(
+                    context, previousCategoryName);
+              },
               child: Text(S.of(context).save),
             ),
             TextButton(

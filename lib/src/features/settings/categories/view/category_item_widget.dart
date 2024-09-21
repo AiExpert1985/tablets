@@ -44,36 +44,35 @@ class CategoryItem extends StatelessWidget {
                       fontWeight: FontWeight.bold),
                 )),
           ),
-          // Replace with your image
-          Positioned(
-            top: 10,
-            right: 10,
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    // Edit image logic here
-                  },
-                  icon: const Icon(
-                    Icons.edit,
-                    size: 40,
-                    color: Color.fromARGB(255, 14, 1, 51),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                IconButton(
-                  onPressed: () {
-                    // Delete image logic here
-                  },
-                  icon: const Icon(
-                    Icons.delete,
-                    size: 40,
-                    color: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Positioned(
+          //   top: 10,
+          //   right: 10,
+          //   child: Row(
+          //     children: [
+          //       IconButton(
+          //         onPressed: () {
+          //           // Edit image logic here
+          //         },
+          //         icon: const Icon(
+          //           Icons.edit,
+          //           size: 40,
+          //           color: Color.fromARGB(255, 14, 1, 51),
+          //         ),
+          //       ),
+          //       const SizedBox(width: 10),
+          //       IconButton(
+          //         onPressed: () {
+          //           // Delete image logic here
+          //         },
+          //         icon: const Icon(
+          //           Icons.delete,
+          //           size: 40,
+          //           color: Colors.red,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );

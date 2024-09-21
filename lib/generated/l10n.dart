@@ -490,41 +490,11 @@ class S {
     );
   }
 
-  /// `Error happened while login`
-  String get error_login_to_db {
-    return Intl.message(
-      'Error happened while login',
-      name: 'error_login_to_db',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `An error happened while adding a document to the database`
-  String get error_adding_doc_to_db {
-    return Intl.message(
-      'An error happened while adding a document to the database',
-      name: 'error_adding_doc_to_db',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `An error happend while importing images`
   String get error_importing_image {
     return Intl.message(
       'An error happend while importing images',
       name: 'error_importing_image',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Document was successfuly added to the database`
-  String get success_adding_doc_to_db {
-    return Intl.message(
-      'Document was successfuly added to the database',
-      name: 'success_adding_doc_to_db',
       desc: '',
       args: [],
     );
@@ -575,6 +545,86 @@ class S {
     return Intl.message(
       'There is no contents',
       name: 'screen_is_empty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not found in database`
+  String get search_not_found_in_db {
+    return Intl.message(
+      'Not found in database',
+      name: 'search_not_found_in_db',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error happened while login`
+  String get db_error_login {
+    return Intl.message(
+      'Error happened while login',
+      name: 'db_error_login',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An error happened while adding to the database`
+  String get db_error_adding_doc {
+    return Intl.message(
+      'An error happened while adding to the database',
+      name: 'db_error_adding_doc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An error happened while updating the database`
+  String get db_error_updating_doc {
+    return Intl.message(
+      'An error happened while updating the database',
+      name: 'db_error_updating_doc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document was added successfuly`
+  String get db_success_adding_doc {
+    return Intl.message(
+      'Document was added successfuly',
+      name: 'db_success_adding_doc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document was updated successfully `
+  String get db_success_updaging_doc {
+    return Intl.message(
+      'Document was updated successfully ',
+      name: 'db_success_updaging_doc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document was deleted successfully`
+  String get db_success_deleting_doc {
+    return Intl.message(
+      'Document was deleted successfully',
+      name: 'db_success_deleting_doc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An error happened whilde deleting from db`
+  String get db_error_deleting_doc {
+    return Intl.message(
+      'An error happened whilde deleting from db',
+      name: 'db_error_deleting_doc',
       desc: '',
       args: [],
     );

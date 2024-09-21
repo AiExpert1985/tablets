@@ -8,9 +8,9 @@ import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
 
-/// the controller works with category forms (through its 'formKey') to update its category variable
-/// and gets images from a 'pickedImageNotifierProvider' where image file is stored when
-/// user pick image (inside form)
+///! the controller works with category forms (through its 'formKey') to update its category object
+///! and gets images from a 'pickedImageNotifierProvider' where image file is stored when
+///! user pick image (inside form)
 class CategoryController {
   CategoryController(this._ref);
   final ProviderRef _ref;
@@ -18,20 +18,29 @@ class CategoryController {
   final formKey = GlobalKey<FormState>();
   late ProductCategory category;
 
-  // create a new ProductCategory object with default image url
+  ///! create a new ProductCategory object with default image url
+  ///! this category will be updated later with create & update forms
   void createCategory(String name) {
     category = ProductCategory(name: name);
   }
 
-  /// add an image to firebase storage
+  bool saveForm() {
+    // runs validation inside form
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return false;
+    // runs onSave inside form
+    formKey.currentState!.save();
+    return true;
+  }
+
+  ///!  take the data & image in the 'add form' and using this data to
+  ///! add an image to firebase storage & a document in the firestore
   /// (the image is from pickedImageNotifierProvider which already picked by user)
   /// then create a new document in categories collection
   /// to store the category name and url of uploaded image
-  void addCategoryToFirebase(context) async {
-    final isValid =
-        formKey.currentState!.validate(); // runs validation inside form
-    if (!isValid) return;
-    formKey.currentState!.save(); // runs onSave inside form
+  void addCategoryToDB(context) async {
+    bool isSuccessful = saveForm();
+    if (!isSuccessful) return;
     try {
       final pickedImage = _ref.read(pickedImageNotifierProvider).pickedImage;
       // if an image is picked, we will store it and use its url
@@ -45,36 +54,71 @@ class CategoryController {
       final docRef = _firestore.collection('categories').doc();
 
       await docRef.set({
-        'name': category.name,
-        'imageUrl': category.imageUrl,
+        ProductCategory.dbKeyName: category.name,
+        ProductCategory.dbKeyImageUrl: category.imageUrl,
       });
-      Navigator.of(context).pop();
       utils.UserMessages.success(
         context: context,
-        message: S.of(context).success_adding_doc_to_db,
+        message: S.of(context).db_success_adding_doc,
       );
     } catch (e) {
       utils.UserMessages.failure(
         context: context,
-        message: S.of(context).error_adding_doc_to_db,
+        message: S.of(context).db_error_adding_doc,
       );
     } finally {
+      // close the form
+      Navigator.of(context).pop();
       // reset the image picker
       _ref.read(pickedImageNotifierProvider.notifier).reset();
     }
   }
 
-  void updateCategoryDocument(context) async {
-    utils.CustomDebug.print(
-        message: category.name,
-        callerName: 'CategoryController.updateCategoryDocument()');
+  ///! updates category in the DB where it updates the document in firestore & image in storage
+  /// use pickedImageNotifierProvider to update category image in firebase storage
+  /// and CategoryController.category to update category document in the firestore
+  /// before calling this method, both pickedImageNotifierProvider and CategoryController.category
+  /// are updated using 'update form' which was previously called
+  /// by CategoryController.showCategoryUpdateForm()
+  /// note that this method receives the previous category name to use to when searching db to
+  /// get the document that will be updated.
+  void updateCategoryInDB(context, previousCategoryName) async {
+    bool isSuccessful = saveForm();
+    if (!isSuccessful) return;
+    try {
+      final query = _firestore
+          .collection('categories')
+          .where('name', isEqualTo: previousCategoryName);
+      final querySnapshot = await query.get();
+      if (querySnapshot.size > 0) {
+        final documentRef = querySnapshot.docs[0].reference;
+        await documentRef.update({
+          ProductCategory.dbKeyName: category.name,
+          ProductCategory.dbKeyImageUrl: category.imageUrl,
+        });
+        utils.UserMessages.success(
+            context: context, message: S.of(context).db_success_updaging_doc);
+      } else {
+        utils.UserMessages.info(
+            context: context, message: S.of(context).search_not_found_in_db);
+      }
+    } catch (error) {
+      utils.UserMessages.failure(
+          context: context, message: S.of(context).db_error_updating_doc);
+    } finally {
+      // close the form
+      Navigator.of(context).pop();
+      // reset the image picker
+      _ref.read(pickedImageNotifierProvider.notifier).reset();
+    }
   }
 
-  void prepareCategoryUpdate(context, cat) {
+  ///! showing the pre-filled update form, using the passed ProductCategory object
+  /// the category passed to it comes from the selected category widget (in the grid)
+  /// it uses category.iamgeUrl to get an image from firebase storage
+  /// and uses category.name to show the category name
+  void showCategoryUpdateForm(context, cat) {
     category = cat;
-    utils.CustomDebug.print(
-        message: category.name,
-        callerName: 'CategoryController.prepareCategoryUpdate()');
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const UpdateCategoryDialog(),
@@ -86,7 +130,7 @@ final categoryControllerProvider = Provider<CategoryController>((ref) {
   return CategoryController(ref);
 });
 
-/// Responsible for streaming categorys from firestore 'categories' collection.
+///! Streaming categorys from firestore 'categories' collection.
 /// categoris are steamed separately (I didn't include it in 'categoryController')
 ///  because it is easy for me to implement
 final categoriesStreamProvider =

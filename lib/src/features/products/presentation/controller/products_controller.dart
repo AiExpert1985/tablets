@@ -45,12 +45,12 @@ class ProductsController {
       Navigator.of(context).pop();
       utils.UserMessages.success(
         context: context,
-        message: S.of(context).success_adding_doc_to_db,
+        message: S.of(context).db_success_adding_doc,
       );
     } else {
       utils.UserMessages.failure(
         context: context,
-        message: S.of(context).error_adding_doc_to_db,
+        message: S.of(context).db_error_adding_doc,
       );
     }
   }

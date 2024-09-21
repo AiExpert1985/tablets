@@ -30,13 +30,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "category": MessageLookupByLibrary.simpleMessage("Category"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("Create a new account"),
+        "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
+            "An error happened while adding to the database"),
+        "db_error_deleting_doc": MessageLookupByLibrary.simpleMessage(
+            "An error happened whilde deleting from db"),
+        "db_error_login":
+            MessageLookupByLibrary.simpleMessage("Error happened while login"),
+        "db_error_updating_doc": MessageLookupByLibrary.simpleMessage(
+            "An error happened while updating the database"),
+        "db_success_adding_doc": MessageLookupByLibrary.simpleMessage(
+            "Document was added successfuly"),
+        "db_success_deleting_doc": MessageLookupByLibrary.simpleMessage(
+            "Document was deleted successfully"),
+        "db_success_updaging_doc": MessageLookupByLibrary.simpleMessage(
+            "Document was updated successfully "),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
-        "error_adding_doc_to_db": MessageLookupByLibrary.simpleMessage(
-            "An error happened while adding a document to the database"),
         "error_importing_image": MessageLookupByLibrary.simpleMessage(
             "An error happend while importing images"),
-        "error_login_to_db":
-            MessageLookupByLibrary.simpleMessage("Error happened while login"),
         "failure": MessageLookupByLibrary.simpleMessage("Failure"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("Go back to home page"),
@@ -100,13 +110,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "screen_is_empty":
             MessageLookupByLibrary.simpleMessage("There is no contents"),
+        "search_not_found_in_db":
+            MessageLookupByLibrary.simpleMessage("Not found in database"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign up"),
         "slogan": MessageLookupByLibrary.simpleMessage(
             "Tablets, where accounting started"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
-        "success_adding_doc_to_db": MessageLookupByLibrary.simpleMessage(
-            "Document was successfuly added to the database"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
         "update_category":
             MessageLookupByLibrary.simpleMessage("Update category"),

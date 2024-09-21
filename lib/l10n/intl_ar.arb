@@ -43,13 +43,18 @@
     "input_validation_error_message_for_user_privilage": "يجب تحديد صلاحيات المستخدم",
     "input_validation_error_message_for_numbers": "يجب ادخال الرقم بصورة صحيحة",
     "input_validation_error_message_for_names": "يجب ادخال الاسم بصورة صحيحة",
-    "error_login_to_db": "حدث خطأ اثناء تسجيل الدخول",
-    "error_adding_doc_to_db": "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات",
     "error_importing_image": "حدث خطأ اثناء استيراد الصور",
-    "success_adding_doc_to_db": "تمت الاضافة بنجاح",
     "settings": "الاعدادات",
     "category": "الصنف",
     "add_new_category": "أضافة صنف جديد",
     "update_category": "تعديل معلومات الصنف",
-    "screen_is_empty": "لا يوجد بيانات"
+    "screen_is_empty": "لا يوجد بيانات",
+    "search_not_found_in_db": "لم يتم ايجاد المستند في قاعةد البيانات",
+    "db_error_login": "حدث خطأ اثناء تسجيل الدخول",
+    "db_error_adding_doc": "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات",
+    "db_error_updating_doc": "حدث خطأ اثناء تحديث معلومات في قاعدة البيانات",
+    "db_success_adding_doc": "تمت الاضافة بنجاح",
+    "db_success_updaging_doc": "تم التعديل بنجاح",
+    "db_success_deleting_doc": "تم الحذف بنجاح",
+    "db_error_deleting_doc": "حدث خطأ اثناء حذف المستند من قاعدة البيانات"
 }

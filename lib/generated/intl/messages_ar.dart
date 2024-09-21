@@ -31,13 +31,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
-        "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
-        "error_adding_doc_to_db": MessageLookupByLibrary.simpleMessage(
+        "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات"),
+        "db_error_deleting_doc": MessageLookupByLibrary.simpleMessage(
+            "حدث خطأ اثناء حذف المستند من قاعدة البيانات"),
+        "db_error_login":
+            MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء تسجيل الدخول"),
+        "db_error_updating_doc": MessageLookupByLibrary.simpleMessage(
+            "حدث خطأ اثناء تحديث معلومات في قاعدة البيانات"),
+        "db_success_adding_doc":
+            MessageLookupByLibrary.simpleMessage("تمت الاضافة بنجاح"),
+        "db_success_deleting_doc":
+            MessageLookupByLibrary.simpleMessage("تم الحذف بنجاح"),
+        "db_success_updaging_doc":
+            MessageLookupByLibrary.simpleMessage("تم التعديل بنجاح"),
+        "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
         "error_importing_image":
             MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء استيراد الصور"),
-        "error_login_to_db":
-            MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء تسجيل الدخول"),
         "failure": MessageLookupByLibrary.simpleMessage("فشل"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("العودة الى الصفحة الرئيسية"),
@@ -94,13 +104,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
         "screen_is_empty":
             MessageLookupByLibrary.simpleMessage("لا يوجد بيانات"),
+        "search_not_found_in_db": MessageLookupByLibrary.simpleMessage(
+            "لم يتم ايجاد المستند في قاعةد البيانات"),
         "settings": MessageLookupByLibrary.simpleMessage("الاعدادات"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
         "slogan":
             MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
-        "success_adding_doc_to_db":
-            MessageLookupByLibrary.simpleMessage("تمت الاضافة بنجاح"),
         "transactions": MessageLookupByLibrary.simpleMessage("التعاملات"),
         "update_category":
             MessageLookupByLibrary.simpleMessage("تعديل معلومات الصنف"),
