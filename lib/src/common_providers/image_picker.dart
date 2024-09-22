@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart' as caching;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,7 +23,7 @@ class GeneralImagePicker extends ConsumerWidget {
           backgroundColor: Colors.grey,
           foregroundImage: pickedImageProvider.pickedImage != null
               ? FileImage(pickedImageProvider.pickedImage!)
-              : CachedNetworkImageProvider(imageUrl),
+              : caching.CachedNetworkImageProvider(imageUrl),
         ),
         TextButton.icon(
           onPressed: () => ref

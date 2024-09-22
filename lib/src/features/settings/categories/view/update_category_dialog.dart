@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/common_providers/image_picker.dart';
-import 'package:tablets/src/features/settings/categories/controller/category_controller.dart';
+import 'package:tablets/src/features/settings/categories/controller/category_form_controller.dart';
+import 'package:tablets/src/features/settings/categories/controller/category_provider.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class UpdateCategoryDialog extends ConsumerStatefulWidget {
@@ -16,7 +17,8 @@ class UpdateCategoryDialog extends ConsumerStatefulWidget {
 class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
   @override
   Widget build(BuildContext context) {
-    final categoryController = ref.read(categoryControllerProvider);
+    final categoryFormController = ref.read(categoryControllerProvider);
+    final currentCategory = ref.read(currentCategoryProvider);
     return AlertDialog(
       scrollable: true,
       contentPadding: const EdgeInsets.all(16.0),
@@ -29,17 +31,16 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
         width: MediaQuery.of(context).size.width * 0.3,
         height: MediaQuery.of(context).size.height * 0.5,
         child: Form(
-          key: categoryController.formKey,
+          key: categoryFormController.formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              GeneralImagePicker(
-                  imageUrl: categoryController.category.imageUrl),
+              GeneralImagePicker(imageUrl: currentCategory.imageUrl),
               constants.FormFieldsSpacing.vertical,
               Expanded(
                 child: TextFormField(
-                    initialValue: categoryController.category.name,
+                    initialValue: currentCategory.name,
                     decoration: InputDecoration(
                       labelText: S.of(context).category,
                     ),
@@ -49,8 +50,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                             errorMessage: S
                                 .of(context)
                                 .input_validation_error_message_for_numbers),
-                    onSaved: (value) =>
-                        categoryController.category.name = value!),
+                    onSaved: (value) => currentCategory.name = value!),
               ),
             ],
           ),
@@ -62,15 +62,15 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
           children: [
             ElevatedButton(
               onPressed: () {
-                final previousCategoryName = categoryController.category.name;
-                categoryController.updateCategoryInDB(
+                final previousCategoryName = currentCategory.name;
+                categoryFormController.updateCategoryInDB(
                     context, previousCategoryName);
               },
               child: Text(S.of(context).save),
             ),
             TextButton(
               onPressed: () {
-                categoryController.cancelForm(context);
+                categoryFormController.cancelForm(context);
               },
               child: Text(S.of(context).cancel),
             ),

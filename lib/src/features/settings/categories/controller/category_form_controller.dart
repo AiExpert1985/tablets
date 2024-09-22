@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/features/settings/categories/controller/category_provider.dart';
 import 'package:tablets/src/features/settings/categories/model/product_category.dart';
 import 'package:tablets/src/features/settings/categories/view/create_category_dialog.dart';
 import 'package:tablets/src/features/settings/categories/view/update_category_dialog.dart';
@@ -16,16 +16,10 @@ import 'package:tablets/generated/l10n.dart';
 /// and gets images from a 'pickedImageNotifierProvider' where image file is stored when
 /// user pick image (inside form)
 class CategoryController {
-  final ProviderRef ref;
-  final ProductCategory category;
-  CategoryController({required this.ref, required this.category});
+  CategoryController(this._ref);
+  final ProviderRef _ref;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final formKey = GlobalKey<FormState>();
-
-  void resetCategory() {
-    category.name = 'New category';
-    category.imageUrl = constants.DefaultImage.imageUrl;
-  }
 
   bool saveForm() {
     // runs validation inside form
@@ -40,8 +34,8 @@ class CategoryController {
     // close the form
     Navigator.of(context).pop();
     // reset the image picker
-    ref.read(pickedImageNotifierProvider.notifier).reset();
-    resetCategory();
+    _ref.read(pickedImageNotifierProvider.notifier).reset();
+    _ref.read(currentCategoryProvider).setDefaultValues();
   }
 
   ///  take the data & image in the 'add form' and using this data to
@@ -53,21 +47,24 @@ class CategoryController {
     bool isSuccessful = saveForm();
     if (!isSuccessful) return;
     try {
-      final pickedImage = ref.read(pickedImageNotifierProvider).pickedImage;
+      final currentCategory = _ref.read(currentCategoryProvider);
+      final pickedImage = _ref.read(pickedImageNotifierProvider).pickedImage;
 
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        final newUrl = await ref.read(fileStorageProvider).addFile(
-            folder: 'category', fileName: category.name, file: pickedImage);
-        category.imageUrl = newUrl!;
+        final newUrl = await _ref.read(fileStorageProvider).addFile(
+            folder: 'category',
+            fileName: currentCategory.name,
+            file: pickedImage);
+        currentCategory.imageUrl = newUrl!;
       }
 
       final docRef = _firestore.collection('categories').doc();
 
       await docRef.set({
-        ProductCategory.dbKeyName: category.name,
-        ProductCategory.dbKeyImageUrl: category.imageUrl,
+        ProductCategory.dbKeyName: currentCategoryProvider.name,
+        ProductCategory.dbKeyImageUrl: currentCategory.imageUrl,
       });
       utils.UserMessages.success(
         context: context,
@@ -95,18 +92,19 @@ class CategoryController {
       BuildContext context, String previousCategoryName) async {
     if (!saveForm()) return;
     try {
+      final currentCategory = _ref.read(currentCategoryProvider);
       // first update the photo
-      final pickedImage = ref.read(pickedImageNotifierProvider).pickedImage;
+      final pickedImage = _ref.read(pickedImageNotifierProvider).pickedImage;
       // if an image is picked, we will store it and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        final newUrl = await ref.read(fileStorageProvider).updateFile(
+        final newUrl = await _ref.read(fileStorageProvider).updateFile(
             folder: 'category',
-            fileName: category.name,
+            fileName: currentCategory.name,
             file: pickedImage,
-            fileUrl: category.imageUrl);
+            fileUrl: currentCategory.imageUrl);
         //we must update the category imageUrl based on the new url
-        category.imageUrl = newUrl!;
+        currentCategory.imageUrl = newUrl!;
       }
       // then update the category document
       final query = _firestore
@@ -116,8 +114,8 @@ class CategoryController {
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.update({
-          ProductCategory.dbKeyName: category.name,
-          ProductCategory.dbKeyImageUrl: category.imageUrl,
+          ProductCategory.dbKeyName: currentCategory.name,
+          ProductCategory.dbKeyImageUrl: currentCategory.imageUrl,
         });
         utils.UserMessages.success(
             context: context, message: S.of(context).db_success_updaging_doc);
@@ -138,8 +136,9 @@ class CategoryController {
   /// it uses category.iamgeUrl to get an image from firebase storage
   /// and uses category.name to show the category name
   void showCategoryUpdateForm(BuildContext context, ProductCategory cat) {
-    category.imageUrl = cat.imageUrl;
-    category.name = cat.name;
+    final currentCategory = _ref.read(currentCategoryProvider);
+    currentCategory.imageUrl = cat.imageUrl;
+    currentCategory.name = cat.name;
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const UpdateCategoryDialog(),
@@ -157,25 +156,5 @@ class CategoryController {
 }
 
 final categoryControllerProvider = Provider<CategoryController>((ref) {
-  final category = ProductCategory(
-      name: 'New Category', imageUrl: constants.DefaultImage.imageUrl);
-  return CategoryController(ref: ref, category: category);
+  return CategoryController(ref);
 });
-
-/// Streaming categorys from firestore 'categories' collection.
-/// categoris are steamed separately (I didn't include it in 'categoryController')
-///  because it is easy for me to implement
-final categoriesStreamProvider =
-    StreamProvider<QuerySnapshot<Map<String, dynamic>>>(
-  (ref) async* {
-    try {
-      final querySnapshot =
-          FirebaseFirestore.instance.collection('categories').snapshots();
-      yield* querySnapshot;
-    } catch (e) {
-      utils.CustomDebug.print(
-          message: 'an error happened while streaming categories',
-          stackTrace: StackTrace.current);
-    }
-  },
-);
