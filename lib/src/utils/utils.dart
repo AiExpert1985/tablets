@@ -3,8 +3,12 @@ import 'package:toastification/toastification.dart';
 
 class CustomDebug {
   static void print({message, stackTrace}) {
-    debugPrint(
-        '||===== Hamandi ====> $message =====> inside: ${stackTrace.toString().substring(0, 225)} ======||');
+    // Sometime the stack trace is shorter than 225, so I need to have protection against that
+    String stackText = stackTrace.toString();
+    int trimEnd = stackText.length < 225 ? stackText.length : 225;
+    String details = stackText.substring(0, trimEnd);
+
+    debugPrint('||===== Hamandi ====> $message =====> $details======||');
   }
 }
 

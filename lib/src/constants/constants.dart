@@ -17,9 +17,6 @@ class DefaultImage {
 
   static Future<void> initializDefaultImageFile() async {
     try {
-      utils.CustomDebug.print(
-          message: 'hi form _useDefaultImageFile',
-          stackTrace: StackTrace.current);
       final tempDir = await path_provider.getTemporaryDirectory();
       final filePath = '${tempDir.path}/default_image.tmp';
 

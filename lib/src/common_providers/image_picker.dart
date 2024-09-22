@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:http/http.dart' as http;
 
 /// this widget shows an image and a button to upload image
 /// it takes its image from the pickedImageNotifierProvider
@@ -27,7 +29,7 @@ class GeneralImagePicker extends ConsumerWidget {
         TextButton.icon(
           onPressed: () => ref
               .read(pickedImageNotifierProvider.notifier)
-              .updateUserPickedImage(),
+              .updateUsingPickedImage(),
           icon: const Icon(Icons.image),
           label: Text(
             S.of(context).add_image,
@@ -46,7 +48,7 @@ class UserPickedImage {
 
 class PickedImageNotifier extends StateNotifier<UserPickedImage> {
   PickedImageNotifier(super.state);
-  Future<void> updateUserPickedImage({imageSource = 'gallery'}) async {
+  Future<void> updateUsingPickedImage({imageSource = 'gallery'}) async {
     try {
       final pickedImage = await ImagePicker().pickImage(
           source: imageSource == 'camera'
@@ -63,6 +65,25 @@ class PickedImageNotifier extends StateNotifier<UserPickedImage> {
     } catch (e) {
       utils.CustomDebug.print(
           message: 'error while importing images',
+          stackTrace: StackTrace.current);
+    }
+  }
+
+  Future<void> updateUsingUrl(imageUrl) async {
+    try {
+      final tempDir = await path_provider.getTemporaryDirectory();
+      final filePath = '${tempDir.path}/default_image.tmp';
+
+      final file = File(filePath);
+      final response = await http.get(Uri.parse(imageUrl));
+      final bytes = response.bodyBytes;
+
+      await file.writeAsBytes(bytes);
+
+      state = UserPickedImage(file);
+    } catch (e) {
+      utils.CustomDebug.print(
+          message: 'Error Updating pickedImageProvider using url',
           stackTrace: StackTrace.current);
     }
   }

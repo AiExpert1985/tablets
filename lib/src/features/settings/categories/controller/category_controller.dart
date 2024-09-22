@@ -136,6 +136,9 @@ class CategoryController {
   /// and uses category.name to show the category name
   void showCategoryUpdateForm(context, cat) {
     category = cat;
+    _ref
+        .read(pickedImageNotifierProvider.notifier)
+        .updateUsingUrl(category.imageUrl);
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const UpdateCategoryDialog(),
