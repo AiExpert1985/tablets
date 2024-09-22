@@ -5,10 +5,6 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:http/http.dart' as http;
 import 'package:tablets/src/utils/utils.dart' as utils;
 
-void initializeStaticMethods() {
-  DefaultImage.initializDefaultImageFile();
-}
-
 class FormFieldsSpacing {
   static const vertical = SizedBox(height: 25);
   static const horizontal = SizedBox(width: 40);

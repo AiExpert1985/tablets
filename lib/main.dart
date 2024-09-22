@@ -2,12 +2,13 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tablets/src/app.dart';
+import 'package:tablets/src/initalizing_app/custom_inialization.dart'
+    as my_initializer;
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ignore:depend_on_referenced_packages
 import 'package:flutter_web_plugins/url_strategy.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,8 +19,7 @@ void main() async {
   // * Register error handlers. For more info, see:
   // * https://docs.flutter.dev/testing/errors
   registerErrorHandlers();
-  // Hamandi: I didn't any good way to run static method when class is loaded, so I run below code
-  constants.initializeStaticMethods();
+  my_initializer.customInialization();
   runApp(const ProviderScope(child: MyApp()));
 }
 

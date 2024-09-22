@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
+// import 'package:transparent_image/transparent_image.dart';
+import 'package:cached_network_image/cached_network_image.dart' as caching;
 
-class CategoryItem extends StatelessWidget {
-  const CategoryItem({required this.imageUrl, required this.title, super.key});
+class ImageWithTitle extends StatelessWidget {
+  const ImageWithTitle(
+      {required this.imageUrl, required this.title, super.key});
 
   final String imageUrl;
   final String title;
@@ -15,13 +17,24 @@ class CategoryItem extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
-          FadeInImage(
-            // fit: BoxFit.cover,
-            placeholder: MemoryImage(kTransparentImage),
-            image: NetworkImage(imageUrl),
+          // // fading gives great effect, but i need caching, & fading doesn't provide it
+          // FadeInImage(
+          //   // fit: BoxFit.cover,
+          //   placeholder: MemoryImage(kTransparentImage),
+          //   image: NetworkImage(imageUrl),
+          //   fit: BoxFit.cover,
+          //   height: 150,
+          //   width: double.infinity,
+          // ),
+          //! using cached_image_network to avoid reloading images from firebase (extra cost)
+          caching.CachedNetworkImage(
             fit: BoxFit.cover,
-            height: 150,
-            width: double.infinity,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            imageUrl: imageUrl,
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                CircularProgressIndicator(value: downloadProgress.progress),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
 
           Positioned(

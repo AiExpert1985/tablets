@@ -6,6 +6,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/constants/constants.dart';
 import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/features/products/presentation/controller/products_controller.dart';
+import 'package:gap/gap.dart' as gap;
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class AddProductDialog extends ConsumerStatefulWidget {
@@ -34,7 +35,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const GeneralImagePicker(),
-              const SizedBox(height: 20),
+              const gap.Gap(20),
               //! 1st Row
               Row(
                 children: [

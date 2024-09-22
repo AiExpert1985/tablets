@@ -47,7 +47,7 @@ class SettingsScreen extends ConsumerWidget {
                     onTap: () => ref
                         .read(categoryControllerProvider)
                         .showCategoryUpdateForm(ctx, category),
-                    child: CategoryItem(
+                    child: ImageWithTitle(
                       imageUrl: category.imageUrl!,
                       title: category.name,
                     ),
