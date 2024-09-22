@@ -14,6 +14,6 @@ class ProductCategory {
 
   // I use the two variables to avoid using strings for db keys when using documents
   // create, update & delete
-  static String dbKeyName = ProductCategoryDbKeys.name.name;
-  static String dbKeyImageUrl = ProductCategoryDbKeys.imageUrl.name;
+  static final String dbKeyName = ProductCategoryDbKeys.name.name;
+  static final String dbKeyImageUrl = ProductCategoryDbKeys.imageUrl.name;
 }

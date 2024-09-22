@@ -19,7 +19,7 @@ class GeneralImagePicker extends ConsumerWidget {
     return Column(
       children: [
         CircleAvatar(
-          radius: 60,
+          radius: 70,
           backgroundColor: Colors.grey,
           foregroundImage: pickedImageProvider.pickedImage != null
               ? FileImage(pickedImageProvider.pickedImage!)

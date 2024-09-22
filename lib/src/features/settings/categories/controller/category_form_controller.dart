@@ -63,7 +63,7 @@ class CategoryController {
       final docRef = _firestore.collection('categories').doc();
 
       await docRef.set({
-        ProductCategory.dbKeyName: currentCategoryProvider.name,
+        ProductCategory.dbKeyName: currentCategory.name,
         ProductCategory.dbKeyImageUrl: currentCategory.imageUrl,
       });
       utils.UserMessages.success(
