@@ -29,7 +29,7 @@ class GeneralImagePicker extends ConsumerWidget {
         TextButton.icon(
           onPressed: () => ref
               .read(pickedImageNotifierProvider.notifier)
-              .updateUsingPickedImage(),
+              .updateUsingImagePicker(),
           icon: const Icon(Icons.image),
           label: Text(
             S.of(context).add_image,
@@ -41,14 +41,38 @@ class GeneralImagePicker extends ConsumerWidget {
   }
 }
 
+// I needed two constructors for this class because I have two different ways to create objects
+// (1) Using image picker: when user choose a photo to upload in the forms
+// (2) using url: when an update form is opened, and shows an exisiting photo or when using deafult image
 class UserPickedImage {
   File? pickedImage;
   UserPickedImage(this.pickedImage);
+  UserPickedImage.fromUrl({imageUrl = constants.DefaultImage.imageUrl}) {
+    createFileFromUrl(imageUrl);
+  }
+
+  Future<void> createFileFromUrl(imageUrl) async {
+    try {
+      final tempDir = await path_provider.getTemporaryDirectory();
+      final filePath = '${tempDir.path}/default_image.tmp';
+
+      final file = File(filePath);
+      final response = await http.get(Uri.parse(imageUrl));
+      final bytes = response.bodyBytes;
+
+      await file.writeAsBytes(bytes);
+      pickedImage = file;
+    } catch (e) {
+      utils.CustomDebug.print(
+          message: 'Error creating file from url',
+          stackTrace: StackTrace.current);
+    }
+  }
 }
 
 class PickedImageNotifier extends StateNotifier<UserPickedImage> {
   PickedImageNotifier(super.state);
-  Future<void> updateUsingPickedImage({imageSource = 'gallery'}) async {
+  Future<void> updateUsingImagePicker({imageSource = 'gallery'}) async {
     try {
       final pickedImage = await ImagePicker().pickImage(
           source: imageSource == 'camera'
@@ -69,33 +93,22 @@ class PickedImageNotifier extends StateNotifier<UserPickedImage> {
     }
   }
 
-  Future<void> updateUsingUrl(imageUrl) async {
-    try {
-      final tempDir = await path_provider.getTemporaryDirectory();
-      final filePath = '${tempDir.path}/default_image.tmp';
-
-      final file = File(filePath);
-      final response = await http.get(Uri.parse(imageUrl));
-      final bytes = response.bodyBytes;
-
-      await file.writeAsBytes(bytes);
-
-      state = UserPickedImage(file);
-    } catch (e) {
-      utils.CustomDebug.print(
-          message: 'Error Updating pickedImageProvider using url',
-          stackTrace: StackTrace.current);
-    }
+  /// create an image file using the provided image url
+  /// if now imageUrl is provided, it uses the default image url
+  Future<void> updateUsingUrl(
+      {imageUrl = constants.DefaultImage.imageUrl}) async {
+    state = UserPickedImage.fromUrl(imageUrl: imageUrl);
+    utils.CustomDebug.print(message: 'file was created from $imageUrl');
   }
 
   // url is the default image
   // file is null
   void reset() {
-    state = UserPickedImage(constants.DefaultImage.imageFile);
+    state = UserPickedImage.fromUrl();
   }
 }
 
 final pickedImageNotifierProvider =
     StateNotifierProvider<PickedImageNotifier, UserPickedImage>((ref) {
-  return PickedImageNotifier(UserPickedImage(constants.DefaultImage.imageFile));
+  return PickedImageNotifier(UserPickedImage.fromUrl());
 });

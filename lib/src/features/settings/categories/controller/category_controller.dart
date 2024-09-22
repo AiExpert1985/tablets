@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
 import 'package:tablets/src/features/settings/categories/model/product_category.dart';
+import 'package:tablets/src/features/settings/categories/view/create_category_dialog.dart';
 import 'package:tablets/src/features/settings/categories/view/update_category_dialog.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
@@ -138,11 +139,23 @@ class CategoryController {
     category = cat;
     _ref
         .read(pickedImageNotifierProvider.notifier)
-        .updateUsingUrl(category.imageUrl);
+        .updateUsingUrl(imageUrl: category.imageUrl);
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const UpdateCategoryDialog(),
     );
+  }
+
+  /// show the form for creating new category
+  /// image displayed in the picker is the default image
+  void showCategoryCreateForm(context) {
+    {
+      _ref.read(pickedImageNotifierProvider.notifier).updateUsingUrl();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => const CreateCategoryDialog(),
+      );
+    }
   }
 }
 

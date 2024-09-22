@@ -1,10 +1,10 @@
 import 'package:flutter_cache_manager/flutter_cache_manager.dart'
     as caching_manager;
-import 'package:tablets/src/constants/constants.dart' as constants;
+// import 'package:tablets/src/constants/constants.dart' as constants;
 
 void customInialization() {
   clearCachedNetworkImages();
-  initializDefaultImageFile();
+  // initializDefaultImageFile();
 }
 
 // I needed to remove cached images for two reasons:
@@ -15,6 +15,6 @@ void clearCachedNetworkImages() {
 }
 
 // I didn't any good way to run static method when class is loaded, so I run below code
-void initializDefaultImageFile() {
-  constants.DefaultImage.initializDefaultImageFile();
-}
+// void initializDefaultImageFile() {
+//   constants.DefaultImage.initializDefaultImageFile();
+// }
