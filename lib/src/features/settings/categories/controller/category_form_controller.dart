@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
-import 'package:tablets/src/features/settings/categories/controller/category_provider.dart';
+import 'package:tablets/src/features/settings/categories/controller/current_category_provider.dart';
 import 'package:tablets/src/features/settings/categories/model/product_category.dart';
 import 'package:tablets/src/features/settings/categories/view/create_category_dialog.dart';
 import 'package:tablets/src/features/settings/categories/view/update_category_dialog.dart';
