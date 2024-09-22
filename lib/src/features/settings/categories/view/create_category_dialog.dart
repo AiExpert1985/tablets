@@ -34,7 +34,8 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const GeneralImagePicker(),
+              GeneralImagePicker(
+                  imageUrl: categoryController.category.imageUrl),
               constants.FormFieldsSpacing.vertical,
               Expanded(
                 child: TextFormField(
@@ -46,8 +47,8 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
                       errorMessage: S
                           .of(context)
                           .input_validation_error_message_for_numbers),
-                  onSaved: (value) => categoryController
-                      .createCategory(value!) // value is double (never null)
+                  onSaved: (value) => categoryController.category.name =
+                      value! // value is double (never null)
                   ,
                 ),
               ),

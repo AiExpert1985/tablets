@@ -34,7 +34,8 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const GeneralImagePicker(),
+              GeneralImagePicker(
+                  imageUrl: categoryController.category.imageUrl),
               constants.FormFieldsSpacing.vertical,
               Expanded(
                 child: TextFormField(

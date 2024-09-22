@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 
@@ -74,5 +75,13 @@ class FormValidation {
       return errorMessage;
     }
     return null;
+  }
+}
+
+class StringOperations {
+  static String generateRandomString(int len) {
+    var r = Random();
+    return String.fromCharCodes(
+        List.generate(len, (index) => r.nextInt(33) + 89));
   }
 }

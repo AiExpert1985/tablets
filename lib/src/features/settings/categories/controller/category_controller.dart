@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
+import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/settings/categories/model/product_category.dart';
 import 'package:tablets/src/features/settings/categories/view/create_category_dialog.dart';
 import 'package:tablets/src/features/settings/categories/view/update_category_dialog.dart';
@@ -13,16 +16,15 @@ import 'package:tablets/generated/l10n.dart';
 /// and gets images from a 'pickedImageNotifierProvider' where image file is stored when
 /// user pick image (inside form)
 class CategoryController {
-  CategoryController(this._ref);
-  final ProviderRef _ref;
+  final ProviderRef ref;
+  final ProductCategory category;
+  CategoryController({required this.ref, required this.category});
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final formKey = GlobalKey<FormState>();
-  late ProductCategory category;
 
-  /// create a new ProductCategory object with default image url
-  /// this category will be updated later with create & update forms
-  void createCategory(String name) {
-    category = ProductCategory(name: name);
+  void resetCategory() {
+    category.name = 'New category';
+    category.imageUrl = constants.DefaultImage.imageUrl;
   }
 
   bool saveForm() {
@@ -34,11 +36,12 @@ class CategoryController {
     return true;
   }
 
-  void cancelForm(context) {
+  void cancelForm(BuildContext context) {
     // close the form
     Navigator.of(context).pop();
     // reset the image picker
-    _ref.read(pickedImageNotifierProvider.notifier).reset();
+    ref.read(pickedImageNotifierProvider.notifier).reset();
+    resetCategory();
   }
 
   ///  take the data & image in the 'add form' and using this data to
@@ -46,17 +49,18 @@ class CategoryController {
   /// (the image is from pickedImageNotifierProvider which already picked by user)
   /// then create a new document in categories collection
   /// to store the category name and url of uploaded image
-  void addCategoryToDB(context) async {
+  void addCategoryToDB(BuildContext context) async {
     bool isSuccessful = saveForm();
     if (!isSuccessful) return;
     try {
-      final pickedImage = _ref.read(pickedImageNotifierProvider).pickedImage;
-      // if an image is picked, we will store it and use its url
+      final pickedImage = ref.read(pickedImageNotifierProvider).pickedImage;
+
+      // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        final newUrl = await _ref.read(fileStorageProvider).addFile(
+        final newUrl = await ref.read(fileStorageProvider).addFile(
             folder: 'category', fileName: category.name, file: pickedImage);
-        category.imageUrl = newUrl;
+        category.imageUrl = newUrl!;
       }
 
       final docRef = _firestore.collection('categories').doc();
@@ -87,21 +91,22 @@ class CategoryController {
   /// by CategoryController.showCategoryUpdateForm()
   /// note that this method receives the previous category name to use to when searching db to
   /// get the document that will be updated.
-  void updateCategoryInDB(context, previousCategoryName) async {
+  void updateCategoryInDB(
+      BuildContext context, String previousCategoryName) async {
     if (!saveForm()) return;
     try {
       // first update the photo
-      final pickedImage = _ref.read(pickedImageNotifierProvider).pickedImage;
+      final pickedImage = ref.read(pickedImageNotifierProvider).pickedImage;
       // if an image is picked, we will store it and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        final newUrl = await _ref.read(fileStorageProvider).updateFile(
+        final newUrl = await ref.read(fileStorageProvider).updateFile(
             folder: 'category',
             fileName: category.name,
             file: pickedImage,
-            fileUrl: category.imageUrl!);
+            fileUrl: category.imageUrl);
         //we must update the category imageUrl based on the new url
-        category.imageUrl = newUrl;
+        category.imageUrl = newUrl!;
       }
       // then update the category document
       final query = _firestore
@@ -124,10 +129,7 @@ class CategoryController {
       utils.UserMessages.failure(
           context: context, message: S.of(context).db_error_updating_doc);
     } finally {
-      // close the form
-      Navigator.of(context).pop();
-      // reset the image picker
-      _ref.read(pickedImageNotifierProvider.notifier).reset();
+      cancelForm(context);
     }
   }
 
@@ -135,11 +137,9 @@ class CategoryController {
   /// the category passed to it comes from the selected category widget (in the grid)
   /// it uses category.iamgeUrl to get an image from firebase storage
   /// and uses category.name to show the category name
-  void showCategoryUpdateForm(context, cat) {
-    category = cat;
-    _ref
-        .read(pickedImageNotifierProvider.notifier)
-        .updateUsingUrl(imageUrl: category.imageUrl);
+  void showCategoryUpdateForm(BuildContext context, ProductCategory cat) {
+    category.imageUrl = cat.imageUrl;
+    category.name = cat.name;
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const UpdateCategoryDialog(),
@@ -148,19 +148,18 @@ class CategoryController {
 
   /// show the form for creating new category
   /// image displayed in the picker is the default image
-  void showCategoryCreateForm(context) {
-    {
-      _ref.read(pickedImageNotifierProvider.notifier).updateUsingUrl();
-      showDialog(
-        context: context,
-        builder: (BuildContext context) => const CreateCategoryDialog(),
-      );
-    }
+  void showCategoryCreateForm(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => const CreateCategoryDialog(),
+    );
   }
 }
 
 final categoryControllerProvider = Provider<CategoryController>((ref) {
-  return CategoryController(ref);
+  final category = ProductCategory(
+      name: 'New Category', imageUrl: constants.DefaultImage.imageUrl);
+  return CategoryController(ref: ref, category: category);
 });
 
 /// Streaming categorys from firestore 'categories' collection.

@@ -1,11 +1,9 @@
-import 'package:tablets/src/constants/constants.dart';
-
 enum ProductCategoryDbKeys { name, imageUrl }
 
 class ProductCategory {
-  ProductCategory({required this.name, this.imageUrl = DefaultImage.imageUrl});
+  ProductCategory({required this.name, required this.imageUrl});
   String name;
-  String? imageUrl;
+  String imageUrl;
 
   // I use the two variables to avoid using strings for db keys when using documents
   // create, update & delete

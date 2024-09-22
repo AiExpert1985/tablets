@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/constants/constants.dart';
+import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/features/products/presentation/controller/products_controller.dart';
 import 'package:gap/gap.dart' as gap;
@@ -34,7 +34,9 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const GeneralImagePicker(),
+              const GeneralImagePicker(
+                imageUrl: constants.DefaultImage.imageUrl,
+              ),
               const gap.Gap(20),
               //! 1st Row
               Row(
@@ -57,7 +59,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                       },
                     ),
                   ),
-                  FormFieldsSpacing.horizontal,
+                  constants.FormFieldsSpacing.horizontal,
                   //! prodcut name
                   Expanded(
                     child: TextFormField(
@@ -75,7 +77,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                       },
                     ),
                   ),
-                  FormFieldsSpacing.horizontal,
+                  constants.FormFieldsSpacing.horizontal,
                   //! product Category
                   Expanded(
                     child: TextFormField(
@@ -95,7 +97,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   ),
                 ],
               ),
-              FormFieldsSpacing.vertical,
+              constants.FormFieldsSpacing.vertical,
               //! 2nd Row
               Row(
                 children: [
@@ -116,7 +118,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                       },
                     ),
                   ),
-                  FormFieldsSpacing.horizontal,
+                  constants.FormFieldsSpacing.horizontal,
                   //! prodcut sellWholePrice
                   Expanded(
                     child: TextFormField(
@@ -134,7 +136,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                       },
                     ),
                   ),
-                  FormFieldsSpacing.horizontal,
+                  constants.FormFieldsSpacing.horizontal,
                   //! prodcut sellsman commission
                   Expanded(
                     child: TextFormField(
@@ -154,7 +156,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   ),
                 ],
               ),
-              FormFieldsSpacing.vertical,
+              constants.FormFieldsSpacing.vertical,
               //! 3rd Row
               Row(
                 children: [
@@ -175,7 +177,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                       },
                     ),
                   ),
-                  FormFieldsSpacing.horizontal,
+                  constants.FormFieldsSpacing.horizontal,
                   //! product alert when less than
                   Expanded(
                     child: TextFormField(
@@ -194,7 +196,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                       },
                     ),
                   ),
-                  FormFieldsSpacing.horizontal,
+                  constants.FormFieldsSpacing.horizontal,
                   //! prodcut alert when exceeds
                   Expanded(
                     child: TextFormField(
@@ -214,7 +216,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   ),
                 ],
               ),
-              FormFieldsSpacing.vertical,
+              constants.FormFieldsSpacing.vertical,
               //! 4th Row
               Row(
                 children: [
@@ -235,7 +237,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                       },
                     ),
                   ),
-                  FormFieldsSpacing.horizontal,
+                  constants.FormFieldsSpacing.horizontal,
                   //! product package weight
                   Expanded(
                     child: TextFormField(
@@ -253,7 +255,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                       },
                     ),
                   ),
-                  FormFieldsSpacing.horizontal,
+                  constants.FormFieldsSpacing.horizontal,
                   //! prodcut num of items inside package
                   Expanded(
                     child: TextFormField(

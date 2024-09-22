@@ -45,7 +45,7 @@ class SettingsScreen extends ConsumerWidget {
                         .read(categoryControllerProvider)
                         .showCategoryUpdateForm(ctx, category),
                     child: ImageWithTitle(
-                      imageUrl: category.imageUrl!,
+                      imageUrl: category.imageUrl,
                       title: category.name,
                     ),
                   );

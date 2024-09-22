@@ -4,15 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/utils/utils.dart' as utils;
-import 'package:path_provider/path_provider.dart' as path_provider;
-import 'package:http/http.dart' as http;
 
 /// this widget shows an image and a button to upload image
 /// it takes its image from the pickedImageNotifierProvider
 class GeneralImagePicker extends ConsumerWidget {
-  const GeneralImagePicker({super.key});
+  final String imageUrl;
+  const GeneralImagePicker({required this.imageUrl, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,12 +22,12 @@ class GeneralImagePicker extends ConsumerWidget {
           backgroundColor: Colors.grey,
           foregroundImage: pickedImageProvider.pickedImage != null
               ? FileImage(pickedImageProvider.pickedImage!)
-              : null,
+              : NetworkImage(imageUrl),
         ),
         TextButton.icon(
           onPressed: () => ref
               .read(pickedImageNotifierProvider.notifier)
-              .updateUsingImagePicker(),
+              .updatePickedImage(),
           icon: const Icon(Icons.image),
           label: Text(
             S.of(context).add_image,
@@ -46,33 +44,12 @@ class GeneralImagePicker extends ConsumerWidget {
 // (2) using url: when an update form is opened, and shows an exisiting photo or when using deafult image
 class UserPickedImage {
   File? pickedImage;
-  UserPickedImage(this.pickedImage);
-  UserPickedImage.fromUrl({imageUrl = constants.DefaultImage.imageUrl}) {
-    createFileFromUrl(imageUrl);
-  }
-
-  Future<void> createFileFromUrl(imageUrl) async {
-    try {
-      final tempDir = await path_provider.getTemporaryDirectory();
-      final filePath = '${tempDir.path}/default_image.tmp';
-
-      final file = File(filePath);
-      final response = await http.get(Uri.parse(imageUrl));
-      final bytes = response.bodyBytes;
-
-      await file.writeAsBytes(bytes);
-      pickedImage = file;
-    } catch (e) {
-      utils.CustomDebug.print(
-          message: 'Error creating file from url',
-          stackTrace: StackTrace.current);
-    }
-  }
+  UserPickedImage({this.pickedImage});
 }
 
 class PickedImageNotifier extends StateNotifier<UserPickedImage> {
   PickedImageNotifier(super.state);
-  Future<void> updateUsingImagePicker({imageSource = 'gallery'}) async {
+  Future<void> updatePickedImage({imageSource = 'gallery'}) async {
     try {
       final pickedImage = await ImagePicker().pickImage(
           source: imageSource == 'camera'
@@ -85,7 +62,7 @@ class PickedImageNotifier extends StateNotifier<UserPickedImage> {
       if (pickedImage == null) {
         return;
       }
-      state = UserPickedImage(File(pickedImage.path));
+      state = UserPickedImage(pickedImage: File(pickedImage.path));
     } catch (e) {
       utils.CustomDebug.print(
           message: 'error while importing images',
@@ -93,22 +70,15 @@ class PickedImageNotifier extends StateNotifier<UserPickedImage> {
     }
   }
 
-  /// create an image file using the provided image url
-  /// if now imageUrl is provided, it uses the default image url
-  Future<void> updateUsingUrl(
-      {imageUrl = constants.DefaultImage.imageUrl}) async {
-    state = UserPickedImage.fromUrl(imageUrl: imageUrl);
-    utils.CustomDebug.print(message: 'file was created from $imageUrl');
-  }
-
-  // url is the default image
   // file is null
   void reset() {
-    state = UserPickedImage.fromUrl();
+    state = UserPickedImage();
   }
 }
 
+/// provide File if user used ImagePicker to select an image from the galary or camera
+/// otherwise it is null
 final pickedImageNotifierProvider =
     StateNotifierProvider<PickedImageNotifier, UserPickedImage>((ref) {
-  return PickedImageNotifier(UserPickedImage.fromUrl());
+  return PickedImageNotifier(UserPickedImage());
 });
