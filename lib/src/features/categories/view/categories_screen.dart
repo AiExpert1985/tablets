@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/main_layout/app_bar/main_app_bar.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/main_drawer.dart';
 import 'package:tablets/src/features/categories/controller/category_form_controller.dart';
-import 'package:tablets/src/common_widgets/image_with_title.dart';
+import 'package:tablets/src/common_widgets/various/image_with_title.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 

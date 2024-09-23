@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
-import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/features/categories/controller/category_form_controller.dart';
 import 'package:tablets/src/features/categories/controller/current_category_provider.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
