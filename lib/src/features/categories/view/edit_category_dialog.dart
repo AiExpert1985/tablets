@@ -77,6 +77,10 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
               },
               child: Text(S.of(context).cancel),
             ),
+            IconButton(
+                onPressed: () => categoryFormController.deleteCategoryInDB(
+                    context, oldCategory),
+                icon: const Icon(Icons.delete))
           ],
         )
       ],

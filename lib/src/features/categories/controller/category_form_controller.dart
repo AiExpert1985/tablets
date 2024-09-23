@@ -6,7 +6,7 @@ import 'package:tablets/src/features/categories/repository/category_repository_p
 import 'package:tablets/src/features/categories/controller/current_category_provider.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/view/create_category_dialog.dart';
-import 'package:tablets/src/features/categories/view/update_category_dialog.dart';
+import 'package:tablets/src/features/categories/view/edit_category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
@@ -115,6 +115,20 @@ class CategoryController {
       context: context,
       builder: (BuildContext context) => const CreateCategoryDialog(),
     );
+  }
+
+  void deleteCategoryInDB(context, oldCategory) async {
+    bool successful = await ref
+        .read(categoryRepositoryProvider)
+        .deleteCategoryInDB(oldCategory);
+    if (successful) {
+      utils.UserMessages.success(
+          context: context, message: S.of(context).db_success_deleting_doc);
+    } else {
+      utils.UserMessages.failure(
+          context: context, message: S.of(context).db_error_deleting_doc);
+    }
+    cancelForm(context);
   }
 }
 

@@ -88,6 +88,28 @@ class CategoryRepository {
       return false;
     }
   }
+
+  /// delete the document from firestore
+  /// delete image from storage
+  Future<bool> deleteCategoryInDB(ProductCategory category) async {
+    try {
+      // delete document using its name
+      final querySnapshot = await _firestore
+          .collection('categories')
+          .where('name', isEqualTo: category.name)
+          .get();
+      if (querySnapshot.size > 0) {
+        final documentRef = querySnapshot.docs[0].reference;
+        await documentRef.delete();
+      }
+      // delete image
+      _imageStorage.deleteFile(category.imageUrl);
+      return true;
+    } catch (error) {
+      utils.CustomDebug.print(message: error, stackTrace: StackTrace.current);
+      return false;
+    }
+  }
 }
 
 final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
