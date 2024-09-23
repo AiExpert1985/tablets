@@ -25,7 +25,7 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
 
   void _submitForm() async {
     final isValid = _loginForm.currentState!.validate(); // runs validator
-    final pickedImage = ref.read(pickedImageNotifierProvider).pickedImage;
+    final pickedImage = ref.read(pickedImageNotifierProvider);
     if (isValid && pickedImage != null) {
       _loginForm.currentState!.save(); // runs onSave inside form
       try {

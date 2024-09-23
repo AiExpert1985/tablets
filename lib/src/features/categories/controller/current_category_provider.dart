@@ -3,7 +3,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:tablets/src/constants/constants.dart' as constants;
-import 'package:tablets/src/features/settings/categories/model/product_category.dart';
+import 'package:tablets/src/features/categories/model/product_category.dart';
 
 /// the controller works with category forms (through its 'formKey') to update its category object
 /// and gets images from a 'pickedImageNotifierProvider' where image file is stored when

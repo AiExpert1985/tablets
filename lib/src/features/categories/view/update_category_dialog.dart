@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/common_providers/image_picker.dart';
-import 'package:tablets/src/features/settings/categories/controller/category_form_controller.dart';
-import 'package:tablets/src/features/settings/categories/controller/current_category_provider.dart';
+import 'package:tablets/src/features/categories/controller/category_form_controller.dart';
+import 'package:tablets/src/features/categories/controller/current_category_provider.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class UpdateCategoryDialog extends ConsumerStatefulWidget {
@@ -62,9 +62,8 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
           children: [
             ElevatedButton(
               onPressed: () {
-                final previousCategoryName = currentCategory.name;
                 categoryFormController.updateCategoryInDB(
-                    context, previousCategoryName);
+                    context, currentCategory);
               },
               child: Text(S.of(context).save),
             ),

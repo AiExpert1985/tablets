@@ -21,8 +21,8 @@ class GeneralImagePicker extends ConsumerWidget {
         CircleAvatar(
           radius: 70,
           backgroundColor: Colors.grey,
-          foregroundImage: pickedImageProvider.pickedImage != null
-              ? FileImage(pickedImageProvider.pickedImage!)
+          foregroundImage: pickedImageProvider != null
+              ? FileImage(pickedImageProvider)
               : caching.CachedNetworkImageProvider(imageUrl),
         ),
         TextButton.icon(
@@ -43,12 +43,8 @@ class GeneralImagePicker extends ConsumerWidget {
 // I needed two constructors for this class because I have two different ways to create objects
 // (1) Using image picker: when user choose a photo to upload in the forms
 // (2) using url: when an update form is opened, and shows an exisiting photo or when using deafult image
-class UserPickedImage {
-  File? pickedImage;
-  UserPickedImage({this.pickedImage});
-}
 
-class PickedImageNotifier extends StateNotifier<UserPickedImage> {
+class PickedImageNotifier extends StateNotifier<File?> {
   PickedImageNotifier(super.state);
   Future<void> updatePickedImage({imageSource = 'gallery'}) async {
     try {
@@ -60,10 +56,9 @@ class PickedImageNotifier extends StateNotifier<UserPickedImage> {
           maxWidth: 150); // can use ImageSource.gallery
 
       // if camera is closed without taking a photo, we just return and do nothing
-      if (pickedImage == null) {
-        return;
+      if (pickedImage != null) {
+        state = File(pickedImage.path);
       }
-      state = UserPickedImage(pickedImage: File(pickedImage.path));
     } catch (e) {
       utils.CustomDebug.print(
           message: 'error while importing images',
@@ -73,13 +68,13 @@ class PickedImageNotifier extends StateNotifier<UserPickedImage> {
 
   // file is null
   void reset() {
-    state = UserPickedImage();
+    state = null;
   }
 }
 
 /// provide File if user used ImagePicker to select an image from the galary or camera
 /// otherwise it is null
 final pickedImageNotifierProvider =
-    StateNotifierProvider<PickedImageNotifier, UserPickedImage>((ref) {
-  return PickedImageNotifier(UserPickedImage());
+    StateNotifierProvider<PickedImageNotifier, File?>((ref) {
+  return PickedImageNotifier(null);
 });
