@@ -19,10 +19,8 @@ class CategoryRepository {
   /// (the image is from pickedImageNotifierProvider which already picked by user)
   /// then create a new document in categories collection
   /// to store the category name and url of uploaded image
-  Future<bool> addCategoryToDB({
-    required ProductCategory category,
-    File? pickedImage,
-  }) async {
+  Future<bool> addCategoryToDB(
+      {required ProductCategory category, File? pickedImage}) async {
     try {
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
@@ -60,6 +58,7 @@ class CategoryRepository {
       required ProductCategory oldCategory,
       File? pickedImage}) async {
     try {
+      String url = oldCategory.imageUrl;
       // first update the photo
       // if an image is picked, we will store it and use its url
       // otherwise, we will use the default item image url
@@ -69,26 +68,23 @@ class CategoryRepository {
             fileName: newCategory.name,
             file: pickedImage,
             fileUrl: newCategory.imageUrl);
-        //we must update the category imageUrl based on the new url
-        newCategory.imageUrl = newUrl!;
+        if (newUrl != null) url = newUrl;
       }
       // then update the category document
       final query = _firestore
           .collection('categories')
-          .where('name', isEqualTo: oldCategory);
+          .where('name', isEqualTo: oldCategory.name);
       final querySnapshot = await query.get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.update({
           ProductCategory.dbKeyName: newCategory.name,
-          ProductCategory.dbKeyImageUrl: newCategory.imageUrl,
+          ProductCategory.dbKeyImageUrl: url,
         });
       }
       return true;
     } catch (error) {
-      utils.CustomDebug.print(
-          message: 'An error while updating category in DB',
-          stackTrace: StackTrace.current);
+      utils.CustomDebug.print(message: error, stackTrace: StackTrace.current);
       return false;
     }
   }

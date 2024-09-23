@@ -11,6 +11,11 @@ class CustomDebug {
 
     debugPrint('||===== Hamandi ====> $message =====> $details======||');
   }
+
+  /// Temporary print for texting code
+  static void tempPrint(message) {
+    debugPrint('||===== Temp Print ====> $message ======||');
+  }
 }
 
 class UserMessages {

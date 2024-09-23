@@ -5,6 +5,7 @@ import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/common_providers/image_picker.dart';
 import 'package:tablets/src/features/categories/controller/category_form_controller.dart';
 import 'package:tablets/src/features/categories/controller/current_category_provider.dart';
+import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class UpdateCategoryDialog extends ConsumerStatefulWidget {
@@ -18,7 +19,11 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
   @override
   Widget build(BuildContext context) {
     final categoryFormController = ref.read(categoryControllerProvider);
-    final currentCategory = ref.read(currentCategoryProvider);
+    final newCategory = ref.read(currentCategoryProvider);
+    final oldCategory = ProductCategory(
+      name: newCategory.name,
+      imageUrl: newCategory.imageUrl,
+    );
     return AlertDialog(
       scrollable: true,
       contentPadding: const EdgeInsets.all(16.0),
@@ -36,11 +41,11 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              GeneralImagePicker(imageUrl: currentCategory.imageUrl),
+              GeneralImagePicker(imageUrl: oldCategory.imageUrl),
               constants.FormFieldsSpacing.vertical,
               Expanded(
                 child: TextFormField(
-                    initialValue: currentCategory.name,
+                    initialValue: oldCategory.name,
                     decoration: InputDecoration(
                       labelText: S.of(context).category,
                     ),
@@ -50,7 +55,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                             errorMessage: S
                                 .of(context)
                                 .input_validation_error_message_for_numbers),
-                    onSaved: (value) => currentCategory.name = value!),
+                    onSaved: (value) => newCategory.name = value!),
               ),
             ],
           ),
@@ -62,8 +67,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
           children: [
             ElevatedButton(
               onPressed: () {
-                categoryFormController.updateCategoryInDB(
-                    context, currentCategory);
+                categoryFormController.updateCategoryInDB(context, oldCategory);
               },
               child: Text(S.of(context).save),
             ),

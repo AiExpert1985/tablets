@@ -58,6 +58,7 @@ class PickedImageNotifier extends StateNotifier<File?> {
       // if camera is closed without taking a photo, we just return and do nothing
       if (pickedImage != null) {
         state = File(pickedImage.path);
+        utils.CustomDebug.tempPrint('a new state for imagePickerProvider');
       }
     } catch (e) {
       utils.CustomDebug.print(

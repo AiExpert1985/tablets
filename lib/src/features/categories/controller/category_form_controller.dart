@@ -1,36 +1,25 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/image_picker.dart';
-import 'package:tablets/src/features/categories/controller/category_repository_provider.dart';
+import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/categories/controller/current_category_provider.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/view/create_category_dialog.dart';
 import 'package:tablets/src/features/categories/view/update_category_dialog.dart';
-import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/utils/utils.dart' as utils;
 
 /// the controller works with category forms (through its 'formKey') to update its category object
 /// and gets images from a 'pickedImageNotifierProvider' where image file is stored when
 /// user pick image (inside form)
 class CategoryController {
-  final ProductCategory currentCategory;
-  final CategoryRepository categoryRespository;
-  final AsyncValue<QuerySnapshot<Map<String, dynamic>>> categorySteam;
-  final File? imagePickerProvider;
-  final PickedImageNotifier imagePickerNotifier;
   final GlobalKey<FormState> formKey;
+  final ProviderRef ref;
   CategoryController({
-    required this.currentCategory,
-    required this.categoryRespository,
-    required this.categorySteam,
-    required this.imagePickerProvider,
-    required this.imagePickerNotifier,
     required this.formKey,
+    required this.ref,
   });
 
   bool saveForm() {
@@ -46,8 +35,8 @@ class CategoryController {
     // close the form
     Navigator.of(context).pop();
     // reset the image picker
-    imagePickerNotifier.reset();
-    currentCategory.setDefaultValues();
+    ref.read(pickedImageNotifierProvider.notifier).reset();
+    ref.read(currentCategoryProvider).setDefaultValues();
   }
 
   ///  take the data & image in the 'add form' and using this data to
@@ -57,8 +46,12 @@ class CategoryController {
   /// to store the category name and url of uploaded image
   void addCategoryToDB(BuildContext context) async {
     if (!saveForm()) return;
-    final successful =
-        await categoryRespository.addCategoryToDB(category: currentCategory);
+    final pickedImage = ref.read(pickedImageNotifierProvider);
+    final categoryRespository = ref.read(categoryRepositoryProvider);
+    final currentCategory = ref.read(currentCategoryProvider);
+
+    final successful = await categoryRespository.addCategoryToDB(
+        category: currentCategory, pickedImage: pickedImage);
     if (successful) {
       utils.UserMessages.success(
         context: context,
@@ -84,8 +77,13 @@ class CategoryController {
   void updateCategoryInDB(
       BuildContext context, ProductCategory oldCategory) async {
     if (!saveForm()) return;
+    final pickedImage = ref.read(pickedImageNotifierProvider);
+    final categoryRespository = ref.read(categoryRepositoryProvider);
+    final currentCategory = ref.read(currentCategoryProvider);
     bool successful = await categoryRespository.updateCategoryInDB(
-        newCategory: currentCategory, oldCategory: oldCategory);
+        newCategory: currentCategory,
+        oldCategory: oldCategory,
+        pickedImage: pickedImage);
     if (successful) {
       utils.UserMessages.success(
           context: context, message: S.of(context).db_success_updaging_doc);
@@ -101,6 +99,7 @@ class CategoryController {
   /// it uses category.iamgeUrl to get an image from firebase storage
   /// and uses category.name to show the category name
   void showCategoryUpdateForm(BuildContext context, ProductCategory cat) {
+    final currentCategory = ref.read(currentCategoryProvider);
     currentCategory.imageUrl = cat.imageUrl;
     currentCategory.name = cat.name;
     showDialog(
@@ -120,12 +119,6 @@ class CategoryController {
 }
 
 final categoryControllerProvider = Provider<CategoryController>((ref) {
-  return CategoryController(
-    currentCategory: ref.read(currentCategoryProvider),
-    categoryRespository: ref.read(categoryRepositoryProvider),
-    categorySteam: ref.read(categoryStreamProvider),
-    imagePickerProvider: ref.read(pickedImageNotifierProvider),
-    imagePickerNotifier: ref.read(pickedImageNotifierProvider.notifier),
-    formKey: GlobalKey<FormState>(),
-  );
+  final formKey = GlobalKey<FormState>();
+  return CategoryController(formKey: formKey, ref: ref);
 });
