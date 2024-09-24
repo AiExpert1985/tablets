@@ -27,7 +27,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("أضافة صنف جديد"),
         "add_new_user":
             MessageLookupByLibrary.simpleMessage("اضافة مستخدم جديد"),
-        "cancel": MessageLookupByLibrary.simpleMessage("الغاء"),
+        "alert_before_delete":
+            MessageLookupByLibrary.simpleMessage("هل ترغب بحذف"),
+        "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
@@ -47,6 +49,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("تم الحذف بنجاح"),
         "db_success_updaging_doc":
             MessageLookupByLibrary.simpleMessage("تم التعديل بنجاح"),
+        "delete": MessageLookupByLibrary.simpleMessage("حذف"),
+        "edit": MessageLookupByLibrary.simpleMessage("تعديل"),
         "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
         "error_importing_image":
             MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء استيراد الصور"),

@@ -9,7 +9,9 @@
     "add_image": "اضافة صورة",
     "add_new_user": "اضافة مستخدم جديد",
     "save": "حفظ",
-    "cancel": "الغاء",
+    "cancel": "رجوع",
+    "edit": "تعديل",
+    "delete": "حذف",
     "greeting": "مرحباً",
     "logout": "خروج",
     "user_privilage": "الصلاحيات",
@@ -57,5 +59,6 @@
     "db_success_updaging_doc": "تم التعديل بنجاح",
     "db_success_deleting_doc": "تم الحذف بنجاح",
     "db_error_deleting_doc": "حدث خطأ اثناء حذف المستند من قاعدة البيانات",
-    "db_error_downloading_files": "حدث خطأ اثناء تحميل الملفات من قاعدة البيانات"
+    "db_error_downloading_files": "حدث خطأ اثناء تحميل الملفات من قاعدة البيانات",
+    "alert_before_delete": "هل ترغب بحذف"
 }

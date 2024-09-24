@@ -26,6 +26,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_new_category":
             MessageLookupByLibrary.simpleMessage("Add a new Category"),
         "add_new_user": MessageLookupByLibrary.simpleMessage("Add a new user"),
+        "alert_before_delete":
+            MessageLookupByLibrary.simpleMessage("Do you want to delete"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "category": MessageLookupByLibrary.simpleMessage("Category"),
         "create_new_account":
@@ -46,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Document was deleted successfully"),
         "db_success_updaging_doc": MessageLookupByLibrary.simpleMessage(
             "Document was updated successfully "),
+        "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "error_importing_image": MessageLookupByLibrary.simpleMessage(
             "An error happend while importing images"),

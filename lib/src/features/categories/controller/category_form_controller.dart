@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_providers/image_picker.dart';
+import 'package:tablets/src/common_providers/image_picker_provider.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/categories/controller/current_category_provider.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
@@ -111,6 +111,7 @@ class CategoryController {
   /// show the form for creating new category
   /// image displayed in the picker is the default image
   void showCategoryCreateForm(BuildContext context) {
+    ref.read(currentCategoryProvider).setDefaultValues();
     showDialog(
       context: context,
       builder: (BuildContext context) => const CreateCategoryDialog(),

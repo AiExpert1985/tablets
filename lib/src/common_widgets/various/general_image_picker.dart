@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart' as caching;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_providers/image_picker.dart';
+import 'package:tablets/src/common_providers/image_picker_provider.dart';
 
 /// this widget shows an image and a button to upload image
 /// it takes its image from the pickedImageNotifierProvider

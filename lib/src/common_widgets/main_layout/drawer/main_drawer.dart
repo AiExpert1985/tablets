@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:sidebarx/sidebarx.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_salesmen_gps_button.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_settings_button.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/header/main_drawer_header.dart';
@@ -10,8 +11,9 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Drawer(
-      child: Column(
+    return Drawer(
+      width: MediaQuery.of(context).size.width * 0.2,
+      child: const Column(
         children: [
           MainDrawerHeader(),
           SizedBox(height: 15),
@@ -26,4 +28,15 @@ class MainDrawer extends StatelessWidget {
       ),
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return SidebarX(
+  //     controller: SidebarXController(selectedIndex: 0, extended: true),
+  //     items: const [
+  //       SidebarXItem(icon: Icons.home, label: 'Home'),
+  //       SidebarXItem(icon: Icons.search, label: 'Search'),
+  //     ],
+  //   );
+  // }
 }

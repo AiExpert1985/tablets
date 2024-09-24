@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
 import 'package:tablets/src/features/categories/controller/category_form_controller.dart';
@@ -22,10 +23,10 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
     return AlertDialog(
       scrollable: true,
       contentPadding: const EdgeInsets.all(16.0),
-      title: Text(
-        S.of(context).add_new_category,
-        style: const TextStyle(fontSize: 18),
-      ),
+      // title: Text(
+      //   S.of(context).add_new_category,
+      //   style: const TextStyle(fontSize: 18),
+      // ),
       content: Container(
         padding: const EdgeInsets.all(30),
         width: MediaQuery.of(context).size.width * 0.3,
@@ -61,15 +62,15 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
         OverflowBar(
           alignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () => categoryFormController.addCategoryToDB(context),
-              child: Text(S.of(context).save),
-            ),
             TextButton(
-              onPressed: () {
-                categoryFormController.cancelForm(context);
-              },
-              child: Text(S.of(context).cancel),
+              onPressed: () => categoryFormController.addCategoryToDB(context),
+              child: Column(
+                children: [
+                  const Icon(Icons.save),
+                  const Gap(6),
+                  Text(S.of(context).save),
+                ],
+              ),
             ),
           ],
         )

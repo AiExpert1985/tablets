@@ -160,6 +160,26 @@ class S {
     );
   }
 
+  /// `Edit`
+  String get edit {
+    return Intl.message(
+      'Edit',
+      name: 'edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get delete {
+    return Intl.message(
+      'Delete',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `hi`
   String get greeting {
     return Intl.message(
@@ -635,6 +655,16 @@ class S {
     return Intl.message(
       'An error happened while downloading files from database',
       name: 'db_error_downloading_files',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do you want to delete`
+  String get alert_before_delete {
+    return Intl.message(
+      'Do you want to delete',
+      name: 'alert_before_delete',
       desc: '',
       args: [],
     );

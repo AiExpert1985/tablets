@@ -34,6 +34,26 @@ Local Storage:
         ☐ A fast, extra light and synchronous key-value in memory
         ☐ https://pub.dev/packages/get_storage
 
+Sidebar:
+    sidebarx 0.17.1
+    ☐ created nice sidebars
+    ☐ https://pub.dev/packages/sidebarx
+
+Search bar:
+    material_floating_search_bar
+    ☐ Search bar similar to google
+    ☐ https://pub.dev/packages/material_floating_search_bar_2
+
+Place hold (before page reload):
+    redacted 
+    ☐ create a page similar to your design before it is loaded
+    ☐ https://pub.dev/packages/redacted
+
+Video & Audio:
+    media_kit
+    ☐ plays video & audio
+    ☐ https://pub.dev/packages/media_kit
+
 
     
     

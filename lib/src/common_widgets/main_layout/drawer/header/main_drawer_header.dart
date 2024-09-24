@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tablets/generated/l10n.dart';
+// import 'package:tablets/generated/l10n.dart';
 
 class MainDrawerHeader extends StatelessWidget {
   const MainDrawerHeader({super.key});
@@ -18,22 +18,22 @@ class MainDrawerHeader extends StatelessWidget {
           ],
         ),
       ),
-
-          child: Column(
-            children: [
-              SizedBox(
-                  // margin: const EdgeInsets.all(10),
-                  width: double.infinity,
-                  height: 120,
-                  child: Image.asset('assets/images/tablets.png', fit: BoxFit.scaleDown),
-                ),
-              Text(
-                S.of(context).slogan,
-                style: const TextStyle(fontSize: 14, color: Colors.white),
-              ),
-            ],
+      child: Column(
+        children: [
+          SizedBox(
+            // margin: const EdgeInsets.all(10),
+            width: double.infinity,
+            height: MediaQuery.of(context).size.width *
+                0.1, // here I used width intentionally
+            child:
+                Image.asset('assets/images/tablets.png', fit: BoxFit.scaleDown),
           ),
-
+          // Text(
+          //   S.of(context).slogan,
+          //   style: const TextStyle(fontSize: 14, color: Colors.white),
+          // ),
+        ],
+      ),
     );
   }
 }

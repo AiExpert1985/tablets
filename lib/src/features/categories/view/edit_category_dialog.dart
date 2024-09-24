@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common_widgets/various/delete_confirmation.dart';
 import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
 import 'package:tablets/src/features/categories/controller/category_form_controller.dart';
 import 'package:tablets/src/features/categories/controller/current_category_provider.dart';
@@ -27,10 +29,10 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
     return AlertDialog(
       scrollable: true,
       contentPadding: const EdgeInsets.all(16.0),
-      title: Text(
-        S.of(context).update_category,
-        style: const TextStyle(fontSize: 18),
-      ),
+      // title: Text(
+      //   S.of(context).update_category,
+      //   style: const TextStyle(fontSize: 18),
+      // ),
       content: Container(
         padding: const EdgeInsets.all(30),
         width: MediaQuery.of(context).size.width * 0.3,
@@ -65,22 +67,35 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
         OverflowBar(
           alignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                categoryFormController.updateCategoryInDB(context, oldCategory);
-              },
-              child: Text(S.of(context).save),
+            TextButton(
+              onPressed: () => categoryFormController.updateCategoryInDB(
+                  context, oldCategory),
+              child: Column(
+                children: [
+                  const Icon(Icons.save),
+                  const Gap(6),
+                  Text(S.of(context).save),
+                ],
+              ),
             ),
             TextButton(
               onPressed: () {
-                categoryFormController.cancelForm(context);
+                bool confiramtion = showDeleteConfirmationDialog(
+                    context: context, itemName: oldCategory.name);
+                if (confiramtion) {
+                  categoryFormController.deleteCategoryInDB(
+                      context, oldCategory);
+                  utils.CustomDebug.tempPrint(confiramtion);
+                }
               },
-              child: Text(S.of(context).cancel),
-            ),
-            IconButton(
-                onPressed: () => categoryFormController.deleteCategoryInDB(
-                    context, oldCategory),
-                icon: const Icon(Icons.delete))
+              child: Column(
+                children: [
+                  const Icon(Icons.delete, color: Colors.red),
+                  const Gap(6),
+                  Text(S.of(context).delete),
+                ],
+              ),
+            )
           ],
         )
       ],
