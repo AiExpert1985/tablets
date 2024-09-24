@@ -9,7 +9,7 @@ class MainDrawerProductsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.search),
+      leading: Image.asset('assets/images/products.png', fit: BoxFit.scaleDown),
       title: Text(S.of(context).products),
       onTap: () => context.goNamed(AppRoute.products.name),
     );

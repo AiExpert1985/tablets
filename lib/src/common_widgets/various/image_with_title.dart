@@ -17,15 +17,6 @@ class ImageWithTitle extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
-          // // fading gives great effect, but i need caching, & fading doesn't provide it
-          // FadeInImage(
-          //   // fit: BoxFit.cover,
-          //   placeholder: MemoryImage(kTransparentImage),
-          //   image: NetworkImage(imageUrl),
-          //   fit: BoxFit.cover,
-          //   height: 150,
-          //   width: double.infinity,
-          // ),
           //! using cached_image_network to avoid reloading images from firebase (extra cost)
           caching.CachedNetworkImage(
             fit: BoxFit.cover,
