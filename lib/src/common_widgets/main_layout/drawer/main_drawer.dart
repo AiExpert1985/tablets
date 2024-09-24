@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_logout_button.dart';
+import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/logout_button.dart';
 // import 'package:sidebarx/sidebarx.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_salesmen_gps_button.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_settings_button.dart';
+import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/salesmen_gps_button.dart';
+import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/settings_button.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/header/main_drawer_header.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_products_button.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_transactions_button.dart';
+import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/products_button.dart';
+import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/transactions_button.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 
 class MainDrawer extends StatelessWidget {
@@ -14,20 +14,31 @@ class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: MediaQuery.of(context).size.width * 0.2,
+      width: MediaQuery.of(context).size.width * 0.17,
       child: Column(
         children: [
           const MainDrawerHeader(),
-          constants.DrawerGap.vertical,
-          const MainDrawerProductsButton(),
-          constants.DrawerGap.vertical,
-          const MainDrawerTransactionsButton(),
-          constants.DrawerGap.vertical,
-          const MainDrawerSalesmenMovementButton(),
-          constants.DrawerGap.vertical,
-          const MainDrawerSettingsButton(),
-          constants.PushWidgets.toEnd,
-          const LogoutButton(),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.width * 0.01,
+                horizontal: MediaQuery.of(context).size.width * 0.01,
+              ),
+              child: Column(
+                children: [
+                  const MainDrawerProductsButton(),
+                  constants.DrawerGap.vertical,
+                  const MainDrawerTransactionsButton(),
+                  constants.DrawerGap.vertical,
+                  const MainDrawerSalesmenMovementButton(),
+                  constants.DrawerGap.vertical,
+                  const MainDrawerSettingsButton(),
+                  constants.PushWidgets.toEnd,
+                  const LogoutButton(),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

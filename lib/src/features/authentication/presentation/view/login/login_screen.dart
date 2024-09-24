@@ -53,7 +53,7 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
             Container(
               margin: const EdgeInsets.all(15),
               width: 200,
-              child: Image.asset('assets/images/tablets.png'),
+              child: Image.asset('assets/images/logo.png'),
             ),
             SizedBox(
               width: 300,

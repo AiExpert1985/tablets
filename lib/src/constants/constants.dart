@@ -11,7 +11,7 @@ class FormGap {
 }
 
 class DrawerGap {
-  static const vertical = SizedBox(height: 10);
+  static const vertical = SizedBox(height: 5);
 }
 
 /// this must be used inside Column (or Row)

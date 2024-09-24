@@ -25,8 +25,7 @@ class MainDrawerHeader extends StatelessWidget {
             width: double.infinity,
             height: MediaQuery.of(context).size.width *
                 0.1, // here I used width intentionally
-            child:
-                Image.asset('assets/images/tablets.png', fit: BoxFit.scaleDown),
+            child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
           ),
           // Text(
           //   S.of(context).slogan,

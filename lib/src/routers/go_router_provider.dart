@@ -29,7 +29,7 @@ final goRouterProvider = Provider<GoRouter>(
     final firebaseAuth = ref.watch(firebaseAuthProvider);
     return GoRouter(
       initialLocation: '/login',
-      // debugLogDiagnostics: true, // print route in the console
+      debugLogDiagnostics: true, // print route in the console
       redirect: (context, state) {
         final bool isLoggedIn = firebaseAuth.currentUser != null;
         final String currentLocation = state.uri.path;
