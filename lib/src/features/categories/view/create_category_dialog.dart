@@ -38,7 +38,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               GeneralImagePicker(imageUrl: currentCategory.imageUrl),
-              constants.FormFieldsSpacing.vertical,
+              constants.FormGap.vertical,
               Expanded(
                 child: TextFormField(
                   decoration: InputDecoration(

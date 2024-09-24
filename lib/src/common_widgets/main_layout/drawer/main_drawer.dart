@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_logout_button.dart';
 // import 'package:sidebarx/sidebarx.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_salesmen_gps_button.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_settings_button.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/header/main_drawer_header.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_products_button.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/main_drawer_transactions_button.dart';
+import 'package:tablets/src/constants/constants.dart' as constants;
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
@@ -13,17 +15,19 @@ class MainDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       width: MediaQuery.of(context).size.width * 0.2,
-      child: const Column(
+      child: Column(
         children: [
-          MainDrawerHeader(),
-          SizedBox(height: 15),
-          MainDrawerProductsButton(),
-          SizedBox(height: 10),
-          MainDrawerTransactionsButton(),
-          SizedBox(height: 10),
-          MainDrawerSalesmenMovementButton(),
-          SizedBox(height: 10),
-          MainDrawerSettingsButton(),
+          const MainDrawerHeader(),
+          constants.DrawerGap.vertical,
+          const MainDrawerProductsButton(),
+          constants.DrawerGap.vertical,
+          const MainDrawerTransactionsButton(),
+          constants.DrawerGap.vertical,
+          const MainDrawerSalesmenMovementButton(),
+          constants.DrawerGap.vertical,
+          const MainDrawerSettingsButton(),
+          constants.PushWidgets.toEnd,
+          const LogoutButton(),
         ],
       ),
     );
