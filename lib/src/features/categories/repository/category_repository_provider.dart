@@ -91,7 +91,8 @@ class CategoryRepository {
 
   /// delete the document from firestore
   /// delete image from storage
-  Future<bool> deleteCategoryInDB(ProductCategory category) async {
+  Future<bool> deleteCategoryInDB(
+      {required ProductCategory category, bool deleteImage = true}) async {
     try {
       // delete document using its name
       final querySnapshot = await _firestore
@@ -102,8 +103,10 @@ class CategoryRepository {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.delete();
       }
-      // delete image
-      _imageStorage.deleteFile(category.imageUrl);
+      // sometime we don't want to delete image (if it is the default image)
+      if (deleteImage) {
+        _imageStorage.deleteFile(category.imageUrl);
+      }
       return true;
     } catch (error) {
       utils.CustomDebug.print(message: error, stackTrace: StackTrace.current);

@@ -10,6 +10,7 @@ import 'package:tablets/src/features/categories/view/edit_category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/constants/constants.dart' as constants;
 
 /// the controller works with category forms (through its 'formKey') to update its category object
 /// and gets images from a 'pickedImageNotifierProvider' where image file is stored when
@@ -118,10 +119,13 @@ class CategoryController {
     );
   }
 
-  void deleteCategoryInDB(context, oldCategory) async {
+  void deleteCategoryInDB(
+      BuildContext context, ProductCategory category) async {
+    // we don't want to delete image if its the default image
+    bool deleteImage = category.imageUrl != constants.DefaultImage.imageUrl;
     bool successful = await ref
         .read(categoryRepositoryProvider)
-        .deleteCategoryInDB(oldCategory);
+        .deleteCategoryInDB(category: category, deleteImage: deleteImage);
     if (successful) {
       utils.UserMessages.success(
           context: context, message: S.of(context).db_success_deleting_doc);

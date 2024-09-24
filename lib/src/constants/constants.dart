@@ -13,7 +13,7 @@ class FormFieldsSpacing {
 class DefaultImage {
   // static File? imageFile;
   static const imageUrl =
-      'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2Fdefault_image.PNG?alt=media&token=1f3c874e-d3c2-4fea-aaba-ff219d13d61e';
+      'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2Fdefault_image.PNG?alt=media&token=058a0797-af23-48e1-977b-a43fbd2d495a';
 
   // static Future<void> initializDefaultImageFile() async {
   //   try {

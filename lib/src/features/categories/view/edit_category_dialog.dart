@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -74,15 +76,15 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                 children: [
                   const Icon(Icons.save),
                   const Gap(6),
-                  Text(S.of(context).save),
+                  Text(S.of(context).save_changes),
                 ],
               ),
             ),
             TextButton(
-              onPressed: () {
-                bool confiramtion = showDeleteConfirmationDialog(
+              onPressed: () async {
+                bool? confiramtion = await showDeleteConfirmationDialog(
                     context: context, itemName: oldCategory.name);
-                if (confiramtion) {
+                if (confiramtion != null) {
                   categoryFormController.deleteCategoryInDB(
                       context, oldCategory);
                   utils.CustomDebug.tempPrint(confiramtion);

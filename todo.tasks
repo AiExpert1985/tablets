@@ -5,6 +5,10 @@ Tasks Examples:
     ✘ new task @cancelled (7/28/2024, 6:59:29 PM)
     ✔ anther task @done (7/28/2024, 6:59:34 PM)
 
+Testing:
+    ☐ if the default image is in the specified url in constatns
+    ☐ add/ update/ delete functionality in each collection (starting from categories)
+
   
     
     

@@ -108,6 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
+        "save_changes": MessageLookupByLibrary.simpleMessage("حفظ التعديلات"),
         "screen_is_empty":
             MessageLookupByLibrary.simpleMessage("لا يوجد بيانات"),
         "search_not_found_in_db": MessageLookupByLibrary.simpleMessage(
