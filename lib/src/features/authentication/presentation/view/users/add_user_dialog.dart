@@ -75,7 +75,7 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const GeneralImagePicker(
-                  imageUrl: constants.DefaultImage.imageUrl,
+                  imageUrl: constants.DefaultImage.url,
                 ),
                 const SizedBox(
                   height: 20,

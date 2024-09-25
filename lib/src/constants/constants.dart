@@ -23,6 +23,6 @@ class PushWidgets {
 
 class DefaultImage {
   // static File? imageFile;
-  static const imageUrl =
+  static const url =
       'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2Fdefault_image.PNG?alt=media&token=058a0797-af23-48e1-977b-a43fbd2d495a';
 }

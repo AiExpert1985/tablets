@@ -6,8 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/various/delete_confirmation.dart';
 import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
-import 'package:tablets/src/features/categories/controller/category_form_controller.dart';
-import 'package:tablets/src/features/categories/controller/current_category_provider.dart';
+import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
@@ -22,9 +21,9 @@ class UpdateCategoryDialog extends ConsumerStatefulWidget {
 class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
   @override
   Widget build(BuildContext context) {
-    final categoryFormController = ref.read(categoryControllerProvider);
-    final newCategory = ref.read(currentCategoryProvider);
-    final oldCategory = ProductCategory(
+    final categoryController = ref.read(categoryControllerProvider);
+    final newCategory = categoryController.tempCategory;
+    final oldCategory = Category(
       name: newCategory.name,
       imageUrl: newCategory.imageUrl,
     );
@@ -40,7 +39,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
         width: MediaQuery.of(context).size.width * 0.3,
         height: MediaQuery.of(context).size.height * 0.5,
         child: Form(
-          key: categoryFormController.formKey,
+          key: categoryController.formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -70,8 +69,8 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
           alignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: () => categoryFormController.updateCategoryInDB(
-                  context, oldCategory),
+              onPressed: () =>
+                  categoryController.updateCategoryInDB(context, oldCategory),
               child: Column(
                 children: [
                   const Icon(Icons.save),
@@ -85,8 +84,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                 bool? confiramtion = await showDeleteConfirmationDialog(
                     context: context, itemName: oldCategory.name);
                 if (confiramtion != null) {
-                  categoryFormController.deleteCategoryInDB(
-                      context, oldCategory);
+                  categoryController.deleteCategoryInDB(context, oldCategory);
                   utils.CustomDebug.tempPrint(confiramtion);
                 }
               },

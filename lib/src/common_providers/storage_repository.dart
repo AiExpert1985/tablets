@@ -37,7 +37,7 @@ class StorageRepository {
     try {
       // delete the old photo unless it is the default photo
       // and then add the new photo and return its url
-      if (fileUrl != constants.DefaultImage.imageUrl) {
+      if (fileUrl != constants.DefaultImage.url) {
         deleteFile(fileUrl);
       }
       final newUrl =

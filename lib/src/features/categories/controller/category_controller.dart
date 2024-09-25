@@ -3,7 +3,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/image_picker_provider.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
-import 'package:tablets/src/features/categories/controller/current_category_provider.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/view/create_category_dialog.dart';
 import 'package:tablets/src/features/categories/view/edit_category_dialog.dart';
@@ -16,12 +15,17 @@ import 'package:tablets/src/constants/constants.dart' as constants;
 /// and gets images from a 'pickedImageNotifierProvider' where image file is stored when
 /// user pick image (inside form)
 class CategoryController {
-  final GlobalKey<FormState> formKey;
+  CategoryController(this.ref);
   final ProviderRef ref;
-  CategoryController({
-    required this.formKey,
-    required this.ref,
-  });
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  Category tempCategory =
+      Category.defaultValues(); // updated by forms & widgets
+  List<Category> categories = []; // container for data fetch from db
+  String? searchText;
+
+  void resetTempCategory() {
+    tempCategory = Category.defaultValues();
+  }
 
   bool saveForm() {
     // runs validation inside form
@@ -37,7 +41,7 @@ class CategoryController {
     Navigator.of(context).pop();
     // reset the image picker
     ref.read(pickedImageNotifierProvider.notifier).reset();
-    ref.read(currentCategoryProvider).setDefaultValues();
+    resetTempCategory();
   }
 
   ///  take the data & image in the 'add form' and using this data to
@@ -48,8 +52,8 @@ class CategoryController {
   void addCategoryToDB(BuildContext context) async {
     if (!saveForm()) return;
     final pickedImage = ref.read(pickedImageNotifierProvider);
-    final categoryRespository = ref.read(categoryRepositoryProvider);
-    final currentCategory = ref.read(currentCategoryProvider);
+    final categoryRespository = ref.read(categoriesRepositoryProvider);
+    final currentCategory = tempCategory;
 
     final successful = await categoryRespository.addCategoryToDB(
         category: currentCategory, pickedImage: pickedImage);
@@ -75,12 +79,11 @@ class CategoryController {
   /// by CategoryController.showCategoryUpdateForm()
   /// note that this method receives the previous category name to use to when searching db to
   /// get the document that will be updated.
-  void updateCategoryInDB(
-      BuildContext context, ProductCategory oldCategory) async {
+  void updateCategoryInDB(BuildContext context, Category oldCategory) async {
     if (!saveForm()) return;
     final pickedImage = ref.read(pickedImageNotifierProvider);
-    final categoryRespository = ref.read(categoryRepositoryProvider);
-    final currentCategory = ref.read(currentCategoryProvider);
+    final categoryRespository = ref.read(categoriesRepositoryProvider);
+    final currentCategory = tempCategory;
     bool successful = await categoryRespository.updateCategoryInDB(
         newCategory: currentCategory,
         oldCategory: oldCategory,
@@ -99,8 +102,8 @@ class CategoryController {
   /// the category passed to it comes from the selected category widget (in the grid)
   /// it uses category.iamgeUrl to get an image from firebase storage
   /// and uses category.name to show the category name
-  void showCategoryUpdateForm(BuildContext context, ProductCategory cat) {
-    final currentCategory = ref.read(currentCategoryProvider);
+  void showCategoryUpdateForm(BuildContext context, Category cat) {
+    final currentCategory = tempCategory;
     currentCategory.imageUrl = cat.imageUrl;
     currentCategory.name = cat.name;
     showDialog(
@@ -112,19 +115,18 @@ class CategoryController {
   /// show the form for creating new category
   /// image displayed in the picker is the default image
   void showCategoryCreateForm(BuildContext context) {
-    ref.read(currentCategoryProvider).setDefaultValues();
+    resetTempCategory();
     showDialog(
       context: context,
       builder: (BuildContext context) => const CreateCategoryDialog(),
     );
   }
 
-  void deleteCategoryInDB(
-      BuildContext context, ProductCategory category) async {
+  void deleteCategoryInDB(BuildContext context, Category category) async {
     // we don't want to delete image if its the default image
-    bool deleteImage = category.imageUrl != constants.DefaultImage.imageUrl;
+    bool deleteImage = category.imageUrl != constants.DefaultImage.url;
     bool successful = await ref
-        .read(categoryRepositoryProvider)
+        .read(categoriesRepositoryProvider)
         .deleteCategoryInDB(category: category, deleteImage: deleteImage);
     if (successful) {
       utils.UserMessages.success(
@@ -138,6 +140,5 @@ class CategoryController {
 }
 
 final categoryControllerProvider = Provider<CategoryController>((ref) {
-  final formKey = GlobalKey<FormState>();
-  return CategoryController(formKey: formKey, ref: ref);
+  return CategoryController(ref);
 });

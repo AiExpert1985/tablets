@@ -35,7 +35,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const GeneralImagePicker(
-                imageUrl: constants.DefaultImage.imageUrl,
+                imageUrl: constants.DefaultImage.url,
               ),
               const gap.Gap(20),
               //! 1st Row

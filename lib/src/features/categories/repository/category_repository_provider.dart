@@ -3,17 +3,18 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
-import 'package:tablets/src/features/categories/controller/category_search_controller.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 /// the controller works with category forms (through its 'formKey') to update its category object
 /// and gets images from a 'pickedImageNotifierProvider' where image file is stored when
 /// user pick image (inside form)
-class CategoryRepository {
-  CategoryRepository(this._firestore, this._imageStorage);
+class CategoriesRepository {
+  CategoriesRepository(this._firestore, this._imageStorage);
   final FirebaseFirestore _firestore;
   final StorageRepository _imageStorage;
+
+  static String collectionName = 'categories';
 
   ///  take the data & image in the 'add form' and using this data to
   /// add an image to firebase storage & a document in the firestore
@@ -21,7 +22,7 @@ class CategoryRepository {
   /// then create a new document in categories collection
   /// to store the category name and url of uploaded image
   Future<bool> addCategoryToDB(
-      {required ProductCategory category, File? pickedImage}) async {
+      {required Category category, File? pickedImage}) async {
     try {
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
@@ -34,8 +35,8 @@ class CategoryRepository {
       final docRef = _firestore.collection('categories').doc();
 
       await docRef.set({
-        ProductCategory.dbKeyName: category.name,
-        ProductCategory.dbKeyImageUrl: category.imageUrl,
+        'name': category.name,
+        'imageUrl': category.imageUrl,
       });
       return true;
     } catch (e) {
@@ -55,8 +56,8 @@ class CategoryRepository {
   /// note that this method receives the previous category name to use to when searching db to
   /// get the document that will be updated.
   Future<bool> updateCategoryInDB(
-      {required ProductCategory newCategory,
-      required ProductCategory oldCategory,
+      {required Category newCategory,
+      required Category oldCategory,
       File? pickedImage}) async {
     try {
       String url = oldCategory.imageUrl;
@@ -79,8 +80,8 @@ class CategoryRepository {
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.update({
-          ProductCategory.dbKeyName: newCategory.name,
-          ProductCategory.dbKeyImageUrl: url,
+          'name': newCategory.name,
+          'imageUrl': url,
         });
       }
       return true;
@@ -93,7 +94,7 @@ class CategoryRepository {
   /// delete the document from firestore
   /// delete image from storage
   Future<bool> deleteCategoryInDB(
-      {required ProductCategory category, bool deleteImage = true}) async {
+      {required Category category, bool deleteImage = true}) async {
     try {
       // delete document using its name
       final querySnapshot = await _firestore
@@ -114,32 +115,31 @@ class CategoryRepository {
       return false;
     }
   }
+
+  Stream<List<Category>> watchCategoriesList() {
+    final ref = _categoriesRef();
+    return ref.snapshots().map((snapshot) =>
+        snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+  }
+
+  Query<Category> _categoriesRef() {
+    return _firestore
+        .collection(collectionName)
+        .withConverter(
+          fromFirestore: (doc, _) => Category.fromMap(doc.data()!),
+          toFirestore: (Category product, options) => product.toMap(),
+        )
+        .orderBy('name');
+  }
 }
 
-final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
+final categoriesRepositoryProvider = Provider<CategoriesRepository>((ref) {
   final imageStorage = ref.read(fileStorageProvider);
   final firestore = FirebaseFirestore.instance;
-  return CategoryRepository(firestore, imageStorage);
+  return CategoriesRepository(firestore, imageStorage);
 });
 
-/// Streaming categorys from firestore 'categories' collection.
-/// categoris are steamed separately (I didn't include it in 'categoryController')
-///  because it is easy for me to implement
-final categoryStreamProvider =
-    StreamProvider<QuerySnapshot<Map<String, dynamic>>>(
-  (ref) async* {
-    try {
-      String searchText = ref.read(categorySearchedTextProvider);
-      utils.CustomDebug.tempPrint(searchText);
-
-      final querySnapshot = FirebaseFirestore.instance
-          .collection('categories')
-          .where(ProductCategoryDbKeys.name, isEqualTo: searchText)
-          .snapshots();
-
-      yield* querySnapshot;
-    } catch (e) {
-      utils.CustomDebug.print(message: e, stackTrace: StackTrace.current);
-    }
-  },
-);
+final categoriesListStreamProvider = StreamProvider<List<Category>>((ref) {
+  final categoriesRepository = ref.watch(categoriesRepositoryProvider);
+  return categoriesRepository.watchCategoriesList();
+});
