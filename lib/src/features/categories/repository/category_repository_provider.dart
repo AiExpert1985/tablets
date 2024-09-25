@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
+import 'package:tablets/src/features/categories/controller/category_search_controller.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
@@ -128,13 +129,17 @@ final categoryStreamProvider =
     StreamProvider<QuerySnapshot<Map<String, dynamic>>>(
   (ref) async* {
     try {
-      final querySnapshot =
-          FirebaseFirestore.instance.collection('categories').snapshots();
+      String searchText = ref.read(categorySearchedTextProvider);
+      utils.CustomDebug.tempPrint(searchText);
+
+      final querySnapshot = FirebaseFirestore.instance
+          .collection('categories')
+          .where(ProductCategoryDbKeys.name, isEqualTo: searchText)
+          .snapshots();
+
       yield* querySnapshot;
     } catch (e) {
-      utils.CustomDebug.print(
-          message: 'An error happened while streaming categories from DB',
-          stackTrace: StackTrace.current);
+      utils.CustomDebug.print(message: e, stackTrace: StackTrace.current);
     }
   },
 );

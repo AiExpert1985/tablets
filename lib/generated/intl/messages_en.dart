@@ -117,6 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_changes": MessageLookupByLibrary.simpleMessage("Save changes"),
         "screen_is_empty":
             MessageLookupByLibrary.simpleMessage("There is no contents"),
+        "search": MessageLookupByLibrary.simpleMessage("Search"),
         "search_not_found_in_db":
             MessageLookupByLibrary.simpleMessage("Not found in database"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),

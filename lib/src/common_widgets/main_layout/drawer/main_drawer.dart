@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/logout_button.dart';
+import 'package:tablets/src/common_widgets/main_layout/app_bar/logout_button.dart';
 // import 'package:sidebarx/sidebarx.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/salesmen_gps_button.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/settings_button.dart';

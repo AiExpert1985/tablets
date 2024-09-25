@@ -12,13 +12,8 @@ class ProductCategory {
     imageUrl = constants.DefaultImage.imageUrl;
   }
 
-  @override
-  String toString() {
-    return 'ProductCategory($name)';
-  }
-
   // I use the two variables to avoid using strings for db keys when using documents
   // create, update & delete
-  final String dbKeyName = ProductCategoryDbKeys.name.name;
-  final String dbKeyImageUrl = ProductCategoryDbKeys.imageUrl.name;
+  static final String dbKeyName = ProductCategoryDbKeys.name.name;
+  static final String dbKeyImageUrl = ProductCategoryDbKeys.imageUrl.name;
 }

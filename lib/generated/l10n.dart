@@ -190,6 +190,16 @@ class S {
     );
   }
 
+  /// `Search`
+  String get search {
+    return Intl.message(
+      'Search',
+      name: 'search',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `hi`
   String get greeting {
     return Intl.message(

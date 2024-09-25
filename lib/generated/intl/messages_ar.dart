@@ -111,6 +111,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_changes": MessageLookupByLibrary.simpleMessage("حفظ التعديلات"),
         "screen_is_empty":
             MessageLookupByLibrary.simpleMessage("لا يوجد بيانات"),
+        "search": MessageLookupByLibrary.simpleMessage("بحث"),
         "search_not_found_in_db": MessageLookupByLibrary.simpleMessage(
             "لم يتم ايجاد المستند في قاعةد البيانات"),
         "settings": MessageLookupByLibrary.simpleMessage("الاعدادات"),
