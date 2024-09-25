@@ -18,13 +18,13 @@ class CategoryController {
   CategoryController(this.ref);
   final ProviderRef ref;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  Category tempCategory =
-      Category.defaultValues(); // updated by forms & widgets
-  List<Category> categories = []; // container for data fetch from db
+  ProductCategory tempCategory =
+      ProductCategory.defaultValues(); // updated by forms & widgets
+  List<ProductCategory> categories = []; // container for data fetch from db
   String? searchText;
 
   void resetTempCategory() {
-    tempCategory = Category.defaultValues();
+    tempCategory = ProductCategory.defaultValues();
   }
 
   bool saveForm() {
@@ -79,7 +79,8 @@ class CategoryController {
   /// by CategoryController.showCategoryUpdateForm()
   /// note that this method receives the previous category name to use to when searching db to
   /// get the document that will be updated.
-  void updateCategoryInDB(BuildContext context, Category oldCategory) async {
+  void updateCategoryInDB(
+      BuildContext context, ProductCategory oldCategory) async {
     if (!saveForm()) return;
     final pickedImage = ref.read(pickedImageNotifierProvider);
     final categoryRespository = ref.read(categoriesRepositoryProvider);
@@ -102,7 +103,7 @@ class CategoryController {
   /// the category passed to it comes from the selected category widget (in the grid)
   /// it uses category.iamgeUrl to get an image from firebase storage
   /// and uses category.name to show the category name
-  void showCategoryUpdateForm(BuildContext context, Category cat) {
+  void showCategoryUpdateForm(BuildContext context, ProductCategory cat) {
     final currentCategory = tempCategory;
     currentCategory.imageUrl = cat.imageUrl;
     currentCategory.name = cat.name;
@@ -122,7 +123,8 @@ class CategoryController {
     );
   }
 
-  void deleteCategoryInDB(BuildContext context, Category category) async {
+  void deleteCategoryInDB(
+      BuildContext context, ProductCategory category) async {
     // we don't want to delete image if its the default image
     bool deleteImage = category.imageUrl != constants.DefaultImage.url;
     bool successful = await ref

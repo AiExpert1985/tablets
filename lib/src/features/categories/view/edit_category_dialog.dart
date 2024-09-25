@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/various/delete_confirmation.dart';
+import 'package:tablets/src/common_widgets/various/delete_confirmation_dialog.dart';
 import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
@@ -23,7 +23,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
   Widget build(BuildContext context) {
     final categoryController = ref.read(categoryControllerProvider);
     final newCategory = categoryController.tempCategory;
-    final oldCategory = Category(
+    final oldCategory = ProductCategory(
       name: newCategory.name,
       imageUrl: newCategory.imageUrl,
     );

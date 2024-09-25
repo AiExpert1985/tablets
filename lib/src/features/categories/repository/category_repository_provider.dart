@@ -24,7 +24,7 @@ class CategoriesRepository {
   /// then create a new document in categories collection
   /// to store the category name and url of uploaded image
   Future<bool> addCategoryToDB(
-      {required Category category, File? pickedImage}) async {
+      {required ProductCategory category, File? pickedImage}) async {
     try {
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
@@ -58,8 +58,8 @@ class CategoriesRepository {
   /// note that this method receives the previous category name to use to when searching db to
   /// get the document that will be updated.
   Future<bool> updateCategoryInDB(
-      {required Category newCategory,
-      required Category oldCategory,
+      {required ProductCategory newCategory,
+      required ProductCategory oldCategory,
       File? pickedImage}) async {
     try {
       String url = oldCategory.imageUrl;
@@ -96,7 +96,7 @@ class CategoriesRepository {
   /// delete the document from firestore
   /// delete image from storage
   Future<bool> deleteCategoryInDB(
-      {required Category category, bool deleteImage = true}) async {
+      {required ProductCategory category, bool deleteImage = true}) async {
     try {
       // delete document using its name
       final querySnapshot = await _firestore
@@ -118,18 +118,18 @@ class CategoriesRepository {
     }
   }
 
-  Stream<List<Category>> watchCategoriesList() {
+  Stream<List<ProductCategory>> watchCategoriesList() {
     final ref = _categoriesRef();
     return ref.snapshots().map((snapshot) =>
         snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
-  Query<Category> _categoriesRef() {
+  Query<ProductCategory> _categoriesRef() {
     return _firestore
         .collection(collectionName)
         .withConverter(
-          fromFirestore: (doc, _) => Category.fromMap(doc.data()!),
-          toFirestore: (Category product, options) => product.toMap(),
+          fromFirestore: (doc, _) => ProductCategory.fromMap(doc.data()!),
+          toFirestore: (ProductCategory product, options) => product.toMap(),
         )
         .orderBy(nameKey);
   }
@@ -142,7 +142,7 @@ final categoriesRepositoryProvider = Provider<CategoriesRepository>((ref) {
 });
 
 final categoriesStreamProvider =
-    StreamProvider.autoDispose<List<Category>>((ref) {
+    StreamProvider.autoDispose<List<ProductCategory>>((ref) {
   final categoriesRepository = ref.watch(categoriesRepositoryProvider);
   return categoriesRepository.watchCategoriesList();
 });
