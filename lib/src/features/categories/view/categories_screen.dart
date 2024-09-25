@@ -7,14 +7,8 @@ import 'package:tablets/src/common_widgets/main_layout/drawer/main_drawer.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/features/categories/view/categories_grid_widget.dart';
 
-/// note that this widget only watches the categoryControllerProvider
-/// which in turns deal with all other controllers
-/// I did that for two reasons:
-/// (1) to make it cleaner and easier to debug and update
-/// (2) to solve the issue of not begin able to invoke await here when dealing with Future (firebase)
-/// in special cases I will include other controllers ?? I will try to prevent that if i can
-class SettingsScreen extends ConsumerWidget {
-  const SettingsScreen({super.key});
+class CategoriesScreen extends ConsumerWidget {
+  const CategoriesScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categoryController = ref.watch(categoryControllerProvider);

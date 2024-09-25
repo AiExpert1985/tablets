@@ -88,7 +88,7 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/settings',
           name: AppRoute.settings.name,
           builder: (BuildContext context, GoRouterState state) =>
-              const SettingsScreen(),
+              const CategoriesScreen(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),

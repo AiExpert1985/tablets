@@ -85,7 +85,6 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                     context: context, itemName: oldCategory.name);
                 if (confiramtion != null) {
                   categoryController.deleteCategoryInDB(context, oldCategory);
-                  utils.CustomDebug.tempPrint(confiramtion);
                 }
               },
               child: Column(
