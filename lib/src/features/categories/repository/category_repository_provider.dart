@@ -15,6 +15,8 @@ class CategoriesRepository {
   final StorageRepository _imageStorage;
 
   static String collectionName = 'categories';
+  static String nameKey = 'name';
+  static String imageUrlKey = 'imageUrl';
 
   ///  take the data & image in the 'add form' and using this data to
   /// add an image to firebase storage & a document in the firestore
@@ -35,8 +37,8 @@ class CategoriesRepository {
       final docRef = _firestore.collection('categories').doc();
 
       await docRef.set({
-        'name': category.name,
-        'imageUrl': category.imageUrl,
+        nameKey: category.name,
+        imageUrlKey: category.imageUrl,
       });
       return true;
     } catch (e) {
@@ -75,13 +77,13 @@ class CategoriesRepository {
       // then update the category document
       final query = _firestore
           .collection('categories')
-          .where('name', isEqualTo: oldCategory.name);
+          .where(nameKey, isEqualTo: oldCategory.name);
       final querySnapshot = await query.get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.update({
-          'name': newCategory.name,
-          'imageUrl': url,
+          nameKey: newCategory.name,
+          imageUrlKey: url,
         });
       }
       return true;
@@ -98,8 +100,8 @@ class CategoriesRepository {
     try {
       // delete document using its name
       final querySnapshot = await _firestore
-          .collection('categories')
-          .where('name', isEqualTo: category.name)
+          .collection(collectionName)
+          .where(nameKey, isEqualTo: category.name)
           .get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
@@ -129,7 +131,7 @@ class CategoriesRepository {
           fromFirestore: (doc, _) => Category.fromMap(doc.data()!),
           toFirestore: (Category product, options) => product.toMap(),
         )
-        .orderBy('name');
+        .orderBy(nameKey);
   }
 }
 
@@ -139,7 +141,8 @@ final categoriesRepositoryProvider = Provider<CategoriesRepository>((ref) {
   return CategoriesRepository(firestore, imageStorage);
 });
 
-final categoriesListStreamProvider = StreamProvider<List<Category>>((ref) {
+final categoriesStreamProvider =
+    StreamProvider.autoDispose<List<Category>>((ref) {
   final categoriesRepository = ref.watch(categoriesRepositoryProvider);
   return categoriesRepository.watchCategoriesList();
 });

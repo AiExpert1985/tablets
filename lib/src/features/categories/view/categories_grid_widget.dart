@@ -9,7 +9,7 @@ class CategoriesGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categoriesListValue = ref.watch(categoriesListStreamProvider);
+    final categoriesListValue = ref.watch(categoriesStreamProvider);
     return categoriesListValue.when(
         data: (categories) => Expanded(
               child: GridView.builder(

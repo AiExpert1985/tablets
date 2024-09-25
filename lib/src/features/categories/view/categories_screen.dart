@@ -5,7 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/main_layout/app_bar/main_app_bar.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/main_drawer.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
-import 'package:tablets/src/features/categories/view/categories_grid.dart';
+import 'package:tablets/src/features/categories/view/categories_grid_widget.dart';
 
 /// note that this widget only watches the categoryControllerProvider
 /// which in turns deal with all other controllers
