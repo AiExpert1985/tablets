@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:tablets/src/app.dart';
 import 'package:tablets/src/initalizing_app/custom_inialization.dart'
     as my_initializer;
+import 'package:tablets/src/utils/utils.dart' as utils;
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +21,15 @@ void main() async {
   // * https://docs.flutter.dev/testing/errors
   registerErrorHandlers();
   my_initializer.customInialization();
+
+// hamandi: temporary to capture & print all errors for debugging purpose
+  FlutterError.onError = (FlutterErrorDetails details) {
+    utils.CustomDebug.print(
+        message: details.exception.toString(), stackTrace: StackTrace.current);
+    utils.CustomDebug.print(
+        message: details.stack.toString(), stackTrace: StackTrace.current);
+  };
+
   runApp(const ProviderScope(child: MyApp()));
 }
 

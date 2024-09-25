@@ -51,8 +51,6 @@ class StorageRepository {
   /// delete photo from storage using its url
   Future<void> deleteFile(String imageUrl) async {
     try {
-      CustomDebug.print(
-          message: 'image will be deleted', stackTrace: StackTrace.current);
       final storageRef = _storage.refFromURL(imageUrl);
       await storageRef.delete();
     } catch (e) {

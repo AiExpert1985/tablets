@@ -20,40 +20,30 @@ class CustomDebug {
 
 class UserMessages {
   static void success(
-      {required BuildContext context, required String message}) {
-    toastification.show(
-      context: context, // optional if you use ToastificationWrapper
-      title: Text(message),
-      autoCloseDuration: const Duration(seconds: 5),
-      type: ToastificationType.success,
-      style: ToastificationStyle.flatColored,
-      alignment: Alignment.topCenter,
-      showProgressBar: false,
-    );
-  }
+          {required BuildContext context, required String message}) =>
+      _message(
+          context: context, message: message, type: ToastificationType.success);
 
   static void failure(
-      {required BuildContext context, required String message}) {
-    toastification.show(
-      context: context, // optional if you use ToastificationWrapper
-      title: Text(message),
-      autoCloseDuration: const Duration(seconds: 5),
-      type: ToastificationType.error,
-      style: ToastificationStyle.flatColored,
-      alignment: Alignment.topCenter,
-      showProgressBar: false,
-    );
-  }
+          {required BuildContext context, required String message}) =>
+      _message(
+          context: context, message: message, type: ToastificationType.error);
 
-  static void info({required BuildContext context, required String message}) {
+  static void info({required BuildContext context, required String message}) =>
+      _message(
+          context: context, message: message, type: ToastificationType.info);
+
+  static void _message(
+      {required BuildContext context, required String message, required type}) {
     toastification.show(
       context: context, // optional if you use ToastificationWrapper
       title: Text(message),
       autoCloseDuration: const Duration(seconds: 5),
-      type: ToastificationType.info,
+      type: type,
       style: ToastificationStyle.flatColored,
-      alignment: Alignment.topCenter,
+      alignment: Alignment.bottomCenter,
       showProgressBar: false,
+      showIcon: false,
     );
   }
 }

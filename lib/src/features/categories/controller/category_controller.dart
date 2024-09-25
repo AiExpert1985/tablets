@@ -52,7 +52,6 @@ class CategoryController {
     final pickedImage = ref.read(pickedImageNotifierProvider);
     final categoryRespository = ref.read(categoriesRepositoryProvider);
     final currentCategory = tempCategory;
-    cancelForm(context);
     final successful = await categoryRespository.addCategoryToDB(
         category: currentCategory, pickedImage: pickedImage);
     if (successful) {
@@ -66,6 +65,7 @@ class CategoryController {
         message: S.of(context).db_error_adding_doc,
       );
     }
+    cancelForm(context);
   }
 
   /// updates category in the DB where it updates the document in firestore & image in storage
@@ -82,7 +82,6 @@ class CategoryController {
     final pickedImage = ref.read(pickedImageNotifierProvider);
     final categoryRespository = ref.read(categoriesRepositoryProvider);
     final currentCategory = tempCategory;
-    cancelForm(context);
     bool successful = await categoryRespository.updateCategoryInDB(
         newCategory: currentCategory,
         oldCategory: oldCategory,
@@ -94,6 +93,7 @@ class CategoryController {
       utils.UserMessages.failure(
           context: context, message: S.of(context).db_error_updating_doc);
     }
+    cancelForm(context);
   }
 
   /// showing the pre-filled update form, using the passed ProductCategory object
@@ -124,7 +124,6 @@ class CategoryController {
       BuildContext context, ProductCategory category) async {
     // we don't want to delete image if its the default image
     bool deleteImage = category.imageUrl != constants.DefaultImage.url;
-    cancelForm(context);
     bool successful = await ref
         .read(categoriesRepositoryProvider)
         .deleteCategoryInDB(category: category, deleteImage: deleteImage);
@@ -135,6 +134,7 @@ class CategoryController {
       utils.UserMessages.failure(
           context: context, message: S.of(context).db_error_deleting_doc);
     }
+    cancelForm(context);
   }
 }
 

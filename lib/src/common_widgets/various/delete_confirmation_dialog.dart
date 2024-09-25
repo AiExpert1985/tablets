@@ -13,27 +13,39 @@ Future<bool?> showDeleteConfirmationDialog(
     builder: (BuildContext context) {
       return AlertDialog(
         // title: const Text('Confirm Deletion'),
-        content: Text('${S.of(context).alert_before_delete} $itemName ؟'),
-        actions: <Widget>[
-          TextButton(
-            child: Column(
-              children: [
-                const Icon(Icons.check_circle_outline, color: Colors.green),
-                const Gap(6),
-                Text(S.of(context).delete),
-              ],
-            ),
-            onPressed: () => Navigator.pop(context, true),
+        content: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            '${S.of(context).alert_before_delete} $itemName ؟',
+            style: const TextStyle(fontSize: 20),
+            textAlign: TextAlign.center,
           ),
-          TextButton(
-            child: Column(
-              children: [
-                const Icon(Icons.cancel_outlined),
-                const Gap(6),
-                Text(S.of(context).cancel),
-              ],
-            ),
-            onPressed: () => Navigator.pop(context),
+        ),
+        actions: <Widget>[
+          OverflowBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                child: Column(
+                  children: [
+                    const Icon(Icons.check, color: Colors.green),
+                    const Gap(6),
+                    Text(S.of(context).delete),
+                  ],
+                ),
+                onPressed: () => Navigator.pop(context, true),
+              ),
+              TextButton(
+                child: Column(
+                  children: [
+                    const Icon(Icons.close, color: Colors.red),
+                    const Gap(6),
+                    Text(S.of(context).cancel),
+                  ],
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
           ),
         ],
       );
