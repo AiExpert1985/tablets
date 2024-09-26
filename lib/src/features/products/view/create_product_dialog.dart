@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common_styling_and_decorations/form_field_box_input_decoration.dart';
 import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
-import 'package:tablets/src/features/products/presentation/controller/products_controller.dart';
-import 'package:gap/gap.dart' as gap;
+import 'package:tablets/src/features/products/controller/products_controller.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class AddProductDialog extends ConsumerStatefulWidget {
@@ -37,16 +37,15 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
               const GeneralImagePicker(
                 imageUrl: constants.DefaultImage.url,
               ),
-              const gap.Gap(20),
+              constants.FormGap.imageToFields,
               //! 1st Row
               Row(
                 children: [
                   //! product code
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                        labelText: S.of(context).product_code,
-                      ),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_code),
                       validator: (value) =>
                           utils.FormValidation.validateNumberField(
                               fieldValue: value,
@@ -63,8 +62,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut name
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: S.of(context).product_name),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_name),
                       validator: (value) =>
                           utils.FormValidation.validateNameField(
                               fieldValue: value,
@@ -81,8 +80,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! product Category
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: S.of(context).product_category),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_category),
                       validator: (value) =>
                           utils.FormValidation.validateNameField(
                               fieldValue: value,
@@ -104,8 +103,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! product sellRetailPrice
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: S.of(context).product_sell_retail_price),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_sell_retail_price),
                       validator: (value) =>
                           utils.FormValidation.validateNumberField(
                               fieldValue: value,
@@ -122,8 +121,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut sellWholePrice
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: S.of(context).product_sell_whole_price),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_sell_whole_price),
                       validator: (value) =>
                           utils.FormValidation.validateNameField(
                               fieldValue: value,
@@ -140,8 +139,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut sellsman commission
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: S.of(context).product_salesman_comission),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_salesman_comission),
                       validator: (value) =>
                           utils.FormValidation.validateNameField(
                               fieldValue: value,
@@ -163,8 +162,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut initial quantity
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: S.of(context).product_initial_quantitiy),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_initial_quantitiy),
                       validator: (value) =>
                           utils.FormValidation.validateNumberField(
                               fieldValue: value,
@@ -181,9 +180,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! product alert when less than
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText:
-                              S.of(context).product_altert_when_less_than),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_altert_when_less_than),
                       validator: (value) =>
                           utils.FormValidation.validateNumberField(
                               fieldValue: value,
@@ -200,8 +198,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut alert when exceeds
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: S.of(context).product_alert_when_exceeds),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_alert_when_exceeds),
                       validator: (value) =>
                           utils.FormValidation.validateNameField(
                               fieldValue: value,
@@ -223,8 +221,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut package type
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: S.of(context).product_package_type),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_package_type),
                       validator: (value) =>
                           utils.FormValidation.validateNameField(
                               fieldValue: value,
@@ -241,8 +239,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! product package weight
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: S.of(context).product_package_weight),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_package_weight),
                       validator: (value) =>
                           utils.FormValidation.validateNumberField(
                               fieldValue: value,
@@ -259,9 +257,8 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut num of items inside package
                   Expanded(
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText:
-                              S.of(context).product_num_items_inside_package),
+                      decoration: formFieldBoxInputDecoration(
+                          S.of(context).product_num_items_inside_package),
                       validator: (value) =>
                           utils.FormValidation.validateNameField(
                               fieldValue: value,
@@ -286,13 +283,25 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
         OverflowBar(
           alignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
+            TextButton(
               onPressed: () => productController.addProduct(context),
-              child: Text(S.of(context).save),
+              child: Column(
+                children: [
+                  const Icon(Icons.check, color: Colors.green),
+                  constants.IconToTextGap.vertical,
+                  Text(S.of(context).save),
+                ],
+              ),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(), // Close the dialog
-              child: Text(S.of(context).cancel),
+              onPressed: () => Navigator.of(context).pop(),
+              child: Column(
+                children: [
+                  const Icon(Icons.close),
+                  constants.IconToTextGap.vertical,
+                  Text(S.of(context).cancel),
+                ],
+              ),
             ),
           ],
         )

@@ -9,9 +9,15 @@ class MainDrawerProductsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Image.asset('assets/images/products.png', fit: BoxFit.scaleDown),
-      title: Text(S.of(context).products),
-      onTap: () => context.goNamed(AppRoute.products.name),
-    );
+        leading: Image.asset(
+          'assets/images/products.png',
+          width: 30,
+          fit: BoxFit.scaleDown,
+        ),
+        title: Text(S.of(context).products),
+        onTap: () {
+          Navigator.of(context).pop();
+          context.goNamed(AppRoute.products.name);
+        });
   }
 }

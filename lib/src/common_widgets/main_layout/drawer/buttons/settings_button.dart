@@ -9,9 +9,11 @@ class MainDrawerSettingsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.settings),
-      title: Text(S.of(context).settings),
-      onTap: () => context.goNamed(AppRoute.settings.name),
-    );
+        leading: const Icon(Icons.settings),
+        title: Text(S.of(context).settings),
+        onTap: () {
+          Navigator.of(context).pop();
+          context.goNamed(AppRoute.settings.name);
+        });
   }
 }

@@ -9,9 +9,11 @@ class MainDrawerTransactionsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.settings),
-      title: Text(S.of(context).transactions),
-      onTap: () => context.goNamed(AppRoute.transactions.name),
-    );
+        leading: const Icon(Icons.settings),
+        title: Text(S.of(context).transactions),
+        onTap: () {
+          Navigator.of(context).pop();
+          context.goNamed(AppRoute.transactions.name);
+        });
   }
 }

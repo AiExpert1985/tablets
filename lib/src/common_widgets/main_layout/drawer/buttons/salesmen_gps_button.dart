@@ -9,9 +9,11 @@ class MainDrawerSalesmenMovementButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.settings),
-      title: Text(S.of(context).salesmen_movement),
-      onTap: () => context.goNamed(AppRoute.home.name),
-    );
+        leading: const Icon(Icons.settings),
+        title: Text(S.of(context).salesmen_movement),
+        onTap: () {
+          Navigator.of(context).pop();
+          context.goNamed(AppRoute.home.name);
+        });
   }
 }

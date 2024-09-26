@@ -6,8 +6,15 @@ import 'package:flutter/material.dart';
 // import 'package:tablets/src/utils/utils.dart' as utils;
 
 class FormGap {
-  static const vertical = SizedBox(height: 25);
+  static const vertical = SizedBox(height: 15);
   static const horizontal = SizedBox(width: 40);
+  static const imageToFields = SizedBox(height: 25);
+}
+
+/// the gap between the icon and the text below (or next to) it
+class IconToTextGap {
+  static const vertical = SizedBox(height: 6);
+  static const horizontal = SizedBox(width: 6);
 }
 
 class DrawerGap {
@@ -22,7 +29,6 @@ class PushWidgets {
 }
 
 class DefaultImage {
-  // static File? imageFile;
   static const url =
       'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2Fdefault_image.PNG?alt=media&token=058a0797-af23-48e1-977b-a43fbd2d495a';
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/main_layout/app_bar/main_app_bar.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/main_drawer.dart';
-import 'package:tablets/src/features/products/presentation/view/add_product_dialog.dart';
+import 'package:tablets/src/features/products/view/create_product_dialog.dart';
 
 class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});

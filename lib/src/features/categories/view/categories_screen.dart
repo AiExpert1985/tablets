@@ -1,7 +1,6 @@
 import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/main_layout/app_bar/main_app_bar.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/main_drawer.dart';
@@ -30,7 +29,7 @@ class CategoriesScreen extends ConsumerWidget {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.25,
                 child: AnimatedSearchBar(
-                    label: S.of(context).search,
+                    // label: S.of(context).search,
                     onChanged: (userInput) {
                       // searchedText can be either caracters or null
                       ref.read(searchedNameProvider.notifier).state =
@@ -47,7 +46,7 @@ class CategoriesScreen extends ConsumerWidget {
                     )),
               ),
             ),
-            Gap(MediaQuery.of(context).size.width * 0.01),
+            SizedBox(height: MediaQuery.of(context).size.width * 0.01),
             const CategoriesGrid(),
           ],
         ),

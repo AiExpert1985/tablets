@@ -2,15 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_styling_and_decorations/form_field_box_input_decoration.dart';
 import 'package:tablets/src/common_widgets/various/delete_confirmation_dialog.dart';
 import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
+import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
-import 'package:tablets/src/constants/constants.dart' as constants;
 
 class UpdateCategoryDialog extends ConsumerStatefulWidget {
   const UpdateCategoryDialog({super.key});
@@ -46,7 +45,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               GeneralImagePicker(imageUrl: oldCategory.imageUrl),
-              const Gap(50),
+              constants.FormGap.imageToFields,
               Expanded(
                 child: TextFormField(
                     textAlign: TextAlign.center,
@@ -75,7 +74,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
               child: Column(
                 children: [
                   const Icon(Icons.check, color: Colors.green),
-                  const Gap(6),
+                  constants.IconToTextGap.vertical,
                   Text(S.of(context).save),
                 ],
               ),
@@ -85,7 +84,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
               child: Column(
                 children: [
                   const Icon(Icons.close),
-                  const Gap(6),
+                  constants.IconToTextGap.vertical,
                   Text(S.of(context).cancel),
                 ],
               ),
@@ -101,7 +100,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
               child: Column(
                 children: [
                   const Icon(Icons.delete, color: Colors.red),
-                  const Gap(6),
+                  constants.IconToTextGap.vertical,
                   Text(S.of(context).delete),
                 ],
               ),
