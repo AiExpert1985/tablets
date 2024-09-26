@@ -5,6 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/main_layout/app_bar/main_app_bar.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/main_drawer.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
+import 'package:tablets/src/features/categories/controller/searched_name_provider.dart';
 import 'package:tablets/src/features/categories/view/categories_grid_widget.dart';
 
 class CategoriesScreen extends ConsumerWidget {
@@ -25,7 +26,12 @@ class CategoriesScreen extends ConsumerWidget {
         child: Column(
           children: [
             SearchBar(
-                onChanged: (userInput) {}, hintText: S.of(context).search),
+                onChanged: (userInput) {
+                  // searchedText can be either caracters or null
+                  ref.read(searchedNameProvider.notifier).state =
+                      userInput.trim() == '' ? null : userInput.trim();
+                },
+                hintText: S.of(context).search),
             Gap(MediaQuery.of(context).size.width * 0.01),
             const CategoriesGrid(),
           ],

@@ -30,6 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Do you want to delete"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "category": MessageLookupByLibrary.simpleMessage("Category"),
+        "choose_image": MessageLookupByLibrary.simpleMessage("Choose image"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("Create a new account"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(

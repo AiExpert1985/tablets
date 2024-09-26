@@ -11,7 +11,10 @@ class LocaleAwareLogoutIcon extends StatelessWidget {
       // for arabic,
       return Transform.flip(
         flipX: true,
-        child: const Icon(Icons.logout),
+        child: const Icon(
+          Icons.logout,
+          color: Colors.white,
+        ),
       );
     }
     return const Icon(Icons.logout);

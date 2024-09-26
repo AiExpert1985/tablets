@@ -65,9 +65,19 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
               onPressed: () => categoryController.addCategoryToDB(context),
               child: Column(
                 children: [
-                  const Icon(Icons.save),
+                  const Icon(Icons.check, color: Colors.green),
                   const Gap(6),
                   Text(S.of(context).save),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Column(
+                children: [
+                  const Icon(Icons.close),
+                  const Gap(6),
+                  Text(S.of(context).cancel),
                 ],
               ),
             ),

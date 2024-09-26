@@ -28,7 +28,7 @@ class GeneralImagePicker extends ConsumerWidget {
               .updatePickedImage(),
           icon: const Icon(Icons.image),
           label: Text(
-            S.of(context).add_image,
+            S.of(context).choose_image,
             style: TextStyle(color: Theme.of(context).colorScheme.primary),
           ),
         )

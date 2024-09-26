@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tablets/src/common_widgets/main_layout/app_bar/logout_button.dart';
-// import 'package:sidebarx/sidebarx.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/salesmen_gps_button.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/settings_button.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/header/main_drawer_header.dart';
@@ -34,7 +32,7 @@ class MainDrawer extends StatelessWidget {
                   constants.DrawerGap.vertical,
                   const MainDrawerSettingsButton(),
                   constants.PushWidgets.toEnd,
-                  const LogoutButton(),
+                  const MainDrawerSettingsButton(),
                 ],
               ),
             ),
@@ -43,15 +41,4 @@ class MainDrawer extends StatelessWidget {
       ),
     );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return SidebarX(
-  //     controller: SidebarXController(selectedIndex: 0, extended: true),
-  //     items: const [
-  //       SidebarXItem(icon: Icons.home, label: 'Home'),
-  //       SidebarXItem(icon: Icons.search, label: 'Search'),
-  //     ],
-  //   );
-  // }
 }

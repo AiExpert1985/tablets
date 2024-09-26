@@ -73,9 +73,19 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                   categoryController.updateCategoryInDB(context, oldCategory),
               child: Column(
                 children: [
-                  const Icon(Icons.save),
+                  const Icon(Icons.check, color: Colors.green),
                   const Gap(6),
-                  Text(S.of(context).save_changes),
+                  Text(S.of(context).save),
+                ],
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Column(
+                children: [
+                  const Icon(Icons.close),
+                  const Gap(6),
+                  Text(S.of(context).cancel),
                 ],
               ),
             ),
@@ -94,7 +104,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                   Text(S.of(context).delete),
                 ],
               ),
-            )
+            ),
           ],
         )
       ],

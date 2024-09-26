@@ -130,6 +130,16 @@ class S {
     );
   }
 
+  /// `Choose image`
+  String get choose_image {
+    return Intl.message(
+      'Choose image',
+      name: 'choose_image',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Add a new user`
   String get add_new_user {
     return Intl.message(

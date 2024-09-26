@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
+import 'package:tablets/src/features/categories/controller/searched_name_provider.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
@@ -10,9 +11,10 @@ import 'package:tablets/src/utils/utils.dart' as utils;
 /// and gets images from a 'pickedImageNotifierProvider' where image file is stored when
 /// user pick image (inside form)
 class CategoriesRepository {
-  CategoriesRepository(this._firestore, this._imageStorage);
+  CategoriesRepository(this._firestore, this._imageStorage, this._ref);
   final FirebaseFirestore _firestore;
   final StorageRepository _imageStorage;
+  final ProviderRef _ref;
 
   static String collectionName = 'categories';
   static String nameKey = 'name';
@@ -125,20 +127,33 @@ class CategoriesRepository {
   }
 
   Query<ProductCategory> _categoriesRef() {
-    return _firestore
-        .collection(collectionName)
-        .withConverter(
-          fromFirestore: (doc, _) => ProductCategory.fromMap(doc.data()!),
-          toFirestore: (ProductCategory product, options) => product.toMap(),
-        )
-        .orderBy(nameKey);
+    // searchedName can be either null or text, it can't be empty string
+    final searchedName = _ref.watch(searchedNameProvider);
+    utils.CustomDebug.tempPrint(searchedName);
+    if (searchedName == null) {
+      return _firestore
+          .collection(collectionName)
+          .orderBy(nameKey)
+          .withConverter(
+            fromFirestore: (doc, _) => ProductCategory.fromMap(doc.data()!),
+            toFirestore: (ProductCategory product, options) => product.toMap(),
+          );
+    } else {
+      return _firestore
+          .collection(collectionName)
+          .orderBy(nameKey)
+          .startAt([searchedName]).endAt(['$searchedName\uf8ff']).withConverter(
+        fromFirestore: (doc, _) => ProductCategory.fromMap(doc.data()!),
+        toFirestore: (ProductCategory product, options) => product.toMap(),
+      );
+    }
   }
 }
 
 final categoriesRepositoryProvider = Provider<CategoriesRepository>((ref) {
   final imageStorage = ref.read(fileStorageProvider);
   final firestore = FirebaseFirestore.instance;
-  return CategoriesRepository(firestore, imageStorage);
+  return CategoriesRepository(firestore, imageStorage, ref);
 });
 
 final categoriesStreamProvider =

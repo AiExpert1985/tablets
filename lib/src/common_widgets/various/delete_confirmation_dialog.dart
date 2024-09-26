@@ -15,10 +15,20 @@ Future<bool?> showDeleteConfirmationDialog(
         // title: const Text('Confirm Deletion'),
         content: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: Text(
-            '${S.of(context).alert_before_delete} $itemName ؟',
-            style: const TextStyle(fontSize: 20),
-            textAlign: TextAlign.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                S.of(context).alert_before_delete,
+                style: const TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                '$itemName ؟',
+                style: const TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
         actions: <Widget>[
@@ -28,7 +38,7 @@ Future<bool?> showDeleteConfirmationDialog(
               TextButton(
                 child: Column(
                   children: [
-                    const Icon(Icons.check, color: Colors.green),
+                    const Icon(Icons.check, color: Colors.red),
                     const Gap(6),
                     Text(S.of(context).delete),
                   ],
@@ -38,7 +48,7 @@ Future<bool?> showDeleteConfirmationDialog(
               TextButton(
                 child: Column(
                   children: [
-                    const Icon(Icons.close, color: Colors.red),
+                    const Icon(Icons.close),
                     const Gap(6),
                     Text(S.of(context).cancel),
                   ],

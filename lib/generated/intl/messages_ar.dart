@@ -31,6 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("هل ترغب بحذف"),
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),
+        "choose_image": MessageLookupByLibrary.simpleMessage("اختيار صورة"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
