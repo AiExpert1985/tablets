@@ -1,3 +1,4 @@
+import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -25,13 +26,27 @@ class CategoriesScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(30),
         child: Column(
           children: [
-            SearchBar(
-                onChanged: (userInput) {
-                  // searchedText can be either caracters or null
-                  ref.read(searchedNameProvider.notifier).state =
-                      userInput.trim() == '' ? null : userInput.trim();
-                },
-                hintText: S.of(context).search),
+            Center(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.25,
+                child: AnimatedSearchBar(
+                    label: S.of(context).search,
+                    onChanged: (userInput) {
+                      // searchedText can be either caracters or null
+                      ref.read(searchedNameProvider.notifier).state =
+                          userInput.trim() == '' ? null : userInput.trim();
+                    },
+                    searchDecoration: InputDecoration(
+                      labelText: S.of(context).search,
+                      alignLabelWithHint: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 8),
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                    )),
+              ),
+            ),
             Gap(MediaQuery.of(context).size.width * 0.01),
             const CategoriesGrid(),
           ],

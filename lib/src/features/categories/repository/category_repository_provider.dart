@@ -156,6 +156,8 @@ final categoriesRepositoryProvider = Provider<CategoriesRepository>((ref) {
   return CategoriesRepository(firestore, imageStorage, ref);
 });
 
+// note that autoDispose is very important to close stream when not need (all calling widgets are close)
+// which reduces the cost of firebase usage
 final categoriesStreamProvider =
     StreamProvider.autoDispose<List<ProductCategory>>((ref) {
   final categoriesRepository = ref.watch(categoriesRepositoryProvider);
