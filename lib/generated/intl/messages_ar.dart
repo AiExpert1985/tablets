@@ -32,7 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),
-        "choose_image": MessageLookupByLibrary.simpleMessage("اختيار صورة"),
+        "choose_image": MessageLookupByLibrary.simpleMessage("اختر صورة"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(

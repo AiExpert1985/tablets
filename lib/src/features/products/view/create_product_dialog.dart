@@ -35,7 +35,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const GeneralImagePicker(
+              GeneralImagePicker(
                 imageUrl: constants.DefaultImage.url,
               ),
               constants.FormGap.imageToFields,

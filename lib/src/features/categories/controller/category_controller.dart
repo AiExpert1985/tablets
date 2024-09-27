@@ -25,6 +25,10 @@ class CategoryController {
     tempCategory = ProductCategory.defaultValues();
   }
 
+  void resetImagePicker() {
+    ref.read(pickedImageNotifierProvider.notifier).reset();
+  }
+
   bool saveForm() {
     // runs validation inside form
     final isValid = formKey.currentState!.validate();
@@ -38,7 +42,7 @@ class CategoryController {
     // close the form
     Navigator.of(context).pop();
     // reset the image picker
-    ref.read(pickedImageNotifierProvider.notifier).reset();
+    resetImagePicker();
     resetTempCategory();
   }
 
@@ -101,6 +105,7 @@ class CategoryController {
   /// it uses category.iamgeUrl to get an image from firebase storage
   /// and uses category.name to show the category name
   void showCategoryUpdateForm(BuildContext context, ProductCategory cat) {
+    resetImagePicker();
     final currentCategory = tempCategory;
     currentCategory.imageUrl = cat.imageUrl;
     currentCategory.name = cat.name;
@@ -114,6 +119,7 @@ class CategoryController {
   /// image displayed in the picker is the default image
   void showCategoryCreateForm(BuildContext context) {
     resetTempCategory();
+    resetImagePicker();
     showDialog(
       context: context,
       builder: (BuildContext context) => const CreateCategoryDialog(),
