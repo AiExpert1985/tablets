@@ -34,33 +34,35 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
       //   S.of(context).update_category,
       //   style: const TextStyle(fontSize: 18),
       // ),
-      content: Container(
-        padding: const EdgeInsets.all(30),
-        width: MediaQuery.of(context).size.width * 0.3,
-        height: MediaQuery.of(context).size.height * 0.45,
-        child: Form(
-          key: categoryController.formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              GeneralImagePicker(imageUrl: oldCategory.imageUrl),
-              constants.ImageToFormFieldsGap.vertical,
-              Expanded(
-                child: TextFormField(
-                    textAlign: TextAlign.center,
-                    initialValue: oldCategory.name,
-                    decoration:
-                        formFieldBoxInputDecoration(S.of(context).category),
-                    validator: (value) =>
-                        utils.FormValidation.validateNameField(
-                            fieldValue: value,
-                            errorMessage: S
-                                .of(context)
-                                .input_validation_error_message_for_numbers),
-                    onSaved: (value) => newCategory.name = value!),
-              ),
-            ],
+      content: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(30),
+          width: MediaQuery.of(context).size.width * 0.3,
+          height: MediaQuery.of(context).size.height * 0.45,
+          child: Form(
+            key: categoryController.formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GeneralImagePicker(imageUrl: oldCategory.imageUrl),
+                constants.ImageToFormFieldsGap.vertical,
+                Expanded(
+                  child: TextFormField(
+                      textAlign: TextAlign.center,
+                      initialValue: oldCategory.name,
+                      decoration:
+                          formFieldBoxInputDecoration(S.of(context).category),
+                      validator: (value) =>
+                          utils.FormValidation.validateNameField(
+                              fieldValue: value,
+                              errorMessage: S
+                                  .of(context)
+                                  .input_validation_error_message_for_numbers),
+                      onSaved: (value) => newCategory.name = value!),
+                ),
+              ],
+            ),
           ),
         ),
       ),

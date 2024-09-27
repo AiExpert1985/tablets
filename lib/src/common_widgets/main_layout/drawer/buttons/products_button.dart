@@ -10,7 +10,7 @@ class MainDrawerProductsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
         leading: Image.asset(
-          'assets/images/products.png',
+          'assets/icons/side_drawer/products.png',
           width: 30,
           fit: BoxFit.scaleDown,
         ),

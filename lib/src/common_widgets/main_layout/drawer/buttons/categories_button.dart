@@ -9,7 +9,11 @@ class MainDrawerCategoriesButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        leading: const Icon(Icons.settings),
+        leading: Image.asset(
+          'assets/icons/side_drawer/categories.png',
+          width: 30,
+          fit: BoxFit.scaleDown,
+        ),
         title: Text(S.of(context).categories),
         onTap: () {
           Navigator.of(context).pop();
