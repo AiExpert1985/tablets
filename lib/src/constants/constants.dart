@@ -8,7 +8,10 @@ import 'package:flutter/material.dart';
 class FormGap {
   static const vertical = SizedBox(height: 15);
   static const horizontal = SizedBox(width: 40);
-  static const imageToFields = SizedBox(height: 25);
+}
+
+class ImageToFormFieldsGap {
+  static const vertical = SizedBox(height: 40);
 }
 
 /// the gap between the icon and the text below (or next to) it

@@ -38,7 +38,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
               GeneralImagePicker(
                 imageUrl: constants.DefaultImage.url,
               ),
-              constants.FormGap.imageToFields,
+              constants.ImageToFormFieldsGap.vertical,
               //! 1st Row
               Row(
                 children: [

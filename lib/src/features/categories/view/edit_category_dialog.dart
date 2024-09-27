@@ -37,7 +37,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
       content: Container(
         padding: const EdgeInsets.all(30),
         width: MediaQuery.of(context).size.width * 0.3,
-        height: MediaQuery.of(context).size.height * 0.5,
+        height: MediaQuery.of(context).size.height * 0.45,
         child: Form(
           key: categoryController.formKey,
           child: Column(
@@ -45,7 +45,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               GeneralImagePicker(imageUrl: oldCategory.imageUrl),
-              constants.FormGap.imageToFields,
+              constants.ImageToFormFieldsGap.vertical,
               Expanded(
                 child: TextFormField(
                     textAlign: TextAlign.center,
