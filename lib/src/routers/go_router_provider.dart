@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/users_screen.dart';
+import 'package:tablets/src/features/pending_bills/pending_bills.dart';
 import 'package:tablets/src/features/products/view/products_screen.dart';
 import 'package:tablets/src/features/salesmen_live_locations/presentation/sales_men_live_location_screen.dart';
 import 'package:tablets/src/features/categories/view/categories_screen.dart';
+import 'package:tablets/src/features/settings/settings_screen.dart';
 import 'package:tablets/src/features/transaction/presentation/transaction_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/presentation/view/login/login_screen.dart';
@@ -19,6 +21,8 @@ enum AppRoute {
   products,
   salesmen,
   settings,
+  categories,
+  pendingBills,
 }
 
 final firebaseAuthProvider =
@@ -52,7 +56,7 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/home',
           name: AppRoute.home.name,
           builder: (BuildContext context, GoRouterState state) =>
-              const SalesmenLiveLocationScreen(),
+              const ProductsScreen(),
         ),
         GoRoute(
           path: '/login',
@@ -88,7 +92,19 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/settings',
           name: AppRoute.settings.name,
           builder: (BuildContext context, GoRouterState state) =>
+              const SettingsScreen(),
+        ),
+        GoRoute(
+          path: '/categories',
+          name: AppRoute.categories.name,
+          builder: (BuildContext context, GoRouterState state) =>
               const CategoriesScreen(),
+        ),
+        GoRoute(
+          path: '/pending_bills',
+          name: AppRoute.pendingBills.name,
+          builder: (BuildContext context, GoRouterState state) =>
+              const PendingBillsScreen(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),

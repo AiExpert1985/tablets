@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "alert_before_delete":
             MessageLookupByLibrary.simpleMessage("Do you want to delete"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "categories": MessageLookupByLibrary.simpleMessage("Categories"),
         "category": MessageLookupByLibrary.simpleMessage("Category"),
         "choose_image": MessageLookupByLibrary.simpleMessage("Choose image"),
         "create_new_account":
@@ -85,6 +86,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "page_not_found":
             MessageLookupByLibrary.simpleMessage("Page is not found"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
+        "pending_bills": MessageLookupByLibrary.simpleMessage("Pending bills"),
         "product_alert_when_exceeds": MessageLookupByLibrary.simpleMessage(
             "Alert when available more than"),
         "product_altert_when_less_than": MessageLookupByLibrary.simpleMessage(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/categories_button.dart';
+import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/pending_bills.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/salesmen_gps_button.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/settings_button.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/header/main_drawer_header.dart';
@@ -31,8 +33,10 @@ class MainDrawer extends StatelessWidget {
                   const MainDrawerSalesmenMovementButton(),
                   constants.DrawerGap.vertical,
                   const MainDrawerSettingsButton(),
+                  constants.DrawerGap.vertical,
+                  const MainDrawerCategoriesButton(),
                   constants.PushWidgets.toEnd,
-                  const MainDrawerSettingsButton(),
+                  const MainDrawerPendingBillsButton(),
                 ],
               ),
             ),

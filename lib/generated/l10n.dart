@@ -290,6 +290,26 @@ class S {
     );
   }
 
+  /// `Pending bills`
+  String get pending_bills {
+    return Intl.message(
+      'Pending bills',
+      name: 'pending_bills',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Categories`
+  String get categories {
+    return Intl.message(
+      'Categories',
+      name: 'categories',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Failure`
   String get failure {
     return Intl.message(

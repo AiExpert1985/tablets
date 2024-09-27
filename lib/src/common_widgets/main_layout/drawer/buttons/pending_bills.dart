@@ -3,17 +3,17 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
-class MainDrawerSalesmenMovementButton extends StatelessWidget {
-  const MainDrawerSalesmenMovementButton({super.key});
+class MainDrawerPendingBillsButton extends StatelessWidget {
+  const MainDrawerPendingBillsButton({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
         leading: const Icon(Icons.settings),
-        title: Text(S.of(context).salesmen_movement),
+        title: Text(S.of(context).pending_bills),
         onTap: () {
           Navigator.of(context).pop();
-          context.goNamed(AppRoute.salesmen.name);
+          context.goNamed(AppRoute.pendingBills.name);
         });
   }
 }

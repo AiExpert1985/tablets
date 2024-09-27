@@ -30,6 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "alert_before_delete":
             MessageLookupByLibrary.simpleMessage("هل ترغب بحذف"),
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
+        "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),
         "choose_image": MessageLookupByLibrary.simpleMessage("اختيار صورة"),
         "create_new_account":
@@ -65,9 +66,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "input_validation_error_message_for_email":
             MessageLookupByLibrary.simpleMessage("ادخل بريد الكتروني صحيح"),
         "input_validation_error_message_for_names":
-            MessageLookupByLibrary.simpleMessage("يجب ادخال الاسم بصورة صحيحة"),
+            MessageLookupByLibrary.simpleMessage("ادخل الاسم بصورة صحيحة"),
         "input_validation_error_message_for_numbers":
-            MessageLookupByLibrary.simpleMessage("يجب ادخال الرقم بصورة صحيحة"),
+            MessageLookupByLibrary.simpleMessage("ادخل الرقم بصورة صحيحة"),
         "input_validation_error_message_for_password":
             MessageLookupByLibrary.simpleMessage(
                 "يجب ان تكون كلمة المرور 6 رموز على الاقل"),
@@ -82,6 +83,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
+        "pending_bills":
+            MessageLookupByLibrary.simpleMessage("القوائم غير المثبقة"),
         "product_alert_when_exceeds":
             MessageLookupByLibrary.simpleMessage(" تنبيه عندما يتجاوز"),
         "product_altert_when_less_than":

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 InputDecoration formFieldBoxInputDecoration(String label) {
   return InputDecoration(
-    floatingLabelAlignment: FloatingLabelAlignment.center,
+    // floatingLabelAlignment: FloatingLabelAlignment.center,
     label: Text(
       label,
       // textAlign: TextAlign.center,
       style: const TextStyle(
         fontSize: 13,
-        color: Color.fromARGB(255, 248, 25, 17),
+        color: Colors.black38,
       ),
     ),
     alignLabelWithHint: true,

@@ -23,6 +23,8 @@
     "transactions": "Transactions",
     "products": "Products",
     "salesmen_movement": "Salesmen",
+    "pending_bills": "Pending bills",
+    "categories": "Categories",
     "failure": "Failure",
     "success": "Success",
     "info": "info",

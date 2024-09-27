@@ -21,13 +21,14 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
   Widget build(BuildContext context) {
     final productController = ref.read(productsControllerProvider);
     return AlertDialog(
+      alignment: Alignment.center,
       scrollable: true,
-      contentPadding: const EdgeInsets.all(16.0),
+      contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
       // title: Text(S.of(context).add_new_user),
       content: Container(
-        padding: const EdgeInsets.all(30),
+        padding: const EdgeInsets.all(20),
         width: MediaQuery.of(context).size.width * 0.5,
-        height: MediaQuery.of(context).size.height * 0.7,
+        height: MediaQuery.of(context).size.height * 0.8,
         child: Form(
           key: productController.formKey,
           child: Column(
@@ -44,6 +45,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! product code
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_code),
                       validator: (value) =>
@@ -62,6 +64,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut name
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_name),
                       validator: (value) =>
@@ -80,6 +83,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! product Category
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_category),
                       validator: (value) =>
@@ -103,6 +107,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! product sellRetailPrice
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_sell_retail_price),
                       validator: (value) =>
@@ -121,6 +126,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut sellWholePrice
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_sell_whole_price),
                       validator: (value) =>
@@ -139,6 +145,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut sellsman commission
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_salesman_comission),
                       validator: (value) =>
@@ -162,6 +169,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut initial quantity
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_initial_quantitiy),
                       validator: (value) =>
@@ -180,6 +188,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! product alert when less than
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_altert_when_less_than),
                       validator: (value) =>
@@ -198,6 +207,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut alert when exceeds
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_alert_when_exceeds),
                       validator: (value) =>
@@ -221,6 +231,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut package type
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_package_type),
                       validator: (value) =>
@@ -239,6 +250,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! product package weight
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_package_weight),
                       validator: (value) =>
@@ -257,6 +269,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                   //! prodcut num of items inside package
                   Expanded(
                     child: TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: formFieldBoxInputDecoration(
                           S.of(context).product_num_items_inside_package),
                       validator: (value) =>
