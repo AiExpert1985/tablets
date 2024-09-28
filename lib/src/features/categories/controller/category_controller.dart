@@ -51,7 +51,7 @@ class CategoryController {
   /// (the image is from pickedImageNotifierProvider which already picked by user)
   /// then create a new document in categories collection
   /// to store the category name and url of uploaded image
-  void addCategoryToDB(BuildContext context) async {
+  void createNewCategoryInDB(BuildContext context) async {
     if (!saveForm()) return;
     final pickedImage = ref.read(pickedImageNotifierProvider);
     final categoryRespository = ref.read(categoriesRepositoryProvider);
