@@ -32,8 +32,8 @@ class PushWidgets {
 }
 
 class DefaultImage {
-  static String url = defaultImageUrl[3];
-  static const List<String> defaultImageUrl = [
+  static String url = _defaultImageUrl[3];
+  static const List<String> _defaultImageUrl = [
     'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2Fdefault_image.PNG?alt=media&token=39d92c51-a67b-4025-ba08-566faa606d57',
     'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2Fdefault_image.png?alt=media&token=bba72e1b-e06f-4764-8687-ba37cf0af770',
     'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2Fdefault_image_3.png?alt=media&token=b2b7222a-ca76-437a-9003-7d046a908185',

@@ -1,52 +1,74 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common_providers/storage_repository.dart';
+import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductRepository {
-  ProductRepository(this._firestore);
+  ProductRepository(this._firestore, this._imageStorage, this._ref);
   final FirebaseFirestore _firestore;
+  final StorageRepository _imageStorage;
+  final ProviderRef _ref;
+
+  static String firestoreCollectionName = 'products';
+  static String firebaseOrderKey = 'name';
+  static String storageFolderName = 'products';
 
   /// add item to firebase products document
   /// return true if added successfully, otherwise returns false
-  Future<bool> addProduct({
-    required double itemCode,
-    required String itemName,
-    required double productSellRetailPrice,
-    required double productSellWholePrice,
-    required String productPackageType,
-    required double productPackageWeight,
-    required double productNumItemsInsidePackage,
-    required double productAlertWhenExceeds,
-    required double productAltertWhenLessThan,
-    required double productSalesmanComission,
-    required String productCategory,
-    required double productInitialQuantity,
-  }) async {
-    final productsRef = _firestore.collection('products').doc();
+  Future<bool> addCategoryToDB(
+      {required Product product, File? pickedImage}) async {
     try {
-      await productsRef.set({
-        'creationTime': FieldValue.serverTimestamp(),
-        'itemCode': itemCode,
-        'itemName': itemName,
-        'productSellRetailPrice': productSellRetailPrice,
-        'productSellWholePrice': productSellWholePrice,
-        'productPackageType': productPackageType,
-        'productPackageWeight': productPackageWeight,
-        'productNumItemsInsidePackage': productNumItemsInsidePackage,
-        'productAlertWhenExceeds': productAlertWhenExceeds,
-        'productAltertWhenLessThan': productAltertWhenLessThan,
-        'productSalesmanComission': productSalesmanComission,
-        'productCategory': productCategory,
-        'productInitialQuantity': productInitialQuantity,
-      });
+      // if an image is picked, we will store it in firebase and use its url
+      // otherwise, we will use the default item image url
+      if (pickedImage != null) {
+        final newUrl = await _imageStorage.addFile(
+            folder: storageFolderName,
+            fileName: product.name,
+            file: pickedImage);
+        product.iamgesUrl.add(newUrl!);
+      }
+
+      final docRef = _firestore.collection(firestoreCollectionName).doc();
+      await docRef.set(product.toMap());
       return true;
     } catch (e) {
-      utils.CustomDebug.print(message: e, stackTrace: StackTrace.current);
+      utils.CustomDebug.print(
+          message: 'An error while adding Product to DB',
+          stackTrace: StackTrace.current);
       return false;
     }
   }
+
+  Stream<List<Product>> watchProductsList() {
+    utils.CustomDebug.tempPrint('Inside watchProductsList()');
+    final ref = _productsRef();
+    return ref.snapshots().map((snapshot) =>
+        snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+  }
+
+  Query<Product> _productsRef() {
+    return _firestore
+        .collection(firestoreCollectionName)
+        .orderBy(firebaseOrderKey)
+        .withConverter(
+          fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
+          toFirestore: (Product product, options) => product.toMap(),
+        );
+  }
 }
 
-final productRepositoryProvider = Provider<ProductRepository>((ref) {
-  return ProductRepository(FirebaseFirestore.instance);
+final productsRepositoryProvider = Provider<ProductRepository>((ref) {
+  final imageStorage = ref.read(fileStorageProvider);
+  final firestore = FirebaseFirestore.instance;
+  return ProductRepository(firestore, imageStorage, ref);
+});
+
+// note that autoDispose is very important to close stream when not need (all calling widgets are close)
+// which reduces the cost of firebase usage
+final productsStreamProvider = StreamProvider.autoDispose<List<Product>>((ref) {
+  final productsRepository = ref.watch(productsRepositoryProvider);
+  return productsRepository.watchProductsList();
 });

@@ -9,14 +9,14 @@ import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/controller/products_controller.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
-class AddProductDialog extends ConsumerStatefulWidget {
-  const AddProductDialog({super.key});
+class CreateProductDialog extends ConsumerStatefulWidget {
+  const CreateProductDialog({super.key});
 
   @override
-  ConsumerState<AddProductDialog> createState() => _AddProductDialogState();
+  ConsumerState<CreateProductDialog> createState() => _AddProductDialogState();
 }
 
-class _AddProductDialogState extends ConsumerState<AddProductDialog> {
+class _AddProductDialogState extends ConsumerState<CreateProductDialog> {
   @override
   Widget build(BuildContext context) {
     final productController = ref.read(productsControllerProvider);
@@ -56,7 +56,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_numbers),
                         onSaved: (value) {
-                          productController.productCode = double.parse(
+                          productController.tempProduct.code = double.parse(
                               value!); // value is double (never null)
                         },
                       ),
@@ -75,7 +75,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_names),
                         onSaved: (value) {
-                          productController.productName =
+                          productController.tempProduct.name =
                               value!; // value can't be null
                         },
                       ),
@@ -94,7 +94,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_names),
                         onSaved: (value) {
-                          productController.productCategory =
+                          productController.tempProduct.category =
                               value!; // value can't be null
                         },
                       ),
@@ -118,8 +118,9 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_numbers),
                         onSaved: (value) {
-                          productController.productSellRetailPrice = double.parse(
-                              value!); // value is double (never null)// value can't be null
+                          productController.tempProduct.sellRetailPrice =
+                              double.parse(
+                                  value!); // value is double (never null)// value can't be null
                         },
                       ),
                     ),
@@ -137,8 +138,9 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_numbers),
                         onSaved: (value) {
-                          productController.productSellWholePrice = double.parse(
-                              value!); // value is double (never null)/ value can't be null
+                          productController.tempProduct.sellWholePrice =
+                              double.parse(
+                                  value!); // value is double (never null)/ value can't be null
                         },
                       ),
                     ),
@@ -156,8 +158,9 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_numbers),
                         onSaved: (value) {
-                          productController.productSalesmanComission = double.parse(
-                              value!); // value is double (never null)// value can't be null
+                          productController.tempProduct.salesmanComission =
+                              double.parse(
+                                  value!); // value is double (never null)// value can't be null
                         },
                       ),
                     ),
@@ -180,8 +183,9 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_numbers),
                         onSaved: (value) {
-                          productController.productInitialQuantity = double.parse(
-                              value!); // value is double (never null)// value can't be null
+                          productController.tempProduct.initialQuantity =
+                              double.parse(
+                                  value!); // value is double (never null)// value can't be null
                         },
                       ),
                     ),
@@ -199,7 +203,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_numbers),
                         onSaved: (value) {
-                          productController.productAltertWhenLessThan =
+                          productController.tempProduct.altertWhenLessThan =
                               double.parse(
                                   value!); // value is double (never null) value can't be null
                         },
@@ -219,8 +223,9 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_numbers),
                         onSaved: (value) {
-                          productController.productAlertWhenExceeds = double.parse(
-                              value!); // value is double (never null)// value can't be null
+                          productController.tempProduct.alertWhenExceeds =
+                              double.parse(
+                                  value!); // value is double (never null)// value can't be null
                         },
                       ),
                     ),
@@ -243,7 +248,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_names),
                         onSaved: (value) {
-                          productController.productPackageType =
+                          productController.tempProduct.packageType =
                               value!; // value can't be null
                         },
                       ),
@@ -262,8 +267,9 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_numbers),
                         onSaved: (value) {
-                          productController.productPackageWeight = double.parse(
-                              value!); // value is double (never null)/ value can't be null
+                          productController.tempProduct.packageWeight =
+                              double.parse(
+                                  value!); // value is double (never null)/ value can't be null
                         },
                       ),
                     ),
@@ -281,7 +287,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
                                     .of(context)
                                     .input_validation_error_message_for_numbers),
                         onSaved: (value) {
-                          productController.productNumItemsInsidePackage =
+                          productController.tempProduct.numItemsInsidePackage =
                               double.parse(
                                   value!); // value is double (never null)// value can't be null
                         },
@@ -300,7 +306,7 @@ class _AddProductDialogState extends ConsumerState<AddProductDialog> {
           alignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: () => productController.addProduct(context),
+              onPressed: () => productController.createNewProductInDb(context),
               child: Column(
                 children: [
                   const Icon(Icons.check, color: Colors.green),

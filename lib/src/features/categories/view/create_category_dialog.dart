@@ -26,34 +26,37 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
       //   S.of(context).add_new_category,
       //   style: const TextStyle(fontSize: 18),
       // ),
-      content: Container(
-        padding: const EdgeInsets.all(30),
-        width: MediaQuery.of(context).size.width * 0.3,
-        height: MediaQuery.of(context).size.height * 0.5,
-        child: Form(
-          key: categoryController.formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              GeneralImagePicker(imageUrl: currentCategory.imageUrl),
-              constants.ImageToFormFieldsGap.vertical,
-              Expanded(
-                child: TextFormField(
-                  textAlign: TextAlign.center,
-                  decoration:
-                      formFieldBoxInputDecoration(S.of(context).category),
-                  validator: (value) => utils.FormValidation.validateNameField(
-                      fieldValue: value,
-                      errorMessage: S
-                          .of(context)
-                          .input_validation_error_message_for_numbers),
-                  onSaved: (value) => currentCategory.name =
-                      value! // value is double (never null)
-                  ,
+      content: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(30),
+          width: MediaQuery.of(context).size.width * 0.3,
+          height: MediaQuery.of(context).size.height * 0.5,
+          child: Form(
+            key: categoryController.formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GeneralImagePicker(imageUrl: currentCategory.imageUrl),
+                constants.ImageToFormFieldsGap.vertical,
+                Expanded(
+                  child: TextFormField(
+                    textAlign: TextAlign.center,
+                    decoration:
+                        formFieldBoxInputDecoration(S.of(context).category),
+                    validator: (value) =>
+                        utils.FormValidation.validateNameField(
+                            fieldValue: value,
+                            errorMessage: S
+                                .of(context)
+                                .input_validation_error_message_for_numbers),
+                    onSaved: (value) => currentCategory.name =
+                        value! // value is double (never null)
+                    ,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -62,7 +65,8 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
           alignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: () => categoryController.addCategoryToDB(context),
+              onPressed: () =>
+                  categoryController.createNewCategoryInDB(context),
               child: Column(
                 children: [
                   const Icon(Icons.check, color: Colors.green),

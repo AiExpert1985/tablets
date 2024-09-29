@@ -1,48 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common_providers/image_picker_provider.dart';
+import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
+import 'package:tablets/src/features/products/view/create_product_dialog.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductsController {
-  ProductsController(this.productRepositoryProvider);
-  final ProductRepository productRepositoryProvider;
-  final formKey = GlobalKey<FormState>();
+  ProductsController(this.ref);
+  final ProviderRef ref;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  Product tempProduct = Product.defaultValues();
 
-  late double productCode;
-  late String productName;
-  late double productSellRetailPrice;
-  late double productSellWholePrice;
-  late String productPackageType;
-  late double productPackageWeight;
-  late double productNumItemsInsidePackage;
-  late double productAlertWhenExceeds;
-  late double productAltertWhenLessThan;
-  late double productSalesmanComission;
-  late String productCategory;
-  late double productInitialQuantity;
+  void resetTempProduct() {
+    tempProduct = Product.defaultValues();
+  }
 
-  void addProduct(context) async {
-    final isValid =
-        formKey.currentState!.validate(); // runs validation inside form
-    if (!isValid) return;
-    formKey.currentState!.save(); // runs onSave inside form
-    bool isSuccessful = await productRepositoryProvider.addProduct(
-      itemCode: productCode,
-      itemName: productName,
-      productSellRetailPrice: productSellRetailPrice,
-      productSellWholePrice: productSellWholePrice,
-      productPackageType: productPackageType,
-      productPackageWeight: productPackageWeight,
-      productNumItemsInsidePackage: productNumItemsInsidePackage,
-      productAlertWhenExceeds: productAlertWhenExceeds,
-      productAltertWhenLessThan: productAltertWhenLessThan,
-      productSalesmanComission: productSalesmanComission,
-      productCategory: productCategory,
-      productInitialQuantity: productInitialQuantity,
-    );
-    if (isSuccessful) {
-      Navigator.of(context).pop();
+  void resetImagePicker() {
+    ref.read(pickedImageNotifierProvider.notifier).reset();
+  }
+
+  bool saveForm() {
+    // runs validation inside form
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return false;
+    // runs onSave inside form
+    formKey.currentState!.save();
+    return true;
+  }
+
+  void cancelForm(BuildContext context) {
+    // close the form
+    Navigator.of(context).pop();
+    // reset the image picker
+    resetImagePicker();
+    resetTempProduct();
+  }
+
+  void createNewProductInDb(context) async {
+    if (!saveForm()) return;
+    final pickedImage = ref.read(pickedImageNotifierProvider);
+    final productsRespository = ref.read(productsRepositoryProvider);
+    final product = tempProduct;
+    final successful = await productsRespository.addCategoryToDB(
+        product: product, pickedImage: pickedImage);
+    if (successful) {
       utils.UserMessages.success(
         context: context,
         message: S.of(context).db_success_adding_doc,
@@ -53,10 +56,24 @@ class ProductsController {
         message: S.of(context).db_error_adding_doc,
       );
     }
+    cancelForm(context);
   }
+
+  /// show the form for creating new category
+  /// image displayed in the picker is the default image
+  void showProductCreateForm(BuildContext context) {
+    resetTempProduct();
+    resetImagePicker();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => const CreateProductDialog(),
+    );
+  }
+
+  void showCategoryUpdateForm(
+      {required BuildContext context, required Product product}) {}
 }
 
 final productsControllerProvider = Provider<ProductsController>((ref) {
-  final productsRepository = ref.read(productRepositoryProvider);
-  return ProductsController(productsRepository);
+  return ProductsController(ref);
 });
