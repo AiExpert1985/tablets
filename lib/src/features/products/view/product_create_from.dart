@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_widgets/form_buttons/form_cancel_button.dart';
-import 'package:tablets/src/common_widgets/form_buttons/form_frame.dart';
+import 'package:tablets/src/common_widgets/form/form_cancel_button.dart';
+import 'package:tablets/src/common_widgets/form/form_frame.dart';
 import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
 import 'package:tablets/src/features/products/controller/products_controller.dart';
-import 'package:tablets/src/common_widgets/form_buttons/form_creation_button.dart';
+import 'package:tablets/src/common_widgets/form/form_creation_button.dart';
 import 'package:tablets/src/features/products/view/product_form_fields.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 

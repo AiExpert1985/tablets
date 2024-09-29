@@ -4,7 +4,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/create_product_from.dart';
+import 'package:tablets/src/features/products/view/product_create_from.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductsController {
