@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/categories_button.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/pending_bills.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/salesmen_gps_button.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/settings_button.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/header/main_drawer_header.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/products_button.dart';
-import 'package:tablets/src/common_widgets/main_layout/drawer/buttons/transactions_button.dart';
+import 'package:tablets/src/common_widgets/main_layout/main_drawer_buttons.dart';
+import 'package:tablets/src/common_widgets/main_layout/main_drawer_header.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 
 class MainDrawer extends StatelessWidget {
