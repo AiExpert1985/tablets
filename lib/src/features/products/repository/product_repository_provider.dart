@@ -16,8 +16,6 @@ class ProductRepository {
   static String firebaseOrderKey = 'name';
   static String storageFolderName = 'products';
 
-  /// add item to firebase products document
-  /// return true if added successfully, otherwise returns false
   Future<bool> addCategoryToDB(
       {required Product product, File? pickedImage}) async {
     try {
@@ -43,7 +41,6 @@ class ProductRepository {
   }
 
   Stream<List<Product>> watchProductsList() {
-    utils.CustomDebug.tempPrint('Inside watchProductsList()');
     final ref = _productsRef();
     return ref.snapshots().map((snapshot) =>
         snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
@@ -66,8 +63,6 @@ final productsRepositoryProvider = Provider<ProductRepository>((ref) {
   return ProductRepository(firestore, imageStorage, ref);
 });
 
-// note that autoDispose is very important to close stream when not need (all calling widgets are close)
-// which reduces the cost of firebase usage
 final productsStreamProvider = StreamProvider.autoDispose<List<Product>>((ref) {
   final productsRepository = ref.watch(productsRepositoryProvider);
   return productsRepository.watchProductsList();

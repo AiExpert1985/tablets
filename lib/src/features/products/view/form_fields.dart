@@ -4,10 +4,61 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/form/form_field_box_input_decoration.dart';
 import 'package:tablets/src/features/products/controller/products_controller.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/constants/constants.dart' as constants;
+
+class ProductFormFields extends StatelessWidget {
+  const ProductFormFields({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [
+        Row(
+          children: [
+            ProductCodeFormField(),
+            constants.FormGap.horizontal,
+            ProductNameFormField(),
+            constants.FormGap.horizontal,
+            ProductCategoryFormField(),
+          ],
+        ),
+        constants.FormGap.vertical,
+        Row(
+          children: [
+            ProductSellRetaiPriceFormField(),
+            constants.FormGap.horizontal,
+            ProductSellWholePriceFormField(),
+            constants.FormGap.horizontal,
+            ProductSellsmanCommissionFormField(),
+          ],
+        ),
+        constants.FormGap.vertical,
+        Row(
+          children: [
+            ProductInitialQuantityFormField(),
+            constants.FormGap.horizontal,
+            ProductAltertWhenLessThanFormField(),
+            constants.FormGap.horizontal,
+            ProductAlertWhenExceedsFormField(),
+          ],
+        ),
+        constants.FormGap.vertical,
+        Row(
+          children: [
+            ProductPackageTypeFormField(),
+            constants.FormGap.horizontal,
+            ProductPackageWeightFormField(),
+            constants.FormGap.horizontal,
+            ProductNumItemsInsidePackageFormField(),
+          ],
+        )
+      ],
+    );
+  }
+}
 
 class ProductCodeFormField extends ConsumerWidget {
   const ProductCodeFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);
@@ -30,7 +81,6 @@ class ProductCodeFormField extends ConsumerWidget {
 
 class ProductNameFormField extends ConsumerWidget {
   const ProductNameFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);
@@ -52,7 +102,6 @@ class ProductNameFormField extends ConsumerWidget {
 
 class ProductCategoryFormField extends ConsumerWidget {
   const ProductCategoryFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);
@@ -75,7 +124,6 @@ class ProductCategoryFormField extends ConsumerWidget {
 
 class ProductSellRetaiPriceFormField extends ConsumerWidget {
   const ProductSellRetaiPriceFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);
@@ -99,7 +147,6 @@ class ProductSellRetaiPriceFormField extends ConsumerWidget {
 
 class ProductSellWholePriceFormField extends ConsumerWidget {
   const ProductSellWholePriceFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);
@@ -123,7 +170,6 @@ class ProductSellWholePriceFormField extends ConsumerWidget {
 
 class ProductSellsmanCommissionFormField extends ConsumerWidget {
   const ProductSellsmanCommissionFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);
@@ -147,7 +193,6 @@ class ProductSellsmanCommissionFormField extends ConsumerWidget {
 
 class ProductInitialQuantityFormField extends ConsumerWidget {
   const ProductInitialQuantityFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);
@@ -171,7 +216,6 @@ class ProductInitialQuantityFormField extends ConsumerWidget {
 
 class ProductAltertWhenLessThanFormField extends ConsumerWidget {
   const ProductAltertWhenLessThanFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);
@@ -195,7 +239,6 @@ class ProductAltertWhenLessThanFormField extends ConsumerWidget {
 
 class ProductAlertWhenExceedsFormField extends ConsumerWidget {
   const ProductAlertWhenExceedsFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);
@@ -219,7 +262,6 @@ class ProductAlertWhenExceedsFormField extends ConsumerWidget {
 
 class ProductPackageTypeFormField extends ConsumerWidget {
   const ProductPackageTypeFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);
@@ -243,7 +285,6 @@ class ProductPackageTypeFormField extends ConsumerWidget {
 
 class ProductPackageWeightFormField extends ConsumerWidget {
   const ProductPackageWeightFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);
@@ -267,7 +308,6 @@ class ProductPackageWeightFormField extends ConsumerWidget {
 
 class ProductNumItemsInsidePackageFormField extends ConsumerWidget {
   const ProductNumItemsInsidePackageFormField({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.read(productsControllerProvider);

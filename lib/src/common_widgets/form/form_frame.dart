@@ -8,7 +8,7 @@ class FormFrame extends StatelessWidget {
       required this.buttons,
       required this.widthRatio,
       required this.heightRatio});
-  final List<Widget> fields;
+  final Widget fields;
   final List<Widget> buttons;
   final GlobalKey<FormState> formKey;
   final double widthRatio;
@@ -28,11 +28,7 @@ class FormFrame extends StatelessWidget {
           height: MediaQuery.of(context).size.height * heightRatio,
           child: Form(
             key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: fields,
-            ),
+            child: fields,
           ),
         ),
       ),
