@@ -1,9 +1,4 @@
-// import 'dart:io';
-
 import 'package:flutter/material.dart';
-// import 'package:path_provider/path_provider.dart' as path_provider;
-// import 'package:http/http.dart' as http;
-// import 'package:tablets/src/utils/utils.dart' as utils;
 
 class FormGap {
   static const vertical = SizedBox(height: 15);
