@@ -4,14 +4,14 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 
 class FormCreateButton extends ConsumerWidget {
-  const FormCreateButton({super.key, required this.creationMethod});
+  const FormCreateButton({super.key, required this.createMethod});
 
-  final void Function(BuildContext) creationMethod;
+  final void Function(BuildContext) createMethod;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return TextButton(
-      onPressed: () => creationMethod(context),
+      onPressed: () => createMethod(context),
       child: Column(
         children: [
           const Icon(Icons.check, color: Colors.green),

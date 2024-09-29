@@ -66,7 +66,7 @@ class ProductsController {
     resetImagePicker();
     showDialog(
       context: context,
-      builder: (BuildContext context) => const CreateProductDialog(),
+      builder: (BuildContext context) => const CreateProductForm(),
     );
   }
 
