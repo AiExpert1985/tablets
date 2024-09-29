@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class FormDialog extends StatelessWidget {
-  const FormDialog(
+class FormFrame extends StatelessWidget {
+  const FormFrame(
       {super.key,
       required this.formKey,
-      required this.fieldsWidget,
-      required this.buttonsList,
+      required this.fields,
+      required this.buttons,
       required this.widthRatio,
       required this.heightRatio});
-  final Widget fieldsWidget;
-  final List<Widget> buttonsList;
+  final List<Widget> fields;
+  final List<Widget> buttons;
   final GlobalKey<FormState> formKey;
   final double widthRatio;
   final double heightRatio;
@@ -28,13 +28,17 @@ class FormDialog extends StatelessWidget {
           height: MediaQuery.of(context).size.height * heightRatio,
           child: Form(
             key: formKey,
-            child: fieldsWidget,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: fields,
+            ),
           ),
         ),
       ),
 
       actions: [
-        OverflowBar(alignment: MainAxisAlignment.center, children: buttonsList)
+        OverflowBar(alignment: MainAxisAlignment.center, children: buttons)
       ],
     );
   }
