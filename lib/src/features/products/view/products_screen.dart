@@ -5,7 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/main_layout/app_bar/main_app_bar.dart';
 import 'package:tablets/src/common_widgets/main_layout/drawer/main_drawer.dart';
 import 'package:tablets/src/features/products/controller/products_controller.dart';
-import 'package:tablets/src/features/products/view/products_grid_widget.dart';
+import 'package:tablets/src/features/products/view/products_grid.dart';
 
 class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});
