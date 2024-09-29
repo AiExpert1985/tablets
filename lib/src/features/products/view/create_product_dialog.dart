@@ -2,12 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_styling_and_decorations/form_field_box_input_decoration.dart';
+import 'package:tablets/src/common_widgets/form_buttons/form_cancel_button.dart';
 import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/controller/products_controller.dart';
-import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/common_widgets/form_buttons/form_creation_button.dart';
+import 'package:tablets/src/features/products/view/product_form_fields.dart';
 
 class CreateProductDialog extends ConsumerStatefulWidget {
   const CreateProductDialog({super.key});
@@ -36,263 +36,45 @@ class _AddProductDialogState extends ConsumerState<CreateProductDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                GeneralImagePicker(
-                  imageUrl: constants.DefaultImage.url,
-                ),
+                GeneralImagePicker(imageUrl: constants.DefaultImage.url),
                 constants.ImageToFormFieldsGap.vertical,
-                //! 1st Row
-                Row(
+                const Row(
                   children: [
-                    //! product code
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_code),
-                        validator: (value) =>
-                            utils.FormValidation.validateNumberField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_numbers),
-                        onSaved: (value) {
-                          productController.tempProduct.code = double.parse(
-                              value!); // value is double (never null)
-                        },
-                      ),
-                    ),
+                    ProductCodeFormField(),
                     constants.FormGap.horizontal,
-                    //! prodcut name
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_name),
-                        validator: (value) =>
-                            utils.FormValidation.validateNameField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_names),
-                        onSaved: (value) {
-                          productController.tempProduct.name =
-                              value!; // value can't be null
-                        },
-                      ),
-                    ),
+                    ProductNameFormField(),
                     constants.FormGap.horizontal,
-                    //! product Category
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_category),
-                        validator: (value) =>
-                            utils.FormValidation.validateNameField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_names),
-                        onSaved: (value) {
-                          productController.tempProduct.category =
-                              value!; // value can't be null
-                        },
-                      ),
-                    ),
+                    ProductCategoryFormField(),
                   ],
                 ),
                 constants.FormGap.vertical,
-                //! 2nd Row
-                Row(
+                const Row(
                   children: [
-                    //! product sellRetailPrice
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_sell_retail_price),
-                        validator: (value) =>
-                            utils.FormValidation.validateNumberField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_numbers),
-                        onSaved: (value) {
-                          productController.tempProduct.sellRetailPrice =
-                              double.parse(
-                                  value!); // value is double (never null)// value can't be null
-                        },
-                      ),
-                    ),
+                    ProductSellRetaiPriceFormField(),
                     constants.FormGap.horizontal,
-                    //! prodcut sellWholePrice
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_sell_whole_price),
-                        validator: (value) =>
-                            utils.FormValidation.validateNameField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_numbers),
-                        onSaved: (value) {
-                          productController.tempProduct.sellWholePrice =
-                              double.parse(
-                                  value!); // value is double (never null)/ value can't be null
-                        },
-                      ),
-                    ),
+                    ProductSellWholePriceFormField(),
                     constants.FormGap.horizontal,
-                    //! prodcut sellsman commission
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_salesman_comission),
-                        validator: (value) =>
-                            utils.FormValidation.validateNameField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_numbers),
-                        onSaved: (value) {
-                          productController.tempProduct.salesmanComission =
-                              double.parse(
-                                  value!); // value is double (never null)// value can't be null
-                        },
-                      ),
-                    ),
+                    ProductSellsmanCommissionFormField(),
                   ],
                 ),
                 constants.FormGap.vertical,
-                //! 3rd Row
-                Row(
+                const Row(
                   children: [
-                    //! prodcut initial quantity
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_initial_quantitiy),
-                        validator: (value) =>
-                            utils.FormValidation.validateNumberField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_numbers),
-                        onSaved: (value) {
-                          productController.tempProduct.initialQuantity =
-                              double.parse(
-                                  value!); // value is double (never null)// value can't be null
-                        },
-                      ),
-                    ),
+                    ProductInitialQuantityFormField(),
                     constants.FormGap.horizontal,
-                    //! product alert when less than
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_altert_when_less_than),
-                        validator: (value) =>
-                            utils.FormValidation.validateNumberField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_numbers),
-                        onSaved: (value) {
-                          productController.tempProduct.altertWhenLessThan =
-                              double.parse(
-                                  value!); // value is double (never null) value can't be null
-                        },
-                      ),
-                    ),
+                    ProductAltertWhenLessThanFormField(),
                     constants.FormGap.horizontal,
-                    //! prodcut alert when exceeds
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_alert_when_exceeds),
-                        validator: (value) =>
-                            utils.FormValidation.validateNameField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_numbers),
-                        onSaved: (value) {
-                          productController.tempProduct.alertWhenExceeds =
-                              double.parse(
-                                  value!); // value is double (never null)// value can't be null
-                        },
-                      ),
-                    ),
+                    ProductAlertWhenExceedsFormField(),
                   ],
                 ),
                 constants.FormGap.vertical,
-                //! 4th Row
-                Row(
+                const Row(
                   children: [
-                    //! prodcut package type
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_package_type),
-                        validator: (value) =>
-                            utils.FormValidation.validateNameField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_names),
-                        onSaved: (value) {
-                          productController.tempProduct.packageType =
-                              value!; // value can't be null
-                        },
-                      ),
-                    ),
+                    ProductPackageTypeFormField(),
                     constants.FormGap.horizontal,
-                    //! product package weight
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_package_weight),
-                        validator: (value) =>
-                            utils.FormValidation.validateNumberField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_numbers),
-                        onSaved: (value) {
-                          productController.tempProduct.packageWeight =
-                              double.parse(
-                                  value!); // value is double (never null)/ value can't be null
-                        },
-                      ),
-                    ),
+                    ProductPackageWeightFormField(),
                     constants.FormGap.horizontal,
-                    //! prodcut num of items inside package
-                    Expanded(
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        decoration: formFieldBoxInputDecoration(
-                            S.of(context).product_num_items_inside_package),
-                        validator: (value) =>
-                            utils.FormValidation.validateNameField(
-                                fieldValue: value,
-                                errorMessage: S
-                                    .of(context)
-                                    .input_validation_error_message_for_numbers),
-                        onSaved: (value) {
-                          productController.tempProduct.numItemsInsidePackage =
-                              double.parse(
-                                  value!); // value is double (never null)// value can't be null
-                        },
-                      ),
-                    ),
+                    ProductNumItemsInsidePackageFormField(),
                   ],
                 ),
               ],
@@ -305,26 +87,9 @@ class _AddProductDialogState extends ConsumerState<CreateProductDialog> {
         OverflowBar(
           alignment: MainAxisAlignment.center,
           children: [
-            TextButton(
-              onPressed: () => productController.createNewProductInDb(context),
-              child: Column(
-                children: [
-                  const Icon(Icons.check, color: Colors.green),
-                  constants.IconToTextGap.vertical,
-                  Text(S.of(context).save),
-                ],
-              ),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Column(
-                children: [
-                  const Icon(Icons.close),
-                  constants.IconToTextGap.vertical,
-                  Text(S.of(context).cancel),
-                ],
-              ),
-            ),
+            FormCreateButton(
+                creationMethod: productController.createNewProductInDb),
+            const FormCancelButton(),
           ],
         )
       ],
