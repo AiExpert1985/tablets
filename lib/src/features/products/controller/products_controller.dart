@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_providers/image_picker_provider.dart';
+import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/add_product_form.dart';
-import 'package:tablets/src/features/products/view/edit_product_form.dart';
+import 'package:tablets/src/features/products/view/add_product.dart';
+import 'package:tablets/src/features/products/view/edit_product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductsController {
@@ -43,7 +44,8 @@ class ProductsController {
     if (!saveForm()) return;
     final pickedImage = ref.read(pickedImageNotifierProvider);
     final productsRespository = ref.read(productsRepositoryProvider);
-    final successful = await productsRespository.addCategoryToDB(product: tempProduct, pickedImage: pickedImage);
+    final successful = await productsRespository.addCategoryToDB(
+        product: tempProduct, pickedImage: pickedImage);
     if (successful) {
       utils.UserMessages.success(
         context: context,
@@ -69,13 +71,61 @@ class ProductsController {
     );
   }
 
-  void showEditProductForm({required BuildContext context, required Product product}) {
+  void showEditProductForm(
+      {required BuildContext context, required Product product}) {
     resetImagePicker();
     tempProduct = product;
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const EditProductForm(),
     );
+  }
+
+  void deleteCategoryInDB(BuildContext context, Product product) async {
+    // we don't want to delete image if its the default image
+    bool deleteImage = product.iamgesUrl[0] != constants.DefaultImage.url;
+    bool successful = await ref
+        .read(productsRepositoryProvider)
+        .deleteCategoryInDB(product: product, deleteImage: deleteImage);
+    if (successful) {
+      if (context.mounted) {
+        utils.UserMessages.success(
+            context: context, message: S.of(context).db_success_deleting_doc);
+      }
+    } else {
+      if (context.mounted) {
+        utils.UserMessages.failure(
+            context: context, message: S.of(context).db_error_deleting_doc);
+      }
+    }
+    if (context.mounted) cancelForm(context);
+  }
+
+  void updateProductInDB(BuildContext context, Product oldProduct) async {
+    if (!saveForm()) return;
+    final pickedImage = ref.read(pickedImageNotifierProvider);
+    final productsRespository = ref.read(productsRepositoryProvider);
+    final currentCategory = tempProduct;
+    utils.CustomDebug.tempPrint(oldProduct);
+    utils.CustomDebug.tempPrint(currentCategory);
+    bool successful = await productsRespository.updateCategoryInDB(
+        newProduct: currentCategory,
+        oldProduct: oldProduct,
+        pickedImage: pickedImage);
+    if (successful) {
+      if (context.mounted) {
+        utils.UserMessages.success(
+            context: context, message: S.of(context).db_success_updaging_doc);
+      }
+    } else {
+      if (context.mounted) {
+        utils.UserMessages.failure(
+            context: context, message: S.of(context).db_error_updating_doc);
+      }
+    }
+    if (context.mounted) {
+      cancelForm(context);
+    }
   }
 }
 

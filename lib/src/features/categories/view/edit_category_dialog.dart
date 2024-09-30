@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/form/input_field_box_decoration.dart';
+import 'package:tablets/src/common_widgets/form/field_box_decoration.dart';
 import 'package:tablets/src/common_widgets/various/delete_confirmation_dialog.dart';
 import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
@@ -51,8 +51,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                   child: TextFormField(
                       textAlign: TextAlign.center,
                       initialValue: oldCategory.name,
-                      decoration:
-                          formInputFieldDecoration(S.of(context).category),
+                      decoration: formFieldDecoration(S.of(context).category),
                       validator: (value) =>
                           utils.FormValidation.validateNameField(
                               fieldValue: value,
@@ -94,7 +93,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
             TextButton(
               onPressed: () async {
                 bool? confiramtion = await showDeleteConfirmationDialog(
-                    context: context, itemName: oldCategory.name);
+                    context: context, message: oldCategory.name);
                 if (confiramtion != null) {
                   categoryController.deleteCategoryInDB(context, oldCategory);
                 }

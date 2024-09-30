@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/form/input_field_box_decoration.dart';
+import 'package:tablets/src/common_widgets/form/field_box_decoration.dart';
 import 'package:tablets/src/features/products/controller/products_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
@@ -79,7 +79,7 @@ class ProductCodeFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formInputFieldDecoration(S.of(context).product_code),
+        decoration: formFieldDecoration(S.of(context).product_code),
         validator: (value) => utils.FormValidation.validateNumberField(
             fieldValue: value,
             errorMessage:
@@ -103,7 +103,7 @@ class ProductNameFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formInputFieldDecoration(S.of(context).product_name),
+        decoration: formFieldDecoration(S.of(context).product_name),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
             errorMessage:
@@ -126,7 +126,7 @@ class ProductCategoryFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formInputFieldDecoration(S.of(context).product_category),
+        decoration: formFieldDecoration(S.of(context).product_category),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
             errorMessage:
@@ -151,7 +151,7 @@ class ProductSellRetaiPriceFormField extends ConsumerWidget {
         initialValue: initialValue,
         textAlign: TextAlign.center,
         decoration:
-            formInputFieldDecoration(S.of(context).product_sell_retail_price),
+            formFieldDecoration(S.of(context).product_sell_retail_price),
         validator: (value) => utils.FormValidation.validateNumberField(
             fieldValue: value,
             errorMessage:
@@ -175,8 +175,7 @@ class ProductSellWholePriceFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration:
-            formInputFieldDecoration(S.of(context).product_sell_whole_price),
+        decoration: formFieldDecoration(S.of(context).product_sell_whole_price),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
             errorMessage:
@@ -201,7 +200,7 @@ class ProductSellsmanCommissionFormField extends ConsumerWidget {
         initialValue: initialValue,
         textAlign: TextAlign.center,
         decoration:
-            formInputFieldDecoration(S.of(context).product_salesman_comission),
+            formFieldDecoration(S.of(context).product_salesman_comission),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
             errorMessage:
@@ -226,7 +225,7 @@ class ProductInitialQuantityFormField extends ConsumerWidget {
         initialValue: initialValue,
         textAlign: TextAlign.center,
         decoration:
-            formInputFieldDecoration(S.of(context).product_initial_quantitiy),
+            formFieldDecoration(S.of(context).product_initial_quantitiy),
         validator: (value) => utils.FormValidation.validateNumberField(
             fieldValue: value,
             errorMessage:
@@ -250,8 +249,8 @@ class ProductAltertWhenLessThanFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formInputFieldDecoration(
-            S.of(context).product_altert_when_less_than),
+        decoration:
+            formFieldDecoration(S.of(context).product_altert_when_less_than),
         validator: (value) => utils.FormValidation.validateNumberField(
             fieldValue: value,
             errorMessage:
@@ -276,7 +275,7 @@ class ProductAlertWhenExceedsFormField extends ConsumerWidget {
         initialValue: initialValue,
         textAlign: TextAlign.center,
         decoration:
-            formInputFieldDecoration(S.of(context).product_alert_when_exceeds),
+            formFieldDecoration(S.of(context).product_alert_when_exceeds),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
             errorMessage:
@@ -300,8 +299,7 @@ class ProductPackageTypeFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration:
-            formInputFieldDecoration(S.of(context).product_package_type),
+        decoration: formFieldDecoration(S.of(context).product_package_type),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
             errorMessage:
@@ -325,8 +323,7 @@ class ProductPackageWeightFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration:
-            formInputFieldDecoration(S.of(context).product_package_weight),
+        decoration: formFieldDecoration(S.of(context).product_package_weight),
         validator: (value) => utils.FormValidation.validateNumberField(
             fieldValue: value,
             errorMessage:
@@ -350,8 +347,8 @@ class ProductNumItemsInsidePackageFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formInputFieldDecoration(
-            S.of(context).product_num_items_inside_package),
+        decoration:
+            formFieldDecoration(S.of(context).product_num_items_inside_package),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
             errorMessage:

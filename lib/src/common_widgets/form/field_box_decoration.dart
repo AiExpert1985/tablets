@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-InputDecoration formInputFieldDecoration(String label) {
+InputDecoration formFieldDecoration(String label) {
   return InputDecoration(
     // floatingLabelAlignment: FloatingLabelAlignment.center,
     label: Text(

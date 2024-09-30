@@ -7,7 +7,7 @@ import 'package:tablets/src/constants/constants.dart' as constants;
 /// or null if user chooses to cancel or close the dialog by clicking anywhere outside the dialog
 
 Future<bool?> showDeleteConfirmationDialog(
-    {required BuildContext context, required String itemName}) {
+    {required BuildContext context, required String message}) {
   return showDialog<bool>(
     context: context,
     builder: (BuildContext context) {
@@ -24,7 +24,7 @@ Future<bool?> showDeleteConfirmationDialog(
                 textAlign: TextAlign.center,
               ),
               Text(
-                '$itemName ؟',
+                '$message ؟',
                 style: const TextStyle(fontSize: 20),
                 textAlign: TextAlign.center,
               ),
