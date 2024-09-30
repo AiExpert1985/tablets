@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/form/form_field_box_input_decoration.dart';
+import 'package:tablets/src/common_widgets/form/input_field_box_decoration.dart';
 import 'package:tablets/src/common_widgets/various/delete_confirmation_dialog.dart';
 import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
@@ -52,7 +52,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                       textAlign: TextAlign.center,
                       initialValue: oldCategory.name,
                       decoration:
-                          formFieldBoxInputDecoration(S.of(context).category),
+                          formInputFieldDecoration(S.of(context).category),
                       validator: (value) =>
                           utils.FormValidation.validateNameField(
                               fieldValue: value,

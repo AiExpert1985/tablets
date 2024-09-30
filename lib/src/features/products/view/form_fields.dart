@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/form/form_field_box_input_decoration.dart';
+import 'package:tablets/src/common_widgets/form/input_field_box_decoration.dart';
 import 'package:tablets/src/features/products/controller/products_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
@@ -28,31 +28,40 @@ class ProductFormFields extends ConsumerWidget {
         constants.FormGap.vertical,
         Row(
           children: [
-            ProductSellRetaiPriceFormField(editMode ? oldProduct.sellRetailPrice.toString() : null),
+            ProductSellRetaiPriceFormField(
+                editMode ? oldProduct.sellRetailPrice.toString() : null),
             constants.FormGap.horizontal,
-            ProductSellWholePriceFormField(editMode ? oldProduct.sellWholePrice.toString() : null),
+            ProductSellWholePriceFormField(
+                editMode ? oldProduct.sellWholePrice.toString() : null),
             constants.FormGap.horizontal,
-            ProductSellsmanCommissionFormField(editMode ? oldProduct.salesmanComission.toString() : null),
+            ProductSellsmanCommissionFormField(
+                editMode ? oldProduct.salesmanComission.toString() : null),
           ],
         ),
         constants.FormGap.vertical,
         Row(
           children: [
-            ProductInitialQuantityFormField(editMode ? oldProduct.initialQuantity.toString() : null),
+            ProductInitialQuantityFormField(
+                editMode ? oldProduct.initialQuantity.toString() : null),
             constants.FormGap.horizontal,
-            ProductAltertWhenLessThanFormField(editMode ? oldProduct.altertWhenLessThan.toString() : null),
+            ProductAltertWhenLessThanFormField(
+                editMode ? oldProduct.altertWhenLessThan.toString() : null),
             constants.FormGap.horizontal,
-            ProductAlertWhenExceedsFormField(editMode ? oldProduct.alertWhenExceeds.toString() : null),
+            ProductAlertWhenExceedsFormField(
+                editMode ? oldProduct.alertWhenExceeds.toString() : null),
           ],
         ),
         constants.FormGap.vertical,
         Row(
           children: [
-            ProductPackageTypeFormField(editMode ? oldProduct.packageType.toString() : null),
+            ProductPackageTypeFormField(
+                editMode ? oldProduct.packageType.toString() : null),
             constants.FormGap.horizontal,
-            ProductPackageWeightFormField(editMode ? oldProduct.packageWeight.toString() : null),
+            ProductPackageWeightFormField(
+                editMode ? oldProduct.packageWeight.toString() : null),
             constants.FormGap.horizontal,
-            ProductNumItemsInsidePackageFormField(editMode ? oldProduct.numItemsInsidePackage.toString() : null),
+            ProductNumItemsInsidePackageFormField(
+                editMode ? oldProduct.numItemsInsidePackage.toString() : null),
           ],
         )
       ],
@@ -70,11 +79,14 @@ class ProductCodeFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_code),
+        decoration: formInputFieldDecoration(S.of(context).product_code),
         validator: (value) => utils.FormValidation.validateNumberField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.code = double.parse(value!); // value is double (never null)
+          productController.tempProduct.code =
+              double.parse(value!); // value is double (never null)
         },
       ),
     );
@@ -91,9 +103,11 @@ class ProductNameFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_name),
+        decoration: formInputFieldDecoration(S.of(context).product_name),
         validator: (value) => utils.FormValidation.validateNameField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_names),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_names),
         onSaved: (value) {
           productController.tempProduct.name = value!; // value can't be null
         },
@@ -112,11 +126,14 @@ class ProductCategoryFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_category),
+        decoration: formInputFieldDecoration(S.of(context).product_category),
         validator: (value) => utils.FormValidation.validateNameField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_names),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_names),
         onSaved: (value) {
-          productController.tempProduct.category = value!; // value can't be null
+          productController.tempProduct.category =
+              value!; // value can't be null
         },
       ),
     );
@@ -133,12 +150,15 @@ class ProductSellRetaiPriceFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_sell_retail_price),
+        decoration:
+            formInputFieldDecoration(S.of(context).product_sell_retail_price),
         validator: (value) => utils.FormValidation.validateNumberField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.sellRetailPrice =
-              double.parse(value!); // value is double (never null)// value can't be null
+          productController.tempProduct.sellRetailPrice = double.parse(
+              value!); // value is double (never null)// value can't be null
         },
       ),
     );
@@ -155,12 +175,15 @@ class ProductSellWholePriceFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_sell_whole_price),
+        decoration:
+            formInputFieldDecoration(S.of(context).product_sell_whole_price),
         validator: (value) => utils.FormValidation.validateNameField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.sellWholePrice =
-              double.parse(value!); // value is double (never null)/ value can't be null
+          productController.tempProduct.sellWholePrice = double.parse(
+              value!); // value is double (never null)/ value can't be null
         },
       ),
     );
@@ -177,12 +200,15 @@ class ProductSellsmanCommissionFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_salesman_comission),
+        decoration:
+            formInputFieldDecoration(S.of(context).product_salesman_comission),
         validator: (value) => utils.FormValidation.validateNameField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.salesmanComission =
-              double.parse(value!); // value is double (never null)// value can't be null
+          productController.tempProduct.salesmanComission = double.parse(
+              value!); // value is double (never null)// value can't be null
         },
       ),
     );
@@ -199,12 +225,15 @@ class ProductInitialQuantityFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_initial_quantitiy),
+        decoration:
+            formInputFieldDecoration(S.of(context).product_initial_quantitiy),
         validator: (value) => utils.FormValidation.validateNumberField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.initialQuantity =
-              double.parse(value!); // value is double (never null)// value can't be null
+          productController.tempProduct.initialQuantity = double.parse(
+              value!); // value is double (never null)// value can't be null
         },
       ),
     );
@@ -221,12 +250,15 @@ class ProductAltertWhenLessThanFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_altert_when_less_than),
+        decoration: formInputFieldDecoration(
+            S.of(context).product_altert_when_less_than),
         validator: (value) => utils.FormValidation.validateNumberField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.altertWhenLessThan =
-              double.parse(value!); // value is double (never null) value can't be null
+          productController.tempProduct.altertWhenLessThan = double.parse(
+              value!); // value is double (never null) value can't be null
         },
       ),
     );
@@ -243,12 +275,15 @@ class ProductAlertWhenExceedsFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_alert_when_exceeds),
+        decoration:
+            formInputFieldDecoration(S.of(context).product_alert_when_exceeds),
         validator: (value) => utils.FormValidation.validateNameField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.alertWhenExceeds =
-              double.parse(value!); // value is double (never null)// value can't be null
+          productController.tempProduct.alertWhenExceeds = double.parse(
+              value!); // value is double (never null)// value can't be null
         },
       ),
     );
@@ -265,11 +300,15 @@ class ProductPackageTypeFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_package_type),
+        decoration:
+            formInputFieldDecoration(S.of(context).product_package_type),
         validator: (value) => utils.FormValidation.validateNameField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_names),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_names),
         onSaved: (value) {
-          productController.tempProduct.packageType = value!; // value can't be null
+          productController.tempProduct.packageType =
+              value!; // value can't be null
         },
       ),
     );
@@ -286,12 +325,15 @@ class ProductPackageWeightFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_package_weight),
+        decoration:
+            formInputFieldDecoration(S.of(context).product_package_weight),
         validator: (value) => utils.FormValidation.validateNumberField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.packageWeight =
-              double.parse(value!); // value is double (never null)/ value can't be null
+          productController.tempProduct.packageWeight = double.parse(
+              value!); // value is double (never null)/ value can't be null
         },
       ),
     );
@@ -308,12 +350,15 @@ class ProductNumItemsInsidePackageFormField extends ConsumerWidget {
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration: formFieldBoxInputDecoration(S.of(context).product_num_items_inside_package),
+        decoration: formInputFieldDecoration(
+            S.of(context).product_num_items_inside_package),
         validator: (value) => utils.FormValidation.validateNameField(
-            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
+            fieldValue: value,
+            errorMessage:
+                S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.numItemsInsidePackage =
-              double.parse(value!); // value is double (never null)// value can't be null
+          productController.tempProduct.numItemsInsidePackage = double.parse(
+              value!); // value is double (never null)// value can't be null
         },
       ),
     );
