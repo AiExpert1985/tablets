@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 
-class FormCreateButton extends ConsumerWidget {
-  const FormCreateButton({super.key, required this.createMethod});
+class FormAddButton extends ConsumerWidget {
+  const FormAddButton({super.key, required this.createMethod});
 
   final void Function(BuildContext) createMethod;
 

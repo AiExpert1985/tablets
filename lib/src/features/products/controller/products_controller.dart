@@ -4,7 +4,8 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/product_create_from.dart';
+import 'package:tablets/src/features/products/view/add_product_form.dart';
+import 'package:tablets/src/features/products/view/edit_product_form.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductsController {
@@ -38,13 +39,11 @@ class ProductsController {
     resetTempProduct();
   }
 
-  void createNewProductInDb(context) async {
+  void addProductToDb(context) async {
     if (!saveForm()) return;
     final pickedImage = ref.read(pickedImageNotifierProvider);
     final productsRespository = ref.read(productsRepositoryProvider);
-    final product = tempProduct;
-    final successful = await productsRespository.addCategoryToDB(
-        product: product, pickedImage: pickedImage);
+    final successful = await productsRespository.addCategoryToDB(product: tempProduct, pickedImage: pickedImage);
     if (successful) {
       utils.UserMessages.success(
         context: context,
@@ -61,17 +60,23 @@ class ProductsController {
 
   /// show the form for creating new category
   /// image displayed in the picker is the default image
-  void showProductCreateForm(BuildContext context) {
+  void showAddProductForm(BuildContext context) {
     resetTempProduct();
     resetImagePicker();
     showDialog(
       context: context,
-      builder: (BuildContext context) => const CreateProductForm(),
+      builder: (BuildContext context) => const AddProductForm(),
     );
   }
 
-  void showCategoryUpdateForm(
-      {required BuildContext context, required Product product}) {}
+  void showEditProductForm({required BuildContext context, required Product product}) {
+    resetImagePicker();
+    tempProduct = product;
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => const EditProductForm(),
+    );
+  }
 }
 
 final productsControllerProvider = Provider<ProductsController>((ref) {

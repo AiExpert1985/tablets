@@ -18,8 +18,7 @@ class CategoryController {
   CategoryController(this.ref);
   final ProviderRef ref;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  ProductCategory tempCategory =
-      ProductCategory.defaultValues(); // updated by forms & widgets
+  ProductCategory tempCategory = ProductCategory.defaultValues(); // updated by forms & widgets
 
   void resetTempCategory() {
     tempCategory = ProductCategory.defaultValues();
@@ -51,13 +50,12 @@ class CategoryController {
   /// (the image is from pickedImageNotifierProvider which already picked by user)
   /// then create a new document in categories collection
   /// to store the category name and url of uploaded image
-  void createNewCategoryInDB(BuildContext context) async {
+  void addCategoryToDb(BuildContext context) async {
     if (!saveForm()) return;
     final pickedImage = ref.read(pickedImageNotifierProvider);
     final categoryRespository = ref.read(categoriesRepositoryProvider);
     final currentCategory = tempCategory;
-    final successful = await categoryRespository.addCategoryToDB(
-        category: currentCategory, pickedImage: pickedImage);
+    final successful = await categoryRespository.addCategoryToDB(category: currentCategory, pickedImage: pickedImage);
     if (successful) {
       utils.UserMessages.success(
         context: context,
@@ -80,22 +78,17 @@ class CategoryController {
   /// by CategoryController.showCategoryUpdateForm()
   /// note that this method receives the previous category name to use to when searching db to
   /// get the document that will be updated.
-  void updateCategoryInDB(
-      BuildContext context, ProductCategory oldCategory) async {
+  void updateCategoryInDB(BuildContext context, ProductCategory oldCategory) async {
     if (!saveForm()) return;
     final pickedImage = ref.read(pickedImageNotifierProvider);
     final categoryRespository = ref.read(categoriesRepositoryProvider);
     final currentCategory = tempCategory;
     bool successful = await categoryRespository.updateCategoryInDB(
-        newCategory: currentCategory,
-        oldCategory: oldCategory,
-        pickedImage: pickedImage);
+        newCategory: currentCategory, oldCategory: oldCategory, pickedImage: pickedImage);
     if (successful) {
-      utils.UserMessages.success(
-          context: context, message: S.of(context).db_success_updaging_doc);
+      utils.UserMessages.success(context: context, message: S.of(context).db_success_updaging_doc);
     } else {
-      utils.UserMessages.failure(
-          context: context, message: S.of(context).db_error_updating_doc);
+      utils.UserMessages.failure(context: context, message: S.of(context).db_error_updating_doc);
     }
     cancelForm(context);
   }
@@ -104,7 +97,7 @@ class CategoryController {
   /// the category passed to it comes from the selected category widget (in the grid)
   /// it uses category.iamgeUrl to get an image from firebase storage
   /// and uses category.name to show the category name
-  void showCategoryUpdateForm(BuildContext context, ProductCategory cat) {
+  void showEditCategoryForm(BuildContext context, ProductCategory cat) {
     resetImagePicker();
     final currentCategory = tempCategory;
     currentCategory.imageUrl = cat.imageUrl;
@@ -117,7 +110,7 @@ class CategoryController {
 
   /// show the form for creating new category
   /// image displayed in the picker is the default image
-  void showCategoryCreateForm(BuildContext context) {
+  void showAddCategoryForm(BuildContext context) {
     resetTempCategory();
     resetImagePicker();
     showDialog(
@@ -126,19 +119,15 @@ class CategoryController {
     );
   }
 
-  void deleteCategoryInDB(
-      BuildContext context, ProductCategory category) async {
+  void deleteCategoryInDB(BuildContext context, ProductCategory category) async {
     // we don't want to delete image if its the default image
     bool deleteImage = category.imageUrl != constants.DefaultImage.url;
-    bool successful = await ref
-        .read(categoriesRepositoryProvider)
-        .deleteCategoryInDB(category: category, deleteImage: deleteImage);
+    bool successful =
+        await ref.read(categoriesRepositoryProvider).deleteCategoryInDB(category: category, deleteImage: deleteImage);
     if (successful) {
-      utils.UserMessages.success(
-          context: context, message: S.of(context).db_success_deleting_doc);
+      utils.UserMessages.success(context: context, message: S.of(context).db_success_deleting_doc);
     } else {
-      utils.UserMessages.failure(
-          context: context, message: S.of(context).db_error_deleting_doc);
+      utils.UserMessages.failure(context: context, message: S.of(context).db_error_deleting_doc);
     }
     cancelForm(context);
   }

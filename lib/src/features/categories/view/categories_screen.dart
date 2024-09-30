@@ -13,7 +13,7 @@ class CategoriesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final categoryController = ref.watch(categoryControllerProvider);
     return AppScreenFrame(
-      addMethod: categoryController.showCategoryCreateForm,
+      addMethod: categoryController.showAddCategoryForm,
       screenBody: Column(
         children: [
           Center(
@@ -23,14 +23,12 @@ class CategoriesScreen extends ConsumerWidget {
                   // label: S.of(context).search,
                   onChanged: (userInput) {
                     // searchedText can be either caracters or null
-                    ref.read(searchedNameProvider.notifier).state =
-                        userInput.trim() == '' ? null : userInput.trim();
+                    ref.read(searchedNameProvider.notifier).state = userInput.trim() == '' ? null : userInput.trim();
                   },
                   searchDecoration: InputDecoration(
                     labelText: S.of(context).search,
                     alignLabelWithHint: true,
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),

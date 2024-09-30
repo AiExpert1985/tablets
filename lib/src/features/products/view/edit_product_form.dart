@@ -8,8 +8,8 @@ import 'package:tablets/src/common_widgets/form/form_creation_button.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/view/form_fields.dart';
 
-class CreateProductForm extends ConsumerWidget {
-  const CreateProductForm({super.key});
+class EditProductForm extends ConsumerWidget {
+  const EditProductForm({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,11 +22,11 @@ class CreateProductForm extends ConsumerWidget {
         children: [
           GeneralImagePicker(imageUrl: constants.DefaultImage.url),
           constants.ImageToFormFieldsGap.vertical,
-          const ProductFormFields(),
+          const ProductFormFields(editMode: true),
         ],
       ),
       buttons: [
-        FormCreateButton(createMethod: productController.createNewProductInDb),
+        FormAddButton(createMethod: productController.addProductToDb),
         const FormCancelButton(),
       ],
       widthRatio: 0.5,

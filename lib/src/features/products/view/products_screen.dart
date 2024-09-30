@@ -10,7 +10,7 @@ class ProductsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productController = ref.watch(productsControllerProvider);
     return AppScreenFrame(
-      addMethod: productController.showProductCreateForm,
+      addMethod: productController.showAddProductForm,
       screenBody: const ProductsGrid(),
     );
   }

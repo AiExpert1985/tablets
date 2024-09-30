@@ -26,9 +26,7 @@ class ProductsGrid extends ConsumerWidget {
             final product = products[index];
             return InkWell(
               hoverColor: const Color.fromARGB(255, 173, 170, 170),
-              onTap: () => ref
-                  .read(productsControllerProvider)
-                  .showCategoryUpdateForm(context: ctx, product: product),
+              onTap: () => ref.read(productsControllerProvider).showEditProductForm(context: ctx, product: product),
               child: ImageWithTitle(
                 imageUrl: product.iamgesUrl[0],
                 title: product.name,

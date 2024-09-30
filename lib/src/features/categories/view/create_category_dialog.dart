@@ -42,16 +42,10 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
                 Expanded(
                   child: TextFormField(
                     textAlign: TextAlign.center,
-                    decoration:
-                        formFieldBoxInputDecoration(S.of(context).category),
-                    validator: (value) =>
-                        utils.FormValidation.validateNameField(
-                            fieldValue: value,
-                            errorMessage: S
-                                .of(context)
-                                .input_validation_error_message_for_numbers),
-                    onSaved: (value) => currentCategory.name =
-                        value! // value is double (never null)
+                    decoration: formFieldBoxInputDecoration(S.of(context).category),
+                    validator: (value) => utils.FormValidation.validateNameField(
+                        fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
+                    onSaved: (value) => currentCategory.name = value! // value is double (never null)
                     ,
                   ),
                 ),
@@ -65,8 +59,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
           alignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: () =>
-                  categoryController.createNewCategoryInDB(context),
+              onPressed: () => categoryController.addCategoryToDb(context),
               child: Column(
                 children: [
                   const Icon(Icons.check, color: Colors.green),
