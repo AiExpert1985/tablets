@@ -65,7 +65,7 @@ class ProductCodeFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -86,7 +86,7 @@ class ProductNameFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -107,7 +107,7 @@ class ProductCategoryFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -128,7 +128,7 @@ class ProductSellRetaiPriceFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -150,7 +150,7 @@ class ProductSellWholePriceFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -172,7 +172,7 @@ class ProductSellsmanCommissionFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -194,7 +194,7 @@ class ProductInitialQuantityFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -216,7 +216,7 @@ class ProductAltertWhenLessThanFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -238,7 +238,7 @@ class ProductAlertWhenExceedsFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -260,7 +260,7 @@ class ProductPackageTypeFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -281,7 +281,7 @@ class ProductPackageWeightFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -303,7 +303,7 @@ class ProductNumItemsInsidePackageFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final productController = ref.watch(productsControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
