@@ -6,7 +6,7 @@ class FormGap {
 }
 
 class ImageToFormFieldsGap {
-  static const vertical = SizedBox(height: 40);
+  static const vertical = SizedBox(height: 30);
 }
 
 /// the gap between the icon and the text below (or next to) it
@@ -27,7 +27,7 @@ class PushWidgets {
 }
 
 class DefaultImage {
-  static String url = defaultImagesUrl[5];
+  static String url = defaultImagesUrl[4];
   static const List<String> defaultImagesUrl = [
     'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2FUntitled-removebg-preview.png?alt=media&token=958caeb7-e0cb-4956-b3aa-b0407622b82a',
     'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2Fdefault_image.png?alt=media&token=bba72e1b-e06f-4764-8687-ba37cf0af770',

@@ -23,7 +23,7 @@ class FormFrame extends StatelessWidget {
       // title: Text(S.of(context).add_new_user),
       content: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(10),
           width: MediaQuery.of(context).size.width * widthRatio,
           height: MediaQuery.of(context).size.height * heightRatio,
           child: Form(
