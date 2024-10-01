@@ -12,22 +12,45 @@ class SliderImagePicker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ProductsController productController = ref.watch(productsControllerProvider);
     List<String> imageUrls = productController.tempProduct.iamgesUrl;
-    return CarouselSlider(
-      items: imageUrls
-          .map((url) => Container(
-                child: Image.network(url, fit: BoxFit.cover),
-                // Add any styling or customization here
-              ))
-          .toList(),
-      options: CarouselOptions(
-        height: 200.0, // Adjust the height as needed
-        aspectRatio: 16 / 9,
-        autoPlay: true,
-        autoPlayInterval: const Duration(seconds: 3),
-        autoPlayAnimationDuration: const Duration(milliseconds: 800),
-        viewportFraction: 0.8,
-        // Add more options as needed
-      ),
+    CarouselSliderController buttonCarouselController = CarouselSliderController();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CarouselSlider(
+          items: imageUrls
+              .map((url) => Container(
+                    child: Image.network(url, fit: BoxFit.cover),
+                    // Add any styling or customization here
+                  ))
+              .toList(),
+          carouselController: buttonCarouselController,
+          options: CarouselOptions(
+            height: 200.0, // Adjust the height as needed
+            aspectRatio: 16 / 9,
+            autoPlay: false,
+            autoPlayInterval: const Duration(seconds: 3),
+            autoPlayAnimationDuration: const Duration(milliseconds: 800),
+            viewportFraction: 0.8,
+
+            // Add more options as needed
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: () =>
+                  buttonCarouselController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.linear),
+              icon: const Icon(Icons.arrow_back_ios),
+            ),
+            IconButton(
+              onPressed: () => buttonCarouselController.previousPage(
+                  duration: const Duration(milliseconds: 300), curve: Curves.linear),
+              icon: const Icon(Icons.arrow_forward_ios),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
