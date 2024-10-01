@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/form/button_cancel.dart';
 import 'package:tablets/src/common_widgets/form/form_frame.dart';
-import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
+import 'package:tablets/src/common_widgets/various/slider_image_picker.dart';
 import 'package:tablets/src/features/products/controller/products_controller.dart';
 import 'package:tablets/src/common_widgets/form/button_add.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
@@ -16,13 +16,13 @@ class AddProductForm extends ConsumerWidget {
     final productController = ref.read(productsControllerProvider);
     return FormFrame(
       formKey: productController.formKey,
-      fields: Column(
+      fields: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          GeneralImagePicker(imageUrl: constants.DefaultImage.url),
+          SliderImagePicker(),
           constants.ImageToFormFieldsGap.vertical,
-          const ProductFormFields(),
+          ProductFormFields(),
         ],
       ),
       buttons: [

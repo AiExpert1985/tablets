@@ -46,7 +46,7 @@ class Product {
         alertWhenExceeds = 100000,
         altertWhenLessThan = 100000,
         salesmanComission = 0,
-        iamgesUrl = [constants.DefaultImage.url],
+        iamgesUrl = constants.DefaultImage.defaultImagesUrl,
         category = 'unknown',
         initialQuantity = 0;
 
@@ -73,8 +73,7 @@ class Product {
       sellWholePrice: sellWholePrice ?? this.sellWholePrice,
       packageType: packageType ?? this.packageType,
       packageWeight: packageWeight ?? this.packageWeight,
-      numItemsInsidePackage:
-          numItemsInsidePackage ?? this.numItemsInsidePackage,
+      numItemsInsidePackage: numItemsInsidePackage ?? this.numItemsInsidePackage,
       alertWhenExceeds: alertWhenExceeds ?? this.alertWhenExceeds,
       altertWhenLessThan: altertWhenLessThan ?? this.altertWhenLessThan,
       salesmanComission: salesmanComission ?? this.salesmanComission,
@@ -164,6 +163,5 @@ class Product {
 
   String toJson() => json.encode(toMap());
 
-  factory Product.fromJson(String source) =>
-      Product.fromMap(json.decode(source));
+  factory Product.fromJson(String source) => Product.fromMap(json.decode(source));
 }

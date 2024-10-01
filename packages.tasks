@@ -3,6 +3,10 @@ Images:
         ☐ easy way to compress images & reduce its size before uploading to server
         ☐ https://pub.dev/packages/flutter_image_compress
 
+    carousel_slider:
+        ☐ slide show images
+        ☐ https://pub.dev/packages/carousel_slider
+
 Popups & Pickers:
     flutter_material_color_picker:
         ☐ show a color picker for the user

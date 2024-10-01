@@ -53,6 +53,7 @@ dependencies:
   flutter_cache_manager: ^3.4.1
   sidebarx: ^0.17.1
   animated_search_bar: ^2.7.2
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:
