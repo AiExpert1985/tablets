@@ -16,15 +16,14 @@ class ProductRepository {
   static String nameKey = 'name';
   static String imageFolderName = 'products';
 
-  Future<bool> addCategoryToDB(
-      {required Product product, File? pickedImage}) async {
+  Future<bool> addCategoryToDB({required Product product, File? pickedImage}) async {
     try {
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
         final newUrl = await _imageStorage.addFile(
             folder: imageFolderName, fileName: product.name, file: pickedImage);
-        product.iamgesUrl.add(newUrl!);
+        product.imageUrls.add(newUrl!);
       }
 
       final docRef = _firestore.collection(collectionName).doc();
@@ -32,14 +31,12 @@ class ProductRepository {
       return true;
     } catch (e) {
       utils.CustomDebug.print(
-          message: 'An error while adding Product to DB',
-          stackTrace: StackTrace.current);
+          message: 'An error while adding Product to DB', stackTrace: StackTrace.current);
       return false;
     }
   }
 
-  Future<String?> uploadNewImage(
-      {required fileName, required imageFile}) async {
+  Future<String?> uploadNewImage({required fileName, required imageFile}) async {
     try {
       if (imageFile != null) {
         final newUrl = await _imageStorage.addFile(
@@ -49,18 +46,15 @@ class ProductRepository {
       return null;
     } catch (e) {
       utils.CustomDebug.print(
-          message: 'An error while adding Product to DB',
-          stackTrace: StackTrace.current);
+          message: 'An error while adding Product to DB', stackTrace: StackTrace.current);
       return null;
     }
   }
 
   Future<bool> updateCategoryInDB(
-      {required Product newProduct,
-      required Product oldProduct,
-      File? pickedImage}) async {
+      {required Product newProduct, required Product oldProduct, File? pickedImage}) async {
     try {
-      String url = oldProduct.iamgesUrl[0];
+      String url = oldProduct.imageUrls[0];
       // first update the photo
       // if an image is picked, we will store it and use its url
       // otherwise, we will use the default item image url
@@ -69,13 +63,12 @@ class ProductRepository {
             folder: 'category',
             fileName: newProduct.name,
             file: pickedImage,
-            fileUrl: newProduct.iamgesUrl[0]);
+            fileUrl: newProduct.imageUrls[0]);
         if (newUrl != null) url = newUrl;
       }
       // then update the category document
-      final query = _firestore
-          .collection(imageFolderName)
-          .where(nameKey, isEqualTo: oldProduct.name);
+      final query =
+          _firestore.collection(imageFolderName).where(nameKey, isEqualTo: oldProduct.name);
       final querySnapshot = await query.get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
@@ -90,21 +83,18 @@ class ProductRepository {
 
   /// delete the document from firestore
   /// delete image from storage
-  Future<bool> deleteCategoryInDB(
-      {required Product product, bool deleteImage = true}) async {
+  Future<bool> deleteCategoryInDB({required Product product, bool deleteImage = true}) async {
     try {
       // delete document using its name
-      final querySnapshot = await _firestore
-          .collection(collectionName)
-          .where(nameKey, isEqualTo: product.name)
-          .get();
+      final querySnapshot =
+          await _firestore.collection(collectionName).where(nameKey, isEqualTo: product.name).get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.delete();
       }
       // sometime we don't want to delete image (if it is the default image)
       if (deleteImage) {
-        _imageStorage.deleteFile(product.iamgesUrl[0]);
+        _imageStorage.deleteFile(product.imageUrls[0]);
       }
       return true;
     } catch (error) {
@@ -115,8 +105,9 @@ class ProductRepository {
 
   Stream<List<Product>> watchProductsList() {
     final ref = _productsRef();
-    return ref.snapshots().map((snapshot) =>
-        snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+    return ref
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
   Query<Product> _productsRef() {

@@ -29,13 +29,10 @@ class ImagePickerButton extends ConsumerWidget {
 
 class PickedImageNotifier extends StateNotifier<File?> {
   PickedImageNotifier(super.state);
-  Future<void> updatePickedImage(
-      {uploadingMethod, imageSource = 'gallery'}) async {
+  Future<void> updatePickedImage({uploadingMethod, imageSource = 'gallery'}) async {
     try {
       final pickedImage = await ImagePicker().pickImage(
-          source: imageSource == 'camera'
-              ? ImageSource.camera
-              : ImageSource.gallery,
+          source: imageSource == 'camera' ? ImageSource.camera : ImageSource.gallery,
           imageQuality: 50,
           maxWidth: 150); // can use ImageSource.gallery
 
@@ -43,23 +40,17 @@ class PickedImageNotifier extends StateNotifier<File?> {
       if (pickedImage != null) {
         state = File(pickedImage.path);
         uploadingMethod(state);
+        state = null;
       }
     } catch (e) {
       utils.CustomDebug.print(
-          message: 'error while importing images',
-          stackTrace: StackTrace.current);
+          message: 'error while importing images', stackTrace: StackTrace.current);
     }
-  }
-
-  // file is null
-  void reset() {
-    state = null;
   }
 }
 
 /// provide File if user used ImagePicker to select an image from the galary or camera
 /// otherwise it is null
-final pickedImageNotifierProvider =
-    StateNotifierProvider<PickedImageNotifier, File?>((ref) {
+final pickedImageNotifierProvider = StateNotifierProvider<PickedImageNotifier, File?>((ref) {
   return PickedImageNotifier(null);
 });

@@ -2,9 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart' as caching;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_providers/image_picker_provider.dart';
-import 'package:tablets/src/features/products/controller/product_form_provider.dart';
 import 'package:tablets/src/utils/utils.dart';
 
 /// this widget shows an image and a button to upload image

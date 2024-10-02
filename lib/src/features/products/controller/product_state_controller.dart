@@ -23,7 +23,7 @@ class ProductState {
 
 class ProductStateNotifier extends StateNotifier<ProductState> {
   ProductStateNotifier(super.state);
-  void updateProduct(Product product) => state.copyWith(product: product);
+  void updateProduct(Product product) => state = state.copyWith(product: product);
 
   void updateImageUrls(String url) => state = state.copyWith(imageUrls: [...state.imageUrls, url]);
 
@@ -32,9 +32,11 @@ class ProductStateNotifier extends StateNotifier<ProductState> {
   void resetProduct() => state = state.copyWith(product: Product.getDefault());
 
   void resetImageUrls() => state = state.copyWith(imageUrls: []);
+
+  void setImageUrls(imageUrls) => state = state.copyWith(imageUrls: imageUrls);
 }
 
-final pickedImageNotifierProvider =
+final productStateNotifierProvider =
     StateNotifierProvider<ProductStateNotifier, ProductState>((ref) {
   final product = ProductState(Product.getDefault(), []);
   return ProductStateNotifier(product);

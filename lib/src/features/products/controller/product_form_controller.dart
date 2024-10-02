@@ -3,26 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_providers/image_picker_provider.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/features/products/controller/product_state_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/add_product.dart';
-import 'package:tablets/src/features/products/view/edit_product.dart';
+import 'package:tablets/src/features/products/view/add_product_dialog.dart';
+import 'package:tablets/src/features/products/view/edit_product_dialog.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductFormController {
   ProductFormController(this.ref);
   final ProviderRef ref;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  Product tempProduct = Product.getDefault();
-  List<String> tempUrlsForFormPreview = [];
-
-  void resetTempProduct() {
-    tempProduct = Product.getDefault();
-  }
-
-  void resetImagePicker() {
-    ref.read(pickedImageNotifierProvider.notifier).reset();
-  }
 
   bool saveForm() {
     // runs validation inside form
@@ -37,15 +28,14 @@ class ProductFormController {
     // close the form
     Navigator.of(context).pop();
     // reset the image picker
-    resetImagePicker();
-    resetTempProduct();
+    ref.read(productStateNotifierProvider.notifier).reset();
   }
 
   void addProductToDb(context) async {
     if (!saveForm()) return;
-
     final productsRespository = ref.read(productsRepositoryProvider);
-    final successful = await productsRespository.addCategoryToDB(product: tempProduct);
+    final product = ref.watch(productStateNotifierProvider).product;
+    final successful = await productsRespository.addCategoryToDB(product: product);
     if (successful) {
       utils.UserMessages.success(
         context: context,
@@ -72,16 +62,13 @@ class ProductFormController {
         .read(productsRepositoryProvider)
         .uploadNewImage(fileName: name, imageFile: pickedImage);
     if (url != null) {
-      tempUrlsForFormPreview.add(url);
-      utils.CustomDebug.tempPrint('inside controller ${tempUrlsForFormPreview.length}');
+      ref.read(productStateNotifierProvider.notifier).updateImageUrls(url);
     }
   }
 
   /// show the form for creating new category
   /// image displayed in the picker is the default image
   void showAddProductForm(BuildContext context) {
-    resetTempProduct();
-    resetImagePicker();
     showDialog(
       context: context,
       builder: (BuildContext context) => const AddProductForm(),
@@ -89,8 +76,8 @@ class ProductFormController {
   }
 
   void showEditProductForm({required BuildContext context, required Product product}) {
-    resetImagePicker();
-    tempProduct = product;
+    ref.read(productStateNotifierProvider.notifier).setImageUrls(product.imageUrls);
+    ref.read(productStateNotifierProvider.notifier).updateProduct(product);
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const EditProductForm(),
@@ -99,7 +86,7 @@ class ProductFormController {
 
   void deleteCategoryInDB(BuildContext context, Product product) async {
     // we don't want to delete image if its the default image
-    bool deleteImage = product.iamgesUrl[0] != constants.DefaultImage.url;
+    bool deleteImage = product.imageUrls[0] != constants.DefaultImage.url;
     bool successful = await ref
         .read(productsRepositoryProvider)
         .deleteCategoryInDB(product: product, deleteImage: deleteImage);
@@ -120,7 +107,7 @@ class ProductFormController {
     if (!saveForm()) return;
     final pickedImage = ref.read(pickedImageNotifierProvider);
     final productsRespository = ref.read(productsRepositoryProvider);
-    final currentCategory = tempProduct;
+    final currentCategory = ref.read(productStateNotifierProvider).product;
     bool successful = await productsRespository.updateCategoryInDB(
         newProduct: currentCategory, oldProduct: oldProduct, pickedImage: pickedImage);
     if (successful) {

@@ -14,7 +14,7 @@ Product _defaultProduct = Product(
     alertWhenExceeds: 100000,
     altertWhenLessThan: 100000,
     salesmanComission: 0,
-    iamgesUrl: constants.DefaultImage.defaultImagesUrl,
+    imageUrls: constants.DefaultImage.defaultImagesUrl,
     category: 'unknown',
     initialQuantity: 0);
 
@@ -29,7 +29,7 @@ class Product {
   double alertWhenExceeds;
   double altertWhenLessThan;
   double salesmanComission;
-  List<String> iamgesUrl;
+  List<String> imageUrls;
   String category;
   double initialQuantity;
 
@@ -44,7 +44,7 @@ class Product {
     required this.alertWhenExceeds,
     required this.altertWhenLessThan,
     required this.salesmanComission,
-    required this.iamgesUrl,
+    required this.imageUrls,
     required this.category,
     required this.initialQuantity,
   });
@@ -62,7 +62,7 @@ class Product {
     double? alertWhenExceeds,
     double? altertWhenLessThan,
     double? salesmanComission,
-    List<String>? photos,
+    List<String>? imageUrls,
     String? category,
     double? initialQuantity,
   }) {
@@ -78,7 +78,7 @@ class Product {
       alertWhenExceeds: alertWhenExceeds ?? this.alertWhenExceeds,
       altertWhenLessThan: altertWhenLessThan ?? this.altertWhenLessThan,
       salesmanComission: salesmanComission ?? this.salesmanComission,
-      iamgesUrl: photos ?? iamgesUrl,
+      imageUrls: imageUrls ?? this.imageUrls,
       category: category ?? this.category,
       initialQuantity: initialQuantity ?? this.initialQuantity,
     );
@@ -104,7 +104,7 @@ class Product {
         other.alertWhenExceeds == alertWhenExceeds &&
         other.altertWhenLessThan == altertWhenLessThan &&
         other.salesmanComission == salesmanComission &&
-        listEquals(other.iamgesUrl, iamgesUrl) &&
+        listEquals(other.imageUrls, imageUrls) &&
         other.category == category &&
         other.initialQuantity == initialQuantity;
   }
@@ -121,7 +121,7 @@ class Product {
         alertWhenExceeds.hashCode ^
         altertWhenLessThan.hashCode ^
         salesmanComission.hashCode ^
-        iamgesUrl.hashCode ^
+        imageUrls.hashCode ^
         category.hashCode ^
         initialQuantity.hashCode;
   }
@@ -138,7 +138,7 @@ class Product {
       'alertWhenExceeds': alertWhenExceeds,
       'altertWhenLessThan': altertWhenLessThan,
       'salesmanComission': salesmanComission,
-      'photos': iamgesUrl,
+      'imageUrls': imageUrls,
       'category': category,
       'initialQuantity': initialQuantity,
     };
@@ -156,7 +156,7 @@ class Product {
       alertWhenExceeds: map['alertWhenExceeds']?.toDouble() ?? 0.0,
       altertWhenLessThan: map['altertWhenLessThan']?.toDouble() ?? 0.0,
       salesmanComission: map['salesmanComission']?.toDouble() ?? 0.0,
-      iamgesUrl: List<String>.from(map['photos']),
+      imageUrls: List<String>.from(map['imageUrls']),
       category: map['category'] ?? '',
       initialQuantity: map['initialQuantity']?.toDouble() ?? 0.0,
     );
