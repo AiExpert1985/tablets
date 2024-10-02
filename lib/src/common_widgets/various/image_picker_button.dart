@@ -33,7 +33,7 @@ class PickedImageNotifier extends StateNotifier<File?> {
     try {
       final pickedImage = await ImagePicker().pickImage(
           source: imageSource == 'camera' ? ImageSource.camera : ImageSource.gallery,
-          imageQuality: 50,
+          imageQuality: 100,
           maxWidth: 150); // can use ImageSource.gallery
 
       // if camera is closed without taking a photo, we just return and do nothing

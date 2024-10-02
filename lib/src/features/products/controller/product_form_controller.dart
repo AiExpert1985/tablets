@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_providers/image_picker_provider.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/controller/product_state_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/view/add_product_dialog.dart';
 import 'package:tablets/src/features/products/view/edit_product_dialog.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/constants/constants.dart' as constants;
 
 class ProductFormController {
   ProductFormController(this.ref);
@@ -34,7 +33,9 @@ class ProductFormController {
   void addProductToDb(context) async {
     if (!saveForm()) return;
     final productsRespository = ref.read(productsRepositoryProvider);
-    final product = ref.watch(productStateNotifierProvider).product;
+    final productStateController = ref.read(productStateNotifierProvider);
+    final product = productStateController.product;
+    product.imageUrls = productStateController.imageUrls;
     final successful = await productsRespository.addCategoryToDB(product: product);
     if (successful) {
       utils.UserMessages.success(
@@ -66,9 +67,8 @@ class ProductFormController {
     }
   }
 
-  /// show the form for creating new category
-  /// image displayed in the picker is the default image
   void showAddProductForm(BuildContext context) {
+    ref.read(productStateNotifierProvider.notifier).reset();
     showDialog(
       context: context,
       builder: (BuildContext context) => const AddProductForm(),
@@ -77,7 +77,7 @@ class ProductFormController {
 
   void showEditProductForm({required BuildContext context, required Product product}) {
     ref.read(productStateNotifierProvider.notifier).setImageUrls(product.imageUrls);
-    ref.read(productStateNotifierProvider.notifier).updateProduct(product);
+    ref.read(productStateNotifierProvider.notifier).setProduct(product);
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const EditProductForm(),
@@ -105,11 +105,12 @@ class ProductFormController {
 
   void updateProductInDB(BuildContext context, Product oldProduct) async {
     if (!saveForm()) return;
-    final pickedImage = ref.read(pickedImageNotifierProvider);
     final productsRespository = ref.read(productsRepositoryProvider);
-    final currentCategory = ref.read(productStateNotifierProvider).product;
+    final productStateController = ref.read(productStateNotifierProvider);
+    final newProduct = productStateController.product.copyWith();
+    newProduct.imageUrls = productStateController.imageUrls;
     bool successful = await productsRespository.updateCategoryInDB(
-        newProduct: currentCategory, oldProduct: oldProduct, pickedImage: pickedImage);
+        newProduct: newProduct, oldProduct: oldProduct);
     if (successful) {
       if (context.mounted) {
         utils.UserMessages.success(

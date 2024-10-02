@@ -4,19 +4,19 @@ import 'package:flutter/foundation.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 
 Product _defaultProduct = Product(
-    code: 100001,
-    name: 'product',
-    sellRetailPrice: 0,
-    sellWholePrice: 0,
-    packageType: 'unknown',
-    packageWeight: 0,
-    numItemsInsidePackage: 0,
-    alertWhenExceeds: 100000,
-    altertWhenLessThan: 100000,
-    salesmanComission: 0,
-    imageUrls: constants.DefaultImage.defaultImagesUrl,
-    category: 'unknown',
-    initialQuantity: 0);
+    code: 110011,
+    name: 'NA',
+    sellRetailPrice: 110011,
+    sellWholePrice: 110011,
+    packageType: 'NA',
+    packageWeight: 110011,
+    numItemsInsidePackage: 110011,
+    alertWhenExceeds: 110011,
+    altertWhenLessThan: 110011,
+    salesmanComission: 110011,
+    imageUrls: [constants.DefaultImage.url],
+    category: 'NA',
+    initialQuantity: 110011);
 
 class Product {
   double code;

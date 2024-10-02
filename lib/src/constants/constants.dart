@@ -27,8 +27,8 @@ class PushWidgets {
 }
 
 class DefaultImage {
-  static String url = defaultImagesUrl[4];
-  static const List<String> defaultImagesUrl = [
+  static String url = _defaultImagesUrl[4];
+  static const List<String> _defaultImagesUrl = [
     'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2FUntitled-removebg-preview.png?alt=media&token=958caeb7-e0cb-4956-b3aa-b0407622b82a',
     'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2Fdefault_image.png?alt=media&token=bba72e1b-e06f-4764-8687-ba37cf0af770',
     'https://firebasestorage.googleapis.com/v0/b/tablets-519a0.appspot.com/o/default%2Fdefault_image_3.png?alt=media&token=b2b7222a-ca76-437a-9003-7d046a908185',

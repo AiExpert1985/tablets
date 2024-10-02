@@ -7,10 +7,9 @@ import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductRepository {
-  ProductRepository(this._firestore, this._imageStorage, this._ref);
+  ProductRepository(this._firestore, this._imageStorage);
   final FirebaseFirestore _firestore;
   final StorageRepository _imageStorage;
-  final ProviderRef _ref;
 
   static String collectionName = 'products';
   static String nameKey = 'name';
@@ -52,20 +51,8 @@ class ProductRepository {
   }
 
   Future<bool> updateCategoryInDB(
-      {required Product newProduct, required Product oldProduct, File? pickedImage}) async {
+      {required Product newProduct, required Product oldProduct}) async {
     try {
-      String url = oldProduct.imageUrls[0];
-      // first update the photo
-      // if an image is picked, we will store it and use its url
-      // otherwise, we will use the default item image url
-      if (pickedImage != null) {
-        final newUrl = await _imageStorage.updateFile(
-            folder: 'category',
-            fileName: newProduct.name,
-            file: pickedImage,
-            fileUrl: newProduct.imageUrls[0]);
-        if (newUrl != null) url = newUrl;
-      }
       // then update the category document
       final query =
           _firestore.collection(imageFolderName).where(nameKey, isEqualTo: oldProduct.name);
@@ -94,7 +81,7 @@ class ProductRepository {
       }
       // sometime we don't want to delete image (if it is the default image)
       if (deleteImage) {
-        _imageStorage.deleteFile(product.imageUrls[0]);
+        product.imageUrls.map((url) => _imageStorage.deleteFile(url));
       }
       return true;
     } catch (error) {
@@ -121,7 +108,7 @@ class ProductRepository {
 final productsRepositoryProvider = Provider<ProductRepository>((ref) {
   final imageStorage = ref.read(fileStorageProvider);
   final firestore = FirebaseFirestore.instance;
-  return ProductRepository(firestore, imageStorage, ref);
+  return ProductRepository(firestore, imageStorage);
 });
 
 final productsStreamProvider = StreamProvider.autoDispose<List<Product>>((ref) {

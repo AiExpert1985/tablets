@@ -5,7 +5,6 @@ import 'package:tablets/src/common_widgets/form/button_delete.dart';
 import 'package:tablets/src/common_widgets/form/button_update.dart';
 import 'package:tablets/src/common_widgets/form/form_frame.dart';
 import 'package:tablets/src/common_widgets/various/image_picker_button.dart';
-import 'package:tablets/src/common_widgets/various/single_image_picker.dart';
 import 'package:tablets/src/common_widgets/various/slider_image_picker.dart';
 import 'package:tablets/src/features/products/controller/product_form_controller.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
@@ -31,7 +30,9 @@ class EditProductForm extends ConsumerWidget {
           ),
           ImagePickerButton(uploadingMethod: formController.uploadImageToDb),
           constants.ImageToFormFieldsGap.vertical,
-          const ProductFormFields(),
+          const ProductFormFields(
+            editMode: true,
+          ),
         ],
       ),
       buttons: [
