@@ -4,7 +4,9 @@ import 'package:tablets/src/common_widgets/form/button_cancel.dart';
 import 'package:tablets/src/common_widgets/form/button_delete.dart';
 import 'package:tablets/src/common_widgets/form/button_update.dart';
 import 'package:tablets/src/common_widgets/form/form_frame.dart';
+import 'package:tablets/src/common_widgets/various/image_picker_button.dart';
 import 'package:tablets/src/common_widgets/various/single_image_picker.dart';
+import 'package:tablets/src/common_widgets/various/slider_image_picker.dart';
 import 'package:tablets/src/features/products/controller/product_form_controller.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/controller/product_state_controller.dart';
@@ -16,7 +18,7 @@ class EditProductForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.read(productsFormControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     final productStateController = ref.watch(productStateNotifierProvider);
     return FormFrame(
       formKey: formController.formKey,
@@ -24,9 +26,12 @@ class EditProductForm extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          SingleImagePicker(imageUrl: constants.DefaultImage.url),
+          SliderImagePicker(
+            imageUrls: productStateController.imageUrls,
+          ),
+          ImagePickerButton(uploadingMethod: formController.uploadImageToDb),
           constants.ImageToFormFieldsGap.vertical,
-          const ProductFormFields(editMode: true),
+          const ProductFormFields(),
         ],
       ),
       buttons: [

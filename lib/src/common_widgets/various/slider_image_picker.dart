@@ -32,16 +32,14 @@ class SliderImagePicker extends ConsumerWidget {
               .toList(),
           carouselController: buttonCarouselController,
           options: CarouselOptions(
-            height: MediaQuery.of(context).size.height * 0.2, // Adjust the height as needed
-            aspectRatio: 16 / 9,
-            autoPlay: false,
-            autoPlayInterval: const Duration(seconds: 3),
-            autoPlayAnimationDuration: const Duration(milliseconds: 800),
-            viewportFraction: 0.8,
-            // initialPage: imageUrls.length // go to last added url
-
-            // Add more options as needed
-          ),
+              height: MediaQuery.of(context).size.height * 0.2, // Adjust the height as needed
+              aspectRatio: 16 / 9,
+              autoPlay: false,
+              autoPlayInterval: const Duration(seconds: 3),
+              autoPlayAnimationDuration: const Duration(milliseconds: 800),
+              viewportFraction: 0.8,
+              initialPage: -1 // go to last added url
+              ),
         ),
         if (showArrows)
           Row(

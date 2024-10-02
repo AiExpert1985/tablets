@@ -55,12 +55,12 @@ class ProductFormController {
   /// this list will be viewed later by the image slider viewer
   /// I did that as a solution to separate the image upload from from submission
   /// note that this method is called automatically by the image picker when a new image is picked
-  void uploadNewImage(pickedImage) async {
+  void uploadImageToDb(pickedImage) async {
     // always store with random numbers to avoid duplications
     String name = utils.StringOperations.generateRandomString();
     final url = await ref
         .read(productsRepositoryProvider)
-        .uploadNewImage(fileName: name, imageFile: pickedImage);
+        .uploadImageToDb(fileName: name, imageFile: pickedImage);
     if (url != null) {
       ref.read(productStateNotifierProvider.notifier).updateImageUrls(url);
     }
