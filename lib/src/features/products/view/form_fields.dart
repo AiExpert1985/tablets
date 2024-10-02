@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/form/field_box_decoration.dart';
-import 'package:tablets/src/features/products/controller/products_controller.dart';
+import 'package:tablets/src/features/products/controller/product_form_controller_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
@@ -12,8 +12,8 @@ class ProductFormFields extends ConsumerWidget {
   final bool editMode;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
-    Product oldProduct = productController.tempProduct;
+    final formController = ref.watch(productsFormControllerProvider);
+    Product oldProduct = formController.tempProduct;
     return Column(
       children: [
         Row(
@@ -28,11 +28,9 @@ class ProductFormFields extends ConsumerWidget {
         constants.FormGap.vertical,
         Row(
           children: [
-            ProductSellRetaiPriceFormField(
-                editMode ? oldProduct.sellRetailPrice.toString() : null),
+            ProductSellRetaiPriceFormField(editMode ? oldProduct.sellRetailPrice.toString() : null),
             constants.FormGap.horizontal,
-            ProductSellWholePriceFormField(
-                editMode ? oldProduct.sellWholePrice.toString() : null),
+            ProductSellWholePriceFormField(editMode ? oldProduct.sellWholePrice.toString() : null),
             constants.FormGap.horizontal,
             ProductSellsmanCommissionFormField(
                 editMode ? oldProduct.salesmanComission.toString() : null),
@@ -54,11 +52,9 @@ class ProductFormFields extends ConsumerWidget {
         constants.FormGap.vertical,
         Row(
           children: [
-            ProductPackageTypeFormField(
-                editMode ? oldProduct.packageType.toString() : null),
+            ProductPackageTypeFormField(editMode ? oldProduct.packageType.toString() : null),
             constants.FormGap.horizontal,
-            ProductPackageWeightFormField(
-                editMode ? oldProduct.packageWeight.toString() : null),
+            ProductPackageWeightFormField(editMode ? oldProduct.packageWeight.toString() : null),
             constants.FormGap.horizontal,
             ProductNumItemsInsidePackageFormField(
                 editMode ? oldProduct.numItemsInsidePackage.toString() : null),
@@ -74,7 +70,7 @@ class ProductCodeFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -82,11 +78,9 @@ class ProductCodeFormField extends ConsumerWidget {
         decoration: formFieldDecoration(S.of(context).product_code),
         validator: (value) => utils.FormValidation.validateNumberField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_numbers),
+            errorMessage: S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.code =
-              double.parse(value!); // value is double (never null)
+          formController.tempProduct.code = double.parse(value!); // value is double (never null)
         },
       ),
     );
@@ -98,7 +92,7 @@ class ProductNameFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -106,10 +100,9 @@ class ProductNameFormField extends ConsumerWidget {
         decoration: formFieldDecoration(S.of(context).product_name),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_names),
+            errorMessage: S.of(context).input_validation_error_message_for_names),
         onSaved: (value) {
-          productController.tempProduct.name = value!; // value can't be null
+          formController.tempProduct.name = value!; // value can't be null
         },
       ),
     );
@@ -121,7 +114,7 @@ class ProductCategoryFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -129,11 +122,9 @@ class ProductCategoryFormField extends ConsumerWidget {
         decoration: formFieldDecoration(S.of(context).product_category),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_names),
+            errorMessage: S.of(context).input_validation_error_message_for_names),
         onSaved: (value) {
-          productController.tempProduct.category =
-              value!; // value can't be null
+          formController.tempProduct.category = value!; // value can't be null
         },
       ),
     );
@@ -145,20 +136,18 @@ class ProductSellRetaiPriceFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration:
-            formFieldDecoration(S.of(context).product_sell_retail_price),
+        decoration: formFieldDecoration(S.of(context).product_sell_retail_price),
         validator: (value) => utils.FormValidation.validateNumberField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_numbers),
+            errorMessage: S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.sellRetailPrice = double.parse(
-              value!); // value is double (never null)// value can't be null
+          formController.tempProduct.sellRetailPrice =
+              double.parse(value!); // value is double (never null)// value can't be null
         },
       ),
     );
@@ -170,7 +159,7 @@ class ProductSellWholePriceFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -178,11 +167,10 @@ class ProductSellWholePriceFormField extends ConsumerWidget {
         decoration: formFieldDecoration(S.of(context).product_sell_whole_price),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_numbers),
+            errorMessage: S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.sellWholePrice = double.parse(
-              value!); // value is double (never null)/ value can't be null
+          formController.tempProduct.sellWholePrice =
+              double.parse(value!); // value is double (never null)/ value can't be null
         },
       ),
     );
@@ -194,20 +182,18 @@ class ProductSellsmanCommissionFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration:
-            formFieldDecoration(S.of(context).product_salesman_comission),
+        decoration: formFieldDecoration(S.of(context).product_salesman_comission),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_numbers),
+            errorMessage: S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.salesmanComission = double.parse(
-              value!); // value is double (never null)// value can't be null
+          formController.tempProduct.salesmanComission =
+              double.parse(value!); // value is double (never null)// value can't be null
         },
       ),
     );
@@ -219,20 +205,18 @@ class ProductInitialQuantityFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration:
-            formFieldDecoration(S.of(context).product_initial_quantitiy),
+        decoration: formFieldDecoration(S.of(context).product_initial_quantitiy),
         validator: (value) => utils.FormValidation.validateNumberField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_numbers),
+            errorMessage: S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.initialQuantity = double.parse(
-              value!); // value is double (never null)// value can't be null
+          formController.tempProduct.initialQuantity =
+              double.parse(value!); // value is double (never null)// value can't be null
         },
       ),
     );
@@ -244,20 +228,18 @@ class ProductAltertWhenLessThanFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration:
-            formFieldDecoration(S.of(context).product_altert_when_less_than),
+        decoration: formFieldDecoration(S.of(context).product_altert_when_less_than),
         validator: (value) => utils.FormValidation.validateNumberField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_numbers),
+            errorMessage: S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.altertWhenLessThan = double.parse(
-              value!); // value is double (never null) value can't be null
+          formController.tempProduct.altertWhenLessThan =
+              double.parse(value!); // value is double (never null) value can't be null
         },
       ),
     );
@@ -269,20 +251,18 @@ class ProductAlertWhenExceedsFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration:
-            formFieldDecoration(S.of(context).product_alert_when_exceeds),
+        decoration: formFieldDecoration(S.of(context).product_alert_when_exceeds),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_numbers),
+            errorMessage: S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.alertWhenExceeds = double.parse(
-              value!); // value is double (never null)// value can't be null
+          formController.tempProduct.alertWhenExceeds =
+              double.parse(value!); // value is double (never null)// value can't be null
         },
       ),
     );
@@ -294,7 +274,7 @@ class ProductPackageTypeFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -302,11 +282,9 @@ class ProductPackageTypeFormField extends ConsumerWidget {
         decoration: formFieldDecoration(S.of(context).product_package_type),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_names),
+            errorMessage: S.of(context).input_validation_error_message_for_names),
         onSaved: (value) {
-          productController.tempProduct.packageType =
-              value!; // value can't be null
+          formController.tempProduct.packageType = value!; // value can't be null
         },
       ),
     );
@@ -318,7 +296,7 @@ class ProductPackageWeightFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
@@ -326,11 +304,10 @@ class ProductPackageWeightFormField extends ConsumerWidget {
         decoration: formFieldDecoration(S.of(context).product_package_weight),
         validator: (value) => utils.FormValidation.validateNumberField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_numbers),
+            errorMessage: S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.packageWeight = double.parse(
-              value!); // value is double (never null)/ value can't be null
+          formController.tempProduct.packageWeight =
+              double.parse(value!); // value is double (never null)/ value can't be null
         },
       ),
     );
@@ -342,20 +319,18 @@ class ProductNumItemsInsidePackageFormField extends ConsumerWidget {
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.watch(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
     return Expanded(
       child: TextFormField(
         initialValue: initialValue,
         textAlign: TextAlign.center,
-        decoration:
-            formFieldDecoration(S.of(context).product_num_items_inside_package),
+        decoration: formFieldDecoration(S.of(context).product_num_items_inside_package),
         validator: (value) => utils.FormValidation.validateNameField(
             fieldValue: value,
-            errorMessage:
-                S.of(context).input_validation_error_message_for_numbers),
+            errorMessage: S.of(context).input_validation_error_message_for_numbers),
         onSaved: (value) {
-          productController.tempProduct.numItemsInsidePackage = double.parse(
-              value!); // value is double (never null)// value can't be null
+          formController.tempProduct.numItemsInsidePackage =
+              double.parse(value!); // value is double (never null)// value can't be null
         },
       ),
     );

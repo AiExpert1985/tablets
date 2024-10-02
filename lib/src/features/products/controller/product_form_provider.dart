@@ -9,14 +9,15 @@ import 'package:tablets/src/features/products/view/add_product.dart';
 import 'package:tablets/src/features/products/view/edit_product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
-class ProductsController {
-  ProductsController(this.ref);
+class ProductFormController {
+  ProductFormController(this.ref);
   final ProviderRef ref;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  Product tempProduct = Product.defaultValues();
+  Product tempProduct = Product.getDefault();
+  List<String> tempUrlsForFormPreview = [];
 
   void resetTempProduct() {
-    tempProduct = Product.defaultValues();
+    tempProduct = Product.getDefault();
   }
 
   void resetImagePicker() {
@@ -42,10 +43,9 @@ class ProductsController {
 
   void addProductToDb(context) async {
     if (!saveForm()) return;
-    final pickedImage = ref.read(pickedImageNotifierProvider);
+
     final productsRespository = ref.read(productsRepositoryProvider);
-    final successful = await productsRespository.addCategoryToDB(
-        product: tempProduct, pickedImage: pickedImage);
+    final successful = await productsRespository.addCategoryToDB(product: tempProduct);
     if (successful) {
       utils.UserMessages.success(
         context: context,
@@ -60,6 +60,23 @@ class ProductsController {
     cancelForm(context);
   }
 
+  /// this takes an image file (which was created by imagePicker) and store it directly in firebase
+  /// and store the new url into a temp list inside the controller
+  /// this list will be viewed later by the image slider viewer
+  /// I did that as a solution to separate the image upload from from submission
+  /// note that this method is called automatically by the image picker when a new image is picked
+  void uploadNewImage(pickedImage) async {
+    // always store with random numbers to avoid duplications
+    String name = utils.StringOperations.generateRandomString();
+    final url = await ref
+        .read(productsRepositoryProvider)
+        .uploadNewImage(fileName: name, imageFile: pickedImage);
+    if (url != null) {
+      tempUrlsForFormPreview.add(url);
+      utils.CustomDebug.tempPrint('inside controller ${tempUrlsForFormPreview.length}');
+    }
+  }
+
   /// show the form for creating new category
   /// image displayed in the picker is the default image
   void showAddProductForm(BuildContext context) {
@@ -71,8 +88,7 @@ class ProductsController {
     );
   }
 
-  void showEditProductForm(
-      {required BuildContext context, required Product product}) {
+  void showEditProductForm({required BuildContext context, required Product product}) {
     resetImagePicker();
     tempProduct = product;
     showDialog(
@@ -94,8 +110,7 @@ class ProductsController {
       }
     } else {
       if (context.mounted) {
-        utils.UserMessages.failure(
-            context: context, message: S.of(context).db_error_deleting_doc);
+        utils.UserMessages.failure(context: context, message: S.of(context).db_error_deleting_doc);
       }
     }
     if (context.mounted) cancelForm(context);
@@ -106,12 +121,8 @@ class ProductsController {
     final pickedImage = ref.read(pickedImageNotifierProvider);
     final productsRespository = ref.read(productsRepositoryProvider);
     final currentCategory = tempProduct;
-    utils.CustomDebug.tempPrint(oldProduct);
-    utils.CustomDebug.tempPrint(currentCategory);
     bool successful = await productsRespository.updateCategoryInDB(
-        newProduct: currentCategory,
-        oldProduct: oldProduct,
-        pickedImage: pickedImage);
+        newProduct: currentCategory, oldProduct: oldProduct, pickedImage: pickedImage);
     if (successful) {
       if (context.mounted) {
         utils.UserMessages.success(
@@ -119,8 +130,7 @@ class ProductsController {
       }
     } else {
       if (context.mounted) {
-        utils.UserMessages.failure(
-            context: context, message: S.of(context).db_error_updating_doc);
+        utils.UserMessages.failure(context: context, message: S.of(context).db_error_updating_doc);
       }
     }
     if (context.mounted) {
@@ -129,6 +139,6 @@ class ProductsController {
   }
 }
 
-final productsControllerProvider = Provider<ProductsController>((ref) {
-  return ProductsController(ref);
+final productsFormControllerProvider = Provider<ProductFormController>((ref) {
+  return ProductFormController(ref);
 });

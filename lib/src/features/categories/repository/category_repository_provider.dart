@@ -129,7 +129,6 @@ class CategoriesRepository {
   Query<ProductCategory> _categoriesRef() {
     // searchedName can be either null or text, it can't be empty string
     final searchedName = _ref.watch(searchedNameProvider);
-    utils.CustomDebug.tempPrint(searchedName);
     if (searchedName == null) {
       return _firestore
           .collection(collectionName)

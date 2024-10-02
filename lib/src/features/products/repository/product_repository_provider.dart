@@ -38,6 +38,23 @@ class ProductRepository {
     }
   }
 
+  Future<String?> uploadNewImage(
+      {required fileName, required imageFile}) async {
+    try {
+      if (imageFile != null) {
+        final newUrl = await _imageStorage.addFile(
+            folder: imageFolderName, fileName: fileName, file: imageFile);
+        return newUrl;
+      }
+      return null;
+    } catch (e) {
+      utils.CustomDebug.print(
+          message: 'An error while adding Product to DB',
+          stackTrace: StackTrace.current);
+      return null;
+    }
+  }
+
   Future<bool> updateCategoryInDB(
       {required Product newProduct,
       required Product oldProduct,

@@ -74,9 +74,9 @@ class FormValidation {
 }
 
 class StringOperations {
-  static String generateRandomString(int len) {
+  static String generateRandomString({int len = 5}) {
     var r = Random();
     return String.fromCharCodes(
-        List.generate(len, (index) => r.nextInt(33) + 89));
+        List.generate(len, (index) => r.nextInt(33) + 89)).toString();
   }
 }

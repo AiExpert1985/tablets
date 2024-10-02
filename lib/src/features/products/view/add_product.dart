@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/form/button_cancel.dart';
 import 'package:tablets/src/common_widgets/form/form_frame.dart';
+import 'package:tablets/src/common_widgets/various/image_picker_button.dart';
 import 'package:tablets/src/common_widgets/various/slider_image_picker.dart';
-import 'package:tablets/src/features/products/controller/products_controller.dart';
+import 'package:tablets/src/features/products/controller/product_form_controller_provider.dart';
 import 'package:tablets/src/common_widgets/form/button_add.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/view/form_fields.dart';
@@ -13,20 +14,24 @@ class AddProductForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final formController = ref.watch(productsFormControllerProvider);
+    ref.watch(pickedImageNotifierProvider);
     return FormFrame(
-      formKey: productController.formKey,
-      fields: const Column(
+      formKey: formController.formKey,
+      fields: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          SliderImagePicker(),
+          SliderImagePicker(
+            imageUrls: formController.tempUrlsForFormPreview,
+          ),
+          ImagePickerButton(uploadingMethod: formController.uploadNewImage),
           constants.ImageToFormFieldsGap.vertical,
-          ProductFormFields(),
+          const ProductFormFields(),
         ],
       ),
       buttons: [
-        FormAddButton(createMethod: productController.addProductToDb),
+        FormAddButton(createMethod: formController.addProductToDb),
         const FormCancelButton(),
       ],
       widthRatio: 0.5,

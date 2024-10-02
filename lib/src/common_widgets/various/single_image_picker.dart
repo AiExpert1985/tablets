@@ -6,9 +6,9 @@ import 'package:tablets/src/common_providers/image_picker_provider.dart';
 
 /// this widget shows an image and a button to upload image
 /// it takes its image from the pickedImageNotifierProvider
-class GeneralImagePicker extends ConsumerWidget {
+class SingleImagePicker extends ConsumerWidget {
   final String imageUrl;
-  const GeneralImagePicker({required this.imageUrl, super.key});
+  const SingleImagePicker({required this.imageUrl, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

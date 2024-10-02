@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/form/field_box_decoration.dart';
-import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
+import 'package:tablets/src/common_widgets/various/single_image_picker.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
@@ -37,7 +37,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                GeneralImagePicker(imageUrl: currentCategory.imageUrl),
+                SingleImagePicker(imageUrl: currentCategory.imageUrl),
                 constants.ImageToFormFieldsGap.vertical,
                 Expanded(
                   child: TextFormField(

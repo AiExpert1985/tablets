@@ -3,6 +3,21 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 
+Product _defaultProduct = Product(
+    code: 100001,
+    name: 'product',
+    sellRetailPrice: 0,
+    sellWholePrice: 0,
+    packageType: 'unknown',
+    packageWeight: 0,
+    numItemsInsidePackage: 0,
+    alertWhenExceeds: 100000,
+    altertWhenLessThan: 100000,
+    salesmanComission: 0,
+    iamgesUrl: constants.DefaultImage.defaultImagesUrl,
+    category: 'unknown',
+    initialQuantity: 0);
+
 class Product {
   double code;
   String name;
@@ -34,21 +49,7 @@ class Product {
     required this.initialQuantity,
   });
 
-  // a second constructor
-  Product.defaultValues()
-      : code = 100001,
-        name = 'product',
-        sellRetailPrice = 0,
-        sellWholePrice = 0,
-        packageType = 'unknown',
-        packageWeight = 0,
-        numItemsInsidePackage = 0,
-        alertWhenExceeds = 100000,
-        altertWhenLessThan = 100000,
-        salesmanComission = 0,
-        iamgesUrl = constants.DefaultImage.defaultImagesUrl,
-        category = 'unknown',
-        initialQuantity = 0;
+  static Product getDefault() => _defaultProduct.copyWith();
 
   Product copyWith({
     double? code,

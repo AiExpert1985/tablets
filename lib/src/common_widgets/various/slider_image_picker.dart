@@ -4,20 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_providers/image_picker_provider.dart';
-import 'package:tablets/src/features/products/controller/products_controller.dart';
+import 'package:tablets/src/features/products/controller/product_form_controller_provider.dart';
+import 'package:tablets/src/utils/utils.dart';
 
 /// this widget shows an image and a button to upload image
 /// it takes its image from the pickedImageNotifierProvider
 class SliderImagePicker extends ConsumerWidget {
-  const SliderImagePicker({super.key});
+  const SliderImagePicker({super.key, required this.imageUrls, this.showArrows = false});
+  final List<String> imageUrls;
+  final bool showArrows;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ProductsController productController =
-        ref.watch(productsControllerProvider);
-    List<String> imageUrls = productController.tempProduct.iamgesUrl;
-    CarouselSliderController buttonCarouselController =
-        CarouselSliderController();
+    ref.watch(pickedImageNotifierProvider);
+    CustomDebug.tempPrint(' inside slider ${imageUrls.length}');
+    CarouselSliderController buttonCarouselController = CarouselSliderController();
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -33,44 +34,33 @@ class SliderImagePicker extends ConsumerWidget {
               .toList(),
           carouselController: buttonCarouselController,
           options: CarouselOptions(
-            height: MediaQuery.of(context).size.height *
-                0.2, // Adjust the height as needed
+            height: MediaQuery.of(context).size.height * 0.2, // Adjust the height as needed
             aspectRatio: 16 / 9,
             autoPlay: false,
             autoPlayInterval: const Duration(seconds: 3),
             autoPlayAnimationDuration: const Duration(milliseconds: 800),
             viewportFraction: 0.8,
+            // initialPage: imageUrls.length // go to last added url
 
             // Add more options as needed
           ),
         ),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: [
-        //     IconButton(
-        //       onPressed: () => buttonCarouselController.nextPage(
-        //           duration: const Duration(milliseconds: 300),
-        //           curve: Curves.linear),
-        //       icon: const Icon(Icons.arrow_back_ios),
-        //     ),
-        //     IconButton(
-        //       onPressed: () => buttonCarouselController.previousPage(
-        //           duration: const Duration(milliseconds: 300),
-        //           curve: Curves.linear),
-        //       icon: const Icon(Icons.arrow_forward_ios),
-        //     ),
-        //   ],
-        // ),
-        TextButton.icon(
-          onPressed: () => ref
-              .read(pickedImageNotifierProvider.notifier)
-              .updatePickedImage(),
-          icon: const Icon(Icons.image),
-          label: Text(
-            S.of(context).add_image,
-            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        if (showArrows)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: () => buttonCarouselController.nextPage(
+                    duration: const Duration(milliseconds: 300), curve: Curves.linear),
+                icon: const Icon(Icons.arrow_back_ios),
+              ),
+              IconButton(
+                onPressed: () => buttonCarouselController.previousPage(
+                    duration: const Duration(milliseconds: 300), curve: Curves.linear),
+                icon: const Icon(Icons.arrow_forward_ios),
+              ),
+            ],
           ),
-        )
       ],
     );
   }

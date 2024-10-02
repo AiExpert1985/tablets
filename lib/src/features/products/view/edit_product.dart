@@ -4,8 +4,8 @@ import 'package:tablets/src/common_widgets/form/button_cancel.dart';
 import 'package:tablets/src/common_widgets/form/button_delete.dart';
 import 'package:tablets/src/common_widgets/form/button_update.dart';
 import 'package:tablets/src/common_widgets/form/form_frame.dart';
-import 'package:tablets/src/common_widgets/various/general_image_picker.dart';
-import 'package:tablets/src/features/products/controller/products_controller.dart';
+import 'package:tablets/src/common_widgets/various/single_image_picker.dart';
+import 'package:tablets/src/features/products/controller/product_form_controller_provider.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 
 import 'package:tablets/src/features/products/view/form_fields.dart';
@@ -15,28 +15,28 @@ class EditProductForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productController = ref.read(productsControllerProvider);
+    final formController = ref.read(productsFormControllerProvider);
     return FormFrame(
-      formKey: productController.formKey,
+      formKey: formController.formKey,
       fields: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          GeneralImagePicker(imageUrl: constants.DefaultImage.url),
+          SingleImagePicker(imageUrl: constants.DefaultImage.url),
           constants.ImageToFormFieldsGap.vertical,
           const ProductFormFields(editMode: true),
         ],
       ),
       buttons: [
         FromUpdateButton(
-          updateMethod: productController.updateProductInDB,
-          itemToBeUpdated: productController.tempProduct.copyWith(),
+          updateMethod: formController.updateProductInDB,
+          itemToBeUpdated: formController.tempProduct.copyWith(),
         ),
         const FormCancelButton(),
         FromDeleteButton(
-          deleteMethod: productController.deleteCategoryInDB,
-          itemToBeDeleted: productController.tempProduct,
-          message: productController.tempProduct.name,
+          deleteMethod: formController.deleteCategoryInDB,
+          itemToBeDeleted: formController.tempProduct,
+          message: formController.tempProduct.name,
         ),
       ],
       widthRatio: 0.5,
