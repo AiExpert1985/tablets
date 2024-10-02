@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_providers/image_picker_provider.dart';
-import 'package:tablets/src/features/products/controller/product_form_controller_provider.dart';
+import 'package:tablets/src/features/products/controller/product_form_provider.dart';
 import 'package:tablets/src/utils/utils.dart';
 
 /// this widget shows an image and a button to upload image

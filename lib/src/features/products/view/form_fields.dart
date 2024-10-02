@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/form/field_box_decoration.dart';
-import 'package:tablets/src/features/products/controller/product_form_controller_provider.dart';
+import 'package:tablets/src/features/products/controller/product_form_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;

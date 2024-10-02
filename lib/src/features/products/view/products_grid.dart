@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/various/async_value_widget.dart';
 import 'package:tablets/src/common_widgets/various/image_with_title.dart';
-import 'package:tablets/src/features/products/controller/product_form_controller_provider.dart';
+import 'package:tablets/src/features/products/controller/product_form_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 
