@@ -15,7 +15,7 @@ class ProductRepository {
   static String nameKey = 'name';
   static String imageFolderName = 'products';
 
-  Future<bool> addCategoryToDB({required Product product, File? pickedImage}) async {
+  Future<bool> addProductToDB({required Product product, File? pickedImage}) async {
     try {
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
@@ -50,8 +50,7 @@ class ProductRepository {
     }
   }
 
-  Future<bool> updateCategoryInDB(
-      {required Product newProduct, required Product oldProduct}) async {
+  Future<bool> updateProductInDB({required Product newProduct, required Product oldProduct}) async {
     try {
       // then update the category document
       final query =
@@ -68,9 +67,20 @@ class ProductRepository {
     }
   }
 
+  Future<bool> deleteImageFromDb(String url) async {
+    try {
+      _imageStorage.deleteFile(url);
+      utils.CustomDebug.tempPrint('image deleted successfully');
+      return true;
+    } catch (error) {
+      utils.CustomDebug.print(message: error, stackTrace: StackTrace.current);
+      return false;
+    }
+  }
+
   /// delete the document from firestore
   /// delete image from storage
-  Future<bool> deleteCategoryInDB({required Product product, bool deleteImage = true}) async {
+  Future<bool> deleteProductFromDB({required Product product, bool deleteImage = true}) async {
     try {
       // delete document using its name
       final querySnapshot =

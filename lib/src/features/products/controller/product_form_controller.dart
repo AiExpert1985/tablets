@@ -23,11 +23,9 @@ class ProductFormController {
     return true;
   }
 
-  void cancelForm(BuildContext context) {
+  void closeForm(BuildContext context) {
     // close the form
     Navigator.of(context).pop();
-    // reset the image picker
-    ref.read(productStateNotifierProvider.notifier).reset();
   }
 
   void addProductToDb(context) async {
@@ -36,7 +34,7 @@ class ProductFormController {
     final productStateController = ref.read(productStateNotifierProvider);
     final product = productStateController.product;
     product.imageUrls = productStateController.imageUrls;
-    final successful = await productsRespository.addCategoryToDB(product: product);
+    final successful = await productsRespository.addProductToDB(product: product);
     if (successful) {
       utils.UserMessages.success(
         context: context,
@@ -48,7 +46,7 @@ class ProductFormController {
         message: S.of(context).db_error_adding_doc,
       );
     }
-    cancelForm(context);
+    closeForm(context);
   }
 
   /// this takes an image file (which was created by imagePicker) and store it directly in firebase
@@ -72,7 +70,22 @@ class ProductFormController {
     showDialog(
       context: context,
       builder: (BuildContext context) => const AddProductForm(),
-    );
+    ).whenComplete(() {
+      // when form is closed, we delete (from firestore) all uploaded images that aren't used
+      // this is needed because app stores images (to firestore) directly when uploaded and
+      // it happends that user sometimes uploads images then cancel the form
+      final product = ref.read(productStateNotifierProvider).product;
+      final imageUrls = ref.read(productStateNotifierProvider).imageUrls;
+      // if imageUrls are the same as product.imageUrls, mean all images are used, we do nothing
+      if (product.imageUrls != imageUrls) {
+        utils.CustomDebug.tempPrint('they are different');
+        for (var url in imageUrls) {
+          utils.CustomDebug.tempPrint(url);
+          ref.read(productsRepositoryProvider).deleteImageFromDb(url);
+        }
+      }
+      ref.read(productStateNotifierProvider.notifier).reset();
+    });
   }
 
   void showEditProductForm({required BuildContext context, required Product product}) {
@@ -81,7 +94,9 @@ class ProductFormController {
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const EditProductForm(),
-    );
+    ).whenComplete(() {
+      utils.CustomDebug.tempPrint('edit is closed');
+    });
   }
 
   void deleteCategoryInDB(BuildContext context, Product product) async {
@@ -89,7 +104,7 @@ class ProductFormController {
     bool deleteImage = product.imageUrls[0] != constants.DefaultImage.url;
     bool successful = await ref
         .read(productsRepositoryProvider)
-        .deleteCategoryInDB(product: product, deleteImage: deleteImage);
+        .deleteProductFromDB(product: product, deleteImage: deleteImage);
     if (successful) {
       if (context.mounted) {
         utils.UserMessages.success(
@@ -100,7 +115,7 @@ class ProductFormController {
         utils.UserMessages.failure(context: context, message: S.of(context).db_error_deleting_doc);
       }
     }
-    if (context.mounted) cancelForm(context);
+    if (context.mounted) closeForm(context);
   }
 
   void updateProductInDB(BuildContext context, Product oldProduct) async {
@@ -109,8 +124,8 @@ class ProductFormController {
     final productStateController = ref.read(productStateNotifierProvider);
     final newProduct = productStateController.product.copyWith();
     newProduct.imageUrls = productStateController.imageUrls;
-    bool successful = await productsRespository.updateCategoryInDB(
-        newProduct: newProduct, oldProduct: oldProduct);
+    bool successful =
+        await productsRespository.updateProductInDB(newProduct: newProduct, oldProduct: oldProduct);
     if (successful) {
       if (context.mounted) {
         utils.UserMessages.success(
@@ -122,7 +137,7 @@ class ProductFormController {
       }
     }
     if (context.mounted) {
-      cancelForm(context);
+      closeForm(context);
     }
   }
 }

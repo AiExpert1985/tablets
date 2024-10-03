@@ -21,21 +21,17 @@ class FormFrame extends StatelessWidget {
       scrollable: true,
       contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
       // title: Text(S.of(context).add_new_user),
-      content: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          width: MediaQuery.of(context).size.width * widthRatio,
-          height: MediaQuery.of(context).size.height * heightRatio,
-          child: Form(
-            key: formKey,
-            child: fields,
-          ),
+      content: Container(
+        padding: const EdgeInsets.all(10),
+        width: MediaQuery.of(context).size.width * widthRatio,
+        height: MediaQuery.of(context).size.height * heightRatio,
+        child: Form(
+          key: formKey,
+          child: fields,
         ),
       ),
 
-      actions: [
-        OverflowBar(alignment: MainAxisAlignment.center, children: buttons)
-      ],
+      actions: [OverflowBar(alignment: MainAxisAlignment.center, children: buttons)],
     );
   }
 }
