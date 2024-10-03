@@ -47,10 +47,13 @@ class ProductStateNotifier extends StateNotifier<ProductState> {
 
   /// I used this trick because I faced problem when I passed below
   /// final productStateProvider = ref.watch(productStateNotifierProvider);
+  /// and then access that state through
+  /// productStateProvider.product (or .imageUrls)
   /// because it keeps giving me the old state, even when the state is changed
   /// I decided to use the
   /// final productStateController = ref.watch(productStateNotifierProvider.notifier)
-  /// and inside the notifier I create get method that gives the updated state !
+  /// productStateController.currentState.product (or .imageUrls)
+
   ProductState get currentState => state;
 }
 

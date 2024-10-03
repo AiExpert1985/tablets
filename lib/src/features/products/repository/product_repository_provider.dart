@@ -35,7 +35,7 @@ class ProductRepository {
     }
   }
 
-  Future<String?> uploadImageToDb({required fileName, required imageFile}) async {
+  Future<String?> uploadImageToDb({required String fileName, required File? imageFile}) async {
     try {
       if (imageFile != null) {
         final newUrl = await _imageStorage.addFile(

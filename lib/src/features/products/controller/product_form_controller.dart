@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -19,22 +21,18 @@ class ProductFormController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool saveForm() {
-    // runs validation inside form
     final isValid = formKey.currentState!.validate();
     if (!isValid) return false;
-    // runs onSave inside form
     formKey.currentState!.save();
     return true;
   }
 
   void closeForm(BuildContext context) {
-    // close the form
     Navigator.of(context).pop();
   }
 
   void addProductToDb(context) async {
     if (!saveForm()) return;
-    // final tempImageUrls = _productStateProvider.imageUrls;
     final imageUrls = _productStateController.currentState.imageUrls;
     final productState = _productStateController
         .setProduct(_productStateController.currentState.product.copyWith(imageUrls: imageUrls));
@@ -58,7 +56,7 @@ class ProductFormController {
   /// this list will be viewed later by the image slider viewer
   /// I did that as a solution to separate the image upload from from submission
   /// note that this method is called automatically by the image picker when a new image is picked
-  void uploadImageToDb(pickedImage) async {
+  void uploadImageToDb(File? pickedImage) async {
     // always store with random numbers to avoid duplications
     String name = utils.StringOperations.generateRandomString();
     final url = await _productsRepository.uploadImageToDb(fileName: name, imageFile: pickedImage);
