@@ -19,22 +19,16 @@ class CustomDebug {
 }
 
 class UserMessages {
-  static void success(
-          {required BuildContext context, required String message}) =>
-      _message(
-          context: context, message: message, type: ToastificationType.success);
+  static void success({required BuildContext context, required String message}) =>
+      _message(context: context, message: message, type: ToastificationType.success);
 
-  static void failure(
-          {required BuildContext context, required String message}) =>
-      _message(
-          context: context, message: message, type: ToastificationType.error);
+  static void failure({required BuildContext context, required String message}) =>
+      _message(context: context, message: message, type: ToastificationType.error);
 
   static void info({required BuildContext context, required String message}) =>
-      _message(
-          context: context, message: message, type: ToastificationType.info);
+      _message(context: context, message: message, type: ToastificationType.info);
 
-  static void _message(
-      {required BuildContext context, required String message, required type}) {
+  static void _message({required BuildContext context, required String message, required type}) {
     toastification.show(
       context: context, // optional if you use ToastificationWrapper
       title: Text(message),
@@ -64,9 +58,7 @@ class FormValidation {
     required String? fieldValue,
     required String errorMessage,
   }) {
-    if (fieldValue == null ||
-        fieldValue.trim().isEmpty ||
-        fieldValue.trim().length < 2) {
+    if (fieldValue == null || fieldValue.trim().isEmpty || fieldValue.trim().length < 2) {
       return errorMessage;
     }
     return null;
@@ -76,7 +68,13 @@ class FormValidation {
 class StringOperations {
   static String generateRandomString({int len = 5}) {
     var r = Random();
-    return String.fromCharCodes(
-        List.generate(len, (index) => r.nextInt(33) + 89)).toString();
+    return String.fromCharCodes(List.generate(len, (index) => r.nextInt(33) + 89)).toString();
   }
+}
+
+class ListOperations {
+  /// compare two Lists of string
+  /// find items in the first list that don't exists in second list
+  static List<String> twoListsDifferences(List<String> list1, List<String> list2) =>
+      list1.where((item) => !list2.toSet().contains(item)).toList();
 }

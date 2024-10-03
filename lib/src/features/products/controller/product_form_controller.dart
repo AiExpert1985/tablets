@@ -99,12 +99,20 @@ class ProductFormController {
     final productImageUrls = ref.read(productStateNotifierProvider).product.imageUrls;
     final tempImageUrls = ref.read(productStateNotifierProvider).imageUrls;
     List<String> difference =
-        tempImageUrls.where((item) => !productImageUrls.toSet().contains(item)).toList();
-    for (var url in difference) {
-      ref.read(productsRepositoryProvider).deleteImageFromDb(url);
-    }
+        utils.ListOperations.twoListsDifferences(tempImageUrls, productImageUrls);
+    _deleteMultipleImagesFromDb(difference);
 
     ref.read(productStateNotifierProvider.notifier).reset();
+  }
+
+  void _deleteMultipleImagesFromDb(List<String> urls) {
+    for (var url in urls) {
+      _deleteSingleImageFromDb(url);
+    }
+  }
+
+  void _deleteSingleImageFromDb(String url) {
+    ref.read(productsRepositoryProvider).deleteImageFromDb(url);
   }
 
   void showEditProductForm({required BuildContext context, required Product product}) {
