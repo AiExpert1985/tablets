@@ -26,16 +26,17 @@ class ProductState {
 class ProductStateNotifier extends StateNotifier<ProductState> {
   ProductStateNotifier(super.state);
 
-  void setProduct(Product product) => state = state.copyWith(product: product);
+  ProductState setProduct(Product product) => state = state.copyWith(product: product);
 
-  void setImageUrls(imageUrls) => state = state.copyWith(imageUrls: imageUrls);
+  ProductState setImageUrls(imageUrls) => state = state.copyWith(imageUrls: imageUrls);
 
-  void updateImageUrls(String url) {
+  ProductState updateImageUrls(String url) {
     // first remove default image from list (if there is)
     List<String> currentUrls = List.from(state.imageUrls);
     currentUrls.remove(constants.DefaultImage.url);
     // then add the new url
     state = state.copyWith(imageUrls: [...currentUrls, url]);
+    return state;
   }
 
   void reset() => state = ProductState.getDefault();

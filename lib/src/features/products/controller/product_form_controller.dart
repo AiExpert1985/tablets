@@ -32,8 +32,12 @@ class ProductFormController {
     if (!saveForm()) return;
     final productsRespository = ref.read(productsRepositoryProvider);
     final productStateController = ref.read(productStateNotifierProvider);
-    final product = productStateController.product;
-    product.imageUrls = productStateController.imageUrls;
+    final tempImageUrls = productStateController.imageUrls;
+    final tempProduct = productStateController.product;
+    final product = ref
+        .read(productStateNotifierProvider.notifier)
+        .setProduct(tempProduct.copyWith(imageUrls: tempImageUrls))
+        .product;
     final successful = await productsRespository.addProductToDB(product: product);
     if (successful) {
       utils.UserMessages.success(
@@ -70,22 +74,37 @@ class ProductFormController {
     showDialog(
       context: context,
       builder: (BuildContext context) => const AddProductForm(),
-    ).whenComplete(() {
-      // when form is closed, we delete (from firestore) all uploaded images that aren't used
-      // this is needed because app stores images (to firestore) directly when uploaded and
-      // it happends that user sometimes uploads images then cancel the form
-      final product = ref.read(productStateNotifierProvider).product;
-      final imageUrls = ref.read(productStateNotifierProvider).imageUrls;
-      // if imageUrls are the same as product.imageUrls, mean all images are used, we do nothing
-      if (product.imageUrls != imageUrls) {
-        utils.CustomDebug.tempPrint('they are different');
-        for (var url in imageUrls) {
-          utils.CustomDebug.tempPrint(url);
-          ref.read(productsRepositoryProvider).deleteImageFromDb(url);
-        }
-      }
-      ref.read(productStateNotifierProvider.notifier).reset();
-    });
+    ).whenComplete(_onProductFormClosing);
+  }
+
+  // void _onAddFormClose() {
+  //   // when form is closed, we delete (from firestore) all uploaded images that aren't used
+  //   // this is needed because app stores images (to firestore) directly when uploaded and
+  //   // it happends that user sometimes uploads images then cancel the form
+  //   final product = ref.read(productStateNotifierProvider).product;
+  //   final imageUrls = ref.read(productStateNotifierProvider).imageUrls;
+  //   // if imageUrls are the same as product.imageUrls, mean all images are used, we do nothing
+  //   if (product.imageUrls != imageUrls) {
+  //     for (var url in imageUrls) {
+  //       ref.read(productsRepositoryProvider).deleteImageFromDb(url);
+  //     }
+  //   }
+  //   ref.read(productStateNotifierProvider.notifier).reset();
+  // }
+
+  /// when form is closed, we delete (from firestore) all uploaded images that aren't used
+  /// this is needed because app stores images (to firestore) directly when uploaded and
+  /// it happends that user sometimes uploads images then cancel the form
+  void _onProductFormClosing() {
+    final productImageUrls = ref.read(productStateNotifierProvider).product.imageUrls;
+    final tempImageUrls = ref.read(productStateNotifierProvider).imageUrls;
+    List<String> difference =
+        tempImageUrls.where((item) => !productImageUrls.toSet().contains(item)).toList();
+    for (var url in difference) {
+      ref.read(productsRepositoryProvider).deleteImageFromDb(url);
+    }
+
+    ref.read(productStateNotifierProvider.notifier).reset();
   }
 
   void showEditProductForm({required BuildContext context, required Product product}) {
@@ -94,9 +113,7 @@ class ProductFormController {
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const EditProductForm(),
-    ).whenComplete(() {
-      utils.CustomDebug.tempPrint('edit is closed');
-    });
+    ).whenComplete(_onProductFormClosing);
   }
 
   void deleteCategoryInDB(BuildContext context, Product product) async {
@@ -122,8 +139,12 @@ class ProductFormController {
     if (!saveForm()) return;
     final productsRespository = ref.read(productsRepositoryProvider);
     final productStateController = ref.read(productStateNotifierProvider);
-    final newProduct = productStateController.product.copyWith();
-    newProduct.imageUrls = productStateController.imageUrls;
+    final tempImageUrls = productStateController.imageUrls;
+    final tempProduct = productStateController.product;
+    final newProduct = ref
+        .read(productStateNotifierProvider.notifier)
+        .setProduct(tempProduct.copyWith(imageUrls: tempImageUrls))
+        .product;
     bool successful =
         await productsRespository.updateProductInDB(newProduct: newProduct, oldProduct: oldProduct);
     if (successful) {
