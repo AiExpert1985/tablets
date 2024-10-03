@@ -61,7 +61,7 @@ class ProductFormController {
     String name = utils.StringOperations.generateRandomString();
     final url = await _productsRepository.uploadImageToDb(fileName: name, imageFile: pickedImage);
     if (url != null) {
-      _productStateController.updateImageUrls(url);
+      _productStateController.addImageUrls(url);
     }
   }
 
@@ -100,6 +100,11 @@ class ProductFormController {
       context: context,
       builder: (BuildContext ctx) => const EditProductForm(),
     ).whenComplete(_onProductFormClosing);
+  }
+
+  void deleteFormImage(String url) {
+    _productStateController.removeImageUrls(url);
+    _deleteSingleImageFromDb(url);
   }
 
   void deleteCategoryInDB(BuildContext context, Product product) async {

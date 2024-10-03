@@ -30,11 +30,18 @@ class ProductStateNotifier extends StateNotifier<ProductState> {
 
   ProductState setImageUrls(imageUrls) => state = state.copyWith(imageUrls: imageUrls);
 
-  ProductState updateImageUrls(String url) {
+  ProductState addImageUrls(String url) {
     // first remove default image from list (if there is)
     List<String> currentUrls = List.from(state.imageUrls);
     currentUrls.remove(constants.DefaultImage.url);
     // then add the new url
+    state = state.copyWith(imageUrls: [...currentUrls, url]);
+    return state;
+  }
+
+  ProductState removeImageUrls(String url) {
+    List<String> currentUrls = List.from(state.imageUrls);
+    currentUrls.remove(url);
     state = state.copyWith(imageUrls: [...currentUrls, url]);
     return state;
   }
@@ -53,7 +60,6 @@ class ProductStateNotifier extends StateNotifier<ProductState> {
   /// I decided to use the
   /// final productStateController = ref.watch(productStateNotifierProvider.notifier)
   /// productStateController.currentState.product (or .imageUrls)
-
   ProductState get currentState => state;
 }
 

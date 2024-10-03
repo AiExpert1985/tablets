@@ -70,7 +70,6 @@ class ProductRepository {
   Future<bool> deleteImageFromDb(String url) async {
     try {
       _imageStorage.deleteFile(url);
-      utils.CustomDebug.tempPrint('image deleted successfully');
       return true;
     } catch (error) {
       utils.CustomDebug.print(message: error, stackTrace: StackTrace.current);
