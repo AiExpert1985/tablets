@@ -44,6 +44,14 @@ class ProductStateNotifier extends StateNotifier<ProductState> {
   void resetProduct() => state = state.copyWith(product: ProductState.getDefault().product);
 
   void resetImageUrls() => state = state.copyWith(imageUrls: ProductState.getDefault().imageUrls);
+
+  /// I used this trick because I faced problem when I passed below
+  /// final productStateProvider = ref.watch(productStateNotifierProvider);
+  /// because it keeps giving me the old state, even when the state is changed
+  /// I decided to use the
+  /// final productStateController = ref.watch(productStateNotifierProvider.notifier)
+  /// and inside the notifier I create get method that gives the updated state !
+  ProductState get currentState => state;
 }
 
 final productStateNotifierProvider =

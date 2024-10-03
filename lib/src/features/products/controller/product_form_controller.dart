@@ -10,8 +10,12 @@ import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
 
 class ProductFormController {
-  ProductFormController(this.ref);
-  final ProviderRef ref;
+  ProductFormController(
+    this._productsRepository,
+    this._productStateController,
+  );
+  final ProductRepository _productsRepository;
+  final ProductStateNotifier _productStateController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool saveForm() {
@@ -30,15 +34,11 @@ class ProductFormController {
 
   void addProductToDb(context) async {
     if (!saveForm()) return;
-    final productsRespository = ref.read(productsRepositoryProvider);
-    final productStateController = ref.read(productStateNotifierProvider);
-    final tempImageUrls = productStateController.imageUrls;
-    final tempProduct = productStateController.product;
-    final product = ref
-        .read(productStateNotifierProvider.notifier)
-        .setProduct(tempProduct.copyWith(imageUrls: tempImageUrls))
-        .product;
-    final successful = await productsRespository.addProductToDB(product: product);
+    // final tempImageUrls = _productStateProvider.imageUrls;
+    final imageUrls = _productStateController.currentState.imageUrls;
+    final productState = _productStateController
+        .setProduct(_productStateController.currentState.product.copyWith(imageUrls: imageUrls));
+    final successful = await _productsRepository.addProductToDB(product: productState.product);
     if (successful) {
       utils.UserMessages.success(
         context: context,
@@ -61,48 +61,30 @@ class ProductFormController {
   void uploadImageToDb(pickedImage) async {
     // always store with random numbers to avoid duplications
     String name = utils.StringOperations.generateRandomString();
-    final url = await ref
-        .read(productsRepositoryProvider)
-        .uploadImageToDb(fileName: name, imageFile: pickedImage);
+    final url = await _productsRepository.uploadImageToDb(fileName: name, imageFile: pickedImage);
     if (url != null) {
-      ref.read(productStateNotifierProvider.notifier).updateImageUrls(url);
+      _productStateController.updateImageUrls(url);
     }
   }
 
   void showAddProductForm(BuildContext context) {
-    ref.read(productStateNotifierProvider.notifier).reset();
+    _productStateController.reset();
     showDialog(
       context: context,
       builder: (BuildContext context) => const AddProductForm(),
     ).whenComplete(_onProductFormClosing);
   }
 
-  // void _onAddFormClose() {
-  //   // when form is closed, we delete (from firestore) all uploaded images that aren't used
-  //   // this is needed because app stores images (to firestore) directly when uploaded and
-  //   // it happends that user sometimes uploads images then cancel the form
-  //   final product = ref.read(productStateNotifierProvider).product;
-  //   final imageUrls = ref.read(productStateNotifierProvider).imageUrls;
-  //   // if imageUrls are the same as product.imageUrls, mean all images are used, we do nothing
-  //   if (product.imageUrls != imageUrls) {
-  //     for (var url in imageUrls) {
-  //       ref.read(productsRepositoryProvider).deleteImageFromDb(url);
-  //     }
-  //   }
-  //   ref.read(productStateNotifierProvider.notifier).reset();
-  // }
-
   /// when form is closed, we delete (from firestore) all uploaded images that aren't used
   /// this is needed because app stores images (to firestore) directly when uploaded and
   /// it happends that user sometimes uploads images then cancel the form
   void _onProductFormClosing() {
-    final productImageUrls = ref.read(productStateNotifierProvider).product.imageUrls;
-    final tempImageUrls = ref.read(productStateNotifierProvider).imageUrls;
+    final productImageUrls = _productStateController.currentState.product.imageUrls;
+    final tempImageUrls = _productStateController.currentState.imageUrls;
     List<String> difference =
         utils.ListOperations.twoListsDifferences(tempImageUrls, productImageUrls);
     _deleteMultipleImagesFromDb(difference);
-
-    ref.read(productStateNotifierProvider.notifier).reset();
+    _productStateController.reset();
   }
 
   void _deleteMultipleImagesFromDb(List<String> urls) {
@@ -111,13 +93,11 @@ class ProductFormController {
     }
   }
 
-  void _deleteSingleImageFromDb(String url) {
-    ref.read(productsRepositoryProvider).deleteImageFromDb(url);
-  }
+  void _deleteSingleImageFromDb(String url) => _productsRepository.deleteImageFromDb(url);
 
   void showEditProductForm({required BuildContext context, required Product product}) {
-    ref.read(productStateNotifierProvider.notifier).setImageUrls(product.imageUrls);
-    ref.read(productStateNotifierProvider.notifier).setProduct(product);
+    _productStateController.setImageUrls(product.imageUrls);
+    _productStateController.setProduct(product);
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const EditProductForm(),
@@ -127,9 +107,8 @@ class ProductFormController {
   void deleteCategoryInDB(BuildContext context, Product product) async {
     // we don't want to delete image if its the default image
     bool deleteImage = product.imageUrls[0] != constants.DefaultImage.url;
-    bool successful = await ref
-        .read(productsRepositoryProvider)
-        .deleteProductFromDB(product: product, deleteImage: deleteImage);
+    bool successful =
+        await _productsRepository.deleteProductFromDB(product: product, deleteImage: deleteImage);
     if (successful) {
       if (context.mounted) {
         utils.UserMessages.success(
@@ -145,16 +124,12 @@ class ProductFormController {
 
   void updateProductInDB(BuildContext context, Product oldProduct) async {
     if (!saveForm()) return;
-    final productsRespository = ref.read(productsRepositoryProvider);
-    final productStateController = ref.read(productStateNotifierProvider);
-    final tempImageUrls = productStateController.imageUrls;
-    final tempProduct = productStateController.product;
-    final newProduct = ref
-        .read(productStateNotifierProvider.notifier)
-        .setProduct(tempProduct.copyWith(imageUrls: tempImageUrls))
-        .product;
+    final tempImageUrls = _productStateController.currentState.imageUrls;
+    final tempProduct = _productStateController.currentState.product;
+    final newProduct =
+        _productStateController.setProduct(tempProduct.copyWith(imageUrls: tempImageUrls)).product;
     bool successful =
-        await productsRespository.updateProductInDB(newProduct: newProduct, oldProduct: oldProduct);
+        await _productsRepository.updateProductInDB(newProduct: newProduct, oldProduct: oldProduct);
     if (successful) {
       if (context.mounted) {
         utils.UserMessages.success(
@@ -172,5 +147,7 @@ class ProductFormController {
 }
 
 final productsFormControllerProvider = Provider<ProductFormController>((ref) {
-  return ProductFormController(ref);
+  final productsRepository = ref.read(productsRepositoryProvider);
+  final productStateController = ref.watch(productStateNotifierProvider.notifier);
+  return ProductFormController(productsRepository, productStateController);
 });
