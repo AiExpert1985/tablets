@@ -42,7 +42,7 @@ class ProductStateNotifier extends StateNotifier<ProductState> {
   ProductState removeImageUrls(String url) {
     List<String> currentUrls = List.from(state.imageUrls);
     currentUrls.remove(url);
-    state = state.copyWith(imageUrls: [...currentUrls, url]);
+    state = state.copyWith(imageUrls: currentUrls);
     return state;
   }
 

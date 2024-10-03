@@ -19,6 +19,7 @@ class ProductFormController {
   final ProductRepository _productsRepository;
   final ProductStateNotifier _productStateController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  List<String> _tempUrls = [];
 
   bool saveForm() {
     final isValid = formKey.currentState!.validate();
@@ -36,6 +37,7 @@ class ProductFormController {
     final imageUrls = _productStateController.currentState.imageUrls;
     final productState = _productStateController
         .setProduct(_productStateController.currentState.product.copyWith(imageUrls: imageUrls));
+    _tempUrls = [];
     final successful = await _productsRepository.addProductToDB(product: productState.product);
     if (successful) {
       utils.UserMessages.success(
@@ -61,7 +63,8 @@ class ProductFormController {
     String name = utils.StringOperations.generateRandomString();
     final url = await _productsRepository.uploadImageToDb(fileName: name, imageFile: pickedImage);
     if (url != null) {
-      _productStateController.addImageUrls(url);
+      _productStateController.addImageUrls(url); // add to imageUrls to be displayed inside form
+      _tempUrls.add(url); // add to tempUrls to be deleted in form is cancelled by user
     }
   }
 
@@ -77,11 +80,8 @@ class ProductFormController {
   /// this is needed because app stores images (to firestore) directly when uploaded and
   /// it happends that user sometimes uploads images then cancel the form
   void _onProductFormClosing() {
-    final productImageUrls = _productStateController.currentState.product.imageUrls;
-    final tempImageUrls = _productStateController.currentState.imageUrls;
-    List<String> difference =
-        utils.ListOperations.twoListsDifferences(tempImageUrls, productImageUrls);
-    _deleteMultipleImagesFromDb(difference);
+    _deleteMultipleImagesFromDb(_tempUrls);
+    _tempUrls = [];
     _productStateController.reset();
   }
 
@@ -102,9 +102,9 @@ class ProductFormController {
     ).whenComplete(_onProductFormClosing);
   }
 
-  void deleteFormImage(String url) {
+  void removeFormImage(String url) {
     _productStateController.removeImageUrls(url);
-    _deleteSingleImageFromDb(url);
+    _tempUrls.add(url);
   }
 
   void deleteCategoryInDB(BuildContext context, Product product) async {
@@ -131,6 +131,7 @@ class ProductFormController {
     final tempProduct = _productStateController.currentState.product;
     final newProduct =
         _productStateController.setProduct(tempProduct.copyWith(imageUrls: tempImageUrls)).product;
+    _tempUrls = [];
     bool successful =
         await _productsRepository.updateProductInDB(newProduct: newProduct, oldProduct: oldProduct);
     if (successful) {

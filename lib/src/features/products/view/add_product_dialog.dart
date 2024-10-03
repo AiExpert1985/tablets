@@ -25,7 +25,7 @@ class AddProductForm extends ConsumerWidget {
         children: [
           SliderImagePicker(
             imageUrls: productStateController.imageUrls,
-            deletingMethod: formController.deleteFormImage,
+            deletingMethod: formController.removeFormImage,
           ),
           ImagePickerButton(uploadingMethod: formController.uploadImageToDb),
           constants.ImageToFormFieldsGap.vertical,
