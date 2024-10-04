@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/main_layout/app_screen_frame.dart';
 import 'package:tablets/src/features/products/controller/product_drawer_controller.dart';
 import 'package:tablets/src/features/products/controller/product_form_controller.dart';
-import 'package:tablets/src/features/products/view/products_grid.dart';
+import 'package:tablets/src/features/products/view/products_list.dart';
 
 class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});
@@ -15,9 +15,9 @@ class ProductsScreen extends ConsumerWidget {
       addMethod: formController.showAddProductForm,
       screenBody: Stack(
         children: [
-          const ProductsGrid(),
+          const ProductList(),
           Positioned(
-            top: 0,
+            top: 20,
             left: 0,
             child: IconButton(
               onPressed: () => drawerController.showFilter(context),
@@ -29,11 +29,15 @@ class ProductsScreen extends ConsumerWidget {
             ),
           ),
           Positioned(
-            top: 50,
+            top: 80,
             left: 0,
             child: IconButton(
               onPressed: () => drawerController.showReports(context),
-              icon: const Icon(Icons.filter),
+              icon: Icon(
+                Icons.filter,
+                size: 25,
+                color: Colors.blue[900],
+              ),
             ),
           )
         ],
