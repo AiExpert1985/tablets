@@ -54,6 +54,7 @@ dependencies:
   sidebarx: ^0.17.1
   animated_search_bar: ^2.7.2
   carousel_slider: ^5.0.0
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
