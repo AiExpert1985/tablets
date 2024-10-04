@@ -5,30 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:tablets/src/constants/constants.dart' as constants;
 
 class ProductDrawer {
-  void showSearch(context) {
-    showDrawer(
-      context,
-      builder: (context) {
-        return const Center(
-          child: Text('Search'),
-        );
-      },
-      config: const DrawerConfig(
-        side: DrawerSide.left,
-        widthPercentage: 0.2,
-        dragEnabled: false, // I wanted it to be only controller by buttons inside body
-        closeOnClickOutside: true,
-        // closeOnEscapeKey: true,
-        // closeOnResume: true, // (Android only)
-        // closeOnBackButton: true, // (Requires a route navigator)
-        backdropOpacity: 0.3,
-        // borderRadius: 24,
-      ),
-      onOpen: () {},
-      onClose: () {},
-    );
-  }
-
   void showFilter(context) {
     showDrawer(
       context,

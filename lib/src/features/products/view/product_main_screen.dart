@@ -17,19 +17,15 @@ class ProductsScreen extends ConsumerWidget {
         children: [
           const ProductsGrid(),
           Positioned(
-            top: 0,
-            left: 0,
-            child: IconButton(
-              onPressed: () => drawerController.showSearch(context),
-              icon: const Icon(Icons.search),
-            ),
-          ),
-          Positioned(
             top: 50,
             left: 0,
             child: IconButton(
               onPressed: () => drawerController.showFilter(context),
-              icon: const Icon(Icons.filter),
+              icon: Icon(
+                Icons.filter_alt_outlined,
+                size: 30,
+                color: Colors.blue[900],
+              ),
             ),
           ),
           Positioned(
@@ -37,7 +33,7 @@ class ProductsScreen extends ConsumerWidget {
             left: 0,
             child: IconButton(
               onPressed: () => drawerController.showReports(context),
-              icon: const Icon(Icons.info),
+              icon: const Icon(Icons.filter),
             ),
           )
         ],

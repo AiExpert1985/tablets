@@ -40,28 +40,32 @@ Local Storage:
 
 Sidebar:
     sidebarx 0.17.1:
-    ☐ created nice sidebars
-    ☐ https://pub.dev/packages/sidebarx
+        ☐ created nice sidebars
+        ☐ https://pub.dev/packages/sidebarx
 
-Search bar:
+Search:
     material_floating_search_bar:
-    ☐ Search bar similar to google
-    ☐ https://pub.dev/packages/material_floating_search_bar_2
+        ☐ Search bar similar to google
+        ☐ https://pub.dev/packages/material_floating_search_bar_2
 
-Place hold (before page reload):
+    multiple_search_selection:
+        ☐ A highly customizable multiple selection widget with fuzzy search functionality
+        ☐ https://pub.dev/packages/multiple_search_selection
+
+Place holder (before page reload):
     redacted:
-    ☐ create a page similar to your design before it is loaded
-    ☐ https://pub.dev/packages/redacted
+        ☐ create a page similar to your design before it is loaded
+        ☐ https://pub.dev/packages/redacted
 
 Video & Audio:
     media_kit:
-    ☐ plays video & audio
-    ☐ https://pub.dev/packages/media_kit
+        ☐ plays video & audio
+        ☐ https://pub.dev/packages/media_kit
 
 loading Ui:
     shimmer:
-    ☐ A package provides an easy way to add shimmer effect in Flutter project
-    ☐ https://pub.dev/packages/shimmer
+        ☐ A package provides an easy way to add shimmer effect in Flutter project
+        ☐ https://pub.dev/packages/shimmer
 
 
 Splash:
