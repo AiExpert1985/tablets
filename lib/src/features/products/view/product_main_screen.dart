@@ -17,7 +17,7 @@ class ProductsScreen extends ConsumerWidget {
         children: [
           const ProductsGrid(),
           Positioned(
-            top: 50,
+            top: 0,
             left: 0,
             child: IconButton(
               onPressed: () => drawerController.showFilter(context),
@@ -29,7 +29,7 @@ class ProductsScreen extends ConsumerWidget {
             ),
           ),
           Positioned(
-            top: 100,
+            top: 50,
             left: 0,
             child: IconButton(
               onPressed: () => drawerController.showReports(context),

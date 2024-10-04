@@ -104,10 +104,11 @@ class ProductFormController {
 
   void removeFormImage(String url) {
     _productStateController.removeImageUrls(url);
+    if (url == constants.DefaultImage.url) return; // we don't remove the default image
     _tempUrls.add(url);
   }
 
-  void deleteCategoryInDB(BuildContext context, Product product) async {
+  void deleteProductFromDB(BuildContext context, Product product) async {
     // we don't want to delete image if its the default image
     bool deleteImage = product.imageUrls[0] != constants.DefaultImage.url;
     bool successful =
