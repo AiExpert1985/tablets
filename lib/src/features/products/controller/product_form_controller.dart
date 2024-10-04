@@ -6,8 +6,8 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/products/controller/product_state_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/add_product_dialog.dart';
-import 'package:tablets/src/features/products/view/edit_product_dialog.dart';
+import 'package:tablets/src/features/products/view/product_add_dialog.dart';
+import 'package:tablets/src/features/products/view/product_edit_dialog.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
 

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/users_screen.dart';
 import 'package:tablets/src/features/pending_bills/pending_bills.dart';
-import 'package:tablets/src/features/products/view/main_screen.dart';
+import 'package:tablets/src/features/products/view/product_main_screen.dart';
 import 'package:tablets/src/features/salesmen_live_locations/presentation/sales_men_live_location_screen.dart';
 import 'package:tablets/src/features/categories/view/categories_screen.dart';
 import 'package:tablets/src/features/settings/settings_screen.dart';
@@ -25,8 +25,7 @@ enum AppRoute {
   pendingBills,
 }
 
-final firebaseAuthProvider =
-    Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
+final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
 
 final goRouterProvider = Provider<GoRouter>(
   (ref) {
@@ -55,32 +54,27 @@ final goRouterProvider = Provider<GoRouter>(
         GoRoute(
           path: '/home',
           name: AppRoute.home.name,
-          builder: (BuildContext context, GoRouterState state) =>
-              const ProductsScreen(),
+          builder: (BuildContext context, GoRouterState state) => const ProductsScreen(),
         ),
         GoRoute(
           path: '/login',
           name: AppRoute.login.name,
-          builder: (BuildContext context, GoRouterState state) =>
-              const LoginScreen(),
+          builder: (BuildContext context, GoRouterState state) => const LoginScreen(),
         ),
         GoRoute(
           path: '/signup',
           name: AppRoute.signup.name,
-          builder: (BuildContext context, GoRouterState state) =>
-              const UsersScreen(),
+          builder: (BuildContext context, GoRouterState state) => const UsersScreen(),
         ),
         GoRoute(
           path: '/products',
           name: AppRoute.products.name,
-          builder: (BuildContext context, GoRouterState state) =>
-              const ProductsScreen(),
+          builder: (BuildContext context, GoRouterState state) => const ProductsScreen(),
         ),
         GoRoute(
           path: '/transactions',
           name: AppRoute.transactions.name,
-          builder: (BuildContext context, GoRouterState state) =>
-              const TransactionsScreen(),
+          builder: (BuildContext context, GoRouterState state) => const TransactionsScreen(),
         ),
         GoRoute(
           path: '/salesmen',
@@ -91,20 +85,17 @@ final goRouterProvider = Provider<GoRouter>(
         GoRoute(
           path: '/settings',
           name: AppRoute.settings.name,
-          builder: (BuildContext context, GoRouterState state) =>
-              const SettingsScreen(),
+          builder: (BuildContext context, GoRouterState state) => const SettingsScreen(),
         ),
         GoRoute(
           path: '/categories',
           name: AppRoute.categories.name,
-          builder: (BuildContext context, GoRouterState state) =>
-              const CategoriesScreen(),
+          builder: (BuildContext context, GoRouterState state) => const CategoriesScreen(),
         ),
         GoRoute(
           path: '/pending_bills',
           name: AppRoute.pendingBills.name,
-          builder: (BuildContext context, GoRouterState state) =>
-              const PendingBillsScreen(),
+          builder: (BuildContext context, GoRouterState state) => const PendingBillsScreen(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),
