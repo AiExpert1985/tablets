@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/main_layout/app_screen_frame.dart';
-import 'package:tablets/src/features/products/controller/product_drawer_controller.dart';
-import 'package:tablets/src/features/products/controller/product_form_controller.dart';
+import 'package:tablets/src/features/products/controller/product_drawer_provider.dart';
+import 'package:tablets/src/features/products/controller/product_form_provider.dart';
 import 'package:tablets/src/features/products/view/products_list.dart';
 
 class ProductsScreen extends ConsumerWidget {

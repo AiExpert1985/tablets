@@ -39,9 +39,21 @@ class AppScreenFrame extends StatelessWidget {
         ],
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => addMethod(context),
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () => addMethod(context),
+            child: const Icon(Icons.filter_alt_outlined),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          FloatingActionButton(
+            onPressed: () => addMethod(context),
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
       drawer: const MainDrawer(),
       body: Container(

@@ -1,6 +1,7 @@
 import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/features/products/view/product_search_fields.dart';
 // import 'package:tablets/src/utils/utils.dart' as utils;
 // import 'package:tablets/src/constants/constants.dart' as constants;
 
@@ -10,12 +11,15 @@ class ProductDrawer {
       context,
       builder: (context) {
         return const Center(
-          child: Text('Filter'),
+          child: SafeArea(
+            top: true,
+            child: ProductSearchForm(),
+          ),
         );
       },
       config: const DrawerConfig(
         side: DrawerSide.left,
-        widthPercentage: 0.2,
+        widthPercentage: 0.3,
         dragEnabled: false, // I wanted it to be only controller by buttons inside body
         closeOnClickOutside: true,
         // closeOnEscapeKey: true,

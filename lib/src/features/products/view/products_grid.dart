@@ -4,7 +4,6 @@ import 'package:tablets/src/common_widgets/various/async_value_widget.dart';
 import 'package:tablets/src/features/products/controller/product_form_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/product_item.dart';
 
 class ProductList extends ConsumerWidget {
   const ProductList({super.key});
@@ -20,10 +19,11 @@ class ProductList extends ConsumerWidget {
         itemBuilder: (ctx, index) {
           final product = products[index];
           return InkWell(
-            hoverColor: const Color.fromARGB(255, 173, 170, 170),
-            onTap: () => formController.showEditProductForm(context: ctx, product: product),
-            child: ProductItem(product),
-          );
+              hoverColor: const Color.fromARGB(255, 173, 170, 170),
+              onTap: () => formController.showEditProductForm(context: ctx, product: product),
+              child: Row(
+                children: [Text(product.code.toString())],
+              ));
         },
       ),
     );
