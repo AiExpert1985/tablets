@@ -6,7 +6,7 @@ import 'package:tablets/src/features/products/view/product_search_fields.dart';
 // import 'package:tablets/src/constants/constants.dart' as constants;
 
 class ProductDrawer {
-  void showFilter(context) {
+  void showSearchForm(BuildContext context) {
     showDrawer(
       context,
       builder: (context) {

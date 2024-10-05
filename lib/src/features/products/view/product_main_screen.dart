@@ -20,7 +20,7 @@ class ProductsScreen extends ConsumerWidget {
             top: 20,
             left: 0,
             child: IconButton(
-              onPressed: () => drawerController.showFilter(context),
+              onPressed: () => drawerController.showSearchForm(context),
               icon: Icon(
                 Icons.filter_alt_outlined,
                 size: 30,
