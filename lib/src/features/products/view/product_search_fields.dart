@@ -5,7 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/form/field_box_decoration.dart';
 import 'package:tablets/src/constants/constants.dart';
 import 'package:tablets/src/features/products/controller/product_search_provider.dart';
-import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/utils/utils.dart';
 
 enum FieldDataTypes { int, double, string }
 
@@ -14,7 +14,8 @@ class ProductSearchForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productSearch = ref.watch(productsSearchProvider);
+    ref.watch(productSearchNotifierProvider);
+    final productSearch = ref.read(productSearchNotifierProvider.notifier);
     return FormBuilder(
         child: Padding(
       padding: const EdgeInsets.all(30.0),
@@ -26,26 +27,25 @@ class ProductSearchForm extends ConsumerWidget {
               dataType: FieldDataTypes.int.name,
               name: 'code',
               displayedTitle: S.of(context).product_code,
-              productSearch: productSearch,
             ),
             FormGap.vertical,
             GeneralSearchField(
               dataType: FieldDataTypes.string.name,
               name: 'name',
               displayedTitle: S.of(context).product_name,
-              productSearch: productSearch,
             ),
             FormGap.vertical,
             GeneralSearchField(
               dataType: FieldDataTypes.double.name,
               name: 'commission',
               displayedTitle: S.of(context).product_salesman_comission,
-              productSearch: productSearch,
             ),
             Offstage(
-              offstage: !productSearch.isSearchOn,
+              offstage: !productSearch.getState.isSearchOn,
               child: IconButton(
-                onPressed: () => productSearch.resetFieldValues(),
+                onPressed: () {
+                  productSearch.reset();
+                },
                 icon: const Icon(Icons.search_off),
               ),
             )
@@ -54,26 +54,31 @@ class ProductSearchForm extends ConsumerWidget {
   }
 }
 
-class GeneralSearchField extends StatelessWidget {
+class GeneralSearchField extends ConsumerWidget {
   const GeneralSearchField({
     required this.dataType,
     required this.name,
     required this.displayedTitle,
-    required this.productSearch,
     super.key,
   });
 
   final String dataType;
   final String name;
   final String displayedTitle;
-  final ProductSearch productSearch;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final productSearch = ref.read(productSearchNotifierProvider.notifier);
     return FormBuilderTextField(
         name: name,
+        initialValue: productSearch.getState.fieldValues[name],
         decoration: formFieldDecoration(displayedTitle),
-        onChanged: (value) =>
-            productSearch.updateValue(key: name, value: value, dataType: dataType));
+        onChanged: (value) {
+          CustomDebug.tempPrint(productSearch.getState.fieldValues);
+          CustomDebug.tempPrint(productSearch.getState.isSearchOn);
+          productSearch.updateValue(key: name, value: value, dataType: dataType);
+          CustomDebug.tempPrint(productSearch.getState.fieldValues);
+          CustomDebug.tempPrint(productSearch.getState.isSearchOn);
+        });
   }
 }
