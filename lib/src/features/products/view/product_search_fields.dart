@@ -19,37 +19,34 @@ class ProductSearchForm extends ConsumerWidget {
     return FormBuilder(
         child: Padding(
       padding: const EdgeInsets.all(30.0),
-      child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            GeneralSearchField(
-              dataType: FieldDataTypes.int.name,
-              name: 'code',
-              displayedTitle: S.of(context).product_code,
-            ),
-            FormGap.vertical,
-            GeneralSearchField(
-              dataType: FieldDataTypes.string.name,
-              name: 'name',
-              displayedTitle: S.of(context).product_name,
-            ),
-            FormGap.vertical,
-            GeneralSearchField(
-              dataType: FieldDataTypes.double.name,
-              name: 'commission',
-              displayedTitle: S.of(context).product_salesman_comission,
-            ),
-            Offstage(
-              offstage: !productSearch.getState.isSearchOn,
-              child: IconButton(
-                onPressed: () {
-                  productSearch.reset();
-                },
-                icon: const Icon(Icons.search_off),
-              ),
-            )
-          ]),
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
+        GeneralSearchField(
+          dataType: FieldDataTypes.int.name,
+          name: 'code',
+          displayedTitle: S.of(context).product_code,
+        ),
+        FormGap.vertical,
+        GeneralSearchField(
+          dataType: FieldDataTypes.string.name,
+          name: 'name',
+          displayedTitle: S.of(context).product_name,
+        ),
+        FormGap.vertical,
+        GeneralSearchField(
+          dataType: FieldDataTypes.double.name,
+          name: 'commission',
+          displayedTitle: S.of(context).product_salesman_comission,
+        ),
+        Offstage(
+          offstage: !productSearch.getState.isSearchOn,
+          child: IconButton(
+            onPressed: () {
+              productSearch.reset();
+            },
+            icon: const Icon(Icons.search_off),
+          ),
+        )
+      ]),
     ));
   }
 }
@@ -70,15 +67,10 @@ class GeneralSearchField extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productSearch = ref.read(productSearchNotifierProvider.notifier);
     return FormBuilderTextField(
-        name: name,
-        initialValue: productSearch.getState.fieldValues[name],
-        decoration: formFieldDecoration(displayedTitle),
-        onChanged: (value) {
-          CustomDebug.tempPrint(productSearch.getState.fieldValues);
-          CustomDebug.tempPrint(productSearch.getState.isSearchOn);
-          productSearch.updateValue(key: name, value: value, dataType: dataType);
-          CustomDebug.tempPrint(productSearch.getState.fieldValues);
-          CustomDebug.tempPrint(productSearch.getState.isSearchOn);
-        });
+      name: name,
+      initialValue: productSearch.getState.fieldValues[name],
+      decoration: formFieldDecoration(displayedTitle),
+      onChanged: (value) => productSearch.updateValue(key: name, value: value, dataType: dataType),
+    );
   }
 }
