@@ -3,13 +3,15 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
+import 'package:tablets/src/features/products/controller/product_search_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductRepository {
-  ProductRepository(this._firestore, this._imageStorage);
+  ProductRepository(this._firestore, this._imageStorage, this._ref);
   final FirebaseFirestore _firestore;
   final StorageRepository _imageStorage;
+  final ProviderRef<ProductRepository> _ref;
 
   static String collectionName = 'products';
   static String nameKey = 'name';
@@ -107,17 +109,27 @@ class ProductRepository {
   }
 
   Query<Product> _productsRef() {
-    return _firestore.collection(collectionName).orderBy(nameKey).withConverter(
-          fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
-          toFirestore: (Product product, options) => product.toMap(),
-        );
+    final searchedValues = _ref.watch(productSearchNotifierProvider).fieldValues;
+    if (searchedValues.keys.isNotEmpty) {
+      utils.CustomDebug.tempPrint(searchedValues);
+      return _firestore.collection(collectionName).orderBy(nameKey).startAt(
+          [searchedValues['name']]).endAt(['${searchedValues['name']}\uf8ff']).withConverter(
+        fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
+        toFirestore: (Product product, options) => product.toMap(),
+      );
+    } else {
+      return _firestore.collection(collectionName).orderBy(nameKey).withConverter(
+            fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
+            toFirestore: (Product product, options) => product.toMap(),
+          );
+    }
   }
 }
 
 final productsRepositoryProvider = Provider<ProductRepository>((ref) {
   final imageStorage = ref.read(fileStorageProvider);
   final firestore = FirebaseFirestore.instance;
-  return ProductRepository(firestore, imageStorage);
+  return ProductRepository(firestore, imageStorage, ref);
 });
 
 final productsStreamProvider = StreamProvider.autoDispose<List<Product>>((ref) {
