@@ -112,14 +112,9 @@ class ProductRepository {
     final searchedValues = _ref.watch(productSearchNotifierProvider).fieldValues;
     Query query = _firestore.collection(collectionName);
     searchedValues.forEach((key, value) {
-      if (value is String) {
-        query =
-            query.where(key, isGreaterThanOrEqualTo: value).where(key, isLessThan: '$value\uf8ff');
-
-        utils.CustomDebug.tempPrint('$key, $value');
-      } else {
-        query = query.where(key, isGreaterThanOrEqualTo: value);
-      }
+      query = value.runtimeType == String
+          ? query.where(key, isGreaterThanOrEqualTo: value).where(key, isLessThan: '$value\uf8ff')
+          : query.where(key, isEqualTo: value);
     });
     return query.withConverter(
       fromFirestore: (doc, _) => Product.fromMap(doc.data()!),

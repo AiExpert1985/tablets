@@ -32,15 +32,17 @@ class ProductSearchNotifier extends StateNotifier<ProductSearch> {
       if (value == null || value.isEmpty) {
         fieldValues.remove(key);
       } else {
-        if (dataType == 'int') int.parse(value);
-        if (dataType == 'double') double.parse(value);
+        if (dataType == 'int') value = int.parse(value);
+
+        if (dataType == 'double') value = double.parse(value);
         fieldValues[key] = value;
       }
       bool isSearchOn = !_isFieldValuesEmpty();
       state = ProductSearch(fieldValues, isSearchOn);
     } catch (e) {
       utils.CustomDebug.print(
-          message: 'An error happend when value ($value) was entered in product search field ($key)',
+          message:
+              'An error happend when value ($value) was entered in product search field ($key)',
           stackTrace: StackTrace.current);
     }
   }
@@ -50,7 +52,8 @@ class ProductSearchNotifier extends StateNotifier<ProductSearch> {
   ProductSearch get getState => state;
 }
 
-final productSearchNotifierProvider = StateNotifierProvider<ProductSearchNotifier, ProductSearch>((ref) {
+final productSearchNotifierProvider =
+    StateNotifierProvider<ProductSearchNotifier, ProductSearch>((ref) {
   final productSearch = ProductSearch.getDefault();
   return ProductSearchNotifier(productSearch);
 });

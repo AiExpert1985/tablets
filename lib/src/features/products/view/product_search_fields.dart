@@ -73,10 +73,14 @@ class GeneralSearchField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productSearch = ref.read(productSearchNotifierProvider.notifier);
+    final productSearch = ref.watch(productSearchNotifierProvider.notifier);
+    dynamic initialValue = productSearch.getState.fieldValues[name];
+    if (initialValue != null) {
+      initialValue = initialValue is String ? initialValue : initialValue.toString();
+    }
     return FormBuilderTextField(
       name: name,
-      initialValue: productSearch.getState.fieldValues[name],
+      initialValue: initialValue,
       decoration: formFieldDecoration(displayedTitle),
       onChanged: (value) => productSearch.updateValue(key: name, value: value, dataType: dataType),
     );
