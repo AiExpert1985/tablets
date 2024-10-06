@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_widgets/form/button_cancel.dart';
-import 'package:tablets/src/common_widgets/form/button_delete.dart';
-import 'package:tablets/src/common_widgets/form/button_update.dart';
+import 'package:tablets/src/common_widgets/form/form_buttons.dart';
 import 'package:tablets/src/common_widgets/form/form_frame.dart';
 import 'package:tablets/src/common_widgets/various/image_picker_button.dart';
 import 'package:tablets/src/common_widgets/various/slider_image_picker.dart';
