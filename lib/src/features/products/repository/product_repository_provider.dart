@@ -110,19 +110,21 @@ class ProductRepository {
 
   Query<Product> _productsRef() {
     final searchedValues = _ref.watch(productSearchNotifierProvider).fieldValues;
-    if (searchedValues.keys.isNotEmpty) {
-      utils.CustomDebug.tempPrint(searchedValues);
-      return _firestore.collection(collectionName).orderBy(nameKey).startAt(
-          [searchedValues['name']]).endAt(['${searchedValues['name']}\uf8ff']).withConverter(
-        fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
-        toFirestore: (Product product, options) => product.toMap(),
-      );
-    } else {
-      return _firestore.collection(collectionName).orderBy(nameKey).withConverter(
-            fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
-            toFirestore: (Product product, options) => product.toMap(),
-          );
-    }
+    Query query = _firestore.collection(collectionName);
+    searchedValues.forEach((key, value) {
+      if (value is String) {
+        query =
+            query.where(key, isGreaterThanOrEqualTo: value).where(key, isLessThan: '$value\uf8ff');
+
+        utils.CustomDebug.tempPrint('$key, $value');
+      } else {
+        query = query.where(key, isGreaterThanOrEqualTo: value);
+      }
+    });
+    return query.withConverter(
+      fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
+      toFirestore: (Product product, options) => product.toMap(),
+    );
   }
 }
 

@@ -36,8 +36,14 @@ class ProductSearchForm extends ConsumerWidget {
             FormGap.vertical,
             GeneralSearchField(
               dataType: FieldDataTypes.double.name,
-              name: 'commission',
+              name: 'salesmanComission',
               displayedTitle: S.of(context).product_salesman_comission,
+            ),
+            FormGap.vertical,
+            GeneralSearchField(
+              dataType: FieldDataTypes.string.name,
+              name: 'category',
+              displayedTitle: S.of(context).product_category,
             ),
             Offstage(
               offstage: !productSearch.getState.isSearchOn,

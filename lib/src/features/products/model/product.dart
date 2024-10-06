@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+
 import 'package:tablets/src/constants/constants.dart' as constants;
 
 Product _defaultProduct = Product(
@@ -67,7 +68,6 @@ class Product {
     double? initialQuantity,
   }) {
     return Product(
-      // ignore: unnecessary_this
       code: code ?? this.code,
       name: name ?? this.name,
       sellRetailPrice: sellRetailPrice ?? this.sellRetailPrice,
@@ -82,48 +82,6 @@ class Product {
       category: category ?? this.category,
       initialQuantity: initialQuantity ?? this.initialQuantity,
     );
-  }
-
-  @override
-  String toString() {
-    return 'Product(code: $code, name: $name)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is Product &&
-        other.code == code &&
-        other.name == name &&
-        other.sellRetailPrice == sellRetailPrice &&
-        other.sellWholePrice == sellWholePrice &&
-        other.packageType == packageType &&
-        other.packageWeight == packageWeight &&
-        other.numItemsInsidePackage == numItemsInsidePackage &&
-        other.alertWhenExceeds == alertWhenExceeds &&
-        other.altertWhenLessThan == altertWhenLessThan &&
-        other.salesmanComission == salesmanComission &&
-        listEquals(other.imageUrls, imageUrls) &&
-        other.category == category &&
-        other.initialQuantity == initialQuantity;
-  }
-
-  @override
-  int get hashCode {
-    return code.hashCode ^
-        name.hashCode ^
-        sellRetailPrice.hashCode ^
-        sellWholePrice.hashCode ^
-        packageType.hashCode ^
-        packageWeight.hashCode ^
-        numItemsInsidePackage.hashCode ^
-        alertWhenExceeds.hashCode ^
-        altertWhenLessThan.hashCode ^
-        salesmanComission.hashCode ^
-        imageUrls.hashCode ^
-        category.hashCode ^
-        initialQuantity.hashCode;
   }
 
   Map<String, dynamic> toMap() {
@@ -165,4 +123,46 @@ class Product {
   String toJson() => json.encode(toMap());
 
   factory Product.fromJson(String source) => Product.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'Product(code: $code, name: $name, sellRetailPrice: $sellRetailPrice, sellWholePrice: $sellWholePrice, packageType: $packageType, packageWeight: $packageWeight, numItemsInsidePackage: $numItemsInsidePackage, alertWhenExceeds: $alertWhenExceeds, altertWhenLessThan: $altertWhenLessThan, salesmanComission: $salesmanComission, imageUrls: $imageUrls, category: $category, initialQuantity: $initialQuantity)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Product &&
+        other.code == code &&
+        other.name == name &&
+        other.sellRetailPrice == sellRetailPrice &&
+        other.sellWholePrice == sellWholePrice &&
+        other.packageType == packageType &&
+        other.packageWeight == packageWeight &&
+        other.numItemsInsidePackage == numItemsInsidePackage &&
+        other.alertWhenExceeds == alertWhenExceeds &&
+        other.altertWhenLessThan == altertWhenLessThan &&
+        other.salesmanComission == salesmanComission &&
+        listEquals(other.imageUrls, imageUrls) &&
+        other.category == category &&
+        other.initialQuantity == initialQuantity;
+  }
+
+  @override
+  int get hashCode {
+    return code.hashCode ^
+        name.hashCode ^
+        sellRetailPrice.hashCode ^
+        sellWholePrice.hashCode ^
+        packageType.hashCode ^
+        packageWeight.hashCode ^
+        numItemsInsidePackage.hashCode ^
+        alertWhenExceeds.hashCode ^
+        altertWhenLessThan.hashCode ^
+        salesmanComission.hashCode ^
+        imageUrls.hashCode ^
+        category.hashCode ^
+        initialQuantity.hashCode;
+  }
 }
