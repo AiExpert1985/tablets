@@ -57,10 +57,11 @@ class ProductSearchNotifier extends StateNotifier<ProductSearch> {
 
   ProductSearch get getState => state;
 
-  // void updateProductList() {
-  //   final newList = _ref.refresh(productsListProvider);
-  //   state = state.copyWith(productList: newList);
-  // }
+  void updateProductList() {
+    utils.CustomDebug.tempPrint(state.productList.value);
+    // ignore: unused_result
+    _ref.refresh(productsListProvider);
+  }
 }
 
 final productSearchNotifierProvider = StateNotifierProvider<ProductSearchNotifier, ProductSearch>((ref) {

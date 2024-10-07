@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/features/products/controller/product_list_controller.dart';
 import 'package:tablets/src/features/products/controller/product_state_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
@@ -15,9 +16,11 @@ class ProductFormController {
   ProductFormController(
     this._productsRepository,
     this._productStateController,
+    this.productSearchController,
   );
   final ProductRepository _productsRepository;
   final ProductStateNotifier _productStateController;
+  final ProductSearchNotifier productSearchController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   List<String> _tempUrls = [];
 
@@ -35,8 +38,8 @@ class ProductFormController {
   void addProductToDb(context) async {
     if (!saveForm()) return;
     final imageUrls = _productStateController.currentState.imageUrls;
-    final productState = _productStateController
-        .setProduct(_productStateController.currentState.product.copyWith(imageUrls: imageUrls));
+    final productState =
+        _productStateController.setProduct(_productStateController.currentState.product.copyWith(imageUrls: imageUrls));
     _tempUrls = [];
     final successful = await _productsRepository.addProductToDB(product: productState.product);
     if (successful) {
@@ -50,7 +53,8 @@ class ProductFormController {
         message: S.of(context).db_error_adding_doc,
       );
     }
-    closeForm(context);
+    if (context.mounted) closeForm(context);
+    productSearchController.updateProductList();
   }
 
   /// this takes an image file (which was created by imagePicker) and store it directly in firebase
@@ -111,12 +115,10 @@ class ProductFormController {
   void deleteProductFromDB(BuildContext context, Product product) async {
     // we don't want to delete image if its the default image
     bool deleteImage = product.imageUrls[0] != constants.DefaultImage.url;
-    bool successful =
-        await _productsRepository.deleteProductFromDB(product: product, deleteImage: deleteImage);
+    bool successful = await _productsRepository.deleteProductFromDB(product: product, deleteImage: deleteImage);
     if (successful) {
       if (context.mounted) {
-        utils.UserMessages.success(
-            context: context, message: S.of(context).db_success_deleting_doc);
+        utils.UserMessages.success(context: context, message: S.of(context).db_success_deleting_doc);
       }
     } else {
       if (context.mounted) {
@@ -124,21 +126,19 @@ class ProductFormController {
       }
     }
     if (context.mounted) closeForm(context);
+    productSearchController.updateProductList();
   }
 
   void updateProductInDB(BuildContext context, Product oldProduct) async {
     if (!saveForm()) return;
     final tempImageUrls = _productStateController.currentState.imageUrls;
     final tempProduct = _productStateController.currentState.product;
-    final newProduct =
-        _productStateController.setProduct(tempProduct.copyWith(imageUrls: tempImageUrls)).product;
+    final newProduct = _productStateController.setProduct(tempProduct.copyWith(imageUrls: tempImageUrls)).product;
     _tempUrls = [];
-    bool successful =
-        await _productsRepository.updateProductInDB(newProduct: newProduct, oldProduct: oldProduct);
+    bool successful = await _productsRepository.updateProductInDB(newProduct: newProduct, oldProduct: oldProduct);
     if (successful) {
       if (context.mounted) {
-        utils.UserMessages.success(
-            context: context, message: S.of(context).db_success_updaging_doc);
+        utils.UserMessages.success(context: context, message: S.of(context).db_success_updaging_doc);
       }
     } else {
       if (context.mounted) {
@@ -148,11 +148,13 @@ class ProductFormController {
     if (context.mounted) {
       closeForm(context);
     }
+    productSearchController.updateProductList();
   }
 }
 
 final productsFormControllerProvider = Provider<ProductFormController>((ref) {
   final productsRepository = ref.read(productsRepositoryProvider);
   final productStateController = ref.watch(productStateNotifierProvider.notifier);
-  return ProductFormController(productsRepository, productStateController);
+  final productSearchController = ref.watch(productSearchNotifierProvider.notifier);
+  return ProductFormController(productsRepository, productStateController, productSearchController);
 });

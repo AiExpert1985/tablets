@@ -3,8 +3,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/form/field_box_decoration.dart';
+import 'package:tablets/src/common_widgets/form/form_icons.dart';
 import 'package:tablets/src/constants/constants.dart';
-import 'package:tablets/src/features/products/controller/product_search_provider.dart';
+import 'package:tablets/src/features/products/controller/product_list_controller.dart';
 
 enum FieldDataTypes { int, double, string }
 
@@ -18,43 +19,48 @@ class ProductSearchForm extends ConsumerWidget {
     return FormBuilder(
         child: Padding(
       padding: const EdgeInsets.all(30.0),
-      child: Column(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
+        GeneralSearchField(
+          dataType: FieldDataTypes.int.name,
+          name: 'code',
+          displayedTitle: S.of(context).product_code,
+        ),
+        FormGap.vertical,
+        GeneralSearchField(
+          dataType: FieldDataTypes.string.name,
+          name: 'name',
+          displayedTitle: S.of(context).product_name,
+        ),
+        FormGap.vertical,
+        GeneralSearchField(
+          dataType: FieldDataTypes.double.name,
+          name: 'salesmanComission',
+          displayedTitle: S.of(context).product_salesman_comission,
+        ),
+        FormGap.vertical,
+        GeneralSearchField(
+          dataType: FieldDataTypes.string.name,
+          name: 'category',
+          displayedTitle: S.of(context).product_category,
+        ),
+        FormGap.vertical,
+        FormGap.vertical,
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            GeneralSearchField(
-              dataType: FieldDataTypes.int.name,
-              name: 'code',
-              displayedTitle: S.of(context).product_code,
+            IconButton(
+              onPressed: () {
+                productSearch.updateProductList();
+              },
+              icon: const ApproveIcon(),
             ),
-            FormGap.vertical,
-            GeneralSearchField(
-              dataType: FieldDataTypes.string.name,
-              name: 'name',
-              displayedTitle: S.of(context).product_name,
+            IconButton(
+              onPressed: () {},
+              icon: const CancelIcon(),
             ),
-            FormGap.vertical,
-            GeneralSearchField(
-              dataType: FieldDataTypes.double.name,
-              name: 'salesmanComission',
-              displayedTitle: S.of(context).product_salesman_comission,
-            ),
-            FormGap.vertical,
-            GeneralSearchField(
-              dataType: FieldDataTypes.string.name,
-              name: 'category',
-              displayedTitle: S.of(context).product_category,
-            ),
-            Offstage(
-              offstage: !productSearch.getState.isSearchOn,
-              child: IconButton(
-                onPressed: () {
-                  productSearch.reset();
-                },
-                icon: const Icon(Icons.search_off),
-              ),
-            )
-          ]),
+          ],
+        )
+      ]),
     ));
   }
 }
