@@ -13,7 +13,6 @@ class CategoriesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final categoryController = ref.watch(categoryControllerProvider);
     return AppScreenFrame(
-      addMethod: categoryController.showAddCategoryForm,
       screenBody: Column(
         children: [
           Center(
@@ -37,6 +36,10 @@ class CategoriesScreen extends ConsumerWidget {
           ),
           SizedBox(height: MediaQuery.of(context).size.width * 0.01),
           const CategoriesGrid(),
+          FloatingActionButton(
+            onPressed: () => categoryController.showAddCategoryForm(context),
+            child: const Icon(Icons.add),
+          ),
         ],
       ),
     );

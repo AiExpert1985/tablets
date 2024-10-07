@@ -5,7 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/form/field_box_decoration.dart';
 import 'package:tablets/src/common_widgets/form/form_icons.dart';
 import 'package:tablets/src/constants/constants.dart';
-import 'package:tablets/src/features/products/controller/product_list_controller.dart';
+import 'package:tablets/src/features/products/controller/products_list_controller.dart';
 
 enum FieldDataTypes { int, double, string }
 

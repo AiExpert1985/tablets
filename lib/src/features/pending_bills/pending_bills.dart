@@ -5,13 +5,10 @@ import 'package:tablets/src/common_widgets/main_layout/app_screen_frame.dart';
 class PendingBillsScreen extends ConsumerWidget {
   const PendingBillsScreen({super.key});
 
-  void fakeFunction(context) {}
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AppScreenFrame(
-      addMethod: fakeFunction,
-      screenBody: const Center(
+    return const AppScreenFrame(
+      screenBody: Center(
         child: Text('Pending Bills'),
       ),
     );

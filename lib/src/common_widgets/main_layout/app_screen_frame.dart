@@ -7,20 +7,14 @@ import 'package:tablets/src/common_widgets/main_layout/locale_aware_logout_icon.
 class AppScreenFrame extends StatelessWidget {
   const AppScreenFrame({
     super.key,
-    required this.addMethod,
     required this.screenBody,
   });
-  final void Function(BuildContext) addMethod; // adding new items to the screen
   final Widget screenBody;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // title: Text(
-        //   S.of(context).greeting,
-        //   style: const TextStyle(color: Colors.white),
-        // ),
         leading: Builder(
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu, color: Colors.white),
@@ -38,22 +32,6 @@ class AppScreenFrame extends StatelessWidget {
           ),
         ],
         backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () => addMethod(context),
-            child: const Icon(Icons.filter_alt_outlined),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          FloatingActionButton(
-            onPressed: () => addMethod(context),
-            child: const Icon(Icons.add),
-          ),
-        ],
       ),
       drawer: const MainDrawer(),
       body: Container(
