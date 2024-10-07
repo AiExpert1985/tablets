@@ -3,15 +3,14 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
-import 'package:tablets/src/features/products/controller/product_search_provider.dart';
+// import 'package:tablets/src/features/products/controller/product_search_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductRepository {
-  ProductRepository(this._firestore, this._imageStorage, this._ref);
+  ProductRepository(this._firestore, this._imageStorage);
   final FirebaseFirestore _firestore;
   final StorageRepository _imageStorage;
-  final ProviderRef<ProductRepository> _ref;
 
   static String collectionName = 'products';
   static String nameKey = 'name';
@@ -22,8 +21,7 @@ class ProductRepository {
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        final newUrl = await _imageStorage.addFile(
-            folder: imageFolderName, fileName: product.name, file: pickedImage);
+        final newUrl = await _imageStorage.addFile(folder: imageFolderName, fileName: product.name, file: pickedImage);
         product.imageUrls.add(newUrl!);
       }
 
@@ -31,8 +29,7 @@ class ProductRepository {
       await docRef.set(product.toMap());
       return true;
     } catch (e) {
-      utils.CustomDebug.print(
-          message: 'An error while adding Product to DB', stackTrace: StackTrace.current);
+      utils.CustomDebug.print(message: 'An error while adding Product to DB', stackTrace: StackTrace.current);
       return false;
     }
   }
@@ -40,14 +37,12 @@ class ProductRepository {
   Future<String?> uploadImageToDb({required String fileName, required File? imageFile}) async {
     try {
       if (imageFile != null) {
-        final newUrl = await _imageStorage.addFile(
-            folder: imageFolderName, fileName: fileName, file: imageFile);
+        final newUrl = await _imageStorage.addFile(folder: imageFolderName, fileName: fileName, file: imageFile);
         return newUrl;
       }
       return null;
     } catch (e) {
-      utils.CustomDebug.print(
-          message: 'An error while adding Product to DB', stackTrace: StackTrace.current);
+      utils.CustomDebug.print(message: 'An error while adding Product to DB', stackTrace: StackTrace.current);
       return null;
     }
   }
@@ -55,8 +50,7 @@ class ProductRepository {
   Future<bool> updateProductInDB({required Product newProduct, required Product oldProduct}) async {
     try {
       // then update the category document
-      final query =
-          _firestore.collection(imageFolderName).where(nameKey, isEqualTo: oldProduct.name);
+      final query = _firestore.collection(imageFolderName).where(nameKey, isEqualTo: oldProduct.name);
       final querySnapshot = await query.get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
@@ -84,8 +78,7 @@ class ProductRepository {
   Future<bool> deleteProductFromDB({required Product product, bool deleteImage = true}) async {
     try {
       // delete document using its name
-      final querySnapshot =
-          await _firestore.collection(collectionName).where(nameKey, isEqualTo: product.name).get();
+      final querySnapshot = await _firestore.collection(collectionName).where(nameKey, isEqualTo: product.name).get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.delete();
@@ -101,35 +94,22 @@ class ProductRepository {
     }
   }
 
-  Stream<List<Product>> watchProductsList() {
-    final ref = _productsRef();
-    return ref
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
-  }
-
-  Query<Product> _productsRef() {
-    final searchedValues = _ref.watch(productSearchNotifierProvider).fieldValues;
-    Query query = _firestore.collection(collectionName);
-    searchedValues.forEach((key, value) {
-      query = value.runtimeType == String
-          ? query.where(key, isGreaterThanOrEqualTo: value).where(key, isLessThan: '$value\uf8ff')
-          : query.where(key, isEqualTo: value);
-    });
-    return query.withConverter(
-      fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
-      toFirestore: (Product product, options) => product.toMap(),
-    );
+  Future<List<Product>> fetchProductsList() async {
+    final firestore = FirebaseFirestore.instance;
+    final collectionRef = firestore.collection(collectionName);
+    final querySnapshot = await collectionRef.get();
+    List<Product> productList = querySnapshot.docs.map((document) => Product.fromMap(document.data())).toList();
+    return productList;
   }
 }
 
 final productsRepositoryProvider = Provider<ProductRepository>((ref) {
   final imageStorage = ref.read(fileStorageProvider);
   final firestore = FirebaseFirestore.instance;
-  return ProductRepository(firestore, imageStorage, ref);
+  return ProductRepository(firestore, imageStorage);
 });
 
-final productsStreamProvider = StreamProvider.autoDispose<List<Product>>((ref) {
+final productsListProvider = FutureProvider<List<Product>>((ref) {
   final productsRepository = ref.watch(productsRepositoryProvider);
-  return productsRepository.watchProductsList();
+  return productsRepository.fetchProductsList();
 });

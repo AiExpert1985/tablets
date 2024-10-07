@@ -1,30 +1,37 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:tablets/src/features/products/model/product.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
-ProductSearch _defaultProductSearch = ProductSearch({}, false);
-
 class ProductSearch {
-  ProductSearch(this.fieldValues, this.isSearchOn);
+  ProductSearch(this.fieldValues, this.isSearchOn, this.productList);
   final Map<String, dynamic> fieldValues;
   final bool isSearchOn; // used to make some widgets visible when search is on
-
-  static ProductSearch getDefault() => _defaultProductSearch.copyWith();
+  final AsyncValue<List<Product>> productList;
 
   ProductSearch copyWith({
     Map<String, dynamic>? fieldValues,
     bool? isSearchOn,
+    AsyncValue<List<Product>>? productList,
   }) {
     return ProductSearch(
       fieldValues ?? this.fieldValues,
       isSearchOn ?? this.isSearchOn,
+      productList ?? this.productList,
     );
   }
 }
 
 class ProductSearchNotifier extends StateNotifier<ProductSearch> {
-  ProductSearchNotifier(super.state);
-  void reset() => state = ProductSearch.getDefault();
+  ProductSearchNotifier(this._ref, super.state);
+  final StateNotifierProviderRef<ProductSearchNotifier, ProductSearch> _ref;
+  void reset() {
+    Map<String, dynamic> fieldValues = {};
+    const isSearchOn = false;
+    final productList = _ref.refresh(productsListProvider);
+    state = ProductSearch(fieldValues, isSearchOn, productList);
+  }
 
   void updateValue({required String dataType, required String key, required dynamic value}) {
     Map<String, dynamic> fieldValues = state.fieldValues;
@@ -38,11 +45,10 @@ class ProductSearchNotifier extends StateNotifier<ProductSearch> {
         fieldValues[key] = value;
       }
       bool isSearchOn = !_isFieldValuesEmpty();
-      state = ProductSearch(fieldValues, isSearchOn);
+      state = state.copyWith(fieldValues: fieldValues, isSearchOn: isSearchOn);
     } catch (e) {
       utils.CustomDebug.print(
-          message:
-              'An error happend when value ($value) was entered in product search field ($key)',
+          message: 'An error happend when value ($value) was entered in product search field ($key)',
           stackTrace: StackTrace.current);
     }
   }
@@ -50,10 +56,16 @@ class ProductSearchNotifier extends StateNotifier<ProductSearch> {
   bool _isFieldValuesEmpty() => state.fieldValues.keys.isEmpty;
 
   ProductSearch get getState => state;
+
+  // void updateProductList() {
+  //   final newList = _ref.refresh(productsListProvider);
+  //   state = state.copyWith(productList: newList);
+  // }
 }
 
-final productSearchNotifierProvider =
-    StateNotifierProvider<ProductSearchNotifier, ProductSearch>((ref) {
-  final productSearch = ProductSearch.getDefault();
-  return ProductSearchNotifier(productSearch);
+final productSearchNotifierProvider = StateNotifierProvider<ProductSearchNotifier, ProductSearch>((ref) {
+  Map<String, dynamic> fieldValues = {};
+  const isSearchOn = false;
+  final productList = ref.watch(productsListProvider);
+  return ProductSearchNotifier(ref, ProductSearch(fieldValues, isSearchOn, productList));
 });

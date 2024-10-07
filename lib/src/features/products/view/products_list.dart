@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/various/async_value_widget.dart';
 import 'package:tablets/src/features/products/controller/product_form_provider.dart';
+import 'package:tablets/src/features/products/controller/product_search_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
-import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/view/product_item.dart';
 
 class ProductList extends ConsumerWidget {
@@ -11,8 +11,9 @@ class ProductList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productsListValue = ref.watch(productsStreamProvider);
+    final productsState = ref.watch(productSearchNotifierProvider);
     final formController = ref.watch(productsFormControllerProvider);
+    final productsListValue = productsState.productList;
     return AsyncValueWidget<List<Product>>(
       value: productsListValue,
       data: (products) => ListView.builder(
