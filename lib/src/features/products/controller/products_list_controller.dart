@@ -53,7 +53,8 @@ class ProductSearchNotifier extends StateNotifier<ProductSearch> {
   ProductSearch get getState => state;
 
   void updateProductList() {
-    final newList = _ref.refresh(productsListProvider);
+    AsyncValue<List<Product>> newList = _ref.refresh(productsListProvider);
+
     //below code might be deleted if the state is updated automatically
     if (mounted) {
       utils.CustomDebug.tempPrint('productList state is updated !');
@@ -65,5 +66,16 @@ class ProductSearchNotifier extends StateNotifier<ProductSearch> {
 final productSearchNotifierProvider = StateNotifierProvider<ProductSearchNotifier, ProductSearch>((ref) {
   Map<String, dynamic> fieldValues = {};
   final productList = ref.watch(productsListProvider);
+
   return ProductSearchNotifier(ref, ProductSearch(fieldValues, productList));
 });
+
+List<Product> asyncValueToProductList(AsyncValue<List<Product>> asyncProductList) {
+  List<Product> productList = [];
+  asyncProductList.when(
+    data: (products) => productList = products,
+    error: (error) => utils.CustomDebug.tempPrint('Error: $error'),
+    loading: () => utils.CustomDebug.tempPrint('product list is loading'),
+  );
+  return productList;
+}
