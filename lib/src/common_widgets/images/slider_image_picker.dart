@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart' as caching;
@@ -61,6 +62,7 @@ class FormImage extends ConsumerWidget {
             errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
         ),
+        constants.FormImageToButtonGap.vertical,
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -108,7 +108,10 @@ class ProductFormController {
 
   void removeFormImage(String url) {
     _productStateController.removeImageUrls(url);
-    if (url == constants.DefaultImage.url) return; // we don't remove the default image
+    if (_productStateController.currentState.imageUrls.isEmpty) {
+      _productStateController.addImageUrls(constants.DefaultImage.url); // if empty, add default image
+      return;
+    }
     _tempUrls.add(url);
   }
 

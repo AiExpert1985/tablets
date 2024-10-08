@@ -97,7 +97,7 @@ class AddImageIcon extends StatelessWidget {
       children: [
         const Icon(Icons.image),
         constants.IconToTextGap.vertical,
-        Text(S.of(context).add_image),
+        Text(S.of(context).add),
       ],
     );
   }

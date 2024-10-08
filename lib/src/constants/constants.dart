@@ -6,7 +6,11 @@ class FormGap {
 }
 
 class ImageToFormFieldsGap {
-  static const vertical = SizedBox(height: 30);
+  static const vertical = SizedBox(height: 15);
+}
+
+class FormImageToButtonGap {
+  static const vertical = SizedBox(height: 10);
 }
 
 /// the gap between the icon and the text below (or next to) it

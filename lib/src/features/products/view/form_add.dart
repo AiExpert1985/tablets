@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/forms/form_frame.dart';
 import 'package:tablets/src/common_widgets/images/slider_image_picker.dart';
-import 'package:tablets/src/features/products/controller/product_form_provider.dart';
+import 'package:tablets/src/features/products/controller/product_form_controller.dart';
 import 'package:tablets/src/common_widgets/forms/form_buttons.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/controller/product_state_controller.dart';
