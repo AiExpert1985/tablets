@@ -1,6 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
@@ -8,12 +6,12 @@ class ProductListFilter {
   ProductListFilter(this.searchFieldValues, this.isSearchOn, this.filteredList);
   final Map<String, dynamic> searchFieldValues;
   final bool isSearchOn;
-  final AsyncValue<List<Product>> filteredList;
+  final AsyncValue<List<Map<String, dynamic>>> filteredList;
 
   ProductListFilter copyWith({
     Map<String, dynamic>? searchFieldValues,
     bool? isSearchOn,
-    AsyncValue<List<Product>>? filteredList,
+    AsyncValue<List<Map<String, dynamic>>>? filteredList,
   }) {
     return ProductListFilter(
       searchFieldValues ?? this.searchFieldValues,
@@ -41,6 +39,7 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
         if (dataType == 'double') value = double.parse(value);
         searchFieldValues[key] = value;
       }
+      utils.CustomDebug.tempPrint(searchFieldValues);
       state = state.copyWith(searchFieldValues: searchFieldValues);
     } catch (e) {
       utils.CustomDebug.print(
@@ -55,18 +54,21 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
   ProductListFilter get getState => state;
 
   void applyFilters() {
-    AsyncValue<List<Product>> productListValue = ref.read(productsListProvider);
-    List<Product> productList = _convertAsyncValueToProductList(productListValue);
-    List<Product> filteredProductList = [];
+    AsyncValue<List<Map<String, dynamic>>> productListValue = ref.read(productsStreamProvider);
+    List<Map<String, dynamic>> filteredProductList =
+        _convertAsyncValueToProductList(productListValue);
     Map<String, dynamic> searchedValues = state.searchFieldValues;
-    utils.CustomDebug.tempPrint(productList);
+    utils.CustomDebug.tempPrint(filteredProductList);
     utils.CustomDebug.tempPrint(searchedValues);
-    if (searchedValues.isEmpty) return;
-    for (Product product in productList) {
-      if (searchedValues.containsKey('name') && product.name.contains(searchedValues['name'])) {
-        filteredProductList.add(product);
+    searchedValues.forEach((key, value) {
+      if (value is String) {
+        filteredProductList =
+            filteredProductList.where((product) => product[key].contains(value)).toList();
+      } else {
+        filteredProductList =
+            filteredProductList.where((product) => product[key] == value).toList();
       }
-    }
+    });
     utils.CustomDebug.tempPrint(filteredProductList);
     state = state.copyWith(isSearchOn: true, filteredList: AsyncValue.data(filteredProductList));
   }
@@ -81,7 +83,8 @@ final productListFilterNotifierProvider =
   return ProductSearchNotifier(ref, ProductListFilter({}, false, const AsyncValue.data([])));
 });
 
-List<Product> _convertAsyncValueToProductList(AsyncValue<List<Product>> asyncProductList) {
+List<Map<String, dynamic>> _convertAsyncValueToProductList(
+    AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
   return asyncProductList.when(
       data: (products) => products,
       error: (e, st) {

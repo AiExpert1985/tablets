@@ -100,27 +100,22 @@ class ProductRepository {
     }
   }
 
-  Future<List<Product>> fetchProductsList() async {
-    final firestore = FirebaseFirestore.instance;
-    final collectionRef = firestore.collection(collectionName);
-    final querySnapshot = await collectionRef.get();
-    List<Product> productList =
-        querySnapshot.docs.map((document) => Product.fromMap(document.data())).toList();
-    return productList;
-  }
+  // Future<List<Map<String, dynamic>>> fetchProductsList() async {
+  //   final firestore = FirebaseFirestore.instance;
+  //   final collectionRef = firestore.collection(collectionName);
+  //   final querySnapshot = await collectionRef.get();
+  //   return querySnapshot.docs.map((document) => document.data()).toList();
+  // }
 
-  Stream<List<Product>> watchProductsList() {
+  Stream<List<Map<String, dynamic>>> watchProductsList() {
     final ref = _productsRef();
     return ref
         .snapshots()
         .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
-  Query<Product> _productsRef() {
-    return _firestore.collection(collectionName).orderBy(nameKey).withConverter(
-          fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
-          toFirestore: (Product product, options) => product.toMap(),
-        );
+  Query<Map<String, dynamic>> _productsRef() {
+    return _firestore.collection(collectionName).orderBy(nameKey);
   }
 }
 
@@ -130,14 +125,14 @@ final productsRepositoryProvider = Provider<ProductRepository>((ref) {
   return ProductRepository(firestore, imageStorage);
 });
 
-final productsListProvider = FutureProvider<List<Product>>((ref) {
-  utils.CustomDebug.tempPrint('Future was called');
-  ref.onDispose(() => utils.CustomDebug.tempPrint('Future was disconnected'));
-  final productsRepository = ref.watch(productsRepositoryProvider);
-  return productsRepository.fetchProductsList();
-});
+// final productsListProvider = FutureProvider<List<Map<String, dynamic>>>((ref) {
+//   utils.CustomDebug.tempPrint('Future was called');
+//   ref.onDispose(() => utils.CustomDebug.tempPrint('Future was disconnected'));
+//   final productsRepository = ref.watch(productsRepositoryProvider);
+//   return productsRepository.fetchProductsList();
+// });
 
-final productsStreamProvider = StreamProvider.autoDispose<List<Product>>((ref) {
+final productsStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   utils.CustomDebug.tempPrint('Streamer is started');
   ref.onDispose(() => utils.CustomDebug.tempPrint('Streamer was disconnected'));
   final productsRepository = ref.watch(productsRepositoryProvider);

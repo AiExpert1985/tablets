@@ -14,14 +14,14 @@ class ProductList extends ConsumerWidget {
     final productStream = ref.watch(productsStreamProvider);
     final formController = ref.watch(productsFormControllerProvider);
     final productsFilter = ref.watch(productListFilterNotifierProvider);
-    AsyncValue<List<Product>> productsListValue =
+    AsyncValue<List<Map<String, dynamic>>> productsListValue =
         productsFilter.isSearchOn ? productsFilter.filteredList : productStream;
-    return AsyncValueWidget<List<Product>>(
+    return AsyncValueWidget<List<Map<String, dynamic>>>(
         value: productsListValue,
         data: (products) => ListView.builder(
               itemCount: products.length,
               itemBuilder: (ctx, index) {
-                final product = products[index];
+                final product = Product.fromMap(products[index]);
                 return InkWell(
                   hoverColor: const Color.fromARGB(255, 173, 170, 170),
                   onTap: () => formController.showEditProductForm(context: ctx, product: product),
