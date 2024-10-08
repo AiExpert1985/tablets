@@ -5,7 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/utils/field_box_decoration.dart';
 import 'package:tablets/src/common_widgets/icons/custom_icons.dart';
 import 'package:tablets/src/constants/constants.dart';
-import 'package:tablets/src/features/products/controller/products_list_controller.dart';
+import 'package:tablets/src/features/products/controller/products_list_provider.dart';
 
 enum FieldDataTypes { int, double, string }
 
@@ -19,48 +19,49 @@ class ProductSearchForm extends ConsumerWidget {
     return FormBuilder(
         child: Padding(
       padding: const EdgeInsets.all(30.0),
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
-        GeneralSearchField(
-          dataType: FieldDataTypes.int.name,
-          name: 'code',
-          displayedTitle: S.of(context).product_code,
-        ),
-        FormGap.vertical,
-        GeneralSearchField(
-          dataType: FieldDataTypes.string.name,
-          name: 'name',
-          displayedTitle: S.of(context).product_name,
-        ),
-        FormGap.vertical,
-        GeneralSearchField(
-          dataType: FieldDataTypes.double.name,
-          name: 'salesmanComission',
-          displayedTitle: S.of(context).product_salesman_comission,
-        ),
-        FormGap.vertical,
-        GeneralSearchField(
-          dataType: FieldDataTypes.string.name,
-          name: 'category',
-          displayedTitle: S.of(context).product_category,
-        ),
-        FormGap.vertical,
-        FormGap.vertical,
-        Row(
+      child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              onPressed: () {
-                productSearch.updateProductList();
-              },
-              icon: const ApproveIcon(),
+            GeneralSearchField(
+              dataType: FieldDataTypes.int.name,
+              name: 'code',
+              displayedTitle: S.of(context).product_code,
             ),
-            IconButton(
-              onPressed: () {},
-              icon: const CancelIcon(),
+            FormGap.vertical,
+            GeneralSearchField(
+              dataType: FieldDataTypes.string.name,
+              name: 'name',
+              displayedTitle: S.of(context).product_name,
             ),
-          ],
-        )
-      ]),
+            FormGap.vertical,
+            GeneralSearchField(
+              dataType: FieldDataTypes.double.name,
+              name: 'salesmanComission',
+              displayedTitle: S.of(context).product_salesman_comission,
+            ),
+            FormGap.vertical,
+            GeneralSearchField(
+              dataType: FieldDataTypes.string.name,
+              name: 'category',
+              displayedTitle: S.of(context).product_category,
+            ),
+            FormGap.vertical,
+            FormGap.vertical,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: productSearch.searchProductList,
+                  icon: const ApproveIcon(),
+                ),
+                IconButton(
+                  onPressed: productSearch.updateProductList,
+                  icon: const CancelIcon(),
+                ),
+              ],
+            )
+          ]),
     ));
   }
 }
@@ -80,7 +81,7 @@ class GeneralSearchField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productSearch = ref.watch(productSearchNotifierProvider.notifier);
-    dynamic initialValue = productSearch.getState.fieldValues[name];
+    dynamic initialValue = productSearch.getState.searchedValues[name];
     if (initialValue != null) {
       initialValue = initialValue is String ? initialValue : initialValue.toString();
     }
