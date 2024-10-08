@@ -1,8 +1,10 @@
+import 'dart:io';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:cached_network_image/cached_network_image.dart' as caching;
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:tablets/src/common_providers/image_picker_provider.dart';
 
 /// this widget shows an image and a button to upload image
 /// it takes its image from the pickedImageNotifierProvider
@@ -17,12 +19,40 @@ class SingleImagePicker extends ConsumerWidget {
       child: CircleAvatar(
         radius: 70,
         backgroundColor: Colors.white,
-        foregroundImage: pickedImageProvider != null
-            ? FileImage(pickedImageProvider)
-            : caching.CachedNetworkImageProvider(imageUrl),
+        foregroundImage:
+            pickedImageProvider != null ? FileImage(pickedImageProvider) : caching.CachedNetworkImageProvider(imageUrl),
       ),
-      onTap: () =>
-          ref.read(pickedImageNotifierProvider.notifier).updatePickedImage(),
+      onTap: () => ref.read(pickedImageNotifierProvider.notifier).updatePickedImage(),
     );
   }
 }
+
+class PickedImageNotifier extends StateNotifier<File?> {
+  PickedImageNotifier(super.state);
+  Future<void> updatePickedImage({imageSource = 'gallery'}) async {
+    try {
+      final pickedImage = await ImagePicker().pickImage(
+          source: imageSource == 'camera' ? ImageSource.camera : ImageSource.gallery,
+          imageQuality: 50,
+          maxWidth: 150); // can use ImageSource.gallery
+
+      // if camera is closed without taking a photo, we just return and do nothing
+      if (pickedImage != null) {
+        state = File(pickedImage.path);
+      }
+    } catch (e) {
+      utils.CustomDebug.print(message: 'error while importing images', stackTrace: StackTrace.current);
+    }
+  }
+
+  // file is null
+  void reset() {
+    state = null;
+  }
+}
+
+/// provide File if user used ImagePicker to select an image from the galary or camera
+/// otherwise it is null
+final pickedImageNotifierProvider = StateNotifierProvider<PickedImageNotifier, File?>((ref) {
+  return PickedImageNotifier(null);
+});

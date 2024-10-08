@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/forms/form_frame.dart';
-import 'package:tablets/src/common_widgets/images/image_picker_button.dart';
 import 'package:tablets/src/common_widgets/images/slider_image_picker.dart';
 import 'package:tablets/src/features/products/controller/product_form_provider.dart';
 import 'package:tablets/src/common_widgets/forms/form_buttons.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/controller/product_state_controller.dart';
-import 'package:tablets/src/features/products/view/product_form_fields.dart';
+import 'package:tablets/src/features/products/view/form_fields.dart';
 
 class AddProductForm extends ConsumerWidget {
   const AddProductForm({super.key});
@@ -25,8 +24,8 @@ class AddProductForm extends ConsumerWidget {
           SliderImagePicker(
             imageUrls: productStateController.imageUrls,
             deletingMethod: formController.removeFormImage,
+            uploadMethod: formController.uploadImageToDb,
           ),
-          ImagePickerButton(uploadingMethod: formController.uploadImageToDb),
           constants.ImageToFormFieldsGap.vertical,
           const ProductFormFields(),
         ],
@@ -36,7 +35,7 @@ class AddProductForm extends ConsumerWidget {
         const FormCancelButton(),
       ],
       widthRatio: 0.5,
-      heightRatio: 0.75,
+      heightRatio: 0.9,
     );
   }
 }

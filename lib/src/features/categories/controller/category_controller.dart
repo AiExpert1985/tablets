@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_providers/image_picker_provider.dart';
+import 'package:tablets/src/common_widgets/images/single_image_picker.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/view/create_category_dialog.dart';

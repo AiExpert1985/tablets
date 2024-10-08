@@ -87,3 +87,18 @@ class ReportsIcon extends StatelessWidget {
     );
   }
 }
+
+class AddImageIcon extends StatelessWidget {
+  const AddImageIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(Icons.image),
+        constants.IconToTextGap.vertical,
+        Text(S.of(context).add_image),
+      ],
+    );
+  }
+}
