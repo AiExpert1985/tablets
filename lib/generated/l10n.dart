@@ -210,6 +210,26 @@ class S {
     );
   }
 
+  /// `Add`
+  String get add {
+    return Intl.message(
+      'Add',
+      name: 'add',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reports`
+  String get reports {
+    return Intl.message(
+      'Reports',
+      name: 'reports',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `hi`
   String get greeting {
     return Intl.message(

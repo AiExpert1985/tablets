@@ -42,3 +42,48 @@ class DeleteIcon extends StatelessWidget {
     );
   }
 }
+
+class AddIcon extends StatelessWidget {
+  const AddIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(Icons.add, color: Colors.white),
+        constants.IconToTextGap.vertical,
+        Text(S.of(context).add),
+      ],
+    );
+  }
+}
+
+class SearchIcon extends StatelessWidget {
+  const SearchIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(Icons.search, color: Colors.red),
+        constants.IconToTextGap.vertical,
+        Text(S.of(context).search),
+      ],
+    );
+  }
+}
+
+class ReportsIcon extends StatelessWidget {
+  const ReportsIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(Icons.report, color: Colors.red),
+        constants.IconToTextGap.vertical,
+        Text(S.of(context).reports),
+      ],
+    );
+  }
+}
