@@ -57,6 +57,7 @@ dependencies:
   shimmer: ^3.0.0
   anydrawer: ^1.0.6
   flutter_form_builder: ^9.4.1
+  flutter_speed_dial: ^7.0.0
 
 dev_dependencies:
   flutter_test:

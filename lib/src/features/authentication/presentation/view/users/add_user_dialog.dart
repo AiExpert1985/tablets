@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_providers/image_picker_provider.dart';
-import 'package:tablets/src/common_widgets/various/single_image_picker.dart';
+import 'package:tablets/src/common_widgets/images/single_image_picker.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/authentication/data/auth_repository_old.dart';
 import 'package:tablets/src/features/authentication/data/firestore_repository.dart';
@@ -35,16 +35,11 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
               password: _userPassword,
             );
         if (uid != null) {
-          final imageUrl = await ref
-              .read(fileStorageProvider)
-              .addFile(folder: 'users', fileName: uid, file: pickedImage);
+          final imageUrl =
+              await ref.read(fileStorageProvider).addFile(folder: 'users', fileName: uid, file: pickedImage);
           if (imageUrl != null) {
             ref.read(firestoreRepositoryProvider).addUser(
-                uid: uid,
-                userName: _userName,
-                email: _userEmail,
-                imageUrl: imageUrl,
-                privilage: _userPrivilage);
+                uid: uid, userName: _userName, email: _userEmail, imageUrl: imageUrl, privilage: _userPrivilage);
           }
           // after uploading image, we must reset it
           ref.read(pickedImageNotifierProvider.notifier).reset();
@@ -85,9 +80,7 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   enableSuggestions: false,
                   validator: (value) {
                     if (value == null || value.trim().length < 4) {
-                      return S
-                          .of(context)
-                          .input_validation_error_message_for_user_name;
+                      return S.of(context).input_validation_error_message_for_user_name;
                     }
                     return null;
                   },
@@ -101,12 +94,8 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   autocorrect: false,
                   textCapitalization: TextCapitalization.none,
                   validator: (value) {
-                    if (value == null ||
-                        value.trim().isEmpty ||
-                        !value.contains('@')) {
-                      return S
-                          .of(context)
-                          .input_validation_error_message_for_email;
+                    if (value == null || value.trim().isEmpty || !value.contains('@')) {
+                      return S.of(context).input_validation_error_message_for_email;
                     }
                     return null;
                   },
@@ -115,14 +104,11 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   },
                 ),
                 TextFormField(
-                  decoration:
-                      InputDecoration(labelText: S.of(context).password),
+                  decoration: InputDecoration(labelText: S.of(context).password),
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.trim().length < 6) {
-                      return S
-                          .of(context)
-                          .input_validation_error_message_for_password;
+                      return S.of(context).input_validation_error_message_for_password;
                     }
                     return null;
                   },
@@ -131,13 +117,10 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
                   },
                 ),
                 TextFormField(
-                  decoration:
-                      InputDecoration(labelText: S.of(context).user_privilage),
+                  decoration: InputDecoration(labelText: S.of(context).user_privilage),
                   validator: (value) {
                     if (value == null) {
-                      return S
-                          .of(context)
-                          .input_validation_error_message_for_user_privilage;
+                      return S.of(context).input_validation_error_message_for_user_privilage;
                     }
                     return null;
                   },

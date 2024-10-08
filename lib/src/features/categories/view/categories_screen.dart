@@ -2,7 +2,7 @@ import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/main_layout/app_screen_frame.dart';
+import 'package:tablets/src/common_widgets/main_layout/main_screen_frame.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/features/categories/controller/searched_name_provider.dart';
 import 'package:tablets/src/features/categories/view/categories_grid_widget.dart';

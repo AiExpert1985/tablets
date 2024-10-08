@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/image_picker_provider.dart';
-import 'package:tablets/src/common_widgets/various/form_images.dart';
+import 'package:tablets/src/common_widgets/images/form_images.dart';
 
 /// this widget shows an image and a button to upload image
 /// it takes its image from the pickedImageNotifierProvider
@@ -25,9 +25,7 @@ class SliderImagePicker extends ConsumerWidget {
                   ))
               .toList(),
           options: CarouselOptions(
-              height: MediaQuery.of(context).size.height * 0.2,
-              autoPlay: false,
-              initialPage: -1 // go to last added url
+              height: MediaQuery.of(context).size.height * 0.2, autoPlay: false, initialPage: -1 // go to last added url
               ),
         ),
       ],

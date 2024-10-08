@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_widgets/form/form_icons.dart';
+import 'package:tablets/src/common_widgets/icons/form_icons.dart';
 import 'package:tablets/src/common_widgets/various/delete_confirmation_dialog.dart';
 
 class FormAddButton extends ConsumerWidget {
@@ -31,11 +31,7 @@ class FormCancelButton extends StatelessWidget {
 
 // note that <T> is important to allow the use of T as a generic class name
 class FromDeleteButton<T> extends ConsumerWidget {
-  const FromDeleteButton(
-      {super.key,
-      required this.deleteMethod,
-      required this.itemToBeDeleted,
-      required this.message});
+  const FromDeleteButton({super.key, required this.deleteMethod, required this.itemToBeDeleted, required this.message});
 
   final void Function(BuildContext, T) deleteMethod;
   final T itemToBeDeleted;

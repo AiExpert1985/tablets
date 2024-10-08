@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/main_layout/main_drawer.dart';
-import 'package:tablets/src/common_widgets/main_layout/locale_aware_logout_icon.dart';
+import 'package:tablets/src/common_widgets/icons/locale_aware_logout_icon.dart';
 
 class AppScreenFrame extends StatelessWidget {
   const AppScreenFrame({

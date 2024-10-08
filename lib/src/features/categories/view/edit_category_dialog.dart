@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/form/field_box_decoration.dart';
+import 'package:tablets/src/utils/field_box_decoration.dart';
 import 'package:tablets/src/common_widgets/various/delete_confirmation_dialog.dart';
-import 'package:tablets/src/common_widgets/various/single_image_picker.dart';
+import 'package:tablets/src/common_widgets/images/single_image_picker.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
@@ -52,12 +52,8 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                       textAlign: TextAlign.center,
                       initialValue: oldCategory.name,
                       decoration: formFieldDecoration(S.of(context).category),
-                      validator: (value) =>
-                          utils.FormValidation.validateNameField(
-                              fieldValue: value,
-                              errorMessage: S
-                                  .of(context)
-                                  .input_validation_error_message_for_numbers),
+                      validator: (value) => utils.FormValidation.validateNameField(
+                          fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
                       onSaved: (value) => newCategory.name = value!),
                 ),
               ],
@@ -70,8 +66,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
           alignment: MainAxisAlignment.center,
           children: [
             TextButton(
-              onPressed: () =>
-                  categoryController.updateCategoryInDB(context, oldCategory),
+              onPressed: () => categoryController.updateCategoryInDB(context, oldCategory),
               child: Column(
                 children: [
                   const Icon(Icons.check, color: Colors.green),
@@ -92,8 +87,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
             ),
             TextButton(
               onPressed: () async {
-                bool? confiramtion = await showDeleteConfirmationDialog(
-                    context: context, message: oldCategory.name);
+                bool? confiramtion = await showDeleteConfirmationDialog(context: context, message: oldCategory.name);
                 if (confiramtion != null) {
                   categoryController.deleteCategoryInDB(context, oldCategory);
                 }

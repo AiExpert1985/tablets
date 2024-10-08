@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/form/field_box_decoration.dart';
-import 'package:tablets/src/common_widgets/form/form_icons.dart';
+import 'package:tablets/src/utils/field_box_decoration.dart';
+import 'package:tablets/src/common_widgets/icons/form_icons.dart';
 import 'package:tablets/src/constants/constants.dart';
 import 'package:tablets/src/features/products/controller/products_list_controller.dart';
 
