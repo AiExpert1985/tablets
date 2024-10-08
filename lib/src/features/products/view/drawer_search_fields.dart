@@ -5,7 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/utils/field_box_decoration.dart';
 import 'package:tablets/src/common_widgets/icons/custom_icons.dart';
 import 'package:tablets/src/constants/constants.dart';
-import 'package:tablets/src/features/products/controller/products_list_provider.dart';
+import 'package:tablets/src/features/products/controller/product_list_filter_controller.dart';
 
 enum FieldDataTypes { int, double, string }
 
@@ -14,8 +14,8 @@ class ProductSearchForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(productSearchNotifierProvider);
-    final productSearch = ref.read(productSearchNotifierProvider.notifier);
+    ref.watch(productListFilterNotifierProvider);
+    final productsFilter = ref.read(productListFilterNotifierProvider.notifier);
     return FormBuilder(
         child: Padding(
       padding: const EdgeInsets.all(30.0),
@@ -52,11 +52,11 @@ class ProductSearchForm extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: productSearch.searchProductList,
+                  onPressed: productsFilter.applyFilters,
                   icon: const ApproveIcon(),
                 ),
                 IconButton(
-                  onPressed: productSearch.updateProductList,
+                  onPressed: productsFilter.clearFilters,
                   icon: const CancelIcon(),
                 ),
               ],
@@ -80,8 +80,8 @@ class GeneralSearchField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productSearch = ref.watch(productSearchNotifierProvider.notifier);
-    dynamic initialValue = productSearch.getState.searchedValues[name];
+    final productSearch = ref.watch(productListFilterNotifierProvider.notifier);
+    dynamic initialValue = productSearch.getState.searchFieldValues[name];
     if (initialValue != null) {
       initialValue = initialValue is String ? initialValue : initialValue.toString();
     }

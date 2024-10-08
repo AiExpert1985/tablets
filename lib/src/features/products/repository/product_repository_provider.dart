@@ -21,7 +21,8 @@ class ProductRepository {
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        final newUrl = await _imageStorage.addFile(folder: imageFolderName, fileName: product.name, file: pickedImage);
+        final newUrl = await _imageStorage.addFile(
+            folder: imageFolderName, fileName: product.name, file: pickedImage);
         product.imageUrls.add(newUrl!);
       }
 
@@ -29,7 +30,8 @@ class ProductRepository {
       await docRef.set(product.toMap());
       return true;
     } catch (e) {
-      utils.CustomDebug.print(message: 'An error while adding Product to DB', stackTrace: StackTrace.current);
+      utils.CustomDebug.print(
+          message: 'An error while adding Product to DB', stackTrace: StackTrace.current);
       return false;
     }
   }
@@ -37,12 +39,14 @@ class ProductRepository {
   Future<String?> uploadImageToDb({required String fileName, required File? imageFile}) async {
     try {
       if (imageFile != null) {
-        final newUrl = await _imageStorage.addFile(folder: imageFolderName, fileName: fileName, file: imageFile);
+        final newUrl = await _imageStorage.addFile(
+            folder: imageFolderName, fileName: fileName, file: imageFile);
         return newUrl;
       }
       return null;
     } catch (e) {
-      utils.CustomDebug.print(message: 'An error while adding Product to DB', stackTrace: StackTrace.current);
+      utils.CustomDebug.print(
+          message: 'An error while adding Product to DB', stackTrace: StackTrace.current);
       return null;
     }
   }
@@ -50,7 +54,8 @@ class ProductRepository {
   Future<bool> updateProductInDB({required Product newProduct, required Product oldProduct}) async {
     try {
       // then update the category document
-      final query = _firestore.collection(imageFolderName).where(nameKey, isEqualTo: oldProduct.name);
+      final query =
+          _firestore.collection(imageFolderName).where(nameKey, isEqualTo: oldProduct.name);
       final querySnapshot = await query.get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
@@ -78,7 +83,8 @@ class ProductRepository {
   Future<bool> deleteProductFromDB({required Product product, bool deleteImage = true}) async {
     try {
       // delete document using its name
-      final querySnapshot = await _firestore.collection(collectionName).where(nameKey, isEqualTo: product.name).get();
+      final querySnapshot =
+          await _firestore.collection(collectionName).where(nameKey, isEqualTo: product.name).get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.delete();
@@ -98,8 +104,23 @@ class ProductRepository {
     final firestore = FirebaseFirestore.instance;
     final collectionRef = firestore.collection(collectionName);
     final querySnapshot = await collectionRef.get();
-    List<Product> productList = querySnapshot.docs.map((document) => Product.fromMap(document.data())).toList();
+    List<Product> productList =
+        querySnapshot.docs.map((document) => Product.fromMap(document.data())).toList();
     return productList;
+  }
+
+  Stream<List<Product>> watchProductsList() {
+    final ref = _productsRef();
+    return ref
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+  }
+
+  Query<Product> _productsRef() {
+    return _firestore.collection(collectionName).orderBy(nameKey).withConverter(
+          fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
+          toFirestore: (Product product, options) => product.toMap(),
+        );
   }
 }
 
@@ -110,6 +131,15 @@ final productsRepositoryProvider = Provider<ProductRepository>((ref) {
 });
 
 final productsListProvider = FutureProvider<List<Product>>((ref) {
+  utils.CustomDebug.tempPrint('Future was called');
+  ref.onDispose(() => utils.CustomDebug.tempPrint('Future was disconnected'));
   final productsRepository = ref.watch(productsRepositoryProvider);
   return productsRepository.fetchProductsList();
+});
+
+final productsStreamProvider = StreamProvider.autoDispose<List<Product>>((ref) {
+  utils.CustomDebug.tempPrint('Streamer is started');
+  ref.onDispose(() => utils.CustomDebug.tempPrint('Streamer was disconnected'));
+  final productsRepository = ref.watch(productsRepositoryProvider);
+  return productsRepository.watchProductsList();
 });
