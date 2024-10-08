@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_widgets/icons/form_icons.dart';
+import 'package:tablets/src/common_widgets/icons/custom_icons.dart';
 import 'package:tablets/src/common_widgets/various/delete_confirmation_dialog.dart';
 
 class FormAddButton extends ConsumerWidget {
