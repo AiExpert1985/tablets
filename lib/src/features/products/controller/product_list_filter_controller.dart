@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
+Map<String, String> filterType = {'name': 'contains', 'code': 'equals', 'commission': 'equals', 'category': 'contains'};
+
 class ProductListFilter {
   ProductListFilter(this.searchFieldValues, this.isSearchOn, this.filteredList);
   final Map<String, dynamic> searchFieldValues;
@@ -56,10 +58,15 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
     List<Map<String, dynamic>> filteredProductList = _convertAsyncValueToProductList(productListValue);
     Map<String, dynamic> searchedValues = state.searchFieldValues;
     searchedValues.forEach((key, value) {
-      if (value is String) {
+      if (filterType[key] == 'contains') {
+        utils.CustomDebug.tempPrint('contains');
         filteredProductList = filteredProductList.where((product) => product[key].contains(value)).toList();
-      } else {
+        return;
+      }
+      if (filterType[key] == 'equals') {
+        utils.CustomDebug.tempPrint('equals');
         filteredProductList = filteredProductList.where((product) => product[key] == value).toList();
+        return;
       }
     });
     state = state.copyWith(isSearchOn: true, filteredList: AsyncValue.data(filteredProductList));
