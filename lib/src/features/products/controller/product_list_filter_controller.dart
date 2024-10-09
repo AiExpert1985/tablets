@@ -39,12 +39,10 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
         if (dataType == 'double') value = double.parse(value);
         searchFieldValues[key] = value;
       }
-      utils.CustomDebug.tempPrint(searchFieldValues);
       state = state.copyWith(searchFieldValues: searchFieldValues);
     } catch (e) {
       utils.CustomDebug.print(
-          message:
-              'An error happend when value ($value) was entered in product search field ($key)',
+          message: 'An error happend when value ($value) was entered in product search field ($key)',
           stackTrace: StackTrace.current);
     }
   }
@@ -55,36 +53,28 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
 
   void applyFilters() {
     AsyncValue<List<Map<String, dynamic>>> productListValue = ref.read(productsStreamProvider);
-    List<Map<String, dynamic>> filteredProductList =
-        _convertAsyncValueToProductList(productListValue);
+    List<Map<String, dynamic>> filteredProductList = _convertAsyncValueToProductList(productListValue);
     Map<String, dynamic> searchedValues = state.searchFieldValues;
-    utils.CustomDebug.tempPrint(filteredProductList);
-    utils.CustomDebug.tempPrint(searchedValues);
     searchedValues.forEach((key, value) {
       if (value is String) {
-        filteredProductList =
-            filteredProductList.where((product) => product[key].contains(value)).toList();
+        filteredProductList = filteredProductList.where((product) => product[key].contains(value)).toList();
       } else {
-        filteredProductList =
-            filteredProductList.where((product) => product[key] == value).toList();
+        filteredProductList = filteredProductList.where((product) => product[key] == value).toList();
       }
     });
-    utils.CustomDebug.tempPrint(filteredProductList);
     state = state.copyWith(isSearchOn: true, filteredList: AsyncValue.data(filteredProductList));
   }
 
   void clearFilters() {
-    state = state.copyWith(isSearchOn: false);
+    reset();
   }
 }
 
-final productListFilterNotifierProvider =
-    StateNotifierProvider<ProductSearchNotifier, ProductListFilter>((ref) {
+final productListFilterNotifierProvider = StateNotifierProvider<ProductSearchNotifier, ProductListFilter>((ref) {
   return ProductSearchNotifier(ref, ProductListFilter({}, false, const AsyncValue.data([])));
 });
 
-List<Map<String, dynamic>> _convertAsyncValueToProductList(
-    AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
+List<Map<String, dynamic>> _convertAsyncValueToProductList(AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
   return asyncProductList.when(
       data: (products) => products,
       error: (e, st) {

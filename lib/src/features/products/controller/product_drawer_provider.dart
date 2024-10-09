@@ -1,11 +1,12 @@
 import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/products/view/drawer_search_fields.dart';
+import 'package:tablets/src/features/products/view/side_drawer/search.dart';
 // import 'package:tablets/src/utils/utils.dart' as utils;
 // import 'package:tablets/src/constants/constants.dart' as constants;
 
 class ProductDrawer {
+  final AnyDrawerController drawerController = AnyDrawerController();
   void showSearchForm(BuildContext context) {
     showDrawer(
       context,
@@ -30,6 +31,7 @@ class ProductDrawer {
       ),
       onOpen: () {},
       onClose: () {},
+      controller: drawerController,
     );
   }
 

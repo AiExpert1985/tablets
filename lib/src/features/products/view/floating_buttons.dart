@@ -11,7 +11,7 @@ class ProductFloatingButtons extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formController = ref.watch(productsFormControllerProvider);
     final drawerController = ref.watch(productsDrawerProvider);
-    const iconsColor = Color.fromARGB(255, 68, 15, 153);
+    const iconsColor = Color.fromARGB(255, 126, 106, 211);
     return SpeedDial(
       direction: SpeedDialDirection.up,
       switchLabelPosition: false,
@@ -40,30 +40,3 @@ class ProductFloatingButtons extends ConsumerWidget {
     );
   }
 }
-
-            // child: Column(
-            //   children: [
-            //     FloatingActionButton(
-            //       onPressed: () => drawerController.showSearchForm(context),
-            //       child: Icon(
-            //         Icons.filter_alt_outlined,
-            //         size: 30,
-            //         color: Colors.blue[900],
-            //       ),
-            //     ),
-            //     const SizedBox(height: 20),
-            //     FloatingActionButton(
-            //       onPressed: () => drawerController.showReports(context),
-            //       child: Icon(
-            //         Icons.filter,
-            //         size: 25,
-            //         color: Colors.blue[900],
-            //       ),
-            //     ),
-            //     const SizedBox(height: 20),
-            //     FloatingActionButton(
-            //       onPressed: () => formController.showAddProductForm(context),
-            //       child: const Icon(Icons.add),
-            //     ),
-            //   ],
-            // ),
