@@ -26,13 +26,13 @@ class Product {
   double sellWholePrice;
   String packageType;
   double packageWeight;
-  double numItemsInsidePackage;
-  double alertWhenExceeds;
-  double altertWhenLessThan;
+  int numItemsInsidePackage;
+  int alertWhenExceeds;
+  int altertWhenLessThan;
   double salesmanComission;
   List<String> imageUrls;
   String category;
-  double initialQuantity;
+  int initialQuantity;
 
   Product({
     required this.code,
@@ -59,13 +59,13 @@ class Product {
     double? sellWholePrice,
     String? packageType,
     double? packageWeight,
-    double? numItemsInsidePackage,
-    double? alertWhenExceeds,
-    double? altertWhenLessThan,
+    int? numItemsInsidePackage,
+    int? alertWhenExceeds,
+    int? altertWhenLessThan,
     double? salesmanComission,
     List<String>? imageUrls,
     String? category,
-    double? initialQuantity,
+    int? initialQuantity,
   }) {
     return Product(
       code: code ?? this.code,
@@ -110,13 +110,13 @@ class Product {
       sellWholePrice: map['sellWholePrice']?.toDouble() ?? 0.0,
       packageType: map['packageType'] ?? '',
       packageWeight: map['packageWeight']?.toDouble() ?? 0.0,
-      numItemsInsidePackage: map['numItemsInsidePackage']?.toDouble() ?? 0.0,
-      alertWhenExceeds: map['alertWhenExceeds']?.toDouble() ?? 0.0,
-      altertWhenLessThan: map['altertWhenLessThan']?.toDouble() ?? 0.0,
+      numItemsInsidePackage: map['numItemsInsidePackage']?.toInt() ?? 0,
+      alertWhenExceeds: map['alertWhenExceeds']?.toInt() ?? 0,
+      altertWhenLessThan: map['altertWhenLessThan']?.toInt() ?? 0,
       salesmanComission: map['salesmanComission']?.toDouble() ?? 0.0,
       imageUrls: List<String>.from(map['imageUrls']),
       category: map['category'] ?? '',
-      initialQuantity: map['initialQuantity']?.toDouble() ?? 0.0,
+      initialQuantity: map['initialQuantity']?.toInt() ?? 0,
     );
   }
 

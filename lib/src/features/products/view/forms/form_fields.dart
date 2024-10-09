@@ -225,7 +225,7 @@ class ProductInitialQuantityFormField extends ConsumerWidget {
             final product = ref.read(productStateNotifierProvider).product;
             ref
                 .read(productStateNotifierProvider.notifier)
-                .setProduct(product.copyWith(initialQuantity: double.parse(value!)));
+                .setProduct(product.copyWith(initialQuantity: int.parse(value!)));
           }),
     );
   }
@@ -248,7 +248,7 @@ class ProductAltertWhenLessThanFormField extends ConsumerWidget {
             final product = ref.read(productStateNotifierProvider).product;
             ref
                 .read(productStateNotifierProvider.notifier)
-                .setProduct(product.copyWith(altertWhenLessThan: double.parse(value!)));
+                .setProduct(product.copyWith(altertWhenLessThan: int.parse(value!)));
           }),
     );
   }
@@ -271,7 +271,7 @@ class ProductAlertWhenExceedsFormField extends ConsumerWidget {
             final product = ref.read(productStateNotifierProvider).product;
             ref
                 .read(productStateNotifierProvider.notifier)
-                .setProduct(product.copyWith(alertWhenExceeds: double.parse(value!)));
+                .setProduct(product.copyWith(alertWhenExceeds: int.parse(value!)));
           }),
     );
   }
@@ -340,7 +340,7 @@ class ProductNumItemsInsidePackageFormField extends ConsumerWidget {
             final product = ref.read(productStateNotifierProvider).product;
             ref
                 .read(productStateNotifierProvider.notifier)
-                .setProduct(product.copyWith(numItemsInsidePackage: double.parse(value!)));
+                .setProduct(product.copyWith(numItemsInsidePackage: int.parse(value!)));
           }),
     );
   }
