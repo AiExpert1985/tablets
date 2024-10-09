@@ -2,12 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
-Map<String, String> filterType = {
-  'name': 'contains',
-  'code': 'equals',
-  'commission': 'equals',
-  'category': 'contains'
-};
+Map<String, String> filterType = {'name': 'contains', 'code': 'equals', 'category': 'contains'};
 
 class ProductListFilter {
   ProductListFilter(this.searchFieldValues, this.isSearchOn, this.filteredList);
@@ -54,8 +49,6 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
           stackTrace: StackTrace.current);
     }
   }
-
-  // bool _isSearchedValuesEmpty() => state.searchedValues.keys.isEmpty;
 
   ProductListFilter get getState => state;
 

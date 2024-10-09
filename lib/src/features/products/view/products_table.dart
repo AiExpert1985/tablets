@@ -24,6 +24,7 @@ class ProductsTable extends ConsumerWidget {
         value: productsListValue,
         data: (products) {
           List<DataRow2> rows = products.map((map) {
+            Product product = Product.fromMap(map);
             return DataRow2(
               cells: [
                 DataCell(Row(
@@ -33,14 +34,16 @@ class ProductsTable extends ConsumerWidget {
                         radius: 15,
                         foregroundImage: CachedNetworkImageProvider(DefaultImage.url),
                       ),
-                      onTap: () => formController.showEditProductForm(
-                          context: context, product: Product.fromMap(map)),
+                      onTap: () =>
+                          formController.showEditProductForm(context: context, product: product),
                     ),
                     const SizedBox(width: 20),
-                    Text(map['code'].toString()),
+                    Text(product.code.toString()),
                   ],
                 )),
-                DataCell(Text(map['name'])),
+                DataCell(Text(product.name)),
+                DataCell(Text(product.sellRetailPrice.toString())),
+                DataCell(Text(product.sellWholePrice.toString())),
               ],
             );
           }).toList();
@@ -55,13 +58,21 @@ class ProductsTable extends ConsumerWidget {
                   label: Row(
                     children: [
                       const SizedBox(width: 50),
-                      Text(S.of(context).product_code),
+                      ColumnTitleText(S.of(context).product_code),
                     ],
                   ),
                   size: ColumnSize.S,
                 ),
                 DataColumn2(
-                  label: Text(S.of(context).product_name),
+                  label: ColumnTitleText(S.of(context).product_name),
+                  size: ColumnSize.S,
+                ),
+                DataColumn2(
+                  label: ColumnTitleText(S.of(context).product_sell_retail_price),
+                  size: ColumnSize.S,
+                ),
+                DataColumn2(
+                  label: ColumnTitleText(S.of(context).product_sell_whole_price),
                   size: ColumnSize.S,
                 ),
               ],
@@ -69,5 +80,21 @@ class ProductsTable extends ConsumerWidget {
             ),
           );
         });
+  }
+}
+
+class ColumnTitleText extends StatelessWidget {
+  const ColumnTitleText(this.title, {super.key});
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+    );
   }
 }
