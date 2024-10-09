@@ -63,6 +63,16 @@ class FormValidation {
     }
     return null;
   }
+
+  static String? validateDropDownField({
+    required String? fieldValue,
+    required String errorMessage,
+  }) {
+    if (fieldValue == null) {
+      return errorMessage;
+    }
+    return null;
+  }
 }
 
 class StringOperations {

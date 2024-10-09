@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -116,25 +117,39 @@ class ProductNameFormField extends ConsumerWidget {
   }
 }
 
+// class ProductCategoryFormField extends ConsumerWidget {
+//   const ProductCategoryFormField(this.initialValue, {super.key});
+//   final String? initialValue;
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     return Expanded(
+//       child: TextFormField(
+//           initialValue: initialValue,
+//           textAlign: TextAlign.center,
+//           decoration: formFieldDecoration(S.of(context).product_category),
+//           validator: (value) => utils.FormValidation.validateNameField(
+//               fieldValue: value,
+//               errorMessage: S.of(context).input_validation_error_message_for_names),
+//           onSaved: (value) {
+//             final product = ref.read(productStateNotifierProvider).product;
+//             ref
+//                 .read(productStateNotifierProvider.notifier)
+//                 .setProduct(product.copyWith(category: value!));
+//           }),
+//     );
+//   }
+// }
+
 class ProductCategoryFormField extends ConsumerWidget {
   const ProductCategoryFormField(this.initialValue, {super.key});
   final String? initialValue;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Expanded(
-      child: TextFormField(
-          initialValue: initialValue,
-          textAlign: TextAlign.center,
-          decoration: formFieldDecoration(S.of(context).product_category),
-          validator: (value) => utils.FormValidation.validateNameField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_names),
-          onSaved: (value) {
-            final product = ref.read(productStateNotifierProvider).product;
-            ref
-                .read(productStateNotifierProvider.notifier)
-                .setProduct(product.copyWith(category: value!));
-          }),
+      child: DropdownSearch<String>(
+        items: (f, cs) => ["Item 1", 'Item 2', 'Item 3', 'Item 4'],
+        popupProps: PopupProps.menu(disabledItemFn: (item) => item == 'Item 3', fit: FlexFit.loose),
+      ),
     );
   }
 }
