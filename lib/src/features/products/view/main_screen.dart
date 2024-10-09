@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/main_layout/main_screen_frame.dart';
 import 'package:tablets/src/features/products/controller/product_list_filter_controller.dart';
 import 'package:tablets/src/features/products/view/floating_buttons.dart';
-import 'package:tablets/src/features/products/view/products_list.dart';
+import 'package:tablets/src/features/products/view/products_table.dart';
 
 class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});
@@ -13,7 +13,7 @@ class ProductsScreen extends ConsumerWidget {
     return const AppScreenFrame(
       screenBody: Stack(
         children: [
-          ProductList(),
+          ProductsTable(),
           Positioned(
             bottom: 0,
             left: 0,
