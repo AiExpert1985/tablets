@@ -20,7 +20,7 @@ Product _defaultProduct = Product(
     initialQuantity: 110011);
 
 class Product {
-  double code;
+  int code;
   String name;
   double sellRetailPrice;
   double sellWholePrice;
@@ -53,7 +53,7 @@ class Product {
   static Product getDefault() => _defaultProduct.copyWith();
 
   Product copyWith({
-    double? code,
+    int? code,
     String? name,
     double? sellRetailPrice,
     double? sellWholePrice,
@@ -104,7 +104,7 @@ class Product {
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-      code: map['code']?.toDouble() ?? 0.0,
+      code: map['code']?.toInt() ?? 0,
       name: map['name'] ?? '',
       sellRetailPrice: map['sellRetailPrice']?.toDouble() ?? 0.0,
       sellWholePrice: map['sellWholePrice']?.toDouble() ?? 0.0,

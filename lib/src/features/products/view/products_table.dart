@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/various/async_value_widget.dart';
+import 'package:tablets/src/constants/constants.dart';
 import 'package:tablets/src/features/products/controller/product_form_controller.dart';
 import 'package:tablets/src/features/products/controller/product_list_filter_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
@@ -26,9 +28,12 @@ class ProductsTable extends ConsumerWidget {
               cells: [
                 DataCell(Row(
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.center_focus_strong),
-                      onPressed: () => formController.showEditProductForm(
+                    InkWell(
+                      child: CircleAvatar(
+                        radius: 15,
+                        foregroundImage: CachedNetworkImageProvider(DefaultImage.url),
+                      ),
+                      onTap: () => formController.showEditProductForm(
                           context: context, product: Product.fromMap(map)),
                     ),
                     const SizedBox(width: 20),
@@ -49,7 +54,7 @@ class ProductsTable extends ConsumerWidget {
                 DataColumn2(
                   label: Row(
                     children: [
-                      const SizedBox(width: 60),
+                      const SizedBox(width: 50),
                       Text(S.of(context).product_code),
                     ],
                   ),

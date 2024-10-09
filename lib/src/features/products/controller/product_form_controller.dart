@@ -16,11 +16,11 @@ class ProductFormController {
   ProductFormController(
     this._productsRepository,
     this._productStateController,
-    this.productSearchController,
+    this.productFilterController,
   );
   final ProductRepository _productsRepository;
   final ProductStateNotifier _productStateController;
-  final ProductSearchNotifier productSearchController;
+  final ProductSearchNotifier productFilterController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   List<String> _tempUrls = [];
 
@@ -38,8 +38,8 @@ class ProductFormController {
   void addProductToDb(context) async {
     if (!saveForm()) return;
     final imageUrls = _productStateController.currentState.imageUrls;
-    final productState =
-        _productStateController.setProduct(_productStateController.currentState.product.copyWith(imageUrls: imageUrls));
+    final productState = _productStateController
+        .setProduct(_productStateController.currentState.product.copyWith(imageUrls: imageUrls));
     _tempUrls = [];
     final successful = await _productsRepository.addProductToDB(product: productState.product);
     if (successful) {
@@ -54,6 +54,8 @@ class ProductFormController {
       );
     }
     if (context.mounted) closeForm(context);
+    // in case user applied a filter and added a new product, below code updates the UI
+    if (productFilterController.getState.isSearchOn) productFilterController.applyFilters();
   }
 
   /// this takes an image file (which was created by imagePicker) and store it directly in firebase
@@ -108,7 +110,8 @@ class ProductFormController {
   void removeFormImage(String url) {
     _productStateController.removeImageUrls(url);
     if (_productStateController.currentState.imageUrls.isEmpty) {
-      _productStateController.addImageUrls(constants.DefaultImage.url); // if empty, add default image
+      _productStateController
+          .addImageUrls(constants.DefaultImage.url); // if empty, add default image
       return;
     }
     _tempUrls.add(url);
@@ -117,10 +120,12 @@ class ProductFormController {
   void deleteProductFromDB(BuildContext context, Product product) async {
     // we don't want to delete image if its the default image
     bool deleteImage = product.imageUrls[0] != constants.DefaultImage.url;
-    bool successful = await _productsRepository.deleteProductFromDB(product: product, deleteImage: deleteImage);
+    bool successful =
+        await _productsRepository.deleteProductFromDB(product: product, deleteImage: deleteImage);
     if (successful) {
       if (context.mounted) {
-        utils.UserMessages.success(context: context, message: S.of(context).db_success_deleting_doc);
+        utils.UserMessages.success(
+            context: context, message: S.of(context).db_success_deleting_doc);
       }
     } else {
       if (context.mounted) {
@@ -128,33 +133,38 @@ class ProductFormController {
       }
     }
     if (context.mounted) closeForm(context);
+    // update the UI in case user edited the filtered items
+    if (productFilterController.getState.isSearchOn) productFilterController.applyFilters();
   }
 
   void updateProductInDB(BuildContext context, Product oldProduct) async {
     if (!saveForm()) return;
     final tempImageUrls = _productStateController.currentState.imageUrls;
     final tempProduct = _productStateController.currentState.product;
-    final newProduct = _productStateController.setProduct(tempProduct.copyWith(imageUrls: tempImageUrls)).product;
+    final newProduct =
+        _productStateController.setProduct(tempProduct.copyWith(imageUrls: tempImageUrls)).product;
     _tempUrls = [];
-    bool successful = await _productsRepository.updateProductInDB(newProduct: newProduct, oldProduct: oldProduct);
+    bool successful =
+        await _productsRepository.updateProductInDB(newProduct: newProduct, oldProduct: oldProduct);
     if (successful) {
       if (context.mounted) {
-        utils.UserMessages.success(context: context, message: S.of(context).db_success_updaging_doc);
+        utils.UserMessages.success(
+            context: context, message: S.of(context).db_success_updaging_doc);
       }
     } else {
       if (context.mounted) {
         utils.UserMessages.failure(context: context, message: S.of(context).db_error_updating_doc);
       }
     }
-    if (context.mounted) {
-      closeForm(context);
-    }
+    if (context.mounted) closeForm(context);
+    // update the UI in case user edited the filtered items
+    if (productFilterController.getState.isSearchOn) productFilterController.applyFilters();
   }
 }
 
 final productsFormControllerProvider = Provider<ProductFormController>((ref) {
   final productsRepository = ref.read(productsRepositoryProvider);
   final productStateController = ref.watch(productStateNotifierProvider.notifier);
-  final productSearchController = ref.watch(productListFilterNotifierProvider.notifier);
-  return ProductFormController(productsRepository, productStateController, productSearchController);
+  final productFilterController = ref.watch(productListFilterNotifierProvider.notifier);
+  return ProductFormController(productsRepository, productStateController, productFilterController);
 });
