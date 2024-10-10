@@ -47,20 +47,15 @@ dependencies:
   firebase_ui_firestore: ^1.6.4
   toastification: ^2.2.0
   transparent_image: ^2.0.1
-  path_provider: ^2.1.4
   http: ^1.2.2
   cached_network_image: ^3.4.1
   flutter_cache_manager: ^3.4.1
-  sidebarx: ^0.17.1
   animated_search_bar: ^2.7.2
   carousel_slider: ^5.0.0
-  shimmer: ^3.0.0
   anydrawer: ^1.0.6
   flutter_form_builder: ^9.4.1
   flutter_speed_dial: ^7.0.0
   data_table_2: ^2.5.15
-  pluto_grid: ^8.0.0
-  dropdown_search: ^6.0.1
 
 dev_dependencies:
   flutter_test:

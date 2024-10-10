@@ -1,7 +1,8 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/utils/field_box_decoration.dart';
 import 'package:tablets/src/features/products/controller/product_state_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
@@ -82,13 +83,10 @@ class ProductCodeFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: formFieldDecoration(S.of(context).product_code),
           validator: (value) => utils.FormValidation.validateNumberField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_numbers),
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
           onSaved: (value) {
             final product = ref.read(productStateNotifierProvider).product;
-            ref
-                .read(productStateNotifierProvider.notifier)
-                .setProduct(product.copyWith(code: int.parse(value!)));
+            ref.read(productStateNotifierProvider.notifier).setProduct(product.copyWith(code: int.parse(value!)));
           }),
     );
   }
@@ -105,13 +103,30 @@ class ProductNameFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: formFieldDecoration(S.of(context).product_name),
           validator: (value) => utils.FormValidation.validateNameField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_names),
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_names),
           onSaved: (value) {
             final product = ref.read(productStateNotifierProvider).product;
-            ref
-                .read(productStateNotifierProvider.notifier)
-                .setProduct(product.copyWith(name: value!));
+            ref.read(productStateNotifierProvider.notifier).setProduct(product.copyWith(name: value!));
+          }),
+    );
+  }
+}
+
+class ProductCategoryFormField extends ConsumerWidget {
+  const ProductCategoryFormField(this.initialValue, {super.key});
+  final String? initialValue;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Expanded(
+      child: TextFormField(
+          initialValue: initialValue,
+          textAlign: TextAlign.center,
+          decoration: formFieldDecoration(S.of(context).product_category),
+          validator: (value) => utils.FormValidation.validateNameField(
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_names),
+          onSaved: (value) {
+            final product = ref.read(productStateNotifierProvider).product;
+            ref.read(productStateNotifierProvider.notifier).setProduct(product.copyWith(category: value!));
           }),
     );
   }
@@ -123,36 +138,58 @@ class ProductNameFormField extends ConsumerWidget {
 //   @override
 //   Widget build(BuildContext context, WidgetRef ref) {
 //     return Expanded(
-//       child: TextFormField(
-//           initialValue: initialValue,
-//           textAlign: TextAlign.center,
-//           decoration: formFieldDecoration(S.of(context).product_category),
-//           validator: (value) => utils.FormValidation.validateNameField(
-//               fieldValue: value,
-//               errorMessage: S.of(context).input_validation_error_message_for_names),
-//           onSaved: (value) {
-//             final product = ref.read(productStateNotifierProvider).product;
-//             ref
-//                 .read(productStateNotifierProvider.notifier)
-//                 .setProduct(product.copyWith(category: value!));
-//           }),
+//       child: DropdownSearch<String>(
+//         items: (f, cs) {
+//           final categoryListValue = ref.read(productsStreamProvider);
+//           return const DropdownMenuItem<String>(
+//             value: 'hi',
+//             child: Text('hi'),
+//           );
+//           // return categoryListValue.value?.map((category) => category['name'].toString()).toList() ?? [];
+//         },
+//         // dropdownBuilder: (context, items) {
+//         //   return Container(
+//         //     child: ListView.builder(
+//         //       shrinkWrap: true,
+//         //       itemCount: items?.length ?? 0,
+//         //       itemBuilder: (context, index) {
+//         //         utils.CustomDebug.tempPrint(items);
+//         //         return const ListTile(
+//         //           title: Row(children: [
+//         //             // Text(items?[index] ?? ''),
+//         //             // const SizedBox(width: 20),
+//         //             Text('hi')
+//         //           ]), // Display each item as a Text widget
+//         //         );
+//         //       },
+//         //     ),
+//         //   );
+//         // },
+//         decoratorProps: const DropDownDecoratorProps(
+//           decoration: InputDecoration(labelText: "Dialog with title", hintText: "Select an Int"),
+//         ),
+//         popupProps: PopupProps.dialog(
+//           title: Container(
+//             decoration: const BoxDecoration(color: Colors.deepPurple),
+//             alignment: Alignment.center,
+//             padding: const EdgeInsets.symmetric(vertical: 16),
+//             child: const Text(
+//               'Numbers xxxx',
+//               style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.white70),
+//             ),
+//           ),
+//           dialogProps: DialogProps(
+//             clipBehavior: Clip.antiAlias,
+//             shape: OutlineInputBorder(
+//               borderSide: const BorderSide(width: 0),
+//               borderRadius: BorderRadius.circular(20),
+//             ),
+//           ),
+//         ),
+//       ),
 //     );
 //   }
 // }
-
-class ProductCategoryFormField extends ConsumerWidget {
-  const ProductCategoryFormField(this.initialValue, {super.key});
-  final String? initialValue;
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Expanded(
-      child: DropdownSearch<String>(
-        items: (f, cs) => ["Item 1", 'Item 2', 'Item 3', 'Item 4'],
-        popupProps: PopupProps.menu(disabledItemFn: (item) => item == 'Item 3', fit: FlexFit.loose),
-      ),
-    );
-  }
-}
 
 class ProductSellRetaiPriceFormField extends ConsumerWidget {
   const ProductSellRetaiPriceFormField(this.initialValue, {super.key});
@@ -165,8 +202,7 @@ class ProductSellRetaiPriceFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: formFieldDecoration(S.of(context).product_sell_retail_price),
           validator: (value) => utils.FormValidation.validateNumberField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_numbers),
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
           onSaved: (value) {
             final product = ref.read(productStateNotifierProvider).product;
             ref
@@ -188,8 +224,7 @@ class ProductSellWholePriceFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: formFieldDecoration(S.of(context).product_sell_whole_price),
           validator: (value) => utils.FormValidation.validateNameField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_numbers),
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
           onSaved: (value) {
             final product = ref.read(productStateNotifierProvider).product;
             ref
@@ -211,8 +246,7 @@ class ProductSellsmanCommissionFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: formFieldDecoration(S.of(context).product_salesman_comission),
           validator: (value) => utils.FormValidation.validateNameField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_numbers),
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
           onSaved: (value) {
             final product = ref.read(productStateNotifierProvider).product;
             ref
@@ -234,8 +268,7 @@ class ProductInitialQuantityFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: formFieldDecoration(S.of(context).product_initial_quantitiy),
           validator: (value) => utils.FormValidation.validateNumberField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_numbers),
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
           onSaved: (value) {
             final product = ref.read(productStateNotifierProvider).product;
             ref
@@ -257,8 +290,7 @@ class ProductAltertWhenLessThanFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: formFieldDecoration(S.of(context).product_altert_when_less_than),
           validator: (value) => utils.FormValidation.validateNumberField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_numbers),
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
           onSaved: (value) {
             final product = ref.read(productStateNotifierProvider).product;
             ref
@@ -280,8 +312,7 @@ class ProductAlertWhenExceedsFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: formFieldDecoration(S.of(context).product_alert_when_exceeds),
           validator: (value) => utils.FormValidation.validateNameField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_numbers),
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
           onSaved: (value) {
             final product = ref.read(productStateNotifierProvider).product;
             ref
@@ -303,13 +334,10 @@ class ProductPackageTypeFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: formFieldDecoration(S.of(context).product_package_type),
           validator: (value) => utils.FormValidation.validateNameField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_names),
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_names),
           onSaved: (value) {
             final product = ref.read(productStateNotifierProvider).product;
-            ref
-                .read(productStateNotifierProvider.notifier)
-                .setProduct(product.copyWith(packageType: value!));
+            ref.read(productStateNotifierProvider.notifier).setProduct(product.copyWith(packageType: value!));
           }),
     );
   }
@@ -326,8 +354,7 @@ class ProductPackageWeightFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: formFieldDecoration(S.of(context).product_package_weight),
           validator: (value) => utils.FormValidation.validateNumberField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_numbers),
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
           onSaved: (value) {
             final product = ref.read(productStateNotifierProvider).product;
             ref
@@ -349,8 +376,7 @@ class ProductNumItemsInsidePackageFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: formFieldDecoration(S.of(context).product_num_items_inside_package),
           validator: (value) => utils.FormValidation.validateNameField(
-              fieldValue: value,
-              errorMessage: S.of(context).input_validation_error_message_for_numbers),
+              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers),
           onSaved: (value) {
             final product = ref.read(productStateNotifierProvider).product;
             ref

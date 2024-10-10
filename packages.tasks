@@ -7,6 +7,11 @@ Images:
         ☐ slide show images
         ☐ https://pub.dev/packages/carousel_slider
 
+    transparent_image:
+        ☐ A simple transparent image. Represented as a Uint8List, which was originally extracted from the Flutter codebase (was private in the test package).
+        ☐ https://pub.dev/packages/transparent_image
+
+
 Popups & Pickers:
     flutter_material_color_picker:
         ☐ show a color picker for the user

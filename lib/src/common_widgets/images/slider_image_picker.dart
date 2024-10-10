@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart' as caching;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:tablets/src/common_widgets/icons/custom_icons.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 /// this widget shows an image and a button to upload image
 /// it takes its image from the pickedImageNotifierProvider
@@ -57,8 +58,8 @@ class FormImage extends ConsumerWidget {
             fit: BoxFit.cover,
             height: MediaQuery.of(context).size.height,
             imageUrl: url,
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                CircularProgressIndicator(value: downloadProgress.progress),
+            progressIndicatorBuilder: (context, url, downloadProgress) => Image.memory(kTransparentImage),
+            // CircularProgressIndicator(value: downloadProgress.progress),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
         ),
