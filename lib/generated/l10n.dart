@@ -330,6 +330,16 @@ class S {
     );
   }
 
+  /// `Select category`
+  String get category_selection {
+    return Intl.message(
+      'Select category',
+      name: 'category_selection',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Failure`
   String get failure {
     return Intl.message(

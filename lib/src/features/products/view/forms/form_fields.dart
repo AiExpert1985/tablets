@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -112,81 +114,22 @@ class ProductNameFormField extends ConsumerWidget {
   }
 }
 
-class ProductCategoryFormField extends ConsumerWidget {
-  const ProductCategoryFormField(this.initialValue, {super.key});
-  final String? initialValue;
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Expanded(
-      child: TextFormField(
-          initialValue: initialValue,
-          textAlign: TextAlign.center,
-          decoration: formFieldDecoration(S.of(context).product_category),
-          validator: (value) => utils.FormValidation.validateNameField(
-              fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_names),
-          onSaved: (value) {
-            final product = ref.read(productStateNotifierProvider).product;
-            ref.read(productStateNotifierProvider.notifier).setProduct(product.copyWith(category: value!));
-          }),
-    );
-  }
-}
-
 // class ProductCategoryFormField extends ConsumerWidget {
 //   const ProductCategoryFormField(this.initialValue, {super.key});
 //   final String? initialValue;
 //   @override
 //   Widget build(BuildContext context, WidgetRef ref) {
 //     return Expanded(
-//       child: DropdownSearch<String>(
-//         items: (f, cs) {
-//           final categoryListValue = ref.read(productsStreamProvider);
-//           return const DropdownMenuItem<String>(
-//             value: 'hi',
-//             child: Text('hi'),
-//           );
-//           // return categoryListValue.value?.map((category) => category['name'].toString()).toList() ?? [];
-//         },
-//         // dropdownBuilder: (context, items) {
-//         //   return Container(
-//         //     child: ListView.builder(
-//         //       shrinkWrap: true,
-//         //       itemCount: items?.length ?? 0,
-//         //       itemBuilder: (context, index) {
-//         //         utils.CustomDebug.tempPrint(items);
-//         //         return const ListTile(
-//         //           title: Row(children: [
-//         //             // Text(items?[index] ?? ''),
-//         //             // const SizedBox(width: 20),
-//         //             Text('hi')
-//         //           ]), // Display each item as a Text widget
-//         //         );
-//         //       },
-//         //     ),
-//         //   );
-//         // },
-//         decoratorProps: const DropDownDecoratorProps(
-//           decoration: InputDecoration(labelText: "Dialog with title", hintText: "Select an Int"),
-//         ),
-//         popupProps: PopupProps.dialog(
-//           title: Container(
-//             decoration: const BoxDecoration(color: Colors.deepPurple),
-//             alignment: Alignment.center,
-//             padding: const EdgeInsets.symmetric(vertical: 16),
-//             child: const Text(
-//               'Numbers xxxx',
-//               style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.white70),
-//             ),
-//           ),
-//           dialogProps: DialogProps(
-//             clipBehavior: Clip.antiAlias,
-//             shape: OutlineInputBorder(
-//               borderSide: const BorderSide(width: 0),
-//               borderRadius: BorderRadius.circular(20),
-//             ),
-//           ),
-//         ),
-//       ),
+//       child: TextFormField(
+//           initialValue: initialValue,
+//           textAlign: TextAlign.center,
+//           decoration: formFieldDecoration(S.of(context).product_category),
+//           validator: (value) => utils.FormValidation.validateNameField(
+//               fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_names),
+//           onSaved: (value) {
+//             final product = ref.read(productStateNotifierProvider).product;
+//             ref.read(productStateNotifierProvider.notifier).setProduct(product.copyWith(category: value!));
+//           }),
 //     );
 //   }
 // }
@@ -383,6 +326,112 @@ class ProductNumItemsInsidePackageFormField extends ConsumerWidget {
                 .read(productStateNotifierProvider.notifier)
                 .setProduct(product.copyWith(numItemsInsidePackage: int.parse(value!)));
           }),
+    );
+  }
+}
+
+class ProductCategoryFormField extends ConsumerWidget {
+  const ProductCategoryFormField(this.initialValue, {super.key});
+  final String? initialValue;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    String? selectedValue;
+    final TextEditingController textEditingController = TextEditingController();
+    final productListValue = ref.read(productsStreamProvider);
+    List<Map<String, dynamic>> productList = productListValue.value ?? [];
+    List<Product> items = productList.map((product) => Product.fromMap(product)).toList();
+    return Expanded(
+      child: Center(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton2<String>(
+            isExpanded: true,
+            hint: Text(
+              S.of(context).category_selection,
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).hintColor,
+              ),
+            ),
+            items: items
+                .map((item) => DropdownMenuItem(
+                      alignment: Alignment.center,
+                      value: item.name,
+                      child: Row(
+                        children: [
+                          CachedNetworkImage(imageUrl: item.imageUrls[0]),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            item.name,
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ))
+                .toList(),
+            value: selectedValue,
+            onChanged: (value) {
+              // setState(() {
+              //   selectedValue = value;
+              // });
+            },
+            buttonStyleData: const ButtonStyleData(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              height: 40,
+              width: 200,
+            ),
+            dropdownStyleData: const DropdownStyleData(
+              maxHeight: 200,
+            ),
+            menuItemStyleData: const MenuItemStyleData(
+              height: 40,
+            ),
+            dropdownSearchData: DropdownSearchData(
+              searchController: textEditingController,
+              searchInnerWidgetHeight: 50,
+              searchInnerWidget: Container(
+                height: 50,
+                padding: const EdgeInsets.only(
+                  top: 8,
+                  bottom: 4,
+                  right: 8,
+                  left: 8,
+                ),
+                child: TextFormField(
+                  textAlign: TextAlign.center,
+                  expands: true,
+                  maxLines: null,
+                  controller: textEditingController,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 8,
+                    ),
+                    hintText: '... ${S.of(context).search} ...',
+                    hintStyle: const TextStyle(fontSize: 12),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              searchMatchFn: (item, searchValue) {
+                return item.value.toString().contains(searchValue);
+              },
+            ),
+            //This to clear the search value when you close the menu
+            onMenuStateChange: (isOpen) {
+              if (!isOpen) {
+                textEditingController.clear();
+              }
+            },
+          ),
+        ),
+      ),
     );
   }
 }

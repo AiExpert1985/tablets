@@ -27,6 +27,7 @@
     "salesmen_movement": "Salesmen",
     "pending_bills": "Pending bills",
     "categories": "Categories",
+    "category_selection": "Select category",
     "failure": "Failure",
     "success": "Success",
     "info": "info",

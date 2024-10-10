@@ -27,6 +27,7 @@
     "salesmen_movement": "المندوبين",
     "pending_bills": "القوائم غير المثبقة",
     "categories": "الاصناف",
+    "category_selection": "اختيار الصنف ",
     "failure": "فشل",
     "success": "نجاح",
     "info": "معلومات",
