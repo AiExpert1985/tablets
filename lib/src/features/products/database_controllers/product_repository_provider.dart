@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
-import 'package:tablets/src/features/products/model/product.dart';
+import 'package:tablets/src/features/products/model_classes/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductRepository {

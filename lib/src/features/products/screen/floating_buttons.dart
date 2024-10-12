@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:tablets/src/features/products/controller/secondary_drawer_provider.dart';
-import 'package:tablets/src/features/products/controller/form_provider.dart';
+import 'package:tablets/src/features/products/screen_controllers/secondary_drawer_provider.dart';
+import 'package:tablets/src/features/products/screen_controllers/form_provider.dart';
 
 class ProductFloatingButtons extends ConsumerWidget {
   const ProductFloatingButtons({super.key});

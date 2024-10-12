@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/various/async_value_widget.dart';
 import 'package:tablets/src/constants/constants.dart';
-import 'package:tablets/src/features/products/controller/form_provider.dart';
-import 'package:tablets/src/features/products/controller/list_filter_controller.dart';
-import 'package:tablets/src/features/products/model/product.dart';
+import 'package:tablets/src/features/products/screen_controllers/form_provider.dart';
+import 'package:tablets/src/features/products/screen_controllers/list_filter_controller.dart';
+import 'package:tablets/src/features/products/model_classes/product.dart';
 import 'package:data_table_2/data_table_2.dart';
-import 'package:tablets/src/features/products/repository/product_stream_provider.dart';
+import 'package:tablets/src/features/products/database_controllers/product_stream_provider.dart';
 
 class ProductsTable extends ConsumerWidget {
   const ProductsTable({super.key});
