@@ -10,29 +10,44 @@ class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: MediaQuery.of(context).size.width * 0.17,
+      width: 250,
       child: Column(
         children: [
           const MainDrawerHeader(),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: MediaQuery.of(context).size.width * 0.01,
-                horizontal: MediaQuery.of(context).size.width * 0.01,
-              ),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  const MainDrawerProductsButton(),
+                  MainDrawerButton(
+                      iconName: 'products',
+                      title: S.of(context).products,
+                      routeName: AppRoute.products.name),
                   constants.DrawerGap.vertical,
-                  const MainDrawerTransactionsButton(),
+                  MainDrawerButton(
+                      iconName: 'categories',
+                      title: S.of(context).categories,
+                      routeName: AppRoute.categories.name),
                   constants.DrawerGap.vertical,
-                  const MainDrawerSalesmenMovementButton(),
+                  MainDrawerButton(
+                      iconName: 'categories',
+                      title: S.of(context).pending_bills,
+                      routeName: AppRoute.pendingBills.name),
                   constants.DrawerGap.vertical,
-                  const MainDrawerSettingsButton(),
+                  MainDrawerButton(
+                      iconName: 'categories',
+                      title: S.of(context).categories,
+                      routeName: AppRoute.categories.name),
                   constants.DrawerGap.vertical,
-                  const MainDrawerCategoriesButton(),
+                  MainDrawerButton(
+                      iconName: 'categories',
+                      title: S.of(context).categories,
+                      routeName: AppRoute.categories.name),
                   constants.PushWidgets.toEnd,
-                  const MainDrawerPendingBillsButton(),
+                  MainDrawerButton(
+                      iconName: 'categories',
+                      title: S.of(context).pending_bills,
+                      routeName: AppRoute.pendingBills.name),
                 ],
               ),
             ),
@@ -48,130 +63,59 @@ class MainDrawerHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DrawerHeader(
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.primary.withOpacity(0.7),
+    return SizedBox(
+      height: 250,
+      child: DrawerHeader(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.primary.withOpacity(0.7),
+            ],
+          ),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              // margin: const EdgeInsets.all(10),
+              width: double.infinity,
+              height: 200, // here I used width intentionally
+              child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
+            ),
+            // Text(
+            //   S.of(context).slogan,
+            //   style: const TextStyle(fontSize: 14, color: Colors.white),
+            // ),
           ],
         ),
-      ),
-      child: Column(
-        children: [
-          SizedBox(
-            // margin: const EdgeInsets.all(10),
-            width: double.infinity,
-            height: MediaQuery.of(context).size.width * 0.1, // here I used width intentionally
-            child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
-          ),
-          // Text(
-          //   S.of(context).slogan,
-          //   style: const TextStyle(fontSize: 14, color: Colors.white),
-          // ),
-        ],
       ),
     );
   }
 }
 
-class MainDrawerCategoriesButton extends StatelessWidget {
-  const MainDrawerCategoriesButton({super.key});
+class MainDrawerButton extends StatelessWidget {
+  const MainDrawerButton(
+      {required this.iconName, required this.title, required this.routeName, super.key});
+
+  final String iconName;
+  final String title;
+  final String routeName;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
         leading: Image.asset(
-          'assets/icons/side_drawer/categories.png',
+          'assets/icons/side_drawer/$iconName.png',
           width: 30,
           fit: BoxFit.scaleDown,
         ),
-        title: Text(S.of(context).categories),
+        title: Text(title),
         onTap: () {
           Navigator.of(context).pop();
-          context.goNamed(AppRoute.categories.name);
-        });
-  }
-}
-
-class MainDrawerPendingBillsButton extends StatelessWidget {
-  const MainDrawerPendingBillsButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-        leading: const Icon(Icons.settings),
-        title: Text(S.of(context).pending_bills),
-        onTap: () {
-          Navigator.of(context).pop();
-          context.goNamed(AppRoute.pendingBills.name);
-        });
-  }
-}
-
-class MainDrawerProductsButton extends StatelessWidget {
-  const MainDrawerProductsButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-        leading: Image.asset(
-          'assets/icons/side_drawer/products.png',
-          width: 30,
-          fit: BoxFit.scaleDown,
-        ),
-        title: Text(S.of(context).products),
-        onTap: () {
-          Navigator.of(context).pop();
-          context.goNamed(AppRoute.products.name);
-        });
-  }
-}
-
-class MainDrawerSalesmenMovementButton extends StatelessWidget {
-  const MainDrawerSalesmenMovementButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-        leading: const Icon(Icons.settings),
-        title: Text(S.of(context).salesmen_movement),
-        onTap: () {
-          Navigator.of(context).pop();
-          context.goNamed(AppRoute.salesmen.name);
-        });
-  }
-}
-
-class MainDrawerSettingsButton extends StatelessWidget {
-  const MainDrawerSettingsButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-        leading: const Icon(Icons.settings),
-        title: Text(S.of(context).settings),
-        onTap: () {
-          Navigator.of(context).pop();
-          context.goNamed(AppRoute.settings.name);
-        });
-  }
-}
-
-class MainDrawerTransactionsButton extends StatelessWidget {
-  const MainDrawerTransactionsButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-        leading: const Icon(Icons.settings),
-        title: Text(S.of(context).transactions),
-        onTap: () {
-          Navigator.of(context).pop();
-          context.goNamed(AppRoute.transactions.name);
+          context.goNamed(routeName);
         });
   }
 }
