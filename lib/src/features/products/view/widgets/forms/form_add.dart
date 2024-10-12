@@ -22,9 +22,7 @@ class AddProductForm extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SliderImagePicker(
-            imageUrls: productStateController.imageUrls,
-            deletingMethod: formController.removeFormImage,
-            uploadMethod: formController.uploadImageToDb,
+            productStateController.imageUrls,
           ),
           constants.ImageToFormFieldsGap.vertical,
           const ProductFormFields(),

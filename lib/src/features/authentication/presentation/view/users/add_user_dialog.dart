@@ -34,9 +34,8 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
               password: _userPassword,
             );
         if (uid != null) {
-          final imageUrl = await ref
-              .read(fileStorageProvider)
-              .addImage(folder: 'users', fileName: uid, file: pickedImage);
+          final imageUrl =
+              await ref.read(imageStorageProvider).uploadImage(fileName: uid, file: pickedImage);
           if (imageUrl != null) {
             ref.read(firestoreRepositoryProvider).addUser(
                 uid: uid,

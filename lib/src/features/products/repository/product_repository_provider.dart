@@ -20,8 +20,7 @@ class ProductRepository {
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        final newUrl = await _imageStorage.addImage(
-            folder: imageFolderName, fileName: product.name, file: pickedImage);
+        final newUrl = await _imageStorage.uploadImage(fileName: product.name, file: pickedImage);
         product.imageUrls.add(newUrl!);
       }
 
@@ -38,8 +37,7 @@ class ProductRepository {
   Future<String?> uploadImageToDb({required String fileName, required File? imageFile}) async {
     try {
       if (imageFile != null) {
-        final newUrl = await _imageStorage.addImage(
-            folder: imageFolderName, fileName: fileName, file: imageFile);
+        final newUrl = await _imageStorage.uploadImage(fileName: fileName, file: imageFile);
         return newUrl;
       }
       return null;
@@ -107,7 +105,7 @@ class ProductRepository {
 }
 
 final productsRepositoryProvider = Provider<ProductRepository>((ref) {
-  final imageStorage = ref.read(fileStorageProvider);
+  final imageStorage = ref.read(imageStorageProvider);
   final firestore = FirebaseFirestore.instance;
   return ProductRepository(firestore, imageStorage);
 });

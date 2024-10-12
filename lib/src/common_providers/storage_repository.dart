@@ -7,10 +7,9 @@ class StorageRepository {
   StorageRepository(this._storage);
   final FirebaseStorage _storage;
 
-  Future<String?> addImage(
-      {required String folder, required String fileName, required File file}) async {
+  Future<String?> uploadImage({required String fileName, required File file}) async {
     try {
-      final storageRef = _storage.ref().child(folder).child('$fileName.jpg');
+      final storageRef = _storage.ref().child('images').child('$fileName.jpg');
       await storageRef.putFile(file);
       return await storageRef.getDownloadURL();
     } catch (e) {
@@ -31,7 +30,7 @@ class StorageRepository {
 }
 
 /// responsible only for adding & removing images from/to firebase storage
-final fileStorageProvider = Provider<StorageRepository>((ref) {
+final imageStorageProvider = Provider<StorageRepository>((ref) {
   final FirebaseStorage storage = FirebaseStorage.instance;
   return StorageRepository(storage);
 });
