@@ -59,13 +59,11 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
     Map<String, dynamic> searchedValues = state.searchFieldValues;
     searchedValues.forEach((key, value) {
       if (filterType[key] == 'contains') {
-        utils.CustomDebug.tempPrint('contains');
         filteredProductList =
             filteredProductList.where((product) => product[key].contains(value)).toList();
         return;
       }
       if (filterType[key] == 'equals') {
-        utils.CustomDebug.tempPrint('equals');
         filteredProductList =
             filteredProductList.where((product) => product[key] == value).toList();
         return;

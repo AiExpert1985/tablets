@@ -80,7 +80,7 @@ class ProductRepository {
 
   /// delete the document from firestore
   /// delete image from storage
-  Future<bool> deleteProductFromDB({required Product product, bool deleteImage = true}) async {
+  Future<bool> deleteProductFromDB({required Product product}) async {
     try {
       // delete document using its name
       final querySnapshot =
@@ -88,10 +88,6 @@ class ProductRepository {
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.delete();
-      }
-      // sometime we don't want to delete image (if it is the default image)
-      if (deleteImage) {
-        product.imageUrls.map((url) => _imageStorage.deleteFile(url));
       }
       return true;
     } catch (error) {
@@ -124,13 +120,6 @@ final productsRepositoryProvider = Provider<ProductRepository>((ref) {
   final firestore = FirebaseFirestore.instance;
   return ProductRepository(firestore, imageStorage);
 });
-
-// final productsListProvider = FutureProvider<List<Map<String, dynamic>>>((ref) {
-//   utils.CustomDebug.tempPrint('Future was called');
-//   ref.onDispose(() => utils.CustomDebug.tempPrint('Future was disconnected'));
-//   final productsRepository = ref.watch(productsRepositoryProvider);
-//   return productsRepository.fetchProductsList();
-// });
 
 final productsStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   utils.CustomDebug.tempPrint('Streamer is started');

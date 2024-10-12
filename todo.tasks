@@ -14,11 +14,8 @@ Instructions:
     ✘ new task @cancelled (7/28/2024, 6:59:29 PM)
     ✔ anther task @done (7/28/2024, 6:59:34 PM)
 
-9-oct
-9:30 = 3
-11:15 = 1
-12:00 = 3
-1:15 = 4
+CMD:
+    flutter run -d chrome --web-port 57372
 
   
     

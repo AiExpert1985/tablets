@@ -109,19 +109,19 @@ class ProductFormController {
 
   void removeFormImage(String url) {
     _productStateController.removeImageUrls(url);
+    _tempUrls.add(url);
+    // if imageUrls list is empty, add default image
     if (_productStateController.currentState.imageUrls.isEmpty) {
-      _productStateController
-          .addImageUrls(constants.DefaultImage.url); // if empty, add default image
+      _productStateController.addImageUrls(constants.DefaultImage.url);
       return;
     }
-    _tempUrls.add(url);
+    // add it to tempUrls list, were all images will be deleted when form is closed
   }
 
   void deleteProductFromDB(BuildContext context, Product product) async {
-    // we don't want to delete image if its the default image
-    bool deleteImage = product.imageUrls[0] != constants.DefaultImage.url;
-    bool successful =
-        await _productsRepository.deleteProductFromDB(product: product, deleteImage: deleteImage);
+    // add all urls to the tempurls list, they will be automatically deleted once form is closed
+    _tempUrls.addAll(product.imageUrls);
+    bool successful = await _productsRepository.deleteProductFromDB(product: product);
     if (successful) {
       if (context.mounted) {
         utils.UserMessages.success(

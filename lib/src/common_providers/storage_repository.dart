@@ -17,9 +17,12 @@ class StorageRepository {
   }) async {
     try {
       String? imageUrl;
+      CustomDebug.tempPrint('before');
       final storageRef = _storage.ref().child(folder).child('$fileName.jpg');
+      CustomDebug.tempPrint('after');
       await storageRef.putFile(file);
       imageUrl = await storageRef.getDownloadURL();
+      CustomDebug.tempPrint(imageUrl);
       return imageUrl;
     } catch (e) {
       return null;
@@ -40,23 +43,22 @@ class StorageRepository {
       if (fileUrl != constants.DefaultImage.url) {
         deleteFile(fileUrl);
       }
-      final newUrl =
-          await addFile(folder: folder, fileName: fileName, file: file);
+      final newUrl = await addFile(folder: folder, fileName: fileName, file: file);
       return newUrl;
     } catch (e) {
       return null;
     }
   }
 
-  /// delete photo from storage using its url
+  /// delete photo from storage using its urlr
   Future<void> deleteFile(String imageUrl) async {
     try {
+      // default image can't be deleted
+      if (imageUrl == constants.DefaultImage.url) return;
       final storageRef = _storage.refFromURL(imageUrl);
       await storageRef.delete();
     } catch (e) {
-      CustomDebug.print(
-          message: 'error happened while deleting file from firebase storage',
-          stackTrace: StackTrace.current);
+      CustomDebug.print(message: e, stackTrace: StackTrace.current);
     }
   }
 }
