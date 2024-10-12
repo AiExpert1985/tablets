@@ -16,6 +16,7 @@ Instructions:
 
 CMD:
     flutter run -d chrome --web-port 57372
+    https://tablets-519a0.web.app/home
 
   
     
