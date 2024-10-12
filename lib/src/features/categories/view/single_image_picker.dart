@@ -19,8 +19,9 @@ class SingleImagePicker extends ConsumerWidget {
       child: CircleAvatar(
         radius: 70,
         backgroundColor: Colors.white,
-        foregroundImage:
-            pickedImageProvider != null ? FileImage(pickedImageProvider) : caching.CachedNetworkImageProvider(imageUrl),
+        foregroundImage: pickedImageProvider != null
+            ? FileImage(pickedImageProvider)
+            : caching.CachedNetworkImageProvider(imageUrl),
       ),
       onTap: () => ref.read(pickedImageNotifierProvider.notifier).updatePickedImage(),
     );
@@ -41,7 +42,8 @@ class PickedImageNotifier extends StateNotifier<File?> {
         state = File(pickedImage.path);
       }
     } catch (e) {
-      utils.CustomDebug.print(message: 'error while importing images', stackTrace: StackTrace.current);
+      utils.CustomDebug.print(
+          message: 'error while importing images', stackTrace: StackTrace.current);
     }
   }
 

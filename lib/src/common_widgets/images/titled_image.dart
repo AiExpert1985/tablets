@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart' as caching;
 import 'package:transparent_image/transparent_image.dart';
 
-class ImageWithTitle extends StatelessWidget {
-  const ImageWithTitle({required this.imageUrl, required this.title, super.key});
+class TitledImage extends StatelessWidget {
+  const TitledImage({required this.imageUrl, required this.title, super.key});
 
   final String imageUrl;
   final String title;
@@ -23,7 +23,8 @@ class ImageWithTitle extends StatelessWidget {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             imageUrl: imageUrl,
-            progressIndicatorBuilder: (context, url, downloadProgress) => Image.memory(kTransparentImage),
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                Image.memory(kTransparentImage),
             // CircularProgressIndicator(value: downloadProgress.progress),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
@@ -42,7 +43,8 @@ class ImageWithTitle extends StatelessWidget {
                   textAlign: TextAlign.center,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
                 )),
           ),
         ],

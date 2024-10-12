@@ -29,7 +29,6 @@ class StorageRepository {
   }
 }
 
-/// responsible only for adding & removing images from/to firebase storage
 final imageStorageProvider = Provider<StorageRepository>((ref) {
   final FirebaseStorage storage = FirebaseStorage.instance;
   return StorageRepository(storage);

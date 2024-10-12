@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_widgets/forms/form_buttons.dart';
 import 'package:tablets/src/common_widgets/forms/form_frame.dart';
-import 'package:tablets/src/common_widgets/images/slider_image_picker.dart';
+import 'package:tablets/src/common_widgets/icons/custom_icons.dart';
+import 'package:tablets/src/common_widgets/images/image_slider.dart';
+import 'package:tablets/src/common_widgets/various/delete_confirmation_dialog.dart';
 import 'package:tablets/src/features/products/controllers/form_provider.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
@@ -22,7 +23,7 @@ class EditProductForm extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          SliderImagePicker(
+          ImageSlider(
             productStateController.imageUrls,
           ),
           constants.ImageToFormFieldsGap.vertical,
@@ -32,16 +33,28 @@ class EditProductForm extends ConsumerWidget {
         ],
       ),
       buttons: [
-        FromUpdateButton(
-          updateMethod: formController.updateProduct,
-          itemToBeUpdated: productStateController.product.copyWith(),
+        IconButton(
+          onPressed: () => formController.updateProduct(
+            context,
+            productStateController.product.copyWith(),
+          ),
+          icon: const ApproveIcon(),
         ),
-        const FormCancelButton(),
-        FromDeleteButton(
-          deleteMethod: formController.deleteProduct,
-          itemToBeDeleted: productStateController.product.copyWith(),
-          message: productStateController.product.name,
+        IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const CancelIcon(),
         ),
+        IconButton(
+            onPressed: () async {
+              bool? confiramtion = await showDeleteConfirmationDialog(
+                context: context,
+                message: productStateController.product.name,
+              );
+              if (confiramtion != null && context.mounted) {
+                formController.deleteProduct(context, productStateController.product.copyWith());
+              }
+            },
+            icon: const DeleteIcon())
       ],
       widthRatio: 0.5,
       heightRatio: 0.75,

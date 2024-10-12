@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/forms/form_frame.dart';
-import 'package:tablets/src/common_widgets/images/slider_image_picker.dart';
+import 'package:tablets/src/common_widgets/icons/custom_icons.dart';
+import 'package:tablets/src/common_widgets/images/image_slider.dart';
 import 'package:tablets/src/features/products/controllers/form_provider.dart';
-import 'package:tablets/src/common_widgets/forms/form_buttons.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
 import 'package:tablets/src/features/products/view/widgets/forms/form_fields.dart';
@@ -21,7 +21,7 @@ class AddProductForm extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          SliderImagePicker(
+          ImageSlider(
             productStateController.imageUrls,
           ),
           constants.ImageToFormFieldsGap.vertical,
@@ -29,8 +29,8 @@ class AddProductForm extends ConsumerWidget {
         ],
       ),
       buttons: [
-        FormAddButton(createMethod: formController.addProduct),
-        const FormCancelButton(),
+        IconButton(onPressed: () => formController.addProduct(context), icon: const ApproveIcon()),
+        IconButton(onPressed: () => Navigator.of(context).pop(), icon: const CancelIcon()),
       ],
       widthRatio: 0.5,
       heightRatio: 0.9,

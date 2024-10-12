@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_widgets/images/single_image_picker.dart';
+import 'package:tablets/src/features/categories/view/single_image_picker.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/view/create_category_dialog.dart';
@@ -55,7 +55,8 @@ class CategoryController {
     final pickedImage = ref.read(pickedImageNotifierProvider);
     final categoryRespository = ref.read(categoriesRepositoryProvider);
     final currentCategory = tempCategory;
-    final successful = await categoryRespository.addCategoryToDB(category: currentCategory, pickedImage: pickedImage);
+    final successful = await categoryRespository.addCategoryToDB(
+        category: currentCategory, pickedImage: pickedImage);
     if (successful) {
       utils.UserMessages.success(
         context: context,
@@ -122,8 +123,9 @@ class CategoryController {
   void deleteCategoryInDB(BuildContext context, ProductCategory category) async {
     // we don't want to delete image if its the default image
     bool deleteImage = category.imageUrl != constants.DefaultImage.url;
-    bool successful =
-        await ref.read(categoriesRepositoryProvider).deleteCategoryInDB(category: category, deleteImage: deleteImage);
+    bool successful = await ref
+        .read(categoriesRepositoryProvider)
+        .deleteCategoryInDB(category: category, deleteImage: deleteImage);
     if (successful) {
       utils.UserMessages.success(context: context, message: S.of(context).db_success_deleting_doc);
     } else {

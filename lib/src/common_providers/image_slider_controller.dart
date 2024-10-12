@@ -6,7 +6,6 @@ import 'package:tablets/src/common_providers/storage_repository.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/utils/utils.dart' as utils;
 
-/// provides a File represeting image selected by user
 class CustomImagePicker {
   static Future<File?> selectImage({uploadingMethod, imageSource = 'gallery'}) async {
     try {
@@ -26,14 +25,16 @@ class CustomImagePicker {
   }
 }
 
-class SliderImageNotifier extends StateNotifier<List<String>> {
-  SliderImageNotifier(this._imageStorage, super.state);
+class ImageSliderNotifier extends StateNotifier<List<String>> {
+  ImageSliderNotifier(this._imageStorage, super.state);
   final StorageRepository _imageStorage;
   List<String> addedUrls = [];
   List<String> removedUrls = [];
 
-  void initializeUrls(List<String> urls) {
-    state = urls;
+  void initialize({List<String>? urls}) {
+    state = urls ?? [constants.DefaultImage.url];
+    addedUrls = [];
+    removedUrls = [];
   }
 
   void addImage() async {
@@ -52,38 +53,29 @@ class SliderImageNotifier extends StateNotifier<List<String>> {
   }
 
   void removeImage(int urlIndex) async {
+    if (state[urlIndex] == constants.DefaultImage.url) return; // don't remove default image
     removedUrls.add(state[urlIndex]);
-    List<String> tempList = state;
+    List<String> tempList = [...state];
     tempList.removeAt(urlIndex);
-    state = tempList;
+    state = [...tempList];
   }
 
-  List<String> getUpdatedUrls() {
-    // delete all images removed by user (temporarily stored in removedUrls)
+  List<String> savedUpdatedImages() {
     for (String url in removedUrls) {
       _imageStorage.deleteImage(url);
     }
+    addedUrls = [];
     return state;
   }
 
-  /// close is called automatically when forms are close,
-  /// all newly added image should be deleted
-  /// note that if the added items were saved previously by user, then addedUrls list will be empty
   void close() {
     for (String url in addedUrls) {
       _imageStorage.deleteImage(url);
     }
-    state = [constants.DefaultImage.url];
   }
 }
 
-/// idea is using 3 lists
-/// state : repres ..... to be filled lated
-final sliderPickedImageNotifierProvider =
-    StateNotifierProvider<SliderImageNotifier, List<String>>((ref) {
-  utils.CustomDebug.tempPrint('slider controller is created');
-  ref.onDispose(() => utils.CustomDebug.tempPrint('slider controller is closing'));
-  String defaultImageUrl = constants.DefaultImage.url;
+final imageSliderNotifierProvider = StateNotifierProvider<ImageSliderNotifier, List<String>>((ref) {
   final imageStorage = ref.read(imageStorageProvider);
-  return SliderImageNotifier(imageStorage, [defaultImageUrl]);
+  return ImageSliderNotifier(imageStorage, []);
 });

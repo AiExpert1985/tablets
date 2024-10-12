@@ -91,7 +91,7 @@ List<Map<String, dynamic>> _convertAsyncValueToProductList(
         return [];
       },
       loading: () {
-        utils.CustomDebug.tempPrint('product list is loading');
+        utils.CustomDebug.print(message: 'product list is loading');
         return [];
       });
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_widgets/various/async_value_widget.dart';
-import 'package:tablets/src/common_widgets/images/image_with_title.dart';
+import 'package:tablets/src/common_widgets/images/titled_image.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
@@ -27,7 +27,7 @@ class CategoriesGrid extends ConsumerWidget {
             return InkWell(
               hoverColor: const Color.fromARGB(255, 173, 170, 170),
               onTap: () => ref.read(categoryControllerProvider).showEditCategoryForm(ctx, category),
-              child: ImageWithTitle(
+              child: TitledImage(
                 imageUrl: category.imageUrl,
                 title: category.name,
               ),

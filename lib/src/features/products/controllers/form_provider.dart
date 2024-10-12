@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_providers/image_picker_provider.dart';
+import 'package:tablets/src/common_providers/image_slider_controller.dart';
 import 'package:tablets/src/features/products/controllers/list_filter_controller.dart';
 import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
@@ -20,7 +20,7 @@ class ProductFormFieldsController {
   final ProductRepository _productsRepository;
   final ProductStateNotifier _productStateController;
   final ProductSearchNotifier _productFilterController;
-  final SliderImageNotifier _imageSliderController;
+  final ImageSliderNotifier _imageSliderController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool validateForm() {
@@ -36,7 +36,7 @@ class ProductFormFieldsController {
 
   void addProduct(context) async {
     if (!validateForm()) return;
-    final updatedUrls = _imageSliderController.getUpdatedUrls();
+    final updatedUrls = _imageSliderController.savedUpdatedImages();
     final productState = _productStateController
         .setProduct(_productStateController.currentState.product.copyWith(imageUrls: updatedUrls));
     final successful = await _productsRepository.addProductToDB(product: productState.product);
@@ -58,7 +58,7 @@ class ProductFormFieldsController {
 
   void showAddForm(BuildContext context) {
     _productStateController.reset();
-
+    _imageSliderController.initialize();
     showDialog(
       context: context,
       builder: (BuildContext context) => const AddProductForm(),
@@ -76,7 +76,7 @@ class ProductFormFieldsController {
   void showEditForm({required BuildContext context, required Product product}) {
     _productStateController.setImageUrls(product.imageUrls);
     _productStateController.setProduct(product);
-    _imageSliderController.initializeUrls(product.imageUrls);
+    _imageSliderController.initialize(urls: product.imageUrls);
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const EditProductForm(),
@@ -103,7 +103,7 @@ class ProductFormFieldsController {
 
   void updateProduct(BuildContext context, Product oldProduct) async {
     if (!validateForm()) return;
-    final updateUrls = _imageSliderController.getUpdatedUrls();
+    final updateUrls = _imageSliderController.savedUpdatedImages();
     final tempProduct = _productStateController.currentState.product;
     final newProduct =
         _productStateController.setProduct(tempProduct.copyWith(imageUrls: updateUrls)).product;
@@ -129,7 +129,7 @@ final productsFormFieldsControllerProvider = Provider<ProductFormFieldsControlle
   final productsRepository = ref.read(productsRepositoryProvider);
   final productStateController = ref.watch(productStateNotifierProvider.notifier);
   final productFilterController = ref.watch(productListFilterNotifierProvider.notifier);
-  final imageSliderController = ref.watch(sliderPickedImageNotifierProvider.notifier);
+  final imageSliderController = ref.watch(imageSliderNotifierProvider.notifier);
   return ProductFormFieldsController(
       productsRepository, productStateController, productFilterController, imageSliderController);
 });
