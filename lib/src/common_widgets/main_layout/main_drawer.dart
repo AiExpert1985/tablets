@@ -10,51 +10,44 @@ class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: 250,
-      child: Column(
-        children: [
+        width: 250,
+        child: Column(children: [
           const MainDrawerHeader(),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  MainDrawerButton(
-                      iconName: 'products',
-                      title: S.of(context).products,
-                      routeName: AppRoute.products.name),
-                  constants.DrawerGap.vertical,
-                  MainDrawerButton(
-                      iconName: 'categories',
-                      title: S.of(context).categories,
-                      routeName: AppRoute.categories.name),
-                  constants.DrawerGap.vertical,
-                  MainDrawerButton(
-                      iconName: 'categories',
-                      title: S.of(context).pending_bills,
-                      routeName: AppRoute.pendingBills.name),
-                  constants.DrawerGap.vertical,
-                  MainDrawerButton(
-                      iconName: 'categories',
-                      title: S.of(context).categories,
-                      routeName: AppRoute.categories.name),
-                  constants.DrawerGap.vertical,
-                  MainDrawerButton(
-                      iconName: 'categories',
-                      title: S.of(context).categories,
-                      routeName: AppRoute.categories.name),
-                  constants.PushWidgets.toEnd,
-                  MainDrawerButton(
-                      iconName: 'categories',
-                      title: S.of(context).pending_bills,
-                      routeName: AppRoute.pendingBills.name),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+              child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(children: [
+                    MainDrawerButton(
+                        iconName: 'products',
+                        title: S.of(context).products,
+                        routeName: AppRoute.products.name),
+                    constants.DrawerGap.vertical,
+                    MainDrawerButton(
+                        iconName: 'categories',
+                        title: S.of(context).categories,
+                        routeName: AppRoute.categories.name),
+                    constants.DrawerGap.vertical,
+                    MainDrawerButton(
+                        iconName: 'categories',
+                        title: S.of(context).pending_bills,
+                        routeName: AppRoute.pendingBills.name),
+                    constants.DrawerGap.vertical,
+                    MainDrawerButton(
+                        iconName: 'categories',
+                        title: S.of(context).categories,
+                        routeName: AppRoute.categories.name),
+                    constants.DrawerGap.vertical,
+                    MainDrawerButton(
+                        iconName: 'categories',
+                        title: S.of(context).categories,
+                        routeName: AppRoute.categories.name),
+                    constants.PushWidgets.toEnd,
+                    MainDrawerButton(
+                        iconName: 'categories',
+                        title: S.of(context).pending_bills,
+                        routeName: AppRoute.pendingBills.name),
+                  ])))
+        ]));
   }
 }
 
@@ -64,35 +57,31 @@ class MainDrawerHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 250,
-      child: DrawerHeader(
-        padding: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Theme.of(context).colorScheme.primary,
-              Theme.of(context).colorScheme.primary.withOpacity(0.7),
-            ],
-          ),
-        ),
-        child: Column(
-          children: [
-            SizedBox(
-              // margin: const EdgeInsets.all(10),
-              width: double.infinity,
-              height: 200, // here I used width intentionally
-              child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
+        height: 250,
+        child: DrawerHeader(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                ],
+              ),
             ),
-            // Text(
-            //   S.of(context).slogan,
-            //   style: const TextStyle(fontSize: 14, color: Colors.white),
-            // ),
-          ],
-        ),
-      ),
-    );
+            child: Column(children: [
+              SizedBox(
+                // margin: const EdgeInsets.all(10),
+                width: double.infinity,
+                height: 200, // here I used width intentionally
+                child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
+              ),
+              // Text(
+              //   S.of(context).slogan,
+              //   style: const TextStyle(fontSize: 14, color: Colors.white),
+              // ),
+            ])));
   }
 }
 
