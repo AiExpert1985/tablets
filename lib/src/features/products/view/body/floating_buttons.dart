@@ -34,7 +34,7 @@ class ProductFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () => formController.showAddProductForm(context),
+          onTap: () => formController.showAddForm(context),
         ),
       ],
     );

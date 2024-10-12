@@ -29,7 +29,7 @@ class AddProductForm extends ConsumerWidget {
         ],
       ),
       buttons: [
-        FormAddButton(createMethod: formController.addProductToDb),
+        FormAddButton(createMethod: formController.addProduct),
         const FormCancelButton(),
       ],
       widthRatio: 0.5,

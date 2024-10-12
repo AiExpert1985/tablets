@@ -45,12 +45,12 @@ class SliderImagePicker extends ConsumerWidget {
         constants.FormImageToButtonGap.vertical,
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           IconButton(
-            onPressed: () => ref.read(sliderPickedImageNotifierProvider.notifier).addUrl(),
+            onPressed: () => ref.read(sliderPickedImageNotifierProvider.notifier).addImage(),
             icon: const AddImageIcon(),
           ),
           IconButton(
             onPressed: () =>
-                ref.read(sliderPickedImageNotifierProvider.notifier).removeUrl(displayedUrlIndex),
+                ref.read(sliderPickedImageNotifierProvider.notifier).removeImage(displayedUrlIndex),
             icon: const DeleteIcon(),
           )
         ])
@@ -59,13 +59,14 @@ class SliderImagePicker extends ConsumerWidget {
   }
 }
 
+/// provides a File represeting image selected by user
 class CustomImagePicker {
   static Future<File?> selectImage({uploadingMethod, imageSource = 'gallery'}) async {
     try {
       final selectedImage = await ImagePicker().pickImage(
           source: imageSource == 'camera' ? ImageSource.camera : ImageSource.gallery,
           imageQuality: 100,
-          maxWidth: 150); // can use ImageSource.gallery
+          maxWidth: 150);
       if (selectedImage != null) {
         return File(selectedImage.path);
       }
@@ -88,7 +89,7 @@ class SliderImageNotifier extends StateNotifier<List<String>> {
     state = urls;
   }
 
-  void addUrl() async {
+  void addImage() async {
     String? newUrl;
     String imageName = utils.StringOperations.generateRandomString();
     File? imageFile = await CustomImagePicker.selectImage();
@@ -97,23 +98,44 @@ class SliderImageNotifier extends StateNotifier<List<String>> {
     }
     if (newUrl != null) {
       state = [...state, newUrl];
+      addedUrls.add(newUrl);
       return;
     }
     utils.CustomDebug.print(message: 'error while picking an image');
   }
 
-  void uploadImage() {}
+  void removeImage(int urlIndex) async {
+    removedUrls.add(state[urlIndex]);
+    List<String> tempList = state;
+    tempList.removeAt(urlIndex);
+    state = tempList;
+  }
 
-  void removeUrl(int urlIndex) {}
+  List<String> getUpdatedUrls() {
+    // delete all images removed by user (temporarily stored in removedUrls)
+    for (String url in removedUrls) {
+      _imageStorage.deleteImage(url);
+    }
+    return state;
+  }
 
-  void deleteImage() {}
-
-  void save() {}
-  void exit() {}
+  /// close is called automatically when forms are close,
+  /// all newly added image should be deleted
+  /// note that if the added items were saved previously by user, then addedUrls list will be empty
+  void close() {
+    for (String url in addedUrls) {
+      _imageStorage.deleteImage(url);
+    }
+    state = [constants.DefaultImage.url];
+  }
 }
 
+/// idea is using 3 lists
+/// state : repres ..... to be filled lated
 final sliderPickedImageNotifierProvider =
     StateNotifierProvider<SliderImageNotifier, List<String>>((ref) {
+  utils.CustomDebug.tempPrint('slider controller is created');
+  ref.onDispose(() => utils.CustomDebug.tempPrint('slider controller is closing'));
   String defaultImageUrl = constants.DefaultImage.url;
   final imageStorage = ref.read(imageStorageProvider);
   return SliderImageNotifier(imageStorage, [defaultImageUrl]);

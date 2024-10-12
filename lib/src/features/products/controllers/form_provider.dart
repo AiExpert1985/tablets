@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common_widgets/images/slider_image_picker.dart';
 import 'package:tablets/src/features/products/controllers/list_filter_controller.dart';
 import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
@@ -10,21 +9,21 @@ import 'package:tablets/src/features/products/repository/product_repository_prov
 import 'package:tablets/src/features/products/view/widgets/forms/form_add.dart';
 import 'package:tablets/src/features/products/view/widgets/forms/form_edit.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
-import 'package:tablets/src/constants/constants.dart' as constants;
 
 class ProductFormFieldsController {
   ProductFormFieldsController(
     this._productsRepository,
     this._productStateController,
-    this.productFilterController,
+    this._productFilterController,
+    this._imageSliderController,
   );
   final ProductRepository _productsRepository;
   final ProductStateNotifier _productStateController;
-  final ProductSearchNotifier productFilterController;
+  final ProductSearchNotifier _productFilterController;
+  final SliderImageNotifier _imageSliderController;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  List<String> _tempUrls = [];
 
-  bool saveForm() {
+  bool validateForm() {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return false;
     formKey.currentState!.save();
@@ -35,12 +34,11 @@ class ProductFormFieldsController {
     Navigator.of(context).pop();
   }
 
-  void addProductToDb(context) async {
-    if (!saveForm()) return;
-    final imageUrls = _productStateController.currentState.imageUrls;
+  void addProduct(context) async {
+    if (!validateForm()) return;
+    final updatedUrls = _imageSliderController.getUpdatedUrls();
     final productState = _productStateController
-        .setProduct(_productStateController.currentState.product.copyWith(imageUrls: imageUrls));
-    _tempUrls = [];
+        .setProduct(_productStateController.currentState.product.copyWith(imageUrls: updatedUrls));
     final successful = await _productsRepository.addProductToDB(product: productState.product);
     if (successful) {
       utils.UserMessages.success(
@@ -55,72 +53,38 @@ class ProductFormFieldsController {
     }
     if (context.mounted) closeForm(context);
     // in case user applied a filter and added a new product, below code updates the UI
-    if (productFilterController.getState.isSearchOn) productFilterController.applyFilters();
+    if (_productFilterController.getState.isSearchOn) _productFilterController.applyFilters();
   }
 
-  /// this takes an image file (which was created by imagePicker) and store it directly in firebase
-  /// and store the new url into a temp list inside the controller
-  /// this list will be viewed later by the image slider viewer
-  /// I did that as a solution to separate the image upload from from submission
-  /// note that this method is called automatically by the image picker when a new image is picked
-  void uploadImageToDb(File? pickedImage) async {
-    // always store with random numbers to avoid duplications
-    String name = utils.StringOperations.generateRandomString();
-    final url = await _productsRepository.uploadImageToDb(fileName: name, imageFile: pickedImage);
-    if (url != null) {
-      _productStateController.addImageUrls(url); // add to imageUrls to be displayed inside form
-      _tempUrls.add(url); // add to tempUrls to be deleted in form is cancelled by user
-    }
-  }
-
-  void showAddProductForm(BuildContext context) {
+  void showAddForm(BuildContext context) {
     _productStateController.reset();
+
     showDialog(
       context: context,
       builder: (BuildContext context) => const AddProductForm(),
-    ).whenComplete(_onProductFormClosing);
+    ).whenComplete(_onFormClosing);
   }
 
   /// when form is closed, we delete (from firestore) all uploaded images that aren't used
   /// this is needed because app stores images (to firestore) directly when uploaded and
   /// it happends that user sometimes uploads images then cancel the form
-  void _onProductFormClosing() {
-    _deleteMultipleImagesFromDb(_tempUrls);
-    _tempUrls = [];
+  void _onFormClosing() {
+    _imageSliderController.close();
     _productStateController.reset();
   }
 
-  void _deleteMultipleImagesFromDb(List<String> urls) {
-    for (var url in urls) {
-      _deleteSingleImageFromDb(url);
-    }
-  }
-
-  void _deleteSingleImageFromDb(String url) => _productsRepository.deleteImageFromDb(url);
-
-  void showEditProductForm({required BuildContext context, required Product product}) {
+  void showEditForm({required BuildContext context, required Product product}) {
     _productStateController.setImageUrls(product.imageUrls);
     _productStateController.setProduct(product);
+    _imageSliderController.initializeUrls(product.imageUrls);
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const EditProductForm(),
-    ).whenComplete(_onProductFormClosing);
+    ).whenComplete(_onFormClosing);
   }
 
-  void removeFormImage(String url) {
-    _productStateController.removeImageUrls(url);
-    _tempUrls.add(url);
-    // if imageUrls list is empty, add default image
-    if (_productStateController.currentState.imageUrls.isEmpty) {
-      _productStateController.addImageUrls(constants.DefaultImage.url);
-      return;
-    }
-    // add it to tempUrls list, were all images will be deleted when form is closed
-  }
-
-  void deleteProductFromDB(BuildContext context, Product product) async {
+  void deleteProduct(BuildContext context, Product product) async {
     // add all urls to the tempurls list, they will be automatically deleted once form is closed
-    _tempUrls.addAll(product.imageUrls);
     bool successful = await _productsRepository.deleteProductFromDB(product: product);
     if (successful) {
       if (context.mounted) {
@@ -134,16 +98,15 @@ class ProductFormFieldsController {
     }
     if (context.mounted) closeForm(context);
     // update the UI in case user edited the filtered items
-    if (productFilterController.getState.isSearchOn) productFilterController.applyFilters();
+    if (_productFilterController.getState.isSearchOn) _productFilterController.applyFilters();
   }
 
-  void updateProductInDB(BuildContext context, Product oldProduct) async {
-    if (!saveForm()) return;
-    final tempImageUrls = _productStateController.currentState.imageUrls;
+  void updateProduct(BuildContext context, Product oldProduct) async {
+    if (!validateForm()) return;
+    final updateUrls = _imageSliderController.getUpdatedUrls();
     final tempProduct = _productStateController.currentState.product;
     final newProduct =
-        _productStateController.setProduct(tempProduct.copyWith(imageUrls: tempImageUrls)).product;
-    _tempUrls = [];
+        _productStateController.setProduct(tempProduct.copyWith(imageUrls: updateUrls)).product;
     bool successful =
         await _productsRepository.updateProductInDB(newProduct: newProduct, oldProduct: oldProduct);
     if (successful) {
@@ -158,7 +121,7 @@ class ProductFormFieldsController {
     }
     if (context.mounted) closeForm(context);
     // update the UI in case user edited the filtered items
-    if (productFilterController.getState.isSearchOn) productFilterController.applyFilters();
+    if (_productFilterController.getState.isSearchOn) _productFilterController.applyFilters();
   }
 }
 
@@ -166,6 +129,7 @@ final productsFormFieldsControllerProvider = Provider<ProductFormFieldsControlle
   final productsRepository = ref.read(productsRepositoryProvider);
   final productStateController = ref.watch(productStateNotifierProvider.notifier);
   final productFilterController = ref.watch(productListFilterNotifierProvider.notifier);
+  final imageSliderController = ref.watch(sliderPickedImageNotifierProvider.notifier);
   return ProductFormFieldsController(
-      productsRepository, productStateController, productFilterController);
+      productsRepository, productStateController, productFilterController, imageSliderController);
 });

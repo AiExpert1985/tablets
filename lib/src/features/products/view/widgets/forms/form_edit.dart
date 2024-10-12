@@ -33,12 +33,12 @@ class EditProductForm extends ConsumerWidget {
       ),
       buttons: [
         FromUpdateButton(
-          updateMethod: formController.updateProductInDB,
+          updateMethod: formController.updateProduct,
           itemToBeUpdated: productStateController.product.copyWith(),
         ),
         const FormCancelButton(),
         FromDeleteButton(
-          deleteMethod: formController.deleteProductFromDB,
+          deleteMethod: formController.deleteProduct,
           itemToBeDeleted: productStateController.product.copyWith(),
           message: productStateController.product.name,
         ),
