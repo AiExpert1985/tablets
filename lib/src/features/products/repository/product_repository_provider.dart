@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
-// import 'package:tablets/src/features/products/controller/product_search_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
@@ -119,11 +118,4 @@ final productsRepositoryProvider = Provider<ProductRepository>((ref) {
   final imageStorage = ref.read(fileStorageProvider);
   final firestore = FirebaseFirestore.instance;
   return ProductRepository(firestore, imageStorage);
-});
-
-final productsStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
-  utils.CustomDebug.tempPrint('Streamer is started');
-  ref.onDispose(() => utils.CustomDebug.tempPrint('Streamer was disconnected'));
-  final productsRepository = ref.watch(productsRepositoryProvider);
-  return productsRepository.watchProductsList();
 });

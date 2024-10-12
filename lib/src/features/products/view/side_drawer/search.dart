@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/features/products/controller/product_drawer_provider.dart';
+import 'package:tablets/src/features/products/controller/secondary_drawer_provider.dart';
 import 'package:tablets/src/utils/field_box_decoration.dart';
 import 'package:tablets/src/common_widgets/icons/custom_icons.dart';
 import 'package:tablets/src/constants/constants.dart';
-import 'package:tablets/src/features/products/controller/product_list_filter_controller.dart';
+import 'package:tablets/src/features/products/controller/list_filter_controller.dart';
 
 enum FieldDataTypes { int, double, string }
 
