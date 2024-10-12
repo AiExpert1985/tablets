@@ -7,7 +7,7 @@ import 'package:tablets/src/features/products/controllers/form_provider.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
 
-import 'package:tablets/src/features/products/view/forms/form_fields.dart';
+import 'package:tablets/src/features/products/view/widgets/forms/form_fields.dart';
 
 class EditProductForm extends ConsumerWidget {
   const EditProductForm({super.key});

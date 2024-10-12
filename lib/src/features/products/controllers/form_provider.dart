@@ -7,8 +7,8 @@ import 'package:tablets/src/features/products/controllers/list_filter_controller
 import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/forms/form_add.dart';
-import 'package:tablets/src/features/products/view/forms/form_edit.dart';
+import 'package:tablets/src/features/products/view/widgets/forms/form_add.dart';
+import 'package:tablets/src/features/products/view/widgets/forms/form_edit.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
 
