@@ -16,7 +16,7 @@ class ProductsTable extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productStream = ref.watch(productsStreamProvider);
-    final formController = ref.watch(productsFormControllerProvider);
+    final formController = ref.watch(productsFormFieldsControllerProvider);
     final productsFilter = ref.watch(productListFilterNotifierProvider);
     AsyncValue<List<Map<String, dynamic>>> productsListValue =
         productsFilter.isSearchOn ? productsFilter.filteredList : productStream;

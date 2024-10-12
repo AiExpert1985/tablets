@@ -1,68 +1,37 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/utils/utils.dart';
 
 class StorageRepository {
-  StorageRepository();
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  StorageRepository(this._storage);
+  final FirebaseStorage _storage;
 
-  // put a new file in the database, and returns the url if successful
-  // or null if failed
-  Future<String?> addFile({
-    required String folder,
-    required String fileName,
-    required File file,
-  }) async {
+  Future<String?> addImage(
+      {required String folder, required String fileName, required File file}) async {
     try {
-      String? imageUrl;
-      CustomDebug.tempPrint('before');
       final storageRef = _storage.ref().child(folder).child('$fileName.jpg');
-      CustomDebug.tempPrint('after');
       await storageRef.putFile(file);
-      imageUrl = await storageRef.getDownloadURL();
-      CustomDebug.tempPrint(imageUrl);
-      return imageUrl;
+      return await storageRef.getDownloadURL();
     } catch (e) {
       return null;
     }
   }
 
-  /// update and existing file referenced by the url
-  /// returns the new url if successed or null if failed
-  Future<String?> updateFile({
-    required String folder,
-    required String fileName,
-    required File file,
-    required String fileUrl,
-  }) async {
+  Future<bool> deleteImage(String url) async {
     try {
-      // delete the old photo unless it is the default photo
-      // and then add the new photo and return its url
-      if (fileUrl != constants.DefaultImage.url) {
-        deleteFile(fileUrl);
-      }
-      final newUrl = await addFile(folder: folder, fileName: fileName, file: file);
-      return newUrl;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  /// delete photo from storage using its urlr
-  Future<void> deleteFile(String imageUrl) async {
-    try {
-      // default image can't be deleted
-      if (imageUrl == constants.DefaultImage.url) return;
-      final storageRef = _storage.refFromURL(imageUrl);
+      final storageRef = _storage.refFromURL(url);
       await storageRef.delete();
+      return true;
     } catch (e) {
       CustomDebug.print(message: e, stackTrace: StackTrace.current);
+      return false;
     }
   }
 }
 
+/// responsible only for adding & removing images from/to firebase storage
 final fileStorageProvider = Provider<StorageRepository>((ref) {
-  return StorageRepository();
+  final FirebaseStorage storage = FirebaseStorage.instance;
+  return StorageRepository(storage);
 });

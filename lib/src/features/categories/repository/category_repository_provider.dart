@@ -30,7 +30,8 @@ class CategoriesRepository {
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        final newUrl = await _imageStorage.addFile(folder: 'category', fileName: category.name, file: pickedImage);
+        final newUrl = await _imageStorage.addImage(
+            folder: 'category', fileName: category.name, file: pickedImage);
         category.imageUrl = newUrl!;
       }
 
@@ -42,7 +43,8 @@ class CategoriesRepository {
       });
       return true;
     } catch (e) {
-      utils.CustomDebug.print(message: 'An error while adding category to DB', stackTrace: StackTrace.current);
+      utils.CustomDebug.print(
+          message: 'An error while adding category to DB', stackTrace: StackTrace.current);
       return false;
     }
   }
@@ -56,17 +58,19 @@ class CategoriesRepository {
   /// note that this method receives the previous category name to use to when searching db to
   /// get the document that will be updated.
   Future<bool> updateCategoryInDB(
-      {required ProductCategory newCategory, required ProductCategory oldCategory, File? pickedImage}) async {
+      {required ProductCategory newCategory,
+      required ProductCategory oldCategory,
+      File? pickedImage}) async {
     try {
       String url = oldCategory.imageUrl;
       // first update the photo
       // if an image is picked, we will store it and use its url
       // otherwise, we will use the default item image url
-      if (pickedImage != null) {
-        final newUrl = await _imageStorage.updateFile(
-            folder: 'category', fileName: newCategory.name, file: pickedImage, fileUrl: newCategory.imageUrl);
-        if (newUrl != null) url = newUrl;
-      }
+      // if (pickedImage != null) {
+      //   final newUrl = await _imageStorage.updateFile(
+      //       folder: 'category', fileName: newCategory.name, file: pickedImage, fileUrl: newCategory.imageUrl);
+      //   if (newUrl != null) url = newUrl;
+      // }
       // then update the category document
       final query = _firestore.collection('categories').where(nameKey, isEqualTo: oldCategory.name);
       final querySnapshot = await query.get();
@@ -86,17 +90,21 @@ class CategoriesRepository {
 
   /// delete the document from firestore
   /// delete image from storage
-  Future<bool> deleteCategoryInDB({required ProductCategory category, bool deleteImage = true}) async {
+  Future<bool> deleteCategoryInDB(
+      {required ProductCategory category, bool deleteImage = true}) async {
     try {
       // delete document using its name
-      final querySnapshot = await _firestore.collection(collectionName).where(nameKey, isEqualTo: category.name).get();
+      final querySnapshot = await _firestore
+          .collection(collectionName)
+          .where(nameKey, isEqualTo: category.name)
+          .get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.delete();
       }
       // sometime we don't want to delete image (if it is the default image)
       if (deleteImage) {
-        _imageStorage.deleteFile(category.imageUrl);
+        _imageStorage.deleteImage(category.imageUrl);
       }
       return true;
     } catch (error) {
@@ -107,7 +115,9 @@ class CategoriesRepository {
 
   Stream<List<ProductCategory>> watchCategoriesList() {
     final ref = _categoriesRef();
-    return ref.snapshots().map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+    return ref
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
   Query<ProductCategory> _categoriesRef() {

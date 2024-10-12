@@ -8,78 +8,63 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart' as caching;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:tablets/src/common_widgets/icons/custom_icons.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 /// this widget shows an image and a button to upload image
 /// it takes its image from the pickedImageNotifierProvider
 class SliderImagePicker extends ConsumerWidget {
   const SliderImagePicker(
-      {super.key, required this.imageUrls, required this.deletingMethod, required this.uploadMethod});
+      {super.key,
+      required this.imageUrls,
+      required this.deletingMethod,
+      required this.uploadMethod});
   final List<String> imageUrls;
   final void Function(String) deletingMethod;
   final void Function(File?) uploadMethod;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    int currentUrlIndex = imageUrls.length - 1;
+    utils.CustomDebug.tempPrint('current index = $currentUrlIndex');
     ref.watch(sliderPickedImageNotifierProvider);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CarouselSlider(
-          items: imageUrls
-              .map((url) => FormImage(
-                    url: url,
-                    deletingMethod: deletingMethod,
-                    uploadMethod: uploadMethod,
-                  ))
-              .toList(),
-          options: CarouselOptions(height: 250, autoPlay: false, initialPage: -1 // go to last added url
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      CarouselSlider(
+        items: imageUrls
+            .map(
+              (url) => caching.CachedNetworkImage(
+                fit: BoxFit.cover,
+                height: MediaQuery.of(context).size.height,
+                imageUrl: url,
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    // Image.memory(kTransparentImage),
+                    CircularProgressIndicator(value: downloadProgress.progress),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
-        ),
-      ],
-    );
-  }
-}
-
-class FormImage extends ConsumerWidget {
-  const FormImage({required this.url, required this.deletingMethod, required this.uploadMethod, super.key});
-  final String url;
-  final void Function(String) deletingMethod;
-  final void Function(File?) uploadMethod;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
+            )
+            .toList(),
+        options: CarouselOptions(
+          onPageChanged: (index, reason) {
+            utils.CustomDebug.tempPrint('onpage changed index = $index');
+            currentUrlIndex = index;
+          },
           height: 150,
-          child: caching.CachedNetworkImage(
-            fit: BoxFit.cover,
-            height: MediaQuery.of(context).size.height,
-            imageUrl: url,
-            progressIndicatorBuilder: (context, url, downloadProgress) => Image.memory(kTransparentImage),
-            // CircularProgressIndicator(value: downloadProgress.progress),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-          ),
+          autoPlay: false,
+          initialPage: -1, // initially display last image
         ),
-        constants.FormImageToButtonGap.vertical,
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              onPressed: () =>
-                  ref.read(sliderPickedImageNotifierProvider.notifier).updatePickedImage(uploadingMethod: uploadMethod),
-              icon: const AddImageIcon(),
-            ),
-            IconButton(
-              onPressed: () => deletingMethod(url),
-              icon: const DeleteIcon(),
-            ),
-          ],
+      ),
+      constants.FormImageToButtonGap.vertical,
+      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        IconButton(
+          onPressed: () => ref
+              .read(sliderPickedImageNotifierProvider.notifier)
+              .updatePickedImage(uploadingMethod: uploadMethod),
+          icon: const AddImageIcon(),
         ),
-      ],
-    );
+        IconButton(
+          onPressed: () => deletingMethod(imageUrls[currentUrlIndex]),
+          icon: const DeleteIcon(),
+        )
+      ])
+    ]);
   }
 }
 
@@ -99,7 +84,8 @@ class PickedImageNotifier extends StateNotifier<File?> {
         state = null;
       }
     } catch (e) {
-      utils.CustomDebug.print(message: 'error while importing images', stackTrace: StackTrace.current);
+      utils.CustomDebug.print(
+          message: 'error while importing images', stackTrace: StackTrace.current);
     }
   }
 }

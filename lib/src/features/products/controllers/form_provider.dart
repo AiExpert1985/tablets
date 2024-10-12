@@ -12,8 +12,8 @@ import 'package:tablets/src/features/products/view/widgets/forms/form_edit.dart'
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
 
-class ProductFormController {
-  ProductFormController(
+class ProductFormFieldsController {
+  ProductFormFieldsController(
     this._productsRepository,
     this._productStateController,
     this.productFilterController,
@@ -162,9 +162,10 @@ class ProductFormController {
   }
 }
 
-final productsFormControllerProvider = Provider<ProductFormController>((ref) {
+final productsFormFieldsControllerProvider = Provider<ProductFormFieldsController>((ref) {
   final productsRepository = ref.read(productsRepositoryProvider);
   final productStateController = ref.watch(productStateNotifierProvider.notifier);
   final productFilterController = ref.watch(productListFilterNotifierProvider.notifier);
-  return ProductFormController(productsRepository, productStateController, productFilterController);
+  return ProductFormFieldsController(
+      productsRepository, productStateController, productFilterController);
 });

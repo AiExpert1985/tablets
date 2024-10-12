@@ -13,7 +13,7 @@ class AddProductForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(productsFormControllerProvider);
+    final formController = ref.watch(productsFormFieldsControllerProvider);
     final productStateController = ref.watch(productStateNotifierProvider);
     return FormFrame(
       formKey: formController.formKey,

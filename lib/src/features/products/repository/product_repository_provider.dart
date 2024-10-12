@@ -20,7 +20,7 @@ class ProductRepository {
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
       if (pickedImage != null) {
-        final newUrl = await _imageStorage.addFile(
+        final newUrl = await _imageStorage.addImage(
             folder: imageFolderName, fileName: product.name, file: pickedImage);
         product.imageUrls.add(newUrl!);
       }
@@ -38,7 +38,7 @@ class ProductRepository {
   Future<String?> uploadImageToDb({required String fileName, required File? imageFile}) async {
     try {
       if (imageFile != null) {
-        final newUrl = await _imageStorage.addFile(
+        final newUrl = await _imageStorage.addImage(
             folder: imageFolderName, fileName: fileName, file: imageFile);
         return newUrl;
       }
@@ -67,15 +67,7 @@ class ProductRepository {
     }
   }
 
-  Future<bool> deleteImageFromDb(String url) async {
-    try {
-      _imageStorage.deleteFile(url);
-      return true;
-    } catch (error) {
-      utils.CustomDebug.print(message: error, stackTrace: StackTrace.current);
-      return false;
-    }
-  }
+  Future<bool> deleteImageFromDb(String url) async => await _imageStorage.deleteImage(url);
 
   /// delete the document from firestore
   /// delete image from storage
