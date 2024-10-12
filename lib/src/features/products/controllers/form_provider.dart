@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/features/products/screen_controllers/list_filter_controller.dart';
-import 'package:tablets/src/features/products/screen_controllers/temp_product_provider.dart';
-import 'package:tablets/src/features/products/model_classes/product.dart';
-import 'package:tablets/src/features/products/database_controllers/product_repository_provider.dart';
-import 'package:tablets/src/features/products/screen/forms/form_add.dart';
-import 'package:tablets/src/features/products/screen/forms/form_edit.dart';
+import 'package:tablets/src/features/products/controllers/list_filter_controller.dart';
+import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
+import 'package:tablets/src/features/products/model/product.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
+import 'package:tablets/src/features/products/view/forms/form_add.dart';
+import 'package:tablets/src/features/products/view/forms/form_edit.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
 

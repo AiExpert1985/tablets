@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
-import 'package:tablets/src/features/products/model_classes/product.dart';
+import 'package:tablets/src/features/products/model/product.dart';
 
 ProductState _defaultProductState =
     ProductState(Product.getDefault(), [constants.DefaultImage.url]);

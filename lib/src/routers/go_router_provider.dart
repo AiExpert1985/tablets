@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/authentication/presentation/view/users/users_screen.dart';
 import 'package:tablets/src/features/pending_bills/pending_bills.dart';
-import 'package:tablets/src/features/products/screen/main_screen.dart';
+import 'package:tablets/src/features/products/view/main_screen.dart';
 import 'package:tablets/src/features/salesmen_live_locations/presentation/sales_men_live_location_screen.dart';
 import 'package:tablets/src/features/categories/view/categories_screen.dart';
 import 'package:tablets/src/features/settings/settings_screen.dart';

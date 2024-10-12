@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/products/database_controllers/product_repository_provider.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 final productsStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {

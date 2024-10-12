@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_widgets/forms/form_buttons.dart';
 import 'package:tablets/src/common_widgets/forms/form_frame.dart';
 import 'package:tablets/src/common_widgets/images/slider_image_picker.dart';
-import 'package:tablets/src/features/products/screen_controllers/form_provider.dart';
+import 'package:tablets/src/features/products/controllers/form_provider.dart';
+import 'package:tablets/src/common_widgets/forms/form_buttons.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
-import 'package:tablets/src/features/products/screen_controllers/temp_product_provider.dart';
+import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
+import 'package:tablets/src/features/products/view/forms/form_fields.dart';
 
-import 'package:tablets/src/features/products/screen/forms/form_fields.dart';
-
-class EditProductForm extends ConsumerWidget {
-  const EditProductForm({super.key});
+class AddProductForm extends ConsumerWidget {
+  const AddProductForm({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,25 +27,15 @@ class EditProductForm extends ConsumerWidget {
             uploadMethod: formController.uploadImageToDb,
           ),
           constants.ImageToFormFieldsGap.vertical,
-          const ProductFormFields(
-            editMode: true,
-          ),
+          const ProductFormFields(),
         ],
       ),
       buttons: [
-        FromUpdateButton(
-          updateMethod: formController.updateProductInDB,
-          itemToBeUpdated: productStateController.product.copyWith(),
-        ),
+        FormAddButton(createMethod: formController.addProductToDb),
         const FormCancelButton(),
-        FromDeleteButton(
-          deleteMethod: formController.deleteProductFromDB,
-          itemToBeDeleted: productStateController.product.copyWith(),
-          message: productStateController.product.name,
-        ),
       ],
       widthRatio: 0.5,
-      heightRatio: 0.75,
+      heightRatio: 0.9,
     );
   }
 }

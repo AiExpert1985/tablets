@@ -3,10 +3,10 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/features/products/database_controllers/product_stream_provider.dart';
+import 'package:tablets/src/features/products/repository/product_stream_provider.dart';
 import 'package:tablets/src/utils/field_box_decoration.dart';
-import 'package:tablets/src/features/products/screen_controllers/temp_product_provider.dart';
-import 'package:tablets/src/features/products/model_classes/product.dart';
+import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
+import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
 

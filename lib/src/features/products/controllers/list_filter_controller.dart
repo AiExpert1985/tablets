@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/products/database_controllers/product_stream_provider.dart';
+import 'package:tablets/src/features/products/repository/product_stream_provider.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 Map<String, String> filterType = {'name': 'contains', 'code': 'equals', 'category': 'contains'};
