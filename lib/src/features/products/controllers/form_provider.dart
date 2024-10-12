@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/images/slider_image_picker.dart';
+import 'package:tablets/src/common_providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/controllers/list_filter_controller.dart';
 import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
