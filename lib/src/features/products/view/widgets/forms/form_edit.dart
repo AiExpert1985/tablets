@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common_providers/image_slider_controller.dart';
 import 'package:tablets/src/common_widgets/forms/form_frame.dart';
 import 'package:tablets/src/common_widgets/icons/custom_icons.dart';
 import 'package:tablets/src/common_widgets/images/image_slider.dart';
 import 'package:tablets/src/common_widgets/various/delete_confirmation_dialog.dart';
-import 'package:tablets/src/features/products/controllers/form_provider.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
-import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
+import 'package:tablets/src/features/products/controllers/form_controller_provider.dart';
+import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
+import 'package:tablets/src/features/products/model/product.dart';
 
 import 'package:tablets/src/features/products/view/widgets/forms/form_fields.dart';
 
@@ -15,8 +17,8 @@ class EditProductForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(productsFormFieldsControllerProvider);
-    final productStateController = ref.watch(productStateNotifierProvider);
+    final formController = ref.watch(productFormControllerProvider);
+    final userFormData = ref.watch(productFormDataProvider);
     return FormFrame(
       formKey: formController.formKey,
       fields: Column(
@@ -24,7 +26,7 @@ class EditProductForm extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ImageSlider(
-            productStateController.imageUrls,
+            userFormData['imageUrls'] ?? [constants.DefaultImage.url],
           ),
           constants.ImageToFormFieldsGap.vertical,
           const ProductFormFields(
@@ -36,7 +38,7 @@ class EditProductForm extends ConsumerWidget {
         IconButton(
           onPressed: () => formController.updateProduct(
             context,
-            productStateController.product.copyWith(),
+            Product.fromMap(userFormData),
           ),
           icon: const ApproveIcon(),
         ),
@@ -48,10 +50,13 @@ class EditProductForm extends ConsumerWidget {
             onPressed: () async {
               bool? confiramtion = await showDeleteConfirmationDialog(
                 context: context,
-                message: productStateController.product.name,
+                message: userFormData['name'],
               );
               if (confiramtion != null && context.mounted) {
-                formController.deleteProduct(context, productStateController.product.copyWith());
+                final updatedData = ref.read(productFormDataProvider);
+                final updatedImageUrls = ref.read(imageSliderNotifierProvider);
+                final product = Product.fromMap({...updatedData, 'imageUrls': updatedImageUrls});
+                formController.deleteProduct(context, product);
               }
             },
             icon: const DeleteIcon())

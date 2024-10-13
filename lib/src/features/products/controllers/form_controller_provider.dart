@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_providers/image_slider_controller.dart';
-import 'package:tablets/src/features/products/controllers/list_filter_controller.dart';
-import 'package:tablets/src/features/products/controllers/temp_product_provider.dart';
+import 'package:tablets/src/features/products/controllers/filter_controller_provider.dart';
+import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/view/widgets/forms/form_add.dart';
@@ -12,15 +12,15 @@ import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductFormFieldsController {
   ProductFormFieldsController(
-    this._productsRepository,
-    this._productStateController,
-    this._productFilterController,
-    this._imageSliderController,
+    this._repository,
+    this._userFormData,
+    this._userFilterData,
+    this._imageSlider,
   );
-  final ProductRepository _productsRepository;
-  final ProductStateNotifier _productStateController;
-  final ProductSearchNotifier _productFilterController;
-  final ImageSliderNotifier _imageSliderController;
+  final ProductRepository _repository;
+  final UserFormData _userFormData;
+  final ProductSearchNotifier _userFilterData;
+  final ImageSliderNotifier _imageSlider;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool validateForm() {
@@ -36,10 +36,11 @@ class ProductFormFieldsController {
 
   void addProduct(context) async {
     if (!validateForm()) return;
-    final updatedUrls = _imageSliderController.savedUpdatedImages();
-    final productState = _productStateController
-        .setProduct(_productStateController.currentState.product.copyWith(imageUrls: updatedUrls));
-    final successful = await _productsRepository.addProductToDB(product: productState.product);
+    final updatedUrls = _imageSlider.savedUpdatedImages();
+    _userFormData.updateMap(key: 'imageUrls', value: updatedUrls);
+    final updatedData = _userFormData.getState();
+    final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
+    final successful = await _repository.addProductToDB(product: product);
     if (successful) {
       utils.UserMessages.success(
         context: context,
@@ -53,12 +54,11 @@ class ProductFormFieldsController {
     }
     if (context.mounted) closeForm(context);
     // in case user applied a filter and added a new product, below code updates the UI
-    if (_productFilterController.getState.isSearchOn) _productFilterController.applyFilters();
+    if (_userFilterData.getState.isSearchOn) _userFilterData.applyFilters();
   }
 
   void showAddForm(BuildContext context) {
-    _productStateController.reset();
-    _imageSliderController.initialize();
+    _imageSlider.initialize();
     showDialog(
       context: context,
       builder: (BuildContext context) => const AddProductForm(),
@@ -69,14 +69,12 @@ class ProductFormFieldsController {
   /// this is needed because app stores images (to firestore) directly when uploaded and
   /// it happends that user sometimes uploads images then cancel the form
   void _onFormClosing() {
-    _imageSliderController.close();
-    _productStateController.reset();
+    _imageSlider.close();
+    _userFormData.resetMap();
   }
 
   void showEditForm({required BuildContext context, required Product product}) {
-    _productStateController.setImageUrls(product.imageUrls);
-    _productStateController.setProduct(product);
-    _imageSliderController.initialize(urls: product.imageUrls);
+    _imageSlider.initialize(urls: product.imageUrls);
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const EditProductForm(),
@@ -85,11 +83,10 @@ class ProductFormFieldsController {
 
   void deleteProduct(BuildContext context, Product product) async {
     // add all urls to the tempurls list, they will be automatically deleted once form is closed
-    bool successful = await _productsRepository.deleteProductFromDB(product: product);
+    bool successful = await _repository.deleteProductFromDB(product: product);
     if (successful) {
       if (context.mounted) {
-        utils.UserMessages.success(
-            context: context, message: S.of(context).db_success_deleting_doc);
+        utils.UserMessages.success(context: context, message: S.of(context).db_success_deleting_doc);
       }
     } else {
       if (context.mounted) {
@@ -98,21 +95,19 @@ class ProductFormFieldsController {
     }
     if (context.mounted) closeForm(context);
     // update the UI in case user edited the filtered items
-    if (_productFilterController.getState.isSearchOn) _productFilterController.applyFilters();
+    if (_userFilterData.getState.isSearchOn) _userFilterData.applyFilters();
   }
 
   void updateProduct(BuildContext context, Product oldProduct) async {
     if (!validateForm()) return;
-    final updateUrls = _imageSliderController.savedUpdatedImages();
-    final tempProduct = _productStateController.currentState.product;
-    final newProduct =
-        _productStateController.setProduct(tempProduct.copyWith(imageUrls: updateUrls)).product;
-    bool successful =
-        await _productsRepository.updateProductInDB(newProduct: newProduct, oldProduct: oldProduct);
+    final updatedUrls = _imageSlider.savedUpdatedImages();
+    _userFormData.updateMap(key: 'imageUrls', value: updatedUrls);
+    final updatedData = _userFormData.getState();
+    final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
+    final successful = await _repository.updateProductInDB(newProduct: product, oldProduct: oldProduct);
     if (successful) {
       if (context.mounted) {
-        utils.UserMessages.success(
-            context: context, message: S.of(context).db_success_updaging_doc);
+        utils.UserMessages.success(context: context, message: S.of(context).db_success_updaging_doc);
       }
     } else {
       if (context.mounted) {
@@ -121,15 +116,14 @@ class ProductFormFieldsController {
     }
     if (context.mounted) closeForm(context);
     // update the UI in case user edited the filtered items
-    if (_productFilterController.getState.isSearchOn) _productFilterController.applyFilters();
+    if (_userFilterData.getState.isSearchOn) _userFilterData.applyFilters();
   }
 }
 
-final productsFormFieldsControllerProvider = Provider<ProductFormFieldsController>((ref) {
+final productFormControllerProvider = Provider<ProductFormFieldsController>((ref) {
   final productsRepository = ref.read(productsRepositoryProvider);
-  final productStateController = ref.watch(productStateNotifierProvider.notifier);
-  final productFilterController = ref.watch(productListFilterNotifierProvider.notifier);
+  final userFormData = ref.watch(productFormDataProvider.notifier);
+  final productFilterController = ref.watch(productFilterControllerProvider.notifier);
   final imageSliderController = ref.watch(imageSliderNotifierProvider.notifier);
-  return ProductFormFieldsController(
-      productsRepository, productStateController, productFilterController, imageSliderController);
+  return ProductFormFieldsController(productsRepository, userFormData, productFilterController, imageSliderController);
 });

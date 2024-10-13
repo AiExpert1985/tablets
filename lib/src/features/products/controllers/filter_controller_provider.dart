@@ -44,8 +44,7 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
       state = state.copyWith(searchFieldValues: searchFieldValues);
     } catch (e) {
       utils.CustomDebug.print(
-          message:
-              'An error happend when value ($value) was entered in product search field ($key)',
+          message: 'An error happend when value ($value) was entered in product search field ($key)',
           stackTrace: StackTrace.current);
     }
   }
@@ -54,18 +53,15 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
 
   void applyFilters() {
     AsyncValue<List<Map<String, dynamic>>> productListValue = ref.read(productsStreamProvider);
-    List<Map<String, dynamic>> filteredProductList =
-        _convertAsyncValueToProductList(productListValue);
+    List<Map<String, dynamic>> filteredProductList = _convertAsyncValueToProductList(productListValue);
     Map<String, dynamic> searchedValues = state.searchFieldValues;
     searchedValues.forEach((key, value) {
       if (filterType[key] == 'contains') {
-        filteredProductList =
-            filteredProductList.where((product) => product[key].contains(value)).toList();
+        filteredProductList = filteredProductList.where((product) => product[key].contains(value)).toList();
         return;
       }
       if (filterType[key] == 'equals') {
-        filteredProductList =
-            filteredProductList.where((product) => product[key] == value).toList();
+        filteredProductList = filteredProductList.where((product) => product[key] == value).toList();
         return;
       }
     });
@@ -77,13 +73,11 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
   }
 }
 
-final productListFilterNotifierProvider =
-    StateNotifierProvider<ProductSearchNotifier, ProductListFilter>((ref) {
+final productFilterControllerProvider = StateNotifierProvider<ProductSearchNotifier, ProductListFilter>((ref) {
   return ProductSearchNotifier(ref, ProductListFilter({}, false, const AsyncValue.data([])));
 });
 
-List<Map<String, dynamic>> _convertAsyncValueToProductList(
-    AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
+List<Map<String, dynamic>> _convertAsyncValueToProductList(AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
   return asyncProductList.when(
       data: (products) => products,
       error: (e, st) {
