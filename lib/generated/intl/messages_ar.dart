@@ -66,15 +66,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("لدي حساب في البرنامج"),
         "info": MessageLookupByLibrary.simpleMessage("معلومات"),
+        "input_validation_error_message_for_doubles":
+            MessageLookupByLibrary.simpleMessage("Enter an integer number"),
         "input_validation_error_message_for_email":
             MessageLookupByLibrary.simpleMessage("ادخل بريد الكتروني صحيح"),
-        "input_validation_error_message_for_names":
-            MessageLookupByLibrary.simpleMessage("ادخل الاسم بصورة صحيحة"),
-        "input_validation_error_message_for_numbers":
-            MessageLookupByLibrary.simpleMessage("ادخل الرقم بصورة صحيحة"),
+        "input_validation_error_message_for_integers":
+            MessageLookupByLibrary.simpleMessage("Enter an integer number"),
         "input_validation_error_message_for_password":
             MessageLookupByLibrary.simpleMessage(
                 "يجب ان تكون كلمة المرور 6 رموز على الاقل"),
+        "input_validation_error_message_for_strings":
+            MessageLookupByLibrary.simpleMessage("Enter a valid work"),
         "input_validation_error_message_for_user_name":
             MessageLookupByLibrary.simpleMessage(
                 "يجب ان يحتوي الاسم على 4 احرف على الاقل"),

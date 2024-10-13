@@ -43,7 +43,7 @@ class UserMessages {
 }
 
 class FormValidation {
-  static String? validateNumberField({
+  static String? validateDoubleField({
     required String? fieldValue,
     required String errorMessage,
   }) {
@@ -53,8 +53,18 @@ class FormValidation {
     return null;
   }
 
+  static String? validateIntField({
+    required String? fieldValue,
+    required String errorMessage,
+  }) {
+    if (fieldValue == null || int.tryParse(fieldValue) == null) {
+      return errorMessage;
+    }
+    return null;
+  }
+
   /// used in form validation to check if entered name is valid
-  static String? validateNameField({
+  static String? validateStringField({
     required String? fieldValue,
     required String errorMessage,
   }) {

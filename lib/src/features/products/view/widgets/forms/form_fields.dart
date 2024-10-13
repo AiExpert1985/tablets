@@ -5,6 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/utils/field_box_decoration.dart';
 import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/utils/utils.dart' as utils;
 // import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:dropdown_button2/dropdown_button2.dart';
 // import 'package:tablets/src/features/products/repository/product_stream_provider.dart';
@@ -137,7 +138,31 @@ class GeneralFormField extends ConsumerWidget {
         name: name,
         initialValue: initialValue,
         decoration: formFieldDecoration(displayedTitle),
-        onChanged: (value) => ref.read(productFormDataProvider.notifier).updateMap(key: name, value: value),
+        onSaved: (value) {
+          dynamic userValue = value;
+          if (dataType == FieldDataTypes.int.name) {
+            userValue = int.tryParse(value!);
+          }
+          if (dataType == FieldDataTypes.double.name) {
+            userValue = double.tryParse(value!);
+          }
+          ref.read(productFormDataProvider.notifier).update(key: name, value: userValue);
+        },
+        validator: (value) {
+          if (dataType == FieldDataTypes.string.name) {
+            return utils.FormValidation.validateStringField(
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
+          }
+          if (dataType == FieldDataTypes.int.name) {
+            return utils.FormValidation.validateIntField(
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
+          }
+          if (dataType == FieldDataTypes.double.name) {
+            return utils.FormValidation.validateDoubleField(
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
+          }
+          return null;
+        },
       ),
     );
   }

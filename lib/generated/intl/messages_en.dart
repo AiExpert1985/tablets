@@ -65,18 +65,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("I already have account"),
         "info": MessageLookupByLibrary.simpleMessage("info"),
+        "input_validation_error_message_for_doubles":
+            MessageLookupByLibrary.simpleMessage("Enter an integer number"),
         "input_validation_error_message_for_email":
             MessageLookupByLibrary.simpleMessage(
                 "Please enter a valid email adress"),
-        "input_validation_error_message_for_names":
-            MessageLookupByLibrary.simpleMessage(
-                "You should enter a valid name"),
-        "input_validation_error_message_for_numbers":
-            MessageLookupByLibrary.simpleMessage(
-                "You should enter a valid number"),
+        "input_validation_error_message_for_integers":
+            MessageLookupByLibrary.simpleMessage("Enter an integer number"),
         "input_validation_error_message_for_password":
             MessageLookupByLibrary.simpleMessage(
                 "Password should be at least 6 characters"),
+        "input_validation_error_message_for_strings":
+            MessageLookupByLibrary.simpleMessage("Enter a valid work"),
         "input_validation_error_message_for_user_name":
             MessageLookupByLibrary.simpleMessage(
                 "Name should be at least 4 characters"),

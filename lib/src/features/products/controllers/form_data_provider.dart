@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class UserFormData extends StateNotifier<Map<String, dynamic>> {
   UserFormData(super.state);
 
-  void updateMap({required String key, required dynamic value}) {
+  void update({required String key, required dynamic value}) {
     Map<String, dynamic> tempMap = {...state};
     tempMap[key] = value;
-    state = {...state};
+    state = {...tempMap};
   }
 
-  void resetMap() => state = {};
+  void reset() => state = {};
 
   Map<String, dynamic> getState() => state;
 }

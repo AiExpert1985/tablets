@@ -37,8 +37,9 @@ class ProductFormFieldsController {
   void addProduct(context) async {
     if (!validateForm()) return;
     final updatedUrls = _imageSlider.savedUpdatedImages();
-    _userFormData.updateMap(key: 'imageUrls', value: updatedUrls);
+    _userFormData.update(key: 'imageUrls', value: updatedUrls);
     final updatedData = _userFormData.getState();
+    utils.CustomDebug.tempPrint(updatedData);
     final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
     final successful = await _repository.addProductToDB(product: product);
     if (successful) {
@@ -70,7 +71,7 @@ class ProductFormFieldsController {
   /// it happends that user sometimes uploads images then cancel the form
   void _onFormClosing() {
     _imageSlider.close();
-    _userFormData.resetMap();
+    _userFormData.reset();
   }
 
   void showEditForm({required BuildContext context, required Product product}) {
@@ -101,7 +102,7 @@ class ProductFormFieldsController {
   void updateProduct(BuildContext context, Product oldProduct) async {
     if (!validateForm()) return;
     final updatedUrls = _imageSlider.savedUpdatedImages();
-    _userFormData.updateMap(key: 'imageUrls', value: updatedUrls);
+    _userFormData.update(key: 'imageUrls', value: updatedUrls);
     final updatedData = _userFormData.getState();
     final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
     final successful = await _repository.updateProductInDB(newProduct: product, oldProduct: oldProduct);
@@ -121,9 +122,9 @@ class ProductFormFieldsController {
 }
 
 final productFormControllerProvider = Provider<ProductFormFieldsController>((ref) {
-  final productsRepository = ref.read(productsRepositoryProvider);
-  final userFormData = ref.watch(productFormDataProvider.notifier);
-  final productFilterController = ref.watch(productFilterControllerProvider.notifier);
+  final repository = ref.read(productsRepositoryProvider);
+  final formData = ref.watch(productFormDataProvider.notifier);
+  final filterController = ref.watch(productFilterControllerProvider.notifier);
   final imageSliderController = ref.watch(imageSliderNotifierProvider.notifier);
-  return ProductFormFieldsController(productsRepository, userFormData, productFilterController, imageSliderController);
+  return ProductFormFieldsController(repository, formData, filterController, imageSliderController);
 });
