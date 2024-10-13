@@ -29,10 +29,10 @@ class CategoriesRepository {
     try {
       // if an image is picked, we will store it in firebase and use its url
       // otherwise, we will use the default item image url
-      if (pickedImage != null) {
-        final newUrl = await _imageStorage.uploadImage(fileName: category.name, file: pickedImage);
-        category.imageUrl = newUrl!;
-      }
+      // if (pickedImage != null) {
+      //   final newUrl = await _imageStorage.uploadImage(fileName: category.name, file: pickedImage);
+      //   category.imageUrl = newUrl!;
+      // }
 
       final docRef = _firestore.collection('categories').doc();
 

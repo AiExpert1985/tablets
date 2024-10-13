@@ -57,6 +57,9 @@ dependencies:
   flutter_speed_dial: ^7.0.0
   data_table_2: ^2.5.15
   dropdown_button2: ^2.3.9
+  file_picker: ^8.1.2
+  path_provider: ^2.1.4
+  flutter_image_compress: ^2.3.0
 
 dev_dependencies:
   flutter_test:

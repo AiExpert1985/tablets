@@ -96,4 +96,7 @@ Buttons:
         ☐ implement a beautiful and dynamic Material Design Speed Dial with labels, animated icons, multi-directional children and much more.
         ☐ https://pub.dev/packages/flutter_speed_dial
     
-    
+File system:
+    path_provider:
+        ☐ A Flutter plugin for finding commonly used locations on the filesystem.
+        ☐ https://pub.dev/packages/path_provider

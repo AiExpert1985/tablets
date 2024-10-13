@@ -33,22 +33,22 @@ class _AddUserPopupState extends ConsumerState<AddUserPopup> {
               email: _userEmail,
               password: _userPassword,
             );
-        if (uid != null) {
-          final imageUrl =
-              await ref.read(imageStorageProvider).uploadImage(fileName: uid, file: pickedImage);
-          if (imageUrl != null) {
-            ref.read(firestoreRepositoryProvider).addUser(
-                uid: uid,
-                userName: _userName,
-                email: _userEmail,
-                imageUrl: imageUrl,
-                privilage: _userPrivilage);
-          }
-          // after uploading image, we must reset it
-          ref.read(pickedImageNotifierProvider.notifier).reset();
-          // ignore: use_build_context_synchronously
-          Navigator.of(context).pop();
-        }
+        // if (uid != null) {
+        //   final imageUrl =
+        //       await ref.read(imageStorageProvider).uploadImage(fileName: uid, file: pickedImage);
+        //   if (imageUrl != null) {
+        //     ref.read(firestoreRepositoryProvider).addUser(
+        //         uid: uid,
+        //         userName: _userName,
+        //         email: _userEmail,
+        //         imageUrl: imageUrl,
+        //         privilage: _userPrivilage);
+        //   }
+        //   // after uploading image, we must reset it
+        //   ref.read(pickedImageNotifierProvider.notifier).reset();
+        //   // ignore: use_build_context_synchronously
+        //   Navigator.of(context).pop();
+        // }
       } on FirebaseException catch (e) {
         debugPrint('User Creation Error: ${e.message}');
       }

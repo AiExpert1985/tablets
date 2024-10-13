@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
@@ -7,10 +7,10 @@ class StorageRepository {
   StorageRepository(this._storage);
   final FirebaseStorage _storage;
 
-  Future<String?> uploadImage({required String fileName, required File file}) async {
+  Future<String?> uploadImage({required String fileName, required Uint8List file}) async {
     try {
       final storageRef = _storage.ref().child('images').child('$fileName.jpg');
-      await storageRef.putFile(file);
+      await storageRef.putData(file);
       return await storageRef.getDownloadURL();
     } catch (e) {
       utils.CustomDebug.print(message: e, stackTrace: StackTrace.current);
