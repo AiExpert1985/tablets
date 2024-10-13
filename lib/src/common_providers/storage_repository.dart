@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/utils/utils.dart';
+import 'package:tablets/src/utils/utils.dart' as utils;
 
 class StorageRepository {
   StorageRepository(this._storage);
@@ -13,6 +13,7 @@ class StorageRepository {
       await storageRef.putFile(file);
       return await storageRef.getDownloadURL();
     } catch (e) {
+      utils.CustomDebug.print(message: e, stackTrace: StackTrace.current);
       return null;
     }
   }
@@ -23,7 +24,7 @@ class StorageRepository {
       await storageRef.delete();
       return true;
     } catch (e) {
-      CustomDebug.print(message: e, stackTrace: StackTrace.current);
+      utils.CustomDebug.print(message: e, stackTrace: StackTrace.current);
       return false;
     }
   }
