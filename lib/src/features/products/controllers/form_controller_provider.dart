@@ -6,20 +6,20 @@ import 'package:tablets/src/features/products/controllers/filter_controller_prov
 import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/form_add_dialog.dart';
-import 'package:tablets/src/features/products/view/form_edit_dialog.dart';
+import 'package:tablets/src/features/products/view/adding_form_dialog.dart';
+import 'package:tablets/src/features/products/view/editing_form_dialog.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductFormFieldsController {
   ProductFormFieldsController(
     this._repository,
-    this._userFormData,
-    this._userFilterData,
+    this._formData,
+    this._filterData,
     this._imageSlider,
   );
   final ProductRepository _repository;
-  final UserFormData _userFormData;
-  final ProductSearchNotifier _userFilterData;
+  final UserFormData _formData;
+  final ProductSearchNotifier _filterData;
   final ImageSliderNotifier _imageSlider;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -37,8 +37,8 @@ class ProductFormFieldsController {
   void addProduct(context) async {
     if (!validateForm()) return;
     final updatedUrls = _imageSlider.savedUpdatedImages();
-    _userFormData.update(key: 'imageUrls', value: updatedUrls);
-    final updatedData = _userFormData.getState();
+    _formData.update(key: 'imageUrls', value: updatedUrls);
+    final updatedData = _formData.getState();
     utils.CustomDebug.tempPrint(updatedData);
     final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
     final successful = await _repository.addProductToDB(product: product);
@@ -55,7 +55,7 @@ class ProductFormFieldsController {
     }
     if (context.mounted) closeForm(context);
     // in case user applied a filter and added a new product, below code updates the UI
-    if (_userFilterData.getState.isSearchOn) _userFilterData.applyFilters();
+    if (_filterData.getState.isSearchOn) _filterData.applyFilters();
   }
 
   void showAddForm(BuildContext context) {
@@ -71,11 +71,12 @@ class ProductFormFieldsController {
   /// it happends that user sometimes uploads images then cancel the form
   void _onFormClosing() {
     _imageSlider.close();
-    _userFormData.reset();
+    _formData.reset();
   }
 
   void showEditForm({required BuildContext context, required Product product}) {
     _imageSlider.initialize(urls: product.imageUrls);
+    _formData.initialize(product);
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const EditProductForm(),
@@ -97,14 +98,14 @@ class ProductFormFieldsController {
     }
     if (context.mounted) closeForm(context);
     // update the UI in case user edited the filtered items
-    if (_userFilterData.getState.isSearchOn) _userFilterData.applyFilters();
+    if (_filterData.getState.isSearchOn) _filterData.applyFilters();
   }
 
   void updateProduct(BuildContext context, Product oldProduct) async {
     if (!validateForm()) return;
     final updatedUrls = _imageSlider.savedUpdatedImages();
-    _userFormData.update(key: 'imageUrls', value: updatedUrls);
-    final updatedData = _userFormData.getState();
+    _formData.update(key: 'imageUrls', value: updatedUrls);
+    final updatedData = _formData.getState();
     final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
     final successful =
         await _repository.updateProductInDB(newProduct: product, oldProduct: oldProduct);
@@ -120,7 +121,7 @@ class ProductFormFieldsController {
     }
     if (context.mounted) closeForm(context);
     // update the UI in case user edited the filtered items
-    if (_userFilterData.getState.isSearchOn) _userFilterData.applyFilters();
+    if (_filterData.getState.isSearchOn) _filterData.applyFilters();
   }
 }
 
