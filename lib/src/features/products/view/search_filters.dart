@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/products/controllers/drawer_provider.dart';
 import 'package:tablets/src/utils/field_box_decoration.dart';
-import 'package:tablets/src/common_widgets/icons/custom_icons.dart';
+import 'package:tablets/src/common_widgets/custom_icons.dart';
 import 'package:tablets/src/constants/constants.dart';
 import 'package:tablets/src/features/products/controllers/filter_controller_provider.dart';
 
@@ -18,43 +18,46 @@ class ProductSearchForm extends ConsumerWidget {
     return FormBuilder(
         child: Padding(
       padding: const EdgeInsets.all(30.0),
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
-        GeneralSearchField(
-          dataType: FieldDataTypes.int.name,
-          name: 'code',
-          displayedTitle: S.of(context).product_code,
-        ),
-        FormGap.vertical,
-        GeneralSearchField(
-          dataType: FieldDataTypes.string.name,
-          name: 'name',
-          displayedTitle: S.of(context).product_name,
-        ),
-        FormGap.vertical,
-        GeneralSearchField(
-          dataType: FieldDataTypes.string.name,
-          name: 'category',
-          displayedTitle: S.of(context).product_category,
-        ),
-        FormGap.vertical,
-        FormGap.vertical,
-        Row(
+      child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              onPressed: ref.read(productFilterControllerProvider.notifier).applyFilters,
-              icon: const ApproveIcon(),
+            GeneralSearchField(
+              dataType: FieldDataTypes.int.name,
+              name: 'code',
+              displayedTitle: S.of(context).product_code,
             ),
-            IconButton(
-              onPressed: () {
-                ref.read(productFilterControllerProvider.notifier).clearFilters();
-                ref.read(productsDrawerControllerProvider).drawerController.close();
-              },
-              icon: const CancelIcon(),
+            FormGap.vertical,
+            GeneralSearchField(
+              dataType: FieldDataTypes.string.name,
+              name: 'name',
+              displayedTitle: S.of(context).product_name,
             ),
-          ],
-        )
-      ]),
+            FormGap.vertical,
+            GeneralSearchField(
+              dataType: FieldDataTypes.string.name,
+              name: 'category',
+              displayedTitle: S.of(context).product_category,
+            ),
+            FormGap.vertical,
+            FormGap.vertical,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: ref.read(productFilterControllerProvider.notifier).applyFilters,
+                  icon: const ApproveIcon(),
+                ),
+                IconButton(
+                  onPressed: () {
+                    ref.read(productFilterControllerProvider.notifier).clearFilters();
+                    ref.read(productsDrawerControllerProvider).drawerController.close();
+                  },
+                  icon: const CancelIcon(),
+                ),
+              ],
+            )
+          ]),
     ));
   }
 }

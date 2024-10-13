@@ -6,8 +6,8 @@ import 'package:tablets/src/features/products/controllers/filter_controller_prov
 import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/widgets/forms/form_add.dart';
-import 'package:tablets/src/features/products/view/widgets/forms/form_edit.dart';
+import 'package:tablets/src/features/products/view/form_add_dialog.dart';
+import 'package:tablets/src/features/products/view/form_edit_dialog.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductFormFieldsController {
@@ -87,7 +87,8 @@ class ProductFormFieldsController {
     bool successful = await _repository.deleteProductFromDB(product: product);
     if (successful) {
       if (context.mounted) {
-        utils.UserMessages.success(context: context, message: S.of(context).db_success_deleting_doc);
+        utils.UserMessages.success(
+            context: context, message: S.of(context).db_success_deleting_doc);
       }
     } else {
       if (context.mounted) {
@@ -105,10 +106,12 @@ class ProductFormFieldsController {
     _userFormData.update(key: 'imageUrls', value: updatedUrls);
     final updatedData = _userFormData.getState();
     final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
-    final successful = await _repository.updateProductInDB(newProduct: product, oldProduct: oldProduct);
+    final successful =
+        await _repository.updateProductInDB(newProduct: product, oldProduct: oldProduct);
     if (successful) {
       if (context.mounted) {
-        utils.UserMessages.success(context: context, message: S.of(context).db_success_updaging_doc);
+        utils.UserMessages.success(
+            context: context, message: S.of(context).db_success_updaging_doc);
       }
     } else {
       if (context.mounted) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_widgets/various/async_value_widget.dart';
-import 'package:tablets/src/common_widgets/images/titled_image.dart';
+import 'package:tablets/src/common_widgets/async_value_widget.dart';
+import 'package:tablets/src/common_widgets/image_titled.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';

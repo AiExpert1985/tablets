@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/utils/field_box_decoration.dart';
-import 'package:tablets/src/common_widgets/various/delete_confirmation_dialog.dart';
+import 'package:tablets/src/common_widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/features/categories/view/single_image_picker.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
@@ -53,7 +53,8 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                       initialValue: oldCategory.name,
                       decoration: formFieldDecoration(S.of(context).category),
                       validator: (value) => utils.FormValidation.validateStringField(
-                          fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings),
+                          fieldValue: value,
+                          errorMessage: S.of(context).input_validation_error_message_for_strings),
                       onSaved: (value) => newCategory.name = value!),
                 ),
               ],
@@ -87,7 +88,8 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
             ),
             TextButton(
               onPressed: () async {
-                bool? confiramtion = await showDeleteConfirmationDialog(context: context, message: oldCategory.name);
+                bool? confiramtion =
+                    await showDeleteConfirmationDialog(context: context, message: oldCategory.name);
                 if (confiramtion != null) {
                   categoryController.deleteCategoryInDB(context, oldCategory);
                 }

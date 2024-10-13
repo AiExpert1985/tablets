@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/various/async_value_widget.dart';
+import 'package:tablets/src/common_widgets/async_value_widget.dart';
 import 'package:tablets/src/constants/constants.dart';
 import 'package:tablets/src/features/products/controllers/filter_controller_provider.dart';
 import 'package:tablets/src/features/products/controllers/form_controller_provider.dart';

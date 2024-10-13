@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/image_slider_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:tablets/src/common_widgets/icons/custom_icons.dart';
+import 'package:tablets/src/common_widgets/custom_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 
