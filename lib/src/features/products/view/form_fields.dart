@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
-import 'package:tablets/src/features/products/model/product.dart';
-import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
+
 import 'package:tablets/src/utils/field_box_decoration.dart';
 import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
