@@ -172,8 +172,9 @@ class ProductCategoryFormField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Expanded(
-      child: DropdownSearch<int>(
-        items: (f, cs) => List.generate(30, (i) => i + 1),
+      child: DropdownSearch<String>(
+        selectedItem: 'a',
+        items: (f, cs) => ['a', 'b', 'c'],
         decoratorProps: const DropDownDecoratorProps(
           decoration: InputDecoration(labelText: "Dialog with title", hintText: "Select an Int"),
         ),
