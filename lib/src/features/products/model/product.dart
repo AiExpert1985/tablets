@@ -124,10 +124,10 @@ class Product {
 
   factory Product.fromJson(String source) => Product.fromMap(json.decode(source));
 
+  /// I used only the name because in dropdown_search package, where I use dropdown to select product,
+  /// i need only its name, which automatically taken from toString method here
   @override
-  String toString() {
-    return 'Product(code: $code, name: $name, sellRetailPrice: $sellRetailPrice, sellWholePrice: $sellWholePrice, packageType: $packageType, packageWeight: $packageWeight, numItemsInsidePackage: $numItemsInsidePackage, alertWhenExceeds: $alertWhenExceeds, altertWhenLessThan: $altertWhenLessThan, salesmanComission: $salesmanComission, imageUrls: $imageUrls, category: $category, initialQuantity: $initialQuantity)';
-  }
+  String toString() => name;
 
   @override
   bool operator ==(Object other) {

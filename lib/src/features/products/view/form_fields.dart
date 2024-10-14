@@ -1,9 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/features/products/model/product.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/utils/field_box_decoration.dart';
 import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
@@ -33,11 +36,6 @@ class ProductFormFields extends ConsumerWidget {
               displayedTitle: S.of(context).product_name,
             ),
             constants.FormGap.horizontal,
-            // GeneralFormField(
-            //   dataType: FieldDataTypes.string.name,
-            //   name: 'category',
-            //   displayedTitle: S.of(context).product_category,
-            // ),
             const ProductCategoryFormField()
           ],
         ),
@@ -175,10 +173,14 @@ class ProductCategoryFormField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // final userFormData = ref.watch(productFormDataProvider);
+    // final initialValue = userFormData['category'];
     return Expanded(
-      child: DropdownSearch<UserModel>(
-        items: (filter, t) => getData(filter),
-        compareFn: (i, s) => i.isEqual(s),
+      child: DropdownSearch<Product>(
+        // selectedItem: initialValue,
+        items: (filter, t) =>
+            ref.read(productsRepositoryProvider).fetchFilteredProductsList(filter),
+        compareFn: (i, s) => i == s,
         popupProps: const PopupPropsMultiSelection.dialog(
           showSelectedItems: true,
           showSearchBox: true,
@@ -189,7 +191,7 @@ class ProductCategoryFormField extends ConsumerWidget {
   }
 }
 
-Widget userModelPopupItem(BuildContext context, UserModel item, bool isDisabled, bool isSelected) {
+Widget userModelPopupItem(BuildContext context, Product item, bool isDisabled, bool isSelected) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
@@ -202,67 +204,12 @@ Widget userModelPopupItem(BuildContext context, UserModel item, bool isDisabled,
     child: ListTile(
       selected: isSelected,
       title: Text(item.name),
-      subtitle: Text(item.createdAt.toString()),
-      leading: CircleAvatar(child: Text(item.name[0])),
+      subtitle: Text(item.code.toString()),
+      leading: CircleAvatar(
+        // radius: 70,
+        backgroundColor: Colors.white,
+        foregroundImage: CachedNetworkImageProvider(item.imageUrls[item.imageUrls.length - 1]),
+      ),
     ),
   );
-}
-
-class UserModel {
-  final String id;
-  final DateTime createdAt;
-  final String name;
-  final String avatar;
-
-  UserModel({
-    required this.id,
-    required this.createdAt,
-    required this.name,
-    required this.avatar,
-  });
-
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      id: json["id"],
-      createdAt: DateTime.parse(json["createdAt"]),
-      name: json["name"],
-      avatar: json["avatar"],
-    );
-  }
-
-  static List<UserModel> fromJsonList(List list) {
-    return list.map((item) => UserModel.fromJson(item)).toList();
-  }
-
-  ///this method will prevent the override of toString
-  String userAsString() {
-    return '#$id $name';
-  }
-
-  ///this method will prevent the override of toString
-  bool userFilterByCreationDate(String filter) {
-    return createdAt.toString().contains(filter);
-  }
-
-  ///custom comparing function to check if two users are equal
-  bool isEqual(UserModel model) {
-    return id == model.id;
-  }
-
-  @override
-  String toString() => name;
-}
-
-Future<List<UserModel>> getData(filter) async {
-  var response = await Dio().get(
-    "https://63c1210999c0a15d28e1ec1d.mockapi.io/users",
-    queryParameters: {"filter": filter},
-  );
-
-  final data = response.data;
-  if (data != null) {
-    return UserModel.fromJsonList(data);
-  }
-
-  return [];
 }

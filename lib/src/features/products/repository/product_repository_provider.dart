@@ -69,6 +69,20 @@ class ProductRepository {
   Query<Map<String, dynamic>> _productsRef() {
     return _firestore.collection(collectionName).orderBy(nameKey);
   }
+
+  /// fetch a list filtered based on product name
+  Future<List<Product>> fetchFilteredProductsList(String filter) async {
+    Query query = _firestore.collection(collectionName);
+    query = query
+        .where('name', isGreaterThanOrEqualTo: filter)
+        .where('name', isLessThan: '$filter\uf8ff');
+    final ref = query.withConverter(
+      fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
+      toFirestore: (Product product, options) => product.toMap(),
+    );
+    final snapshot = await ref.get();
+    return snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList();
+  }
 }
 
 final productsRepositoryProvider = Provider<ProductRepository>((ref) {

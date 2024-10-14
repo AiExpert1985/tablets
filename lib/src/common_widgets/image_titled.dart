@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // import 'package:transparent_image/transparent_image.dart';
-import 'package:cached_network_image/cached_network_image.dart' as caching;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class TitledImage extends StatelessWidget {
@@ -18,7 +18,7 @@ class TitledImage extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         children: [
           //! using cached_image_network to avoid reloading images from firebase (extra cost)
-          caching.CachedNetworkImage(
+          CachedNetworkImage(
             fit: BoxFit.cover,
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,

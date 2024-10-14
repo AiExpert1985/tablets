@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
-import 'package:cached_network_image/cached_network_image.dart' as caching;
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 /// this widget shows an image and a button to upload image
@@ -21,7 +21,7 @@ class SingleImagePicker extends ConsumerWidget {
         backgroundColor: Colors.white,
         foregroundImage: pickedImageProvider != null
             ? FileImage(pickedImageProvider)
-            : caching.CachedNetworkImageProvider(imageUrl),
+            : CachedNetworkImageProvider(imageUrl),
       ),
       onTap: () => ref.read(pickedImageNotifierProvider.notifier).updatePickedImage(),
     );
