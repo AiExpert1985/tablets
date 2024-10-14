@@ -188,7 +188,7 @@ class ProductCategoryFormField extends ConsumerWidget {
       child: Center(
         child: DropdownButtonFormField2<String>(
           isExpanded: true,
-
+          decoration: formFieldDecoration(S.of(context).categories),
           hint: Text(
             S.of(context).category_selection,
             style: TextStyle(
@@ -243,12 +243,7 @@ class ProductCategoryFormField extends ConsumerWidget {
             searchInnerWidgetHeight: 50,
             searchInnerWidget: Container(
               height: 50,
-              padding: const EdgeInsets.only(
-                top: 8,
-                bottom: 4,
-                right: 8,
-                left: 8,
-              ),
+              padding: const EdgeInsets.all(8),
               child: TextFormField(
                 textAlign: TextAlign.center,
                 expands: true,
