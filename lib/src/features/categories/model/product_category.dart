@@ -25,12 +25,9 @@ class ProductCategory {
   }
 
   ProductCategory copyWith({String? name, String? imageUrl}) {
-    return ProductCategory(
-        name: name ?? this.name, imageUrl: imageUrl ?? this.imageUrl);
+    return ProductCategory(name: name ?? this.name, imageUrl: imageUrl ?? this.imageUrl);
   }
 
   @override
-  String toString() {
-    return 'ProductCategory($name)';
-  }
+  String toString() => name;
 }

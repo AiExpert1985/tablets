@@ -1,10 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/features/categories/model/product_category.dart';
+import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/utils/field_box_decoration.dart';
@@ -173,25 +174,33 @@ class ProductCategoryFormField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final userFormData = ref.watch(productFormDataProvider);
-    // final initialValue = userFormData['category'];
+    final userFormData = ref.read(productFormDataProvider);
     return Expanded(
-      child: DropdownSearch<Product>(
-        // selectedItem: initialValue,
+      child: DropdownSearch<ProductCategory>(
+        // if new item, then selectedItem should be null
+        selectedItem: userFormData.keys.isNotEmpty
+            ? ProductCategory(name: userFormData['category'], imageUrl: constants.DefaultImage.url)
+            : null,
         items: (filter, t) =>
-            ref.read(productsRepositoryProvider).fetchFilteredProductsList(filter),
+            ref.read(categoriesRepositoryProvider).fetchFilteredCategoriesList(filter),
         compareFn: (i, s) => i == s,
         popupProps: const PopupPropsMultiSelection.dialog(
           showSelectedItems: true,
           showSearchBox: true,
           itemBuilder: userModelPopupItem,
         ),
+        validator: (item) => utils.FormValidation.validateStringField(
+            fieldValue: item?.name,
+            errorMessage: S.of(context).input_validation_error_message_for_strings),
+        onSaved: (item) =>
+            ref.read(productFormDataProvider.notifier).update(key: 'category', value: item?.name),
       ),
     );
   }
 }
 
-Widget userModelPopupItem(BuildContext context, Product item, bool isDisabled, bool isSelected) {
+Widget userModelPopupItem(
+    BuildContext context, ProductCategory item, bool isDisabled, bool isSelected) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
@@ -204,11 +213,11 @@ Widget userModelPopupItem(BuildContext context, Product item, bool isDisabled, b
     child: ListTile(
       selected: isSelected,
       title: Text(item.name),
-      subtitle: Text(item.code.toString()),
+      // subtitle: Text(item.code.toString()),
       leading: CircleAvatar(
         // radius: 70,
         backgroundColor: Colors.white,
-        foregroundImage: CachedNetworkImageProvider(item.imageUrls[item.imageUrls.length - 1]),
+        foregroundImage: CachedNetworkImageProvider(item.imageUrl),
       ),
     ),
   );

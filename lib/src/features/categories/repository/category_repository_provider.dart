@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
 import 'package:tablets/src/features/categories/controller/searched_name_provider.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
-import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 /// the controller works with category forms (through its 'formKey') to update its category object
@@ -137,6 +136,20 @@ class CategoriesRepository {
         toFirestore: (ProductCategory product, options) => product.toMap(),
       );
     }
+  }
+
+  /// fetch a list filtered based on product name
+  Future<List<ProductCategory>> fetchFilteredCategoriesList(String filter) async {
+    Query query = _firestore.collection(collectionName);
+    query = query
+        .where('name', isGreaterThanOrEqualTo: filter)
+        .where('name', isLessThan: '$filter\uf8ff');
+    final ref = query.withConverter(
+      fromFirestore: (doc, _) => ProductCategory.fromMap(doc.data()!),
+      toFirestore: (ProductCategory product, options) => product.toMap(),
+    );
+    final snapshot = await ref.get();
+    return snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList();
   }
 }
 
