@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +41,7 @@ class ProductFormFields extends ConsumerWidget {
             //   name: 'category',
             //   displayedTitle: S.of(context).product_category,
             // ),
-            const ProductCategoryFormField(),
+            const ProductCategoryFormField()
           ],
         ),
         constants.FormGap.vertical,
@@ -169,106 +170,146 @@ class GeneralFormField extends ConsumerWidget {
   }
 }
 
+// class ProductCategoryFormField extends ConsumerWidget {
+//   const ProductCategoryFormField({super.key});
+
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     final userFormData = ref.watch(productFormDataProvider);
+//     dynamic initialValue = userFormData['category'];
+
+//     if (initialValue != null) {
+//       initialValue = initialValue is String ? initialValue : initialValue.toString();
+//     }
+//     final TextEditingController textEditingController = TextEditingController();
+//     final productListValue = ref.read(productsStreamProvider);
+//     List<Map<String, dynamic>> productList = productListValue.value ?? [];
+//     List<Product> items = productList.map((product) => Product.fromMap(product)).toList();
+//     return Expanded(
+//       child: Center(
+//         child: DropdownButtonFormField2<String>(
+//           isExpanded: true,
+//           decoration: formFieldDecoration(S.of(context).categories),
+//           hint: Text(
+//             S.of(context).category_selection,
+//             style: TextStyle(
+//               fontSize: 14,
+//               color: Theme.of(context).hintColor,
+//             ),
+//           ),
+//           items: items
+//               .map((item) => DropdownMenuItem(
+//                     alignment: Alignment.center,
+//                     value: item.name,
+//                     child: Row(
+//                       children: [
+//                         CircleAvatar(
+//                           radius: 20,
+//                           backgroundColor: Colors.white,
+//                           foregroundImage: CachedNetworkImageProvider(item.imageUrls[item.imageUrls.length - 1]),
+//                         ),
+//                         const SizedBox(width: 10),
+//                         Text(item.name, style: const TextStyle(fontSize: 14)),
+//                       ],
+//                     ),
+//                   ))
+//               .toList(),
+
+//           value: initialValue,
+//           onChanged: (value) {},
+//           onSaved: (value) {
+//             ref.watch(productFormDataProvider.notifier).update(key: 'category', value: value);
+//           },
+//           validator: (value) => utils.FormValidation.validateStringField(
+//             fieldValue: value,
+//             errorMessage: S.of(context).input_validation_error_message_for_strings,
+//           ),
+//           buttonStyleData: const ButtonStyleData(
+//             padding: EdgeInsets.symmetric(horizontal: 16),
+//             height: 40,
+//             width: 200,
+//           ),
+//           dropdownStyleData: const DropdownStyleData(
+//             maxHeight: 200,
+//           ),
+//           menuItemStyleData: const MenuItemStyleData(
+//             height: 40,
+//           ),
+//           dropdownSearchData: DropdownSearchData(
+//             searchController: textEditingController,
+//             searchInnerWidgetHeight: 50,
+//             searchInnerWidget: Container(
+//               height: 50,
+//               padding: const EdgeInsets.all(8),
+//               child: TextFormField(
+//                 textAlign: TextAlign.center,
+//                 expands: true,
+//                 maxLines: null,
+//                 controller: textEditingController,
+//                 decoration: InputDecoration(
+//                   isDense: true,
+//                   contentPadding: const EdgeInsets.symmetric(
+//                     horizontal: 10,
+//                     vertical: 8,
+//                   ),
+//                   hintText: '... ${S.of(context).search} ...',
+//                   hintStyle: const TextStyle(fontSize: 12),
+//                   border: OutlineInputBorder(
+//                     borderRadius: BorderRadius.circular(8),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//             searchMatchFn: (item, searchValue) {
+//               return item.value.toString().contains(searchValue);
+//             },
+//           ),
+//           //This to clear the search value when you close the menu
+//           onMenuStateChange: (isOpen) {
+//             if (!isOpen) {
+//               textEditingController.clear();
+//             }
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 class ProductCategoryFormField extends ConsumerWidget {
   const ProductCategoryFormField({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userFormData = ref.watch(productFormDataProvider);
-    dynamic initialValue = userFormData['category'];
-
-    if (initialValue != null) {
-      initialValue = initialValue is String ? initialValue : initialValue.toString();
-    }
-    final TextEditingController textEditingController = TextEditingController();
-    final productListValue = ref.read(productsStreamProvider);
-    List<Map<String, dynamic>> productList = productListValue.value ?? [];
-    List<Product> items = productList.map((product) => Product.fromMap(product)).toList();
     return Expanded(
-      child: Center(
-        child: DropdownButtonFormField2<String>(
-          isExpanded: true,
-          decoration: formFieldDecoration(S.of(context).categories),
-          hint: Text(
-            S.of(context).category_selection,
-            style: TextStyle(
-              fontSize: 14,
-              color: Theme.of(context).hintColor,
-            ),
-          ),
-          items: items
-              .map((item) => DropdownMenuItem(
-                    alignment: Alignment.center,
-                    value: item.name,
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.white,
-                          foregroundImage: CachedNetworkImageProvider(item.imageUrls[item.imageUrls.length - 1]),
-                        ),
-                        const SizedBox(width: 10),
-                        Text(item.name, style: const TextStyle(fontSize: 14)),
-                      ],
-                    ),
-                  ))
-              .toList(),
-          value: initialValue,
-          onChanged: (value) {},
-          onSaved: (value) {
-            ref.watch(productFormDataProvider.notifier).update(key: 'category', value: value);
-          },
-          validator: (value) => utils.FormValidation.validateStringField(
-            fieldValue: value,
-            errorMessage: S.of(context).input_validation_error_message_for_strings,
-          ),
-          buttonStyleData: const ButtonStyleData(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            height: 40,
-            width: 200,
-          ),
-          dropdownStyleData: const DropdownStyleData(
-            maxHeight: 200,
-          ),
-          menuItemStyleData: const MenuItemStyleData(
-            height: 40,
-          ),
-          dropdownSearchData: DropdownSearchData(
-            searchController: textEditingController,
-            searchInnerWidgetHeight: 50,
-            searchInnerWidget: Container(
-              height: 50,
-              padding: const EdgeInsets.all(8),
-              child: TextFormField(
-                textAlign: TextAlign.center,
-                expands: true,
-                maxLines: null,
-                controller: textEditingController,
-                decoration: InputDecoration(
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 8,
-                  ),
-                  hintText: '... ${S.of(context).search} ...',
-                  hintStyle: const TextStyle(fontSize: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-            ),
-            searchMatchFn: (item, searchValue) {
-              return item.value.toString().contains(searchValue);
-            },
-          ),
-          //This to clear the search value when you close the menu
-          onMenuStateChange: (isOpen) {
-            if (!isOpen) {
-              textEditingController.clear();
-            }
-          },
+      child: DropdownSearch<int>(
+        items: (f, cs) => List.generate(30, (i) => i + 1),
+        decoratorProps: const DropDownDecoratorProps(
+          decoration: InputDecoration(labelText: "Dialog with title", hintText: "Select an Int"),
         ),
+        popupProps: PopupProps.dialog(
+          title: Container(
+            decoration: const BoxDecoration(color: Colors.deepPurple),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              S.of(context).categories,
+              style: const TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.white70),
+            ),
+          ),
+          dialogProps: DialogProps(
+            clipBehavior: Clip.antiAlias,
+            shape: OutlineInputBorder(
+              borderSide: const BorderSide(width: 0),
+              borderRadius: BorderRadius.circular(25),
+            ),
+          ),
+        ),
+        validator: (value) => utils.FormValidation.validateDoubleField(
+          fieldValue: value.toString(),
+          errorMessage: S.of(context).input_validation_error_message_for_doubles,
+        ),
+        onSaved: (value) => ref.read(productFormDataProvider.notifier).update(key: 'category', value: value.toString()),
       ),
     );
   }
