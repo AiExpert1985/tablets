@@ -1,6 +1,8 @@
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
+import 'package:image/image.dart' as img;
 
 class CustomDebug {
   static void print({message, stackTrace}) {
@@ -97,4 +99,17 @@ class ListOperations {
   /// find items in the first list that don't exists in second list
   static List<String> twoListsDifferences(List<String> list1, List<String> list2) =>
       list1.where((item) => !list2.toSet().contains(item)).toList();
+}
+
+class ImageOperations {
+// Default result image size is 50 k byte (reduce speed and the cost of firebase)
+// compression depends on image size, the larget image the more compression
+// if image size is small, it will not be compressed
+  static Uint8List? compressImage(Uint8List? image, {int targetImageSizeInBytes = 51200}) {
+    final quality = (image!.length / targetImageSizeInBytes).round();
+    if (quality > 0) {
+      image = img.encodeJpg(img.decodeImage(image)!, quality: quality);
+    }
+    return image;
+  }
 }

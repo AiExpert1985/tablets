@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/utils/utils.dart' as utils;
-import 'package:image/image.dart' as img;
 
 class CustomImagePicker {
   static Future<Uint8List?> selectImage({uploadingMethod, imageSource = 'gallery'}) async {
@@ -12,9 +11,8 @@ class CustomImagePicker {
       final result = await FilePicker.platform.pickFiles(type: FileType.any, allowMultiple: false);
 
       if (result != null && result.files.isNotEmpty) {
-        final image = result.files.first.bytes;
-        final compressedImage = img.encodeJpg(img.decodeImage(image!)!, quality: 10);
-        return compressedImage;
+        Uint8List? image = result.files.first.bytes;
+        return utils.ImageOperations.compressImage(image);
       }
     } catch (e) {
       utils.CustomDebug.print(message: e, stackTrace: StackTrace.current);
