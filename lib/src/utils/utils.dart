@@ -37,7 +37,7 @@ class UserMessages {
       autoCloseDuration: const Duration(seconds: 5),
       type: type,
       style: ToastificationStyle.flatColored,
-      alignment: Alignment.bottomCenter,
+      alignment: Alignment.topCenter,
       showProgressBar: false,
       showIcon: false,
     );
