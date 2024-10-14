@@ -205,15 +205,10 @@ class ProductCategoryFormField extends ConsumerWidget {
                         CircleAvatar(
                           radius: 20,
                           backgroundColor: Colors.white,
-                          foregroundImage: CachedNetworkImageProvider(item.imageUrls[0]),
+                          foregroundImage: CachedNetworkImageProvider(item.imageUrls[item.imageUrls.length - 1]),
                         ),
                         const SizedBox(width: 10),
-                        Text(
-                          item.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                          ),
-                        ),
+                        Text(item.name, style: const TextStyle(fontSize: 14)),
                       ],
                     ),
                   ))
