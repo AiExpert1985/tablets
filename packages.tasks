@@ -108,3 +108,10 @@ File system:
     path_provider:
         ☐ A Flutter plugin for finding commonly used locations on the filesystem.
         ☐ https://pub.dev/packages/path_provider
+
+
+http:
+    dio:
+        ☐ A powerful HTTP networking package for Dart/Flutter, supports Global configuration, Interceptors,
+           FormData, Request cancellation, File uploading/downloading, Timeout, Custom adapters, Transformers, etc.
+        ☐ https://pub.dev/packages/dio

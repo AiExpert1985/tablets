@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -149,15 +150,18 @@ class GeneralFormField extends ConsumerWidget {
         validator: (value) {
           if (dataType == FieldDataTypes.string.name) {
             return utils.FormValidation.validateStringField(
-                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
+                fieldValue: value,
+                errorMessage: S.of(context).input_validation_error_message_for_strings);
           }
           if (dataType == FieldDataTypes.int.name) {
             return utils.FormValidation.validateIntField(
-                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
+                fieldValue: value,
+                errorMessage: S.of(context).input_validation_error_message_for_integers);
           }
           if (dataType == FieldDataTypes.double.name) {
             return utils.FormValidation.validateDoubleField(
-                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
+                fieldValue: value,
+                errorMessage: S.of(context).input_validation_error_message_for_doubles);
           }
           return null;
         },
@@ -172,36 +176,93 @@ class ProductCategoryFormField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Expanded(
-      child: DropdownSearch<String>(
-        selectedItem: 'a',
-        items: (f, cs) => ['a', 'b', 'c'],
-        decoratorProps: const DropDownDecoratorProps(
-          decoration: InputDecoration(labelText: "Dialog with title", hintText: "Select an Int"),
+      child: DropdownSearch<UserModel>(
+        items: (filter, t) => getData(filter),
+        compareFn: (i, s) => i.isEqual(s),
+        popupProps: const PopupPropsMultiSelection.dialog(
+          showSelectedItems: true,
+          showSearchBox: true,
+          itemBuilder: userModelPopupItem,
         ),
-        popupProps: PopupProps.dialog(
-          title: Container(
-            decoration: const BoxDecoration(color: Colors.deepPurple),
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Text(
-              S.of(context).categories,
-              style: const TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.white70),
-            ),
-          ),
-          dialogProps: DialogProps(
-            clipBehavior: Clip.antiAlias,
-            shape: OutlineInputBorder(
-              borderSide: const BorderSide(width: 0),
-              borderRadius: BorderRadius.circular(25),
-            ),
-          ),
-        ),
-        validator: (value) => utils.FormValidation.validateDoubleField(
-          fieldValue: value.toString(),
-          errorMessage: S.of(context).input_validation_error_message_for_doubles,
-        ),
-        onSaved: (value) => ref.read(productFormDataProvider.notifier).update(key: 'category', value: value.toString()),
       ),
     );
   }
+}
+
+Widget userModelPopupItem(BuildContext context, UserModel item, bool isDisabled, bool isSelected) {
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 8),
+    decoration: !isSelected
+        ? null
+        : BoxDecoration(
+            border: Border.all(color: Theme.of(context).primaryColor),
+            borderRadius: BorderRadius.circular(5),
+            color: Colors.white,
+          ),
+    child: ListTile(
+      selected: isSelected,
+      title: Text(item.name),
+      subtitle: Text(item.createdAt.toString()),
+      leading: CircleAvatar(child: Text(item.name[0])),
+    ),
+  );
+}
+
+class UserModel {
+  final String id;
+  final DateTime createdAt;
+  final String name;
+  final String avatar;
+
+  UserModel({
+    required this.id,
+    required this.createdAt,
+    required this.name,
+    required this.avatar,
+  });
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json["id"],
+      createdAt: DateTime.parse(json["createdAt"]),
+      name: json["name"],
+      avatar: json["avatar"],
+    );
+  }
+
+  static List<UserModel> fromJsonList(List list) {
+    return list.map((item) => UserModel.fromJson(item)).toList();
+  }
+
+  ///this method will prevent the override of toString
+  String userAsString() {
+    return '#$id $name';
+  }
+
+  ///this method will prevent the override of toString
+  bool userFilterByCreationDate(String filter) {
+    return createdAt.toString().contains(filter);
+  }
+
+  ///custom comparing function to check if two users are equal
+  bool isEqual(UserModel model) {
+    return id == model.id;
+  }
+
+  @override
+  String toString() => name;
+}
+
+Future<List<UserModel>> getData(filter) async {
+  var response = await Dio().get(
+    "https://63c1210999c0a15d28e1ec1d.mockapi.io/users",
+    queryParameters: {"filter": filter},
+  );
+
+  final data = response.data;
+  if (data != null) {
+    return UserModel.fromJsonList(data);
+  }
+
+  return [];
 }

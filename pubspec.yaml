@@ -60,6 +60,7 @@ dependencies:
   path_provider: ^2.1.4
   image: ^4.2.0
   dropdown_search: ^6.0.1
+  dio: ^5.7.0
 
 dev_dependencies:
   flutter_test:
