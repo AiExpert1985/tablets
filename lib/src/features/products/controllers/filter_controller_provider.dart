@@ -76,10 +76,6 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
     });
     state = state.copyWith(isSearchOn: true, filteredList: AsyncValue.data(filteredProductList));
   }
-
-  void clearFilters() {
-    reset();
-  }
 }
 
 final productFilterControllerProvider = StateNotifierProvider<ProductSearchNotifier, ProductListFilter>((ref) {
