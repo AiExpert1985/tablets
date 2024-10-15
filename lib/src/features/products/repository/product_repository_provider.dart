@@ -2,14 +2,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_providers/storage_repository.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductRepository {
-  ProductRepository(this._firestore, this._imageStorage);
+  ProductRepository(this._firestore);
   final FirebaseFirestore _firestore;
-  final StorageRepository _imageStorage;
 
   static String collectionName = 'products';
   static String nameKey = 'name';
@@ -42,8 +40,6 @@ class ProductRepository {
     }
   }
 
-  Future<bool> deleteImageFromDb(String url) async => await _imageStorage.deleteImage(url);
-
   Future<bool> deleteProductFromDB({required Product product}) async {
     try {
       final querySnapshot =
@@ -59,23 +55,32 @@ class ProductRepository {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> watchProductsList() {
-    final ref = _productsRef();
+  Stream<List<Map<String, dynamic>>> watchMapList() {
+    final ref = _firestore.collection(collectionName).orderBy(nameKey);
     return ref
         .snapshots()
         .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
-  Query<Map<String, dynamic>> _productsRef() {
-    return _firestore.collection(collectionName).orderBy(nameKey);
+  /// below function was not tested
+  Stream<List<Product>> watchProductList() {
+    final query = _firestore.collection(collectionName).orderBy(nameKey);
+    final ref = query.withConverter(
+      fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
+      toFirestore: (Product product, options) => product.toMap(),
+    );
+    return ref
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
-  /// fetch a list filtered based on product name
-  Future<List<Product>> fetchFilteredProductsList(String filter) async {
+  Future<List<Product>> fetchProductsList({String? filterKey, String? filterValue}) async {
     Query query = _firestore.collection(collectionName);
-    query = query
-        .where('name', isGreaterThanOrEqualTo: filter)
-        .where('name', isLessThan: '$filter\uf8ff');
+    if (filterKey != null) {
+      query = query
+          .where(filterKey, isGreaterThanOrEqualTo: filterValue)
+          .where(filterKey, isLessThan: '$filterValue\uf8ff');
+    }
     final ref = query.withConverter(
       fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
       toFirestore: (Product product, options) => product.toMap(),
@@ -83,10 +88,21 @@ class ProductRepository {
     final snapshot = await ref.get();
     return snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList();
   }
+
+  /// below function was not tested
+  Future<List<Map<String, dynamic>>> fetchMapList({String? filterKey, String? filterValue}) async {
+    Query query = _firestore.collection(collectionName);
+    if (filterKey != null) {
+      query = query
+          .where(filterKey, isGreaterThanOrEqualTo: filterValue)
+          .where(filterKey, isLessThan: '$filterValue\uf8ff');
+    }
+    final snapshot = await query.get();
+    return snapshot.docs.map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>).toList();
+  }
 }
 
 final productsRepositoryProvider = Provider<ProductRepository>((ref) {
-  final imageStorage = ref.read(imageStorageProvider);
   final firestore = FirebaseFirestore.instance;
-  return ProductRepository(firestore, imageStorage);
+  return ProductRepository(firestore);
 });

@@ -138,12 +138,14 @@ class CategoriesRepository {
     }
   }
 
-  /// fetch a list filtered based on product name
-  Future<List<ProductCategory>> fetchFilteredCategoriesList(String filter) async {
+  Future<List<ProductCategory>> fetchCategoriesAsCategoryList(
+      {String? filterKey, String? filterValue}) async {
     Query query = _firestore.collection(collectionName);
-    query = query
-        .where('name', isGreaterThanOrEqualTo: filter)
-        .where('name', isLessThan: '$filter\uf8ff');
+    if (filterKey != null) {
+      query = query
+          .where(filterKey, isGreaterThanOrEqualTo: filterValue)
+          .where(filterKey, isLessThan: '$filterValue\uf8ff');
+    }
     final ref = query.withConverter(
       fromFirestore: (doc, _) => ProductCategory.fromMap(doc.data()!),
       toFirestore: (ProductCategory product, options) => product.toMap(),

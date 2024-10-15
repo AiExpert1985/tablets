@@ -3,5 +3,5 @@ import 'package:tablets/src/features/products/repository/product_repository_prov
 
 final productsStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   final productsRepository = ref.watch(productsRepositoryProvider);
-  return productsRepository.watchProductsList();
+  return productsRepository.watchMapList();
 });
