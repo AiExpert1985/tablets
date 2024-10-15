@@ -61,8 +61,8 @@ class EditProductForm extends ConsumerWidget {
             },
             icon: const DeleteIcon())
       ],
-      widthRatio: 0.5,
-      heightRatio: 0.75,
+      width: 600,
+      height: 600,
     );
   }
 }

@@ -6,7 +6,7 @@ class FormGap {
 }
 
 class ImageToFormFieldsGap {
-  static const vertical = SizedBox(height: 15);
+  static const vertical = SizedBox(height: 20);
 }
 
 class FormImageToButtonGap {

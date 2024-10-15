@@ -185,12 +185,9 @@ class ProductCategoryFormField extends ConsumerWidget {
         compareFn: (i, s) => i == s,
         popupProps: PopupProps.dialog(
           dialogProps: DialogProps(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // adjust border radius
-              // side: const BorderSide(width: 2, color: Colors.grey), // adjust border style
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
-          // fit: FlexFit.loose,
+          fit: FlexFit.loose,
           showSearchBox: true,
           itemBuilder: popUpItem,
           searchFieldProps: TextFieldProps(

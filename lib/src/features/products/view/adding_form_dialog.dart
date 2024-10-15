@@ -32,8 +32,8 @@ class AddProductForm extends ConsumerWidget {
         IconButton(onPressed: () => formController.addProduct(context), icon: const ApproveIcon()),
         IconButton(onPressed: () => Navigator.of(context).pop(), icon: const CancelIcon()),
       ],
-      widthRatio: 0.5,
-      heightRatio: 0.9,
+      width: 600,
+      height: 600,
     );
   }
 }
