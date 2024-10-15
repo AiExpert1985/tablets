@@ -26,9 +26,9 @@ class EditProductForm extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ImageSlider(
-            userFormData['imageUrls'] ?? [constants.DefaultImage.url],
+            userFormData['imageUrls'] ?? [constants.defaultImageUrl],
           ),
-          constants.ImageToFormFieldsGap.vertical,
+          constants.VerticalGap.formImageToFields,
           const ProductFormFields(
             editMode: true,
           ),

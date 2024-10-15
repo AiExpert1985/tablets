@@ -38,7 +38,7 @@ class ImageSlider extends ConsumerWidget {
             initialPage: -1, // initially display last image
           ),
         ),
-        constants.FormImageToButtonGap.vertical,
+        constants.VerticalGap.formImageToButtons,
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           IconButton(
             onPressed: () => ref.read(imageSliderNotifierProvider.notifier).addImage(),

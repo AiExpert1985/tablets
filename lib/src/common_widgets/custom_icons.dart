@@ -9,7 +9,7 @@ class ApproveIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       const Icon(Icons.check, color: Colors.green),
-      constants.IconToTextGap.vertical,
+      constants.VerticalGap.iconToText,
       Text(S.of(context).save)
     ]);
   }
@@ -22,7 +22,7 @@ class CancelIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       const Icon(Icons.close),
-      constants.IconToTextGap.vertical,
+      constants.VerticalGap.iconToText,
       Text(S.of(context).cancel),
     ]);
   }
@@ -36,7 +36,7 @@ class DeleteIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.delete, color: Colors.red),
-        constants.IconToTextGap.vertical,
+        constants.VerticalGap.iconToText,
         Text(S.of(context).delete),
       ],
     );
@@ -51,7 +51,7 @@ class AddIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.add, color: Colors.white),
-        constants.IconToTextGap.vertical,
+        constants.VerticalGap.iconToText,
         Text(S.of(context).add),
       ],
     );
@@ -66,7 +66,7 @@ class SearchIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.search, color: Colors.red),
-        constants.IconToTextGap.vertical,
+        constants.VerticalGap.iconToText,
         Text(S.of(context).search),
       ],
     );
@@ -81,7 +81,7 @@ class ReportsIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.report, color: Colors.red),
-        constants.IconToTextGap.vertical,
+        constants.VerticalGap.iconToText,
         Text(S.of(context).reports),
       ],
     );
@@ -96,7 +96,7 @@ class AddImageIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.image),
-        constants.IconToTextGap.vertical,
+        constants.VerticalGap.iconToText,
         Text(S.of(context).add),
       ],
     );

@@ -122,7 +122,7 @@ class CategoryController {
 
   void deleteCategoryInDB(BuildContext context, ProductCategory category) async {
     // we don't want to delete image if its the default image
-    bool deleteImage = category.imageUrl != constants.DefaultImage.url;
+    bool deleteImage = category.imageUrl != constants.defaultImageUrl;
     bool successful = await ref
         .read(categoriesRepositoryProvider)
         .deleteCategoryInDB(category: category, deleteImage: deleteImage);

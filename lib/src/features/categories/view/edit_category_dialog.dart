@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/utils/field_box_decoration.dart';
 import 'package:tablets/src/common_widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/features/categories/view/single_image_picker.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
@@ -46,14 +45,15 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SingleImagePicker(imageUrl: oldCategory.imageUrl),
-                constants.ImageToFormFieldsGap.vertical,
+                constants.VerticalGap.formImageToFields,
                 Expanded(
                   child: TextFormField(
                       textAlign: TextAlign.center,
                       initialValue: oldCategory.name,
-                      decoration: formFieldDecoration(label: S.of(context).category),
+                      decoration: utils.formFieldDecoration(label: S.of(context).category),
                       validator: (value) => utils.FormValidation.validateStringField(
-                          fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings),
+                          fieldValue: value,
+                          errorMessage: S.of(context).input_validation_error_message_for_strings),
                       onSaved: (value) => newCategory.name = value!),
                 ),
               ],
@@ -70,7 +70,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
               child: Column(
                 children: [
                   const Icon(Icons.check, color: Colors.green),
-                  constants.IconToTextGap.vertical,
+                  constants.VerticalGap.iconToText,
                   Text(S.of(context).save),
                 ],
               ),
@@ -80,14 +80,15 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
               child: Column(
                 children: [
                   const Icon(Icons.close),
-                  constants.IconToTextGap.vertical,
+                  constants.VerticalGap.iconToText,
                   Text(S.of(context).cancel),
                 ],
               ),
             ),
             TextButton(
               onPressed: () async {
-                bool? confiramtion = await showDeleteConfirmationDialog(context: context, message: oldCategory.name);
+                bool? confiramtion =
+                    await showDeleteConfirmationDialog(context: context, message: oldCategory.name);
                 if (confiramtion != null) {
                   categoryController.deleteCategoryInDB(context, oldCategory);
                 }
@@ -95,7 +96,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
               child: Column(
                 children: [
                   const Icon(Icons.delete, color: Colors.red),
-                  constants.IconToTextGap.vertical,
+                  constants.VerticalGap.iconToText,
                   Text(S.of(context).delete),
                 ],
               ),

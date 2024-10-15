@@ -8,7 +8,7 @@ class ProductCategory {
   // a second constructor
   ProductCategory.defaultValues()
       : name = 'temp category',
-        imageUrl = constants.DefaultImage.url;
+        imageUrl = constants.defaultImageUrl;
 
   factory ProductCategory.fromMap(Map<String, dynamic> map) {
     return ProductCategory(

@@ -6,8 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
-
-import 'package:tablets/src/utils/field_box_decoration.dart';
 import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/utils/utils.dart' as utils;
@@ -29,17 +27,17 @@ class ProductFormFields extends ConsumerWidget {
               name: 'code',
               displayedTitle: S.of(context).product_code,
             ),
-            constants.FormGap.horizontal,
+            constants.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.string.name,
               name: 'name',
               displayedTitle: S.of(context).product_name,
             ),
-            constants.FormGap.horizontal,
+            constants.HorizontalGap.formFieldToField,
             const ProductCategoryFormField()
           ],
         ),
-        constants.FormGap.vertical,
+        constants.VerticalGap.formFieldToField,
         Row(
           children: [
             GeneralFormField(
@@ -47,13 +45,13 @@ class ProductFormFields extends ConsumerWidget {
               name: 'sellRetailPrice',
               displayedTitle: S.of(context).product_sell_retail_price,
             ),
-            constants.FormGap.horizontal,
+            constants.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.double.name,
               name: 'sellWholePrice',
               displayedTitle: S.of(context).product_sell_whole_price,
             ),
-            constants.FormGap.horizontal,
+            constants.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.double.name,
               name: 'salesmanComission',
@@ -61,7 +59,7 @@ class ProductFormFields extends ConsumerWidget {
             ),
           ],
         ),
-        constants.FormGap.vertical,
+        constants.VerticalGap.formFieldToField,
         Row(
           children: [
             GeneralFormField(
@@ -69,13 +67,13 @@ class ProductFormFields extends ConsumerWidget {
               name: 'initialQuantity',
               displayedTitle: S.of(context).product_initial_quantitiy,
             ),
-            constants.FormGap.horizontal,
+            constants.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.int.name,
               name: 'altertWhenLessThan',
               displayedTitle: S.of(context).product_altert_when_less_than,
             ),
-            constants.FormGap.horizontal,
+            constants.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.int.name,
               name: 'alertWhenExceeds',
@@ -83,7 +81,7 @@ class ProductFormFields extends ConsumerWidget {
             ),
           ],
         ),
-        constants.FormGap.vertical,
+        constants.VerticalGap.formFieldToField,
         Row(
           children: [
             GeneralFormField(
@@ -91,13 +89,13 @@ class ProductFormFields extends ConsumerWidget {
               name: 'packageType',
               displayedTitle: S.of(context).product_package_type,
             ),
-            constants.FormGap.horizontal,
+            constants.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.double.name,
               name: 'packageWeight',
               displayedTitle: S.of(context).product_package_weight,
             ),
-            constants.FormGap.horizontal,
+            constants.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.int.name,
               name: 'numItemsInsidePackage',
@@ -134,7 +132,7 @@ class GeneralFormField extends ConsumerWidget {
       child: FormBuilderTextField(
         name: name,
         initialValue: initialValue,
-        decoration: formFieldDecoration(label: displayedTitle),
+        decoration: utils.formFieldDecoration(label: displayedTitle),
         onSaved: (value) {
           dynamic userValue = value;
           if (dataType == FieldDataTypes.int.name) {
@@ -148,15 +146,18 @@ class GeneralFormField extends ConsumerWidget {
         validator: (value) {
           if (dataType == FieldDataTypes.string.name) {
             return utils.FormValidation.validateStringField(
-                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
+                fieldValue: value,
+                errorMessage: S.of(context).input_validation_error_message_for_strings);
           }
           if (dataType == FieldDataTypes.int.name) {
             return utils.FormValidation.validateIntField(
-                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
+                fieldValue: value,
+                errorMessage: S.of(context).input_validation_error_message_for_integers);
           }
           if (dataType == FieldDataTypes.double.name) {
             return utils.FormValidation.validateDoubleField(
-                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
+                fieldValue: value,
+                errorMessage: S.of(context).input_validation_error_message_for_doubles);
           }
           return null;
         },
@@ -175,13 +176,14 @@ class ProductCategoryFormField extends ConsumerWidget {
       child: DropdownSearch<ProductCategory>(
         mode: Mode.form,
         decoratorProps: DropDownDecoratorProps(
-          decoration: formFieldDecoration(label: S.of(context).category),
+          decoration: utils.formFieldDecoration(label: S.of(context).category),
         ),
         // if new item, then selectedItem should be null
         selectedItem: userFormData.keys.isNotEmpty
-            ? ProductCategory(name: userFormData['category'], imageUrl: constants.DefaultImage.url)
+            ? ProductCategory(name: userFormData['category'], imageUrl: constants.defaultImageUrl)
             : null,
-        items: (filter, t) => ref.read(categoriesRepositoryProvider).fetchFilteredCategoriesList(filter),
+        items: (filter, t) =>
+            ref.read(categoriesRepositoryProvider).fetchFilteredCategoriesList(filter),
         compareFn: (i, s) => i == s,
         popupProps: PopupProps.dialog(
           dialogProps: DialogProps(
@@ -193,13 +195,15 @@ class ProductCategoryFormField extends ConsumerWidget {
           searchFieldProps: TextFieldProps(
             autofocus: true,
             textAlign: TextAlign.center,
-            decoration: formFieldDecoration(),
+            decoration: utils.formFieldDecoration(),
           ),
         ),
         validator: (item) => utils.FormValidation.validateStringField(
-            fieldValue: item?.name, errorMessage: S.of(context).input_validation_error_message_for_strings),
+            fieldValue: item?.name,
+            errorMessage: S.of(context).input_validation_error_message_for_strings),
         itemAsString: (item) => item.name,
-        onSaved: (item) => ref.read(productFormDataProvider.notifier).update(key: 'category', value: item?.name),
+        onSaved: (item) =>
+            ref.read(productFormDataProvider.notifier).update(key: 'category', value: item?.name),
       ),
     );
   }

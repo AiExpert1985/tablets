@@ -3,10 +3,10 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/products/controllers/drawer_provider.dart';
-import 'package:tablets/src/utils/field_box_decoration.dart';
 import 'package:tablets/src/common_widgets/custom_icons.dart';
-import 'package:tablets/src/constants/constants.dart';
+import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/controllers/filter_controller_provider.dart';
+import 'package:tablets/src/utils/utils.dart' as utils;
 
 class ProductSearchForm extends ConsumerWidget {
   const ProductSearchForm({super.key});
@@ -16,46 +16,49 @@ class ProductSearchForm extends ConsumerWidget {
     return FormBuilder(
         child: Padding(
       padding: const EdgeInsets.all(30.0),
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
-        GeneralSearchField(
-          filterCriteria: FilterCriteria.equals.name,
-          dataType: DataTypes.int.name,
-          name: 'code',
-          displayedTitle: S.of(context).product_code,
-        ),
-        FormGap.vertical,
-        GeneralSearchField(
-          filterCriteria: FilterCriteria.contains.name,
-          dataType: DataTypes.string.name,
-          name: 'name',
-          displayedTitle: S.of(context).product_name,
-        ),
-        FormGap.vertical,
-        GeneralSearchField(
-          filterCriteria: FilterCriteria.contains.name,
-          dataType: DataTypes.string.name,
-          name: 'category',
-          displayedTitle: S.of(context).product_category,
-        ),
-        FormGap.vertical,
-        FormGap.vertical,
-        Row(
+      child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              onPressed: ref.read(productFilterControllerProvider.notifier).applyFilters,
-              icon: const ApproveIcon(),
+            GeneralSearchField(
+              filterCriteria: FilterCriteria.equals.name,
+              dataType: DataTypes.int.name,
+              name: 'code',
+              displayedTitle: S.of(context).product_code,
             ),
-            IconButton(
-              onPressed: () {
-                ref.read(productFilterControllerProvider.notifier).reset();
-                ref.read(productsDrawerControllerProvider).drawerController.close();
-              },
-              icon: const CancelIcon(),
+            constants.VerticalGap.formFieldToField,
+            GeneralSearchField(
+              filterCriteria: FilterCriteria.contains.name,
+              dataType: DataTypes.string.name,
+              name: 'name',
+              displayedTitle: S.of(context).product_name,
             ),
-          ],
-        )
-      ]),
+            constants.VerticalGap.formFieldToField,
+            GeneralSearchField(
+              filterCriteria: FilterCriteria.contains.name,
+              dataType: DataTypes.string.name,
+              name: 'category',
+              displayedTitle: S.of(context).product_category,
+            ),
+            constants.VerticalGap.formFieldToField,
+            constants.VerticalGap.formFieldToField,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: ref.read(productFilterControllerProvider.notifier).applyFilters,
+                  icon: const ApproveIcon(),
+                ),
+                IconButton(
+                  onPressed: () {
+                    ref.read(productFilterControllerProvider.notifier).reset();
+                    ref.read(productsDrawerControllerProvider).drawerController.close();
+                  },
+                  icon: const CancelIcon(),
+                ),
+              ],
+            )
+          ]),
     ));
   }
 }
@@ -85,10 +88,9 @@ class GeneralSearchField extends ConsumerWidget {
     return FormBuilderTextField(
       name: name,
       initialValue: initialValue,
-      decoration: formFieldDecoration(label: displayedTitle),
-      onChanged: (value) => ref
-          .read(productFilterControllerProvider.notifier)
-          .updateFieldValue(key: name, value: value, dataType: dataType, filterCriteria: filterCriteria),
+      decoration: utils.formFieldDecoration(label: displayedTitle),
+      onChanged: (value) => ref.read(productFilterControllerProvider.notifier).updateFieldValue(
+          key: name, value: value, dataType: dataType, filterCriteria: filterCriteria),
     );
   }
 }

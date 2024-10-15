@@ -29,7 +29,7 @@ class ImageSliderNotifier extends StateNotifier<List<String>> {
   List<String> removedUrls = [];
 
   void initialize({List<String>? urls}) {
-    state = urls ?? [constants.DefaultImage.url];
+    state = urls ?? [constants.defaultImageUrl];
     addedUrls = [];
     removedUrls = [];
   }
@@ -49,7 +49,7 @@ class ImageSliderNotifier extends StateNotifier<List<String>> {
   }
 
   void removeImage(int urlIndex) async {
-    if (state[urlIndex] == constants.DefaultImage.url) return; // don't remove default image
+    if (state[urlIndex] == constants.defaultImageUrl) return; // don't remove default image
     removedUrls.add(state[urlIndex]);
     List<String> tempList = [...state];
     tempList.removeAt(urlIndex);

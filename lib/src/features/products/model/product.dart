@@ -15,7 +15,7 @@ Product _defaultProduct = Product(
     alertWhenExceeds: 110011,
     altertWhenLessThan: 110011,
     salesmanComission: 110011,
-    imageUrls: [constants.DefaultImage.url],
+    imageUrls: [constants.defaultImageUrl],
     category: 'NA',
     initialQuantity: 110011);
 

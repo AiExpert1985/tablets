@@ -39,7 +39,7 @@ Future<bool?> showDeleteConfirmationDialog(
                 child: Column(
                   children: [
                     const Icon(Icons.check, color: Colors.red),
-                    constants.IconToTextGap.vertical,
+                    constants.VerticalGap.iconToText,
                     Text(S.of(context).delete),
                   ],
                 ),
@@ -49,7 +49,7 @@ Future<bool?> showDeleteConfirmationDialog(
                 child: Column(
                   children: [
                     const Icon(Icons.close),
-                    constants.IconToTextGap.vertical,
+                    constants.VerticalGap.iconToText,
                     Text(S.of(context).cancel),
                   ],
                 ),

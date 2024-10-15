@@ -21,22 +21,22 @@ class MainDrawer extends StatelessWidget {
                         iconName: 'products',
                         title: S.of(context).products,
                         routeName: AppRoute.products.name),
-                    constants.DrawerGap.vertical,
+                    constants.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
                         iconName: 'categories',
                         title: S.of(context).categories,
                         routeName: AppRoute.categories.name),
-                    constants.DrawerGap.vertical,
+                    constants.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
                         iconName: 'categories',
                         title: S.of(context).pending_bills,
                         routeName: AppRoute.pendingBills.name),
-                    constants.DrawerGap.vertical,
+                    constants.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
                         iconName: 'categories',
                         title: S.of(context).categories,
                         routeName: AppRoute.categories.name),
-                    constants.DrawerGap.vertical,
+                    constants.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
                         iconName: 'categories',
                         title: S.of(context).categories,
