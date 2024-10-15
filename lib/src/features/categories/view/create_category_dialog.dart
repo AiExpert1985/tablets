@@ -4,7 +4,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/categories/view/single_image_picker.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/constants/gaps.dart' as gaps;
 
 class CreateCategoryDialog extends ConsumerStatefulWidget {
   const CreateCategoryDialog({super.key});
@@ -37,7 +37,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SingleImagePicker(imageUrl: currentCategory.imageUrl),
-                constants.VerticalGap.formImageToFields,
+                gaps.VerticalGap.formImageToFields,
                 Expanded(
                   child: TextFormField(
                     textAlign: TextAlign.center,
@@ -64,7 +64,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
               child: Column(
                 children: [
                   const Icon(Icons.check, color: Colors.green),
-                  constants.VerticalGap.iconToText,
+                  gaps.VerticalGap.iconToText,
                   Text(S.of(context).save),
                 ],
               ),
@@ -74,7 +74,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
               child: Column(
                 children: [
                   const Icon(Icons.close),
-                  constants.VerticalGap.iconToText,
+                  gaps.VerticalGap.iconToText,
                   Text(S.of(context).cancel),
                 ],
               ),

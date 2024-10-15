@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/constants/gaps.dart' as gaps;
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -21,27 +21,27 @@ class MainDrawer extends StatelessWidget {
                         iconName: 'products',
                         title: S.of(context).products,
                         routeName: AppRoute.products.name),
-                    constants.VerticalGap.mainDrawerIconToIcon,
+                    gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
                         iconName: 'categories',
                         title: S.of(context).categories,
                         routeName: AppRoute.categories.name),
-                    constants.VerticalGap.mainDrawerIconToIcon,
+                    gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
                         iconName: 'categories',
                         title: S.of(context).pending_bills,
                         routeName: AppRoute.pendingBills.name),
-                    constants.VerticalGap.mainDrawerIconToIcon,
+                    gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
                         iconName: 'categories',
                         title: S.of(context).categories,
                         routeName: AppRoute.categories.name),
-                    constants.VerticalGap.mainDrawerIconToIcon,
+                    gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
                         iconName: 'categories',
                         title: S.of(context).categories,
                         routeName: AppRoute.categories.name),
-                    constants.PushWidgets.toEnd,
+                    gaps.PushWidgets.toEnd,
                     MainDrawerButton(
                         iconName: 'categories',
                         title: S.of(context).pending_bills,

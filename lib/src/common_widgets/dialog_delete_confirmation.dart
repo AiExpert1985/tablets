@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/constants/gaps.dart' as gaps;
 
 /// show a dialog to ask user to confirm the deletion
 /// return true if user confirmed the deletion
@@ -39,7 +39,7 @@ Future<bool?> showDeleteConfirmationDialog(
                 child: Column(
                   children: [
                     const Icon(Icons.check, color: Colors.red),
-                    constants.VerticalGap.iconToText,
+                    gaps.VerticalGap.iconToText,
                     Text(S.of(context).delete),
                   ],
                 ),
@@ -49,7 +49,7 @@ Future<bool?> showDeleteConfirmationDialog(
                 child: Column(
                   children: [
                     const Icon(Icons.close),
-                    constants.VerticalGap.iconToText,
+                    gaps.VerticalGap.iconToText,
                     Text(S.of(context).cancel),
                   ],
                 ),

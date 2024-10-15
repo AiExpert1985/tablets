@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/products/controllers/drawer_provider.dart';
 import 'package:tablets/src/common_widgets/custom_icons.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/constants/gaps.dart' as gaps;
 import 'package:tablets/src/features/products/controllers/filter_controller_provider.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
@@ -26,22 +26,22 @@ class ProductSearchForm extends ConsumerWidget {
               name: 'code',
               displayedTitle: S.of(context).product_code,
             ),
-            constants.VerticalGap.formFieldToField,
+            gaps.VerticalGap.formFieldToField,
             GeneralSearchField(
               filterCriteria: FilterCriteria.contains.name,
               dataType: DataTypes.string.name,
               name: 'name',
               displayedTitle: S.of(context).product_name,
             ),
-            constants.VerticalGap.formFieldToField,
+            gaps.VerticalGap.formFieldToField,
             GeneralSearchField(
               filterCriteria: FilterCriteria.contains.name,
               dataType: DataTypes.string.name,
               name: 'category',
               displayedTitle: S.of(context).product_category,
             ),
-            constants.VerticalGap.formFieldToField,
-            constants.VerticalGap.formFieldToField,
+            gaps.VerticalGap.formFieldToField,
+            gaps.VerticalGap.formFieldToField,
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -1,6 +1,5 @@
-import 'package:flutter_cache_manager/flutter_cache_manager.dart'
-    as caching_manager;
-// import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:flutter_cache_manager/flutter_cache_manager.dart' as caching_manager;
+// import 'package:tablets/src/constants/gaps.dart' as constants;
 
 void customInialization() {
   clearCachedNetworkImages();
@@ -16,5 +15,5 @@ void clearCachedNetworkImages() {
 
 // I didn't any good way to run static method when class is loaded, so I run below code
 // void initializDefaultImageFile() {
-//   constants.DefaultImage.initializDefaultImageFile();
+//   gaps.DefaultImage.initializDefaultImageFile();
 // }

@@ -2,8 +2,8 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
 import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/constants/constants.dart' as constants;
 
 class CustomImagePicker {
   static Future<Uint8List?> selectImage({uploadingMethod, imageSource = 'gallery'}) async {

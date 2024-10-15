@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/constants/gaps.dart' as gaps;
 
 class ApproveIcon extends StatelessWidget {
   const ApproveIcon({super.key});
@@ -9,7 +9,7 @@ class ApproveIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       const Icon(Icons.check, color: Colors.green),
-      constants.VerticalGap.iconToText,
+      gaps.VerticalGap.iconToText,
       Text(S.of(context).save)
     ]);
   }
@@ -22,7 +22,7 @@ class CancelIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       const Icon(Icons.close),
-      constants.VerticalGap.iconToText,
+      gaps.VerticalGap.iconToText,
       Text(S.of(context).cancel),
     ]);
   }
@@ -36,7 +36,7 @@ class DeleteIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.delete, color: Colors.red),
-        constants.VerticalGap.iconToText,
+        gaps.VerticalGap.iconToText,
         Text(S.of(context).delete),
       ],
     );
@@ -51,7 +51,7 @@ class AddIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.add, color: Colors.white),
-        constants.VerticalGap.iconToText,
+        gaps.VerticalGap.iconToText,
         Text(S.of(context).add),
       ],
     );
@@ -66,7 +66,7 @@ class SearchIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.search, color: Colors.red),
-        constants.VerticalGap.iconToText,
+        gaps.VerticalGap.iconToText,
         Text(S.of(context).search),
       ],
     );
@@ -81,7 +81,7 @@ class ReportsIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.report, color: Colors.red),
-        constants.VerticalGap.iconToText,
+        gaps.VerticalGap.iconToText,
         Text(S.of(context).reports),
       ],
     );
@@ -96,7 +96,7 @@ class AddImageIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.image),
-        constants.VerticalGap.iconToText,
+        gaps.VerticalGap.iconToText,
         Text(S.of(context).add),
       ],
     );

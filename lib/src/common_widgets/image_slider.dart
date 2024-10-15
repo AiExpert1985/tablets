@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:tablets/src/common_widgets/custom_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/constants/gaps.dart' as gaps;
 
 class ImageSlider extends ConsumerWidget {
   const ImageSlider(this.imageUrls, {super.key});
@@ -38,7 +38,7 @@ class ImageSlider extends ConsumerWidget {
             initialPage: -1, // initially display last image
           ),
         ),
-        constants.VerticalGap.formImageToButtons,
+        gaps.VerticalGap.formImageToButtons,
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           IconButton(
             onPressed: () => ref.read(imageSliderNotifierProvider.notifier).addImage(),

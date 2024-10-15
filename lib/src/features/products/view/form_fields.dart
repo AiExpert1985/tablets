@@ -7,8 +7,9 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/constants/gaps.dart' as gaps;
 import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/constants/constants.dart' as constants;
 
 enum FieldDataTypes { int, double, string }
 
@@ -27,17 +28,17 @@ class ProductFormFields extends ConsumerWidget {
               name: 'code',
               displayedTitle: S.of(context).product_code,
             ),
-            constants.HorizontalGap.formFieldToField,
+            gaps.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.string.name,
               name: 'name',
               displayedTitle: S.of(context).product_name,
             ),
-            constants.HorizontalGap.formFieldToField,
+            gaps.HorizontalGap.formFieldToField,
             const ProductCategoryFormField()
           ],
         ),
-        constants.VerticalGap.formFieldToField,
+        gaps.VerticalGap.formFieldToField,
         Row(
           children: [
             GeneralFormField(
@@ -45,13 +46,13 @@ class ProductFormFields extends ConsumerWidget {
               name: 'sellRetailPrice',
               displayedTitle: S.of(context).product_sell_retail_price,
             ),
-            constants.HorizontalGap.formFieldToField,
+            gaps.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.double.name,
               name: 'sellWholePrice',
               displayedTitle: S.of(context).product_sell_whole_price,
             ),
-            constants.HorizontalGap.formFieldToField,
+            gaps.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.double.name,
               name: 'salesmanComission',
@@ -59,7 +60,7 @@ class ProductFormFields extends ConsumerWidget {
             ),
           ],
         ),
-        constants.VerticalGap.formFieldToField,
+        gaps.VerticalGap.formFieldToField,
         Row(
           children: [
             GeneralFormField(
@@ -67,13 +68,13 @@ class ProductFormFields extends ConsumerWidget {
               name: 'initialQuantity',
               displayedTitle: S.of(context).product_initial_quantitiy,
             ),
-            constants.HorizontalGap.formFieldToField,
+            gaps.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.int.name,
               name: 'altertWhenLessThan',
               displayedTitle: S.of(context).product_altert_when_less_than,
             ),
-            constants.HorizontalGap.formFieldToField,
+            gaps.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.int.name,
               name: 'alertWhenExceeds',
@@ -81,7 +82,7 @@ class ProductFormFields extends ConsumerWidget {
             ),
           ],
         ),
-        constants.VerticalGap.formFieldToField,
+        gaps.VerticalGap.formFieldToField,
         Row(
           children: [
             GeneralFormField(
@@ -89,13 +90,13 @@ class ProductFormFields extends ConsumerWidget {
               name: 'packageType',
               displayedTitle: S.of(context).product_package_type,
             ),
-            constants.HorizontalGap.formFieldToField,
+            gaps.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.double.name,
               name: 'packageWeight',
               displayedTitle: S.of(context).product_package_weight,
             ),
-            constants.HorizontalGap.formFieldToField,
+            gaps.HorizontalGap.formFieldToField,
             GeneralFormField(
               dataType: FieldDataTypes.int.name,
               name: 'numItemsInsidePackage',
@@ -186,6 +187,14 @@ class ProductCategoryFormField extends ConsumerWidget {
             ref.read(categoriesRepositoryProvider).fetchFilteredCategoriesList(filter),
         compareFn: (i, s) => i == s,
         popupProps: PopupProps.dialog(
+          title: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(
+              S.of(context).category_selection,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
           dialogProps: DialogProps(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
