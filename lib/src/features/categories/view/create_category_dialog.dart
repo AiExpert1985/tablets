@@ -42,7 +42,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
                 Expanded(
                   child: TextFormField(
                     textAlign: TextAlign.center,
-                    decoration: formFieldDecoration(S.of(context).category),
+                    decoration: formFieldDecoration(label: S.of(context).category),
                     validator: (value) => utils.FormValidation.validateStringField(
                         fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings),
                     onSaved: (value) => currentCategory.name = value! // value is double (never null)

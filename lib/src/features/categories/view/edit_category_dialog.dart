@@ -51,10 +51,9 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                   child: TextFormField(
                       textAlign: TextAlign.center,
                       initialValue: oldCategory.name,
-                      decoration: formFieldDecoration(S.of(context).category),
+                      decoration: formFieldDecoration(label: S.of(context).category),
                       validator: (value) => utils.FormValidation.validateStringField(
-                          fieldValue: value,
-                          errorMessage: S.of(context).input_validation_error_message_for_strings),
+                          fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings),
                       onSaved: (value) => newCategory.name = value!),
                 ),
               ],
@@ -88,8 +87,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
             ),
             TextButton(
               onPressed: () async {
-                bool? confiramtion =
-                    await showDeleteConfirmationDialog(context: context, message: oldCategory.name);
+                bool? confiramtion = await showDeleteConfirmationDialog(context: context, message: oldCategory.name);
                 if (confiramtion != null) {
                   categoryController.deleteCategoryInDB(context, oldCategory);
                 }

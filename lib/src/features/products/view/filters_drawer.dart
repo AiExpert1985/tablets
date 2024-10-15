@@ -18,46 +18,43 @@ class ProductSearchForm extends ConsumerWidget {
     return FormBuilder(
         child: Padding(
       padding: const EdgeInsets.all(30.0),
-      child: Column(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
+        GeneralSearchField(
+          dataType: FieldDataTypes.int.name,
+          name: 'code',
+          displayedTitle: S.of(context).product_code,
+        ),
+        FormGap.vertical,
+        GeneralSearchField(
+          dataType: FieldDataTypes.string.name,
+          name: 'name',
+          displayedTitle: S.of(context).product_name,
+        ),
+        FormGap.vertical,
+        GeneralSearchField(
+          dataType: FieldDataTypes.string.name,
+          name: 'category',
+          displayedTitle: S.of(context).product_category,
+        ),
+        FormGap.vertical,
+        FormGap.vertical,
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            GeneralSearchField(
-              dataType: FieldDataTypes.int.name,
-              name: 'code',
-              displayedTitle: S.of(context).product_code,
+            IconButton(
+              onPressed: ref.read(productFilterControllerProvider.notifier).applyFilters,
+              icon: const ApproveIcon(),
             ),
-            FormGap.vertical,
-            GeneralSearchField(
-              dataType: FieldDataTypes.string.name,
-              name: 'name',
-              displayedTitle: S.of(context).product_name,
+            IconButton(
+              onPressed: () {
+                ref.read(productFilterControllerProvider.notifier).clearFilters();
+                ref.read(productsDrawerControllerProvider).drawerController.close();
+              },
+              icon: const CancelIcon(),
             ),
-            FormGap.vertical,
-            GeneralSearchField(
-              dataType: FieldDataTypes.string.name,
-              name: 'category',
-              displayedTitle: S.of(context).product_category,
-            ),
-            FormGap.vertical,
-            FormGap.vertical,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: ref.read(productFilterControllerProvider.notifier).applyFilters,
-                  icon: const ApproveIcon(),
-                ),
-                IconButton(
-                  onPressed: () {
-                    ref.read(productFilterControllerProvider.notifier).clearFilters();
-                    ref.read(productsDrawerControllerProvider).drawerController.close();
-                  },
-                  icon: const CancelIcon(),
-                ),
-              ],
-            )
-          ]),
+          ],
+        )
+      ]),
     ));
   }
 }
@@ -85,7 +82,7 @@ class GeneralSearchField extends ConsumerWidget {
     return FormBuilderTextField(
       name: name,
       initialValue: initialValue,
-      decoration: formFieldDecoration(displayedTitle),
+      decoration: formFieldDecoration(label: displayedTitle),
       onChanged: (value) => ref
           .read(productFilterControllerProvider.notifier)
           .updateFieldValue(key: name, value: value, dataType: dataType),

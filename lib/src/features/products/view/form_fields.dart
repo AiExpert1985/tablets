@@ -134,7 +134,7 @@ class GeneralFormField extends ConsumerWidget {
       child: FormBuilderTextField(
         name: name,
         initialValue: initialValue,
-        decoration: formFieldDecoration(displayedTitle),
+        decoration: formFieldDecoration(label: displayedTitle),
         onSaved: (value) {
           dynamic userValue = value;
           if (dataType == FieldDataTypes.int.name) {
@@ -175,7 +175,7 @@ class ProductCategoryFormField extends ConsumerWidget {
       child: DropdownSearch<ProductCategory>(
         mode: Mode.form,
         decoratorProps: DropDownDecoratorProps(
-          decoration: formFieldDecoration(S.of(context).category),
+          decoration: formFieldDecoration(label: S.of(context).category),
         ),
         // if new item, then selectedItem should be null
         selectedItem: userFormData.keys.isNotEmpty
@@ -183,12 +183,20 @@ class ProductCategoryFormField extends ConsumerWidget {
             : null,
         items: (filter, t) => ref.read(categoriesRepositoryProvider).fetchFilteredCategoriesList(filter),
         compareFn: (i, s) => i == s,
-        popupProps: const PopupProps.dialog(
+        popupProps: PopupProps.dialog(
+          dialogProps: DialogProps(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10), // adjust border radius
+              // side: const BorderSide(width: 2, color: Colors.grey), // adjust border style
+            ),
+          ),
+          // fit: FlexFit.loose,
           showSearchBox: true,
           itemBuilder: popUpItem,
           searchFieldProps: TextFieldProps(
             autofocus: true,
             textAlign: TextAlign.center,
+            decoration: formFieldDecoration(),
           ),
         ),
         validator: (item) => utils.FormValidation.validateStringField(
@@ -210,14 +218,17 @@ Widget popUpItem(BuildContext context, ProductCategory item, bool isDisabled, bo
             borderRadius: BorderRadius.circular(5),
             color: Colors.white,
           ),
-    child: ListTile(
-      selected: isSelected,
-      title: Text(item.name),
-      // subtitle: Text(item.code.toString()),
-      leading: CircleAvatar(
-        // radius: 70,
-        backgroundColor: Colors.white,
-        foregroundImage: CachedNetworkImageProvider(item.imageUrl),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+      child: ListTile(
+        selected: isSelected,
+        title: Text(item.name),
+        // subtitle: Text(item.code.toString()),
+        leading: CircleAvatar(
+          // radius: 70,
+          backgroundColor: Colors.white,
+          foregroundImage: CachedNetworkImageProvider(item.imageUrl),
+        ),
       ),
     ),
   );
