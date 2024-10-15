@@ -13,7 +13,7 @@ class StorageRepository {
       await storageRef.putData(file);
       return await storageRef.getDownloadURL();
     } catch (e) {
-      utils.CustomDebug.print(message: e, stackTrace: StackTrace.current);
+      utils.errorDebugPrint(message: e, stackTrace: StackTrace.current);
       return null;
     }
   }
@@ -24,7 +24,7 @@ class StorageRepository {
       await storageRef.delete();
       return true;
     } catch (e) {
-      utils.CustomDebug.print(message: e, stackTrace: StackTrace.current);
+      utils.errorDebugPrint(message: e, stackTrace: StackTrace.current);
       return false;
     }
   }

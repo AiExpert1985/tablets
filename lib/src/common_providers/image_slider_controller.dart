@@ -12,10 +12,10 @@ class CustomImagePicker {
 
       if (result != null && result.files.isNotEmpty) {
         Uint8List? image = result.files.first.bytes;
-        return utils.ImageOperations.compressImage(image);
+        return utils.compressImage(image);
       }
     } catch (e) {
-      utils.CustomDebug.print(message: e, stackTrace: StackTrace.current);
+      utils.errorDebugPrint(message: e, stackTrace: StackTrace.current);
       return null;
     }
     return null;
@@ -36,7 +36,7 @@ class ImageSliderNotifier extends StateNotifier<List<String>> {
 
   void addImage() async {
     String? newUrl;
-    String imageName = utils.StringOperations.generateRandomString();
+    String imageName = utils.generateRandomString();
     Uint8List? imageFile = await CustomImagePicker.selectImage();
     if (imageFile != null) {
       newUrl = await _imageStorage.uploadImage(fileName: imageName, file: imageFile);

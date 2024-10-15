@@ -18,9 +18,8 @@ class AuthRepository {
       options: Firebase.app().options,
     );
     // Create a user with the secondary app
-    UserCredential newUserCredential =
-        await FirebaseAuth.instanceFor(app: secondaryApp)
-            .createUserWithEmailAndPassword(email: email, password: password);
+    UserCredential newUserCredential = await FirebaseAuth.instanceFor(app: secondaryApp)
+        .createUserWithEmailAndPassword(email: email, password: password);
     // close second app after creating the user
     final newUserId = newUserCredential.user!.uid;
     await secondaryApp.delete();
@@ -37,7 +36,7 @@ class AuthRepository {
       );
       return true;
     } catch (error) {
-      utils.CustomDebug.print(message: error, stackTrace: StackTrace.current);
+      utils.errorDebugPrint(message: error, stackTrace: StackTrace.current);
       return false;
     }
   }

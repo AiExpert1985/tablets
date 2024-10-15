@@ -4,20 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 import 'package:image/image.dart' as img;
 
-class CustomDebug {
-  static void print({message, stackTrace}) {
-    // Sometime the stack trace is shorter than 225, so I need to have protection against that
-    String stackText = stackTrace.toString();
-    int trimEnd = stackText.length < 225 ? stackText.length : 225;
-    String details = stackText.substring(0, trimEnd);
+void errorDebugPrint({message, stackTrace}) {
+  // Sometime the stack trace is shorter than 225, so I need to have protection against that
+  String stackText = stackTrace.toString();
+  int trimEnd = stackText.length < 225 ? stackText.length : 225;
+  String details = stackText.substring(0, trimEnd);
 
-    debugPrint('||===== Hamandi ====> $message =====> $details======||');
-  }
+  debugPrint('||===== Hamandi ====> $message =====> $details======||');
+}
 
-  /// Temporary print for texting code
-  static void tempPrint(message) {
-    debugPrint('||===== Temp Print ====> $message ======||');
-  }
+/// Temporary print for texting code
+void tempDebugPrint(message) {
+  debugPrint('||===== Temp Print ====> $message ======||');
 }
 
 class UserMessages {
@@ -87,29 +85,23 @@ class FormValidation {
   }
 }
 
-class StringOperations {
-  static String generateRandomString({int len = 5}) {
-    var r = Random();
-    return String.fromCharCodes(List.generate(len, (index) => r.nextInt(33) + 89)).toString();
-  }
+String generateRandomString({int len = 5}) {
+  var r = Random();
+  return String.fromCharCodes(List.generate(len, (index) => r.nextInt(33) + 89)).toString();
 }
 
-class ListOperations {
-  /// compare two Lists of string
-  /// find items in the first list that don't exists in second list
-  static List<String> twoListsDifferences(List<String> list1, List<String> list2) =>
-      list1.where((item) => !list2.toSet().contains(item)).toList();
-}
+/// compare two Lists of string
+/// find items in the first list that don't exists in second list
+List<String> twoListsDifferences(List<String> list1, List<String> list2) =>
+    list1.where((item) => !list2.toSet().contains(item)).toList();
 
-class ImageOperations {
 // Default result image size is 50 k byte (reduce speed and the cost of firebase)
 // compression depends on image size, the larget image the more compression
 // if image size is small, it will not be compressed
-  static Uint8List? compressImage(Uint8List? image, {int targetImageSizeInBytes = 51200}) {
-    final quality = (image!.length / targetImageSizeInBytes).round();
-    if (quality > 0) {
-      image = img.encodeJpg(img.decodeImage(image)!, quality: quality);
-    }
-    return image;
+Uint8List? compressImage(Uint8List? image, {int targetImageSizeInBytes = 51200}) {
+  final quality = (image!.length / targetImageSizeInBytes).round();
+  if (quality > 0) {
+    image = img.encodeJpg(img.decodeImage(image)!, quality: quality);
   }
+  return image;
 }

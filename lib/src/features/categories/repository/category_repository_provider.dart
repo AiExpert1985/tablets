@@ -42,7 +42,7 @@ class CategoriesRepository {
       });
       return true;
     } catch (e) {
-      utils.CustomDebug.print(
+      utils.errorDebugPrint(
           message: 'An error while adding category to DB', stackTrace: StackTrace.current);
       return false;
     }
@@ -82,7 +82,7 @@ class CategoriesRepository {
       }
       return true;
     } catch (error) {
-      utils.CustomDebug.print(message: error, stackTrace: StackTrace.current);
+      utils.errorDebugPrint(message: error, stackTrace: StackTrace.current);
       return false;
     }
   }
@@ -107,7 +107,7 @@ class CategoriesRepository {
       }
       return true;
     } catch (error) {
-      utils.CustomDebug.print(message: error, stackTrace: StackTrace.current);
+      utils.errorDebugPrint(message: error, stackTrace: StackTrace.current);
       return false;
     }
   }

@@ -39,7 +39,6 @@ class ProductFormFieldsController {
     final updatedUrls = _imageSlider.savedUpdatedImages();
     _formData.update(key: 'imageUrls', value: updatedUrls);
     final updatedData = _formData.getState();
-    utils.CustomDebug.tempPrint(updatedData);
     final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
     final successful = await _repository.addProductToDB(product: product);
     if (successful) {
