@@ -8,8 +8,6 @@ import 'package:tablets/src/common_widgets/custom_icons.dart';
 import 'package:tablets/src/constants/constants.dart';
 import 'package:tablets/src/features/products/controllers/filter_controller_provider.dart';
 
-enum FieldDataTypes { int, double, string }
-
 class ProductSearchForm extends ConsumerWidget {
   const ProductSearchForm({super.key});
 
@@ -20,19 +18,22 @@ class ProductSearchForm extends ConsumerWidget {
       padding: const EdgeInsets.all(30.0),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
         GeneralSearchField(
-          dataType: FieldDataTypes.int.name,
+          filterCriteria: FilterCriteria.equals.name,
+          dataType: DataTypes.int.name,
           name: 'code',
           displayedTitle: S.of(context).product_code,
         ),
         FormGap.vertical,
         GeneralSearchField(
-          dataType: FieldDataTypes.string.name,
+          filterCriteria: FilterCriteria.contains.name,
+          dataType: DataTypes.string.name,
           name: 'name',
           displayedTitle: S.of(context).product_name,
         ),
         FormGap.vertical,
         GeneralSearchField(
-          dataType: FieldDataTypes.string.name,
+          filterCriteria: FilterCriteria.contains.name,
+          dataType: DataTypes.string.name,
           name: 'category',
           displayedTitle: S.of(context).product_category,
         ),
@@ -64,12 +65,14 @@ class GeneralSearchField extends ConsumerWidget {
     required this.dataType,
     required this.name,
     required this.displayedTitle,
+    required this.filterCriteria,
     super.key,
   });
 
   final String dataType;
   final String name;
   final String displayedTitle;
+  final String filterCriteria;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -85,7 +88,7 @@ class GeneralSearchField extends ConsumerWidget {
       decoration: formFieldDecoration(label: displayedTitle),
       onChanged: (value) => ref
           .read(productFilterControllerProvider.notifier)
-          .updateFieldValue(key: name, value: value, dataType: dataType),
+          .updateFieldValue(key: name, value: value, dataType: dataType, filterCriteria: filterCriteria),
     );
   }
 }

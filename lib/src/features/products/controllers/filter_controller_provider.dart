@@ -2,16 +2,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/features/products/repository/product_stream_provider.dart';
 import 'package:tablets/src/utils/utils.dart' as utils;
 
-Map<String, String> filterType = {'name': 'contains', 'code': 'equals', 'category': 'contains'};
+enum FilterCriteria { contains, equals, lessThanOrEqual, lessThan, moreThanOrEqual, moreThan }
+
+enum DataTypes { int, double, string }
 
 class ProductListFilter {
   ProductListFilter(this.searchFieldValues, this.isSearchOn, this.filteredList);
-  final Map<String, dynamic> searchFieldValues;
+  final Map<String, Map<String, dynamic>> searchFieldValues; // {key:{value:xxx, filterType:xxx}}
   final bool isSearchOn;
   final AsyncValue<List<Map<String, dynamic>>> filteredList;
 
   ProductListFilter copyWith({
-    Map<String, dynamic>? searchFieldValues,
+    Map<String, Map<String, dynamic>>? searchFieldValues,
     bool? isSearchOn,
     AsyncValue<List<Map<String, dynamic>>>? filteredList,
   }) {
@@ -30,16 +32,23 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
     state = ProductListFilter({}, false, const AsyncValue.data([]));
   }
 
-  void updateFieldValue({required String dataType, required String key, required dynamic value}) {
-    Map<String, dynamic> searchFieldValues = state.searchFieldValues;
+  void updateFieldValue(
+      {required String dataType, required String key, required dynamic value, required String filterCriteria}) {
     try {
+      Map<String, Map<String, dynamic>> searchFieldValues = state.searchFieldValues;
       if (value == null || value.isEmpty) {
         searchFieldValues.remove(key);
       } else {
-        if (dataType == 'int') value = int.parse(value);
-
-        if (dataType == 'double') value = double.parse(value);
-        searchFieldValues[key] = value;
+        if (dataType == DataTypes.int.name) {
+          value = int.parse(value);
+        }
+        if (dataType == DataTypes.double.name) {
+          value = double.parse(value);
+        }
+        searchFieldValues[key] = {
+          'value': value,
+          'criteria': filterCriteria,
+        };
       }
       state = state.copyWith(searchFieldValues: searchFieldValues);
     } catch (e) {
@@ -54,14 +63,14 @@ class ProductSearchNotifier extends StateNotifier<ProductListFilter> {
   void applyFilters() {
     AsyncValue<List<Map<String, dynamic>>> productListValue = ref.read(productsStreamProvider);
     List<Map<String, dynamic>> filteredProductList = _convertAsyncValueToProductList(productListValue);
-    Map<String, dynamic> searchedValues = state.searchFieldValues;
-    searchedValues.forEach((key, value) {
-      if (filterType[key] == 'contains') {
-        filteredProductList = filteredProductList.where((product) => product[key].contains(value)).toList();
+    Map<String, Map<String, dynamic>> searchedValues = state.searchFieldValues;
+    searchedValues.forEach((key, filter) {
+      if (filter['criteria'] == FilterCriteria.contains.name) {
+        filteredProductList = filteredProductList.where((product) => product[key].contains(filter['value'])).toList();
         return;
       }
-      if (filterType[key] == 'equals') {
-        filteredProductList = filteredProductList.where((product) => product[key] == value).toList();
+      if (filter['criteria'] == FilterCriteria.equals.name) {
+        filteredProductList = filteredProductList.where((product) => product[key] == filter['value']).toList();
         return;
       }
     });
