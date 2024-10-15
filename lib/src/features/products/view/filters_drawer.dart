@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common_functions/list_filters.dart' as filters;
 import 'package:tablets/src/features/products/controllers/drawer_provider.dart';
 import 'package:tablets/src/common_widgets/custom_icons.dart';
 import 'package:tablets/src/constants/gaps.dart' as gaps;
-import 'package:tablets/src/features/products/controllers/filter_controller_provider.dart';
-import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/common_functions/utils.dart' as utils;
+import 'package:tablets/src/features/products/controllers/filter_controllers.dart';
 
 class ProductSearchForm extends ConsumerWidget {
   const ProductSearchForm({super.key});
@@ -21,22 +22,22 @@ class ProductSearchForm extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             GeneralSearchField(
-              filterCriteria: FilterCriteria.equals.name,
-              dataType: DataTypes.int.name,
+              filterCriteria: filters.FilterCriteria.equals.name,
+              dataType: filters.DataTypes.int.name,
               name: 'code',
               displayedTitle: S.of(context).product_code,
             ),
             gaps.VerticalGap.formFieldToField,
             GeneralSearchField(
-              filterCriteria: FilterCriteria.contains.name,
-              dataType: DataTypes.string.name,
+              filterCriteria: filters.FilterCriteria.contains.name,
+              dataType: filters.DataTypes.string.name,
               name: 'name',
               displayedTitle: S.of(context).product_name,
             ),
             gaps.VerticalGap.formFieldToField,
             GeneralSearchField(
-              filterCriteria: FilterCriteria.contains.name,
-              dataType: DataTypes.string.name,
+              filterCriteria: filters.FilterCriteria.contains.name,
+              dataType: filters.DataTypes.string.name,
               name: 'category',
               displayedTitle: S.of(context).product_category,
             ),
@@ -46,12 +47,13 @@ class ProductSearchForm extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: ref.read(productFilterControllerProvider.notifier).applyFilters,
+                  onPressed: () =>
+                      ref.read(productFilterStateProvider.notifier).update((state) => state = true),
                   icon: const ApproveIcon(),
                 ),
                 IconButton(
                   onPressed: () {
-                    ref.read(productFilterControllerProvider.notifier).reset();
+                    ref.read(productFilterStateProvider.notifier).update((state) => state = false);
                     ref.read(productsDrawerControllerProvider).drawerController.close();
                   },
                   icon: const CancelIcon(),
@@ -79,8 +81,8 @@ class GeneralSearchField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final filterState = ref.watch(productFilterControllerProvider);
-    dynamic initialValue = filterState.searchFieldValues[name];
+    final productFilters = ref.watch(productFiltersProvider);
+    dynamic initialValue = productFilters[name];
 
     if (initialValue != null) {
       initialValue = initialValue is String ? initialValue : initialValue.toString();
@@ -89,8 +91,9 @@ class GeneralSearchField extends ConsumerWidget {
       name: name,
       initialValue: initialValue,
       decoration: utils.formFieldDecoration(label: displayedTitle),
-      onChanged: (value) => ref.read(productFilterControllerProvider.notifier).updateFieldValue(
-          key: name, value: value, dataType: dataType, filterCriteria: filterCriteria),
+      onChanged: (value) => ref
+          .read(productFiltersProvider.notifier)
+          .update(key: name, value: value, dataType: dataType, filterCriteria: filterCriteria),
     );
   }
 }

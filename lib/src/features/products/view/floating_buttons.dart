@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:tablets/src/features/products/controllers/form_controller_provider.dart';
+import 'package:tablets/src/features/products/controllers/form_controllers.dart';
 import 'package:tablets/src/features/products/controllers/drawer_provider.dart';
 
 class ProductFloatingButtons extends ConsumerWidget {

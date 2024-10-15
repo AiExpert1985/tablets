@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/common_functions/utils.dart' as utils;
 
 class StorageRepository {
   StorageRepository(this._storage);

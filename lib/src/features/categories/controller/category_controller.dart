@@ -8,7 +8,7 @@ import 'package:tablets/src/features/categories/view/create_category_dialog.dart
 import 'package:tablets/src/features/categories/view/edit_category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/common_functions/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
 
 /// the controller works with category forms (through its 'formKey') to update its category object

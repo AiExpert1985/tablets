@@ -2,24 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_providers/image_slider_controller.dart';
-import 'package:tablets/src/features/products/controllers/filter_controller_provider.dart';
-import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/view/adding_form_dialog.dart';
 import 'package:tablets/src/features/products/view/editing_form_dialog.dart';
-import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/common_functions/utils.dart' as utils;
 
 class ProductFormFieldsController {
   ProductFormFieldsController(
     this._repository,
     this._formData,
-    this._filterData,
     this._imageSlider,
   );
   final ProductRepository _repository;
   final UserFormData _formData;
-  final ProductSearchNotifier _filterData;
+
   final ImageSliderNotifier _imageSlider;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -53,8 +50,6 @@ class ProductFormFieldsController {
       );
     }
     if (context.mounted) closeForm(context);
-    // in case user applied a filter and added a new product, below code updates the UI
-    if (_filterData.getState.isSearchOn) _filterData.applyFilters();
   }
 
   void showAddForm(BuildContext context) {
@@ -96,8 +91,6 @@ class ProductFormFieldsController {
       }
     }
     if (context.mounted) closeForm(context);
-    // update the UI in case user edited the filtered items
-    if (_filterData.getState.isSearchOn) _filterData.applyFilters();
   }
 
   void updateProduct(BuildContext context, Product oldProduct) async {
@@ -119,15 +112,47 @@ class ProductFormFieldsController {
       }
     }
     if (context.mounted) closeForm(context);
-    // update the UI in case user edited the filtered items
-    if (_filterData.getState.isSearchOn) _filterData.applyFilters();
   }
 }
 
 final productFormControllerProvider = Provider<ProductFormFieldsController>((ref) {
   final repository = ref.read(productsRepositoryProvider);
   final formData = ref.watch(productFormDataProvider.notifier);
-  final filterController = ref.watch(productFilterControllerProvider.notifier);
   final imageSliderController = ref.watch(imageSliderNotifierProvider.notifier);
-  return ProductFormFieldsController(repository, formData, filterController, imageSliderController);
+  return ProductFormFieldsController(repository, formData, imageSliderController);
 });
+
+class UserFormData extends StateNotifier<Map<String, dynamic>> {
+  UserFormData(super.state);
+
+  void initialize(Product product) {
+    state = {
+      'code': product.code,
+      'name': product.name,
+      'sellRetailPrice': product.sellRetailPrice,
+      'sellWholePrice': product.sellWholePrice,
+      'packageType': product.packageType,
+      'packageWeight': product.packageWeight,
+      'numItemsInsidePackage': product.numItemsInsidePackage,
+      'alertWhenExceeds': product.alertWhenExceeds,
+      'altertWhenLessThan': product.altertWhenLessThan,
+      'salesmanComission': product.salesmanComission,
+      'imageUrls': product.imageUrls,
+      'category': product.category,
+      'initialQuantity': product.initialQuantity
+    };
+  }
+
+  void update({required String key, required dynamic value}) {
+    Map<String, dynamic> tempMap = {...state};
+    tempMap[key] = value;
+    state = {...tempMap};
+  }
+
+  void reset() => state = {};
+
+  Map<String, dynamic> getState() => state;
+}
+
+final productFormDataProvider =
+    StateNotifierProvider<UserFormData, Map<String, dynamic>>((ref) => UserFormData({}));

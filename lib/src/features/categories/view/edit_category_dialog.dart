@@ -8,7 +8,7 @@ import 'package:tablets/src/features/categories/view/single_image_picker.dart';
 import 'package:tablets/src/constants/gaps.dart' as gaps;
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
-import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/common_functions/utils.dart' as utils;
 
 class UpdateCategoryDialog extends ConsumerStatefulWidget {
   const UpdateCategoryDialog({super.key});

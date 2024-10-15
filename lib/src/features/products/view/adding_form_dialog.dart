@@ -4,8 +4,7 @@ import 'package:tablets/src/common_widgets/form_frame.dart';
 import 'package:tablets/src/common_widgets/custom_icons.dart';
 import 'package:tablets/src/common_widgets/image_slider.dart';
 import 'package:tablets/src/constants/gaps.dart' as gaps;
-import 'package:tablets/src/features/products/controllers/form_controller_provider.dart';
-import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
+import 'package:tablets/src/features/products/controllers/form_controllers.dart';
 import 'package:tablets/src/features/products/view/form_fields.dart';
 import 'package:tablets/src/constants/constants.dart' as constants;
 

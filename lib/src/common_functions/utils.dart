@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 import 'package:image/image.dart' as img;
 
@@ -126,4 +127,18 @@ InputDecoration formFieldDecoration({String? label}) {
       borderRadius: BorderRadius.all(Radius.circular(8)),
     ),
   );
+}
+
+List<Map<String, dynamic>> convertAsyncValueListToList(
+    AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
+  return asyncProductList.when(
+      data: (products) => products,
+      error: (e, st) {
+        errorDebugPrint(message: e, stackTrace: st);
+        return [];
+      },
+      loading: () {
+        errorDebugPrint(message: 'product list is loading');
+        return [];
+      });
 }

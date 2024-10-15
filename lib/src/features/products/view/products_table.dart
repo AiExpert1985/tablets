@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common_widgets/async_value_widget.dart';
-import 'package:tablets/src/features/products/controllers/filter_controller_provider.dart';
-import 'package:tablets/src/features/products/controllers/form_controller_provider.dart';
+import 'package:tablets/src/features/products/controllers/filter_controllers.dart';
+import 'package:tablets/src/features/products/controllers/form_controllers.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:tablets/src/features/products/repository/product_stream_provider.dart';
@@ -17,9 +17,9 @@ class ProductsTable extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productStream = ref.watch(productsStreamProvider);
     final formController = ref.watch(productFormControllerProvider);
-    final productsFilter = ref.watch(productFilterControllerProvider);
-    AsyncValue<List<Map<String, dynamic>>> productsListValue =
-        productsFilter.isSearchOn ? productsFilter.filteredList : productStream;
+    final filterIsOn = ref.watch(productFilterStateProvider);
+    final productsListValue =
+        filterIsOn ? ref.read(productFilteredListProvider).getFilteredList() : productStream;
     return AsyncValueWidget<List<Map<String, dynamic>>>(
         value: productsListValue,
         data: (products) {

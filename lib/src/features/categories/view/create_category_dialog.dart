@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/categories/view/single_image_picker.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
-import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/common_functions/utils.dart' as utils;
 import 'package:tablets/src/constants/gaps.dart' as gaps;
 
 class CreateCategoryDialog extends ConsumerStatefulWidget {

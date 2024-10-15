@@ -6,9 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
-import 'package:tablets/src/features/products/controllers/form_data_provider.dart';
+import 'package:tablets/src/features/products/controllers/form_controllers.dart';
 import 'package:tablets/src/constants/gaps.dart' as gaps;
-import 'package:tablets/src/utils/utils.dart' as utils;
+import 'package:tablets/src/common_functions/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
 
 enum FieldDataTypes { int, double, string }
