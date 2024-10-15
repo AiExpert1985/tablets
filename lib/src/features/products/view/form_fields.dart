@@ -148,18 +148,15 @@ class GeneralFormField extends ConsumerWidget {
         validator: (value) {
           if (dataType == FieldDataTypes.string.name) {
             return utils.FormValidation.validateStringField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_strings);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
           }
           if (dataType == FieldDataTypes.int.name) {
             return utils.FormValidation.validateIntField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_integers);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
           }
           if (dataType == FieldDataTypes.double.name) {
             return utils.FormValidation.validateDoubleField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_doubles);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
           }
           return null;
         },
@@ -176,30 +173,34 @@ class ProductCategoryFormField extends ConsumerWidget {
     final userFormData = ref.read(productFormDataProvider);
     return Expanded(
       child: DropdownSearch<ProductCategory>(
+        mode: Mode.form,
+        decoratorProps: DropDownDecoratorProps(
+          decoration: formFieldDecoration(S.of(context).category),
+        ),
         // if new item, then selectedItem should be null
         selectedItem: userFormData.keys.isNotEmpty
             ? ProductCategory(name: userFormData['category'], imageUrl: constants.DefaultImage.url)
             : null,
-        items: (filter, t) =>
-            ref.read(categoriesRepositoryProvider).fetchFilteredCategoriesList(filter),
+        items: (filter, t) => ref.read(categoriesRepositoryProvider).fetchFilteredCategoriesList(filter),
         compareFn: (i, s) => i == s,
-        popupProps: const PopupPropsMultiSelection.dialog(
-          showSelectedItems: true,
+        popupProps: const PopupProps.dialog(
           showSearchBox: true,
-          itemBuilder: userModelPopupItem,
+          itemBuilder: popUpItem,
+          searchFieldProps: TextFieldProps(
+            autofocus: true,
+            textAlign: TextAlign.center,
+          ),
         ),
         validator: (item) => utils.FormValidation.validateStringField(
-            fieldValue: item?.name,
-            errorMessage: S.of(context).input_validation_error_message_for_strings),
-        onSaved: (item) =>
-            ref.read(productFormDataProvider.notifier).update(key: 'category', value: item?.name),
+            fieldValue: item?.name, errorMessage: S.of(context).input_validation_error_message_for_strings),
+        itemAsString: (item) => item.name,
+        onSaved: (item) => ref.read(productFormDataProvider.notifier).update(key: 'category', value: item?.name),
       ),
     );
   }
 }
 
-Widget userModelPopupItem(
-    BuildContext context, ProductCategory item, bool isDisabled, bool isSelected) {
+Widget popUpItem(BuildContext context, ProductCategory item, bool isDisabled, bool isSelected) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected

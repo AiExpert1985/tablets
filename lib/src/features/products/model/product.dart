@@ -127,7 +127,7 @@ class Product {
   /// I used only the name because in dropdown_search package, where I use dropdown to select product,
   /// i need only its name, which automatically taken from toString method here
   @override
-  String toString() => name;
+  String toString() => 'Product $name';
 
   @override
   bool operator ==(Object other) {

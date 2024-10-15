@@ -29,5 +29,5 @@ class ProductCategory {
   }
 
   @override
-  String toString() => name;
+  String toString() => 'Category $name';
 }
