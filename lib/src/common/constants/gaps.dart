@@ -10,6 +10,7 @@ class VerticalGap {
   static const formFieldToField = SizedBox(height: 15);
   static const mainDrawerIconToIcon = SizedBox(height: 5);
   static const iconToText = SizedBox(height: 6);
+  static const sideDrawerfieldsToButtons = SizedBox(height: 30);
 }
 
 class DrawerGap {

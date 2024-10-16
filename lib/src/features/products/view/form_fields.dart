@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/features/category/model/product_category.dart';
+import 'package:tablets/src/features/category/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/products/controllers/form_controllers.dart';
-import 'package:tablets/src/features/categories/model/product_category.dart';
-import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/constants/constants.dart' as constants;
 import 'package:tablets/src/common/functions/utils.dart' as utils;
@@ -179,11 +179,10 @@ class ProductCategoryFormField extends ConsumerWidget {
         ),
         // if new item, then selectedItem should be null
         selectedItem: userFormData.keys.isNotEmpty
-            ? ProductCategory(name: userFormData['category'], imageUrl: constants.defaultImageUrl)
+            ? ProductCategory(name: userFormData['category'], imageUrls: [constants.defaultImageUrl])
             : null,
-        items: (filter, t) => ref
-            .read(categoriesRepositoryProvider)
-            .fetchCategoriesAsCategoryList(filterKey: 'name', filterValue: filter),
+        items: (filter, t) =>
+            ref.read(categoriesRepositoryProvider).fetchCategoryList(filterKey: 'name', filterValue: filter),
         compareFn: (i, s) => i == s,
         popupProps: PopupProps.dialog(
           title: Padding(
@@ -234,7 +233,7 @@ Widget popUpItem(BuildContext context, ProductCategory item, bool isDisabled, bo
         leading: CircleAvatar(
           // radius: 70,
           backgroundColor: Colors.white,
-          foregroundImage: CachedNetworkImageProvider(item.imageUrl),
+          foregroundImage: CachedNetworkImageProvider(item.coverImage),
         ),
       ),
     ),
