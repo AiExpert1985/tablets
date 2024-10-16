@@ -38,9 +38,8 @@ class ProductFiltersNotifier extends StateNotifier<Map<String, Map<String, dynam
   void reset() => state = {};
 }
 
-final productFiltersProvider =
-    StateNotifierProvider<ProductFiltersNotifier, Map<String, Map<String, dynamic>>>((ref) {
+final productFiltersProvider = StateNotifierProvider<ProductFiltersNotifier, Map<String, Map<String, dynamic>>>((ref) {
   return ProductFiltersNotifier({});
 });
 
-final productFilterStateProvider = StateProvider<bool>((ref) => false);
+final productFilterSwitchProvider = StateProvider<bool>((ref) => false);

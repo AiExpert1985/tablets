@@ -17,9 +17,8 @@ class ProductsTable extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productStream = ref.watch(productsStreamProvider);
     final formController = ref.watch(productFormControllerProvider);
-    final filterIsOn = ref.watch(productFilterStateProvider);
-    final productsListValue =
-        filterIsOn ? ref.read(productFilteredListProvider).getFilteredList() : productStream;
+    final filterIsOn = ref.watch(productFilterSwitchProvider);
+    final productsListValue = filterIsOn ? ref.read(productFilteredListProvider).getFilteredList() : productStream;
     return AsyncValueWidget<List<Map<String, dynamic>>>(
         value: productsListValue,
         data: (products) {

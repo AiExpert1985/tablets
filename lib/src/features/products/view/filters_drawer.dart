@@ -17,51 +17,54 @@ class ProductSearchForm extends ConsumerWidget {
     return FormBuilder(
         child: Padding(
       padding: const EdgeInsets.all(30.0),
-      child: Column(
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
+        GeneralSearchField(
+          filterCriteria: filters.FilterCriteria.equals.name,
+          dataType: filters.DataTypes.int.name,
+          name: 'code',
+          displayedTitle: S.of(context).product_code,
+        ),
+        gaps.VerticalGap.formFieldToField,
+        GeneralSearchField(
+          filterCriteria: filters.FilterCriteria.contains.name,
+          dataType: filters.DataTypes.string.name,
+          name: 'name',
+          displayedTitle: S.of(context).product_name,
+        ),
+        gaps.VerticalGap.formFieldToField,
+        GeneralSearchField(
+          filterCriteria: filters.FilterCriteria.contains.name,
+          dataType: filters.DataTypes.string.name,
+          name: 'category',
+          displayedTitle: S.of(context).product_category,
+        ),
+        gaps.VerticalGap.formFieldToField,
+        gaps.VerticalGap.formFieldToField,
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            GeneralSearchField(
-              filterCriteria: filters.FilterCriteria.equals.name,
-              dataType: filters.DataTypes.int.name,
-              name: 'code',
-              displayedTitle: S.of(context).product_code,
+            IconButton(
+              onPressed: () {
+                /// if filter is already on, we turn it off to make all list available for search
+                /// note that list filtering is only activated if filterSwitch changed status (on/off)
+                if (ref.read(productFilterSwitchProvider)) {
+                  ref.read(productFilterSwitchProvider.notifier).update((state) => state = false);
+                }
+                ref.read(productFilterSwitchProvider.notifier).update((state) => state = true);
+              },
+              icon: const ApproveIcon(),
             ),
-            gaps.VerticalGap.formFieldToField,
-            GeneralSearchField(
-              filterCriteria: filters.FilterCriteria.contains.name,
-              dataType: filters.DataTypes.string.name,
-              name: 'name',
-              displayedTitle: S.of(context).product_name,
+            IconButton(
+              onPressed: () {
+                ref.read(productFilterSwitchProvider.notifier).update((state) => state = false);
+                ref.read(productFiltersProvider.notifier).reset();
+                ref.read(productsDrawerControllerProvider).drawerController.close();
+              },
+              icon: const CancelIcon(),
             ),
-            gaps.VerticalGap.formFieldToField,
-            GeneralSearchField(
-              filterCriteria: filters.FilterCriteria.contains.name,
-              dataType: filters.DataTypes.string.name,
-              name: 'category',
-              displayedTitle: S.of(context).product_category,
-            ),
-            gaps.VerticalGap.formFieldToField,
-            gaps.VerticalGap.formFieldToField,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () =>
-                      ref.read(productFilterStateProvider.notifier).update((state) => state = true),
-                  icon: const ApproveIcon(),
-                ),
-                IconButton(
-                  onPressed: () {
-                    ref.read(productFilterStateProvider.notifier).update((state) => state = false);
-                    ref.read(productFiltersProvider.notifier).reset();
-                    ref.read(productsDrawerControllerProvider).drawerController.close();
-                  },
-                  icon: const CancelIcon(),
-                ),
-              ],
-            )
-          ]),
+          ],
+        )
+      ]),
     ));
   }
 }
