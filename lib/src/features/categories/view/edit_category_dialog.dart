@@ -9,6 +9,7 @@ import 'package:tablets/src/constants/gaps.dart' as gaps;
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/common_functions/utils.dart' as utils;
+import 'package:tablets/src/common_functions/form_validation.dart' as validation;
 
 class UpdateCategoryDialog extends ConsumerStatefulWidget {
   const UpdateCategoryDialog({super.key});
@@ -51,7 +52,7 @@ class _AddProductDialogState extends ConsumerState<UpdateCategoryDialog> {
                       textAlign: TextAlign.center,
                       initialValue: oldCategory.name,
                       decoration: utils.formFieldDecoration(label: S.of(context).category),
-                      validator: (value) => utils.FormValidation.validateStringField(
+                      validator: (value) => validation.validateStringField(
                           fieldValue: value,
                           errorMessage: S.of(context).input_validation_error_message_for_strings),
                       onSaved: (value) => newCategory.name = value!),

@@ -5,6 +5,7 @@ import 'package:tablets/src/features/categories/view/single_image_picker.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
 import 'package:tablets/src/common_functions/utils.dart' as utils;
 import 'package:tablets/src/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common_functions/form_validation.dart' as validation;
 
 class CreateCategoryDialog extends ConsumerStatefulWidget {
   const CreateCategoryDialog({super.key});
@@ -42,7 +43,7 @@ class _AddProductDialogState extends ConsumerState<CreateCategoryDialog> {
                   child: TextFormField(
                     textAlign: TextAlign.center,
                     decoration: utils.formFieldDecoration(label: S.of(context).category),
-                    validator: (value) => utils.FormValidation.validateStringField(
+                    validator: (value) => validation.validateStringField(
                         fieldValue: value,
                         errorMessage: S.of(context).input_validation_error_message_for_strings),
                     onSaved: (value) =>

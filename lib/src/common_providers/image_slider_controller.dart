@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
 import 'package:tablets/src/common_functions/utils.dart' as utils;
 import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/common_functions/debug_print.dart' as debug;
 
 class CustomImagePicker {
   static Future<Uint8List?> selectImage({uploadingMethod, imageSource = 'gallery'}) async {
@@ -15,7 +16,7 @@ class CustomImagePicker {
         return utils.compressImage(image);
       }
     } catch (e) {
-      utils.errorDebugPrint(message: e, stackTrace: StackTrace.current);
+      debug.errorPrint(message: e, stackTrace: StackTrace.current);
       return null;
     }
     return null;

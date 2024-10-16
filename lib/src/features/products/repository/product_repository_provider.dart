@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/features/products/model/product.dart';
-import 'package:tablets/src/common_functions/utils.dart' as utils;
+import 'package:tablets/src/common_functions/debug_print.dart' as debug;
 
 class ProductRepository {
   ProductRepository(this._firestore);
@@ -18,7 +18,7 @@ class ProductRepository {
       await docRef.set(product.toMap());
       return true;
     } catch (e) {
-      utils.errorDebugPrint(
+      debug.errorPrint(
           message: 'An error while adding Product to DB', stackTrace: StackTrace.current);
       return false;
     }
@@ -35,7 +35,7 @@ class ProductRepository {
       }
       return true;
     } catch (error) {
-      utils.errorDebugPrint(message: error, stackTrace: StackTrace.current);
+      debug.errorPrint(message: error, stackTrace: StackTrace.current);
       return false;
     }
   }
@@ -50,7 +50,7 @@ class ProductRepository {
       }
       return true;
     } catch (error) {
-      utils.errorDebugPrint(message: error, stackTrace: StackTrace.current);
+      debug.errorPrint(message: error, stackTrace: StackTrace.current);
       return false;
     }
   }

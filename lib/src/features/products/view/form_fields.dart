@@ -9,6 +9,7 @@ import 'package:tablets/src/features/categories/repository/category_repository_p
 import 'package:tablets/src/features/products/controllers/form_controllers.dart';
 import 'package:tablets/src/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common_functions/utils.dart' as utils;
+import 'package:tablets/src/common_functions/form_validation.dart' as validation;
 import 'package:tablets/src/constants/constants.dart' as constants;
 
 enum FieldDataTypes { int, double, string }
@@ -146,17 +147,17 @@ class GeneralFormField extends ConsumerWidget {
         },
         validator: (value) {
           if (dataType == FieldDataTypes.string.name) {
-            return utils.FormValidation.validateStringField(
+            return validation.validateStringField(
                 fieldValue: value,
                 errorMessage: S.of(context).input_validation_error_message_for_strings);
           }
           if (dataType == FieldDataTypes.int.name) {
-            return utils.FormValidation.validateIntField(
+            return validation.validateIntField(
                 fieldValue: value,
                 errorMessage: S.of(context).input_validation_error_message_for_integers);
           }
           if (dataType == FieldDataTypes.double.name) {
-            return utils.FormValidation.validateDoubleField(
+            return validation.validateDoubleField(
                 fieldValue: value,
                 errorMessage: S.of(context).input_validation_error_message_for_doubles);
           }
@@ -208,7 +209,7 @@ class ProductCategoryFormField extends ConsumerWidget {
             decoration: utils.formFieldDecoration(),
           ),
         ),
-        validator: (item) => utils.FormValidation.validateStringField(
+        validator: (item) => validation.validateStringField(
             fieldValue: item?.name,
             errorMessage: S.of(context).input_validation_error_message_for_strings),
         itemAsString: (item) => item.name,

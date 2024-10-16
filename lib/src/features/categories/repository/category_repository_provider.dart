@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common_providers/storage_repository.dart';
 import 'package:tablets/src/features/categories/controller/searched_name_provider.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
-import 'package:tablets/src/common_functions/utils.dart' as utils;
+import 'package:tablets/src/common_functions/debug_print.dart' as debug;
 
 /// the controller works with category forms (through its 'formKey') to update its category object
 /// and gets images from a 'pickedImageNotifierProvider' where image file is stored when
@@ -42,7 +42,7 @@ class CategoriesRepository {
       });
       return true;
     } catch (e) {
-      utils.errorDebugPrint(
+      debug.errorPrint(
           message: 'An error while adding category to DB', stackTrace: StackTrace.current);
       return false;
     }
@@ -82,7 +82,7 @@ class CategoriesRepository {
       }
       return true;
     } catch (error) {
-      utils.errorDebugPrint(message: error, stackTrace: StackTrace.current);
+      debug.errorPrint(message: error, stackTrace: StackTrace.current);
       return false;
     }
   }
@@ -107,7 +107,7 @@ class CategoriesRepository {
       }
       return true;
     } catch (error) {
-      utils.errorDebugPrint(message: error, stackTrace: StackTrace.current);
+      debug.errorPrint(message: error, stackTrace: StackTrace.current);
       return false;
     }
   }

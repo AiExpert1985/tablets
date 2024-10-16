@@ -6,7 +6,7 @@ import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/view/adding_form_dialog.dart';
 import 'package:tablets/src/features/products/view/editing_form_dialog.dart';
-import 'package:tablets/src/common_functions/utils.dart' as utils;
+import 'package:tablets/src/common_functions/user_messages.dart' as toastification;
 
 class ProductFormFieldsController {
   ProductFormFieldsController(
@@ -39,12 +39,12 @@ class ProductFormFieldsController {
     final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
     final successful = await _repository.addProductToDB(product: product);
     if (successful) {
-      utils.UserMessages.success(
+      toastification.success(
         context: context,
         message: S.of(context).db_success_adding_doc,
       );
     } else {
-      utils.UserMessages.failure(
+      toastification.failure(
         context: context,
         message: S.of(context).db_error_adding_doc,
       );
@@ -82,12 +82,11 @@ class ProductFormFieldsController {
     bool successful = await _repository.deleteProductFromDB(product: product);
     if (successful) {
       if (context.mounted) {
-        utils.UserMessages.success(
-            context: context, message: S.of(context).db_success_deleting_doc);
+        toastification.success(context: context, message: S.of(context).db_success_deleting_doc);
       }
     } else {
       if (context.mounted) {
-        utils.UserMessages.failure(context: context, message: S.of(context).db_error_deleting_doc);
+        toastification.failure(context: context, message: S.of(context).db_error_deleting_doc);
       }
     }
     if (context.mounted) closeForm(context);
@@ -103,12 +102,11 @@ class ProductFormFieldsController {
         await _repository.updateProductInDB(newProduct: product, oldProduct: oldProduct);
     if (successful) {
       if (context.mounted) {
-        utils.UserMessages.success(
-            context: context, message: S.of(context).db_success_updaging_doc);
+        toastification.success(context: context, message: S.of(context).db_success_updaging_doc);
       }
     } else {
       if (context.mounted) {
-        utils.UserMessages.failure(context: context, message: S.of(context).db_error_updating_doc);
+        toastification.failure(context: context, message: S.of(context).db_error_updating_doc);
       }
     }
     if (context.mounted) closeForm(context);

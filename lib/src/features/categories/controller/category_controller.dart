@@ -8,7 +8,7 @@ import 'package:tablets/src/features/categories/view/create_category_dialog.dart
 import 'package:tablets/src/features/categories/view/edit_category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_functions/utils.dart' as utils;
+import 'package:tablets/src/common_functions/user_messages.dart' as toastification;
 import 'package:tablets/src/constants/constants.dart' as constants;
 
 /// the controller works with category forms (through its 'formKey') to update its category object
@@ -58,12 +58,12 @@ class CategoryController {
     final successful = await categoryRespository.addCategoryToDB(
         category: currentCategory, pickedImage: pickedImage);
     if (successful) {
-      utils.UserMessages.success(
+      toastification.success(
         context: context,
         message: S.of(context).db_success_adding_doc,
       );
     } else {
-      utils.UserMessages.failure(
+      toastification.failure(
         context: context,
         message: S.of(context).db_error_adding_doc,
       );
@@ -87,9 +87,9 @@ class CategoryController {
     bool successful = await categoryRespository.updateCategoryInDB(
         newCategory: currentCategory, oldCategory: oldCategory, pickedImage: pickedImage);
     if (successful) {
-      utils.UserMessages.success(context: context, message: S.of(context).db_success_updaging_doc);
+      toastification.success(context: context, message: S.of(context).db_success_updaging_doc);
     } else {
-      utils.UserMessages.failure(context: context, message: S.of(context).db_error_updating_doc);
+      toastification.failure(context: context, message: S.of(context).db_error_updating_doc);
     }
     cancelForm(context);
   }
@@ -127,9 +127,9 @@ class CategoryController {
         .read(categoriesRepositoryProvider)
         .deleteCategoryInDB(category: category, deleteImage: deleteImage);
     if (successful) {
-      utils.UserMessages.success(context: context, message: S.of(context).db_success_deleting_doc);
+      toastification.success(context: context, message: S.of(context).db_success_deleting_doc);
     } else {
-      utils.UserMessages.failure(context: context, message: S.of(context).db_error_deleting_doc);
+      toastification.failure(context: context, message: S.of(context).db_error_deleting_doc);
     }
     cancelForm(context);
   }

@@ -54,6 +54,7 @@ class ProductSearchForm extends ConsumerWidget {
                 IconButton(
                   onPressed: () {
                     ref.read(productFilterStateProvider.notifier).update((state) => state = false);
+                    ref.read(productFiltersProvider.notifier).reset();
                     ref.read(productsDrawerControllerProvider).drawerController.close();
                   },
                   icon: const CancelIcon(),
