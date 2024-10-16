@@ -4,8 +4,8 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/image_slider_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/form_dialog_add.dart';
-import 'package:tablets/src/features/products/view/form_dialog_edit.dart';
+import 'package:tablets/src/features/products/view/dialog_form_add.dart';
+import 'package:tablets/src/features/products/view/dialog_form_edit.dart';
 import 'package:tablets/src/common/functions/user_messages.dart' as toastification;
 
 class ProductFormFieldsController {

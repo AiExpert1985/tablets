@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/list_filters.dart' as filter_fn;
 import 'package:tablets/src/features/products/repository/product_stream_provider.dart';
+import 'package:tablets/src/common/functions/list_filters.dart' as filter_fn;
 
 class ProductFilteredList {
   ProductFilteredList(this._ref);

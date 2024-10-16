@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/features/products/controllers/form_controllers.dart';
 import 'package:tablets/src/features/categories/model/product_category.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
-import 'package:tablets/src/features/products/controllers/form_controllers.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common/constants/constants.dart' as constants;
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
-import 'package:tablets/src/common/constants/constants.dart' as constants;
 
 enum FieldDataTypes { int, double, string }
 
@@ -148,18 +148,15 @@ class GeneralFormField extends ConsumerWidget {
         validator: (value) {
           if (dataType == FieldDataTypes.string.name) {
             return validation.validateStringField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_strings);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
           }
           if (dataType == FieldDataTypes.int.name) {
             return validation.validateIntField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_integers);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
           }
           if (dataType == FieldDataTypes.double.name) {
             return validation.validateDoubleField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_doubles);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
           }
           return null;
         },
@@ -210,11 +207,9 @@ class ProductCategoryFormField extends ConsumerWidget {
           ),
         ),
         validator: (item) => validation.validateStringField(
-            fieldValue: item?.name,
-            errorMessage: S.of(context).input_validation_error_message_for_strings),
+            fieldValue: item?.name, errorMessage: S.of(context).input_validation_error_message_for_strings),
         itemAsString: (item) => item.name,
-        onSaved: (item) =>
-            ref.read(productFormDataProvider.notifier).update(key: 'category', value: item?.name),
+        onSaved: (item) => ref.read(productFormDataProvider.notifier).update(key: 'category', value: item?.name),
       ),
     );
   }

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/list_filters.dart' as filters;
 import 'package:tablets/src/features/products/controllers/drawer_provider.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
+import 'package:tablets/src/features/products/controllers/filter_controllers.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/functions/utils.dart' as utils;
-import 'package:tablets/src/features/products/controllers/filter_controllers.dart';
+import 'package:tablets/src/common/functions/list_filters.dart' as filters;
 
 class ProductSearchForm extends ConsumerWidget {
   const ProductSearchForm({super.key});

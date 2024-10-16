@@ -2,8 +2,6 @@ import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/features/products/view/drawer_filters.dart';
-// import 'package:tablets/src/utils/utils.dart' as utils;
-// import 'package:tablets/src/constants/gaps.dart' as constants;
 
 class ProductDrawer {
   final AnyDrawerController drawerController = AnyDrawerController();
