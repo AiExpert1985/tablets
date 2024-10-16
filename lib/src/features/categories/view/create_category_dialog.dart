@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/categories/view/single_image_picker.dart';
 import 'package:tablets/src/features/categories/controller/category_controller.dart';
-import 'package:tablets/src/common_functions/utils.dart' as utils;
-import 'package:tablets/src/constants/gaps.dart' as gaps;
-import 'package:tablets/src/common_functions/form_validation.dart' as validation;
+import 'package:tablets/src/common/functions/utils.dart' as utils;
+import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common/functions/form_validation.dart' as validation;
 
 class CreateCategoryDialog extends ConsumerStatefulWidget {
   const CreateCategoryDialog({super.key});

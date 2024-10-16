@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/features/authentication/data/auth_repository_old.dart';
+import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
 import 'package:toastification/toastification.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -25,9 +25,8 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
     }
 
     _loginForm.currentState!.save(); // runs onSave inside form
-    final isSuccessful = await ref
-        .watch(authRepositoryProvider)
-        .signUserIn(_userEmail, _userPassword);
+    final isSuccessful =
+        await ref.watch(authRepositoryProvider).signUserIn(_userEmail, _userPassword);
     if (!isSuccessful) {
       toastification.show(
         context: context, // optional if you use ToastificationWrapper
@@ -66,18 +65,13 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         TextFormField(
-                          decoration:
-                              InputDecoration(labelText: S.of(context).email),
+                          decoration: InputDecoration(labelText: S.of(context).email),
                           keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
                           textCapitalization: TextCapitalization.none,
                           validator: (value) {
-                            if (value == null ||
-                                value.trim().isEmpty ||
-                                !value.contains('@')) {
-                              return S
-                                  .of(context)
-                                  .input_validation_error_message_for_email;
+                            if (value == null || value.trim().isEmpty || !value.contains('@')) {
+                              return S.of(context).input_validation_error_message_for_email;
                             }
                             return null;
                           },
@@ -86,14 +80,11 @@ class _LoginScreenScreenState extends ConsumerState<LoginScreen> {
                           },
                         ),
                         TextFormField(
-                          decoration: InputDecoration(
-                              labelText: S.of(context).password),
+                          decoration: InputDecoration(labelText: S.of(context).password),
                           obscureText: true,
                           validator: (value) {
                             if (value == null || value.trim().length < 6) {
-                              return S
-                                  .of(context)
-                                  .input_validation_error_message_for_password;
+                              return S.of(context).input_validation_error_message_for_password;
                             }
                             return null;
                           },

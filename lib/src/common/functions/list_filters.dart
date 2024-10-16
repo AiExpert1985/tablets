@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_functions/utils.dart' as utils;
+import 'package:tablets/src/common/functions/utils.dart' as utils;
 
 enum FilterCriteria { contains, equals, lessThanOrEqual, lessThan, moreThanOrEqual, moreThan }
 

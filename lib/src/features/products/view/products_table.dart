@@ -2,13 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/async_value_widget.dart';
+import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/features/products/controllers/filter_controllers.dart';
 import 'package:tablets/src/features/products/controllers/form_controllers.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:tablets/src/features/products/repository/product_stream_provider.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/common/constants/constants.dart' as constants;
 
 class ProductsTable extends ConsumerWidget {
   const ProductsTable({super.key});

@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_widgets/custom_icons.dart';
-import 'package:tablets/src/common_widgets/main_drawer.dart';
+import 'package:tablets/src/common/widgets/custom_icons.dart';
+import 'package:tablets/src/common/widgets/main_drawer.dart';
 
 class AppScreenFrame extends StatelessWidget {
   const AppScreenFrame({

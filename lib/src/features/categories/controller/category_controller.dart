@@ -8,8 +8,8 @@ import 'package:tablets/src/features/categories/view/create_category_dialog.dart
 import 'package:tablets/src/features/categories/view/edit_category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_functions/user_messages.dart' as toastification;
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/common/functions/user_messages.dart' as toastification;
+import 'package:tablets/src/common/constants/constants.dart' as constants;
 
 /// the controller works with category forms (through its 'formKey') to update its category object
 /// and gets images from a 'pickedImageNotifierProvider' where image file is stored when

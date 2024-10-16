@@ -1,4 +1,4 @@
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/common/constants/constants.dart' as constants;
 
 class ProductCategory {
   String name;

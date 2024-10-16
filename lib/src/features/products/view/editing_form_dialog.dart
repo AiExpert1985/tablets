@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_providers/image_slider_controller.dart';
-import 'package:tablets/src/common_widgets/form_frame.dart';
-import 'package:tablets/src/common_widgets/custom_icons.dart';
-import 'package:tablets/src/common_widgets/image_slider.dart';
-import 'package:tablets/src/common_widgets/dialog_delete_confirmation.dart';
-import 'package:tablets/src/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common/providers/image_slider_controller.dart';
+import 'package:tablets/src/common/widgets/form_frame.dart';
+import 'package:tablets/src/common/widgets/custom_icons.dart';
+import 'package:tablets/src/common/widgets/image_slider.dart';
+import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
+import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/features/products/controllers/form_controllers.dart';
 import 'package:tablets/src/features/products/model/product.dart';
-import 'package:tablets/src/constants/constants.dart' as constants;
+import 'package:tablets/src/common/constants/constants.dart' as constants;
 import 'package:tablets/src/features/products/view/form_fields.dart';
 
 class EditProductForm extends ConsumerWidget {

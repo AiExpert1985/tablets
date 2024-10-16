@@ -2,8 +2,7 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tablets/src/app.dart';
-import 'package:tablets/src/initalizing_app/custom_inialization.dart'
-    as my_initializer;
+import 'package:tablets/src/common/functions/custom_inialization.dart' as my_initializer;
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

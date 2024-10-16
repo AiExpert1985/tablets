@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common_providers/image_slider_controller.dart';
+import 'package:tablets/src/common/providers/image_slider_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/view/adding_form_dialog.dart';
 import 'package:tablets/src/features/products/view/editing_form_dialog.dart';
-import 'package:tablets/src/common_functions/user_messages.dart' as toastification;
+import 'package:tablets/src/common/functions/user_messages.dart' as toastification;
 
 class ProductFormFieldsController {
   ProductFormFieldsController(

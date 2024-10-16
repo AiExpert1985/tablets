@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:tablets/src/common_functions/debug_print.dart' as debug;
+import 'package:tablets/src/common/functions/debug_print.dart' as debug;
 
 /// this widget shows an image and a button to upload image
 /// it takes its image from the pickedImageNotifierProvider

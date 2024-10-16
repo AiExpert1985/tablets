@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 
 /// show a dialog to ask user to confirm the deletion
 /// return true if user confirmed the deletion

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common_functions/debug_print.dart' as debug;
+import 'package:tablets/src/common/functions/debug_print.dart' as debug;
 
 class AuthRepository {
   AuthRepository();
