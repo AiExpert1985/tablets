@@ -4,17 +4,17 @@ import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/features/products/controllers/product_form_controllers.dart';
+import 'package:tablets/src/features/products/view/product_form_fields.dart';
 import 'package:tablets/src/common/constants/constants.dart' as constants;
-import 'package:tablets/src/features/category/controllers/form_controllers.dart';
-import 'package:tablets/src/features/category/view/form_fields.dart';
 
-class AddCategoryForm extends ConsumerWidget {
-  const AddCategoryForm({super.key});
+class AddProductForm extends ConsumerWidget {
+  const AddProductForm({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(categoryFormControllerProvider);
-    final userFormData = ref.watch(categoryFormDataProvider);
+    final formController = ref.watch(productFormControllerProvider);
+    final userFormData = ref.watch(productFormDataProvider);
     return FormFrame(
       formKey: formController.formKey,
       fields: Column(
@@ -25,15 +25,15 @@ class AddCategoryForm extends ConsumerWidget {
             userFormData['imageUrls'] ?? [constants.defaultImageUrl],
           ),
           gaps.VerticalGap.formImageToFields,
-          const CategoryFormFields(),
+          const ProductFormFields(),
         ],
       ),
       buttons: [
-        IconButton(onPressed: () => formController.addCategory(context), icon: const ApproveIcon()),
+        IconButton(onPressed: () => formController.addProduct(context), icon: const ApproveIcon()),
         IconButton(onPressed: () => Navigator.of(context).pop(), icon: const CancelIcon()),
       ],
-      width: 600,
-      height: 600,
+      width: constants.productFormWidth,
+      height: constants.productFormHeight,
     );
   }
 }

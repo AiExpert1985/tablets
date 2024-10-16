@@ -5,10 +5,10 @@ import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
-import 'package:tablets/src/features/category/controllers/form_controllers.dart';
-import 'package:tablets/src/features/category/model/product_category.dart';
-import 'package:tablets/src/features/category/view/form_fields.dart';
-import 'package:tablets/src/features/products/controllers/form_controllers.dart';
+import 'package:tablets/src/features/category/controllers/category_form_controllers.dart';
+import 'package:tablets/src/features/category/model/category.dart';
+import 'package:tablets/src/features/category/view/category_form_fields.dart';
+import 'package:tablets/src/features/products/controllers/product_form_controllers.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/constants/constants.dart' as constants;
 
@@ -55,14 +55,15 @@ class EditCategoryForm extends ConsumerWidget {
               if (confiramtion != null && context.mounted) {
                 final updatedData = ref.read(productFormDataProvider);
                 final updatedImageUrls = ref.read(imageSliderNotifierProvider);
-                final category = ProductCategory.fromMap({...updatedData, 'imageUrls': updatedImageUrls});
+                final category =
+                    ProductCategory.fromMap({...updatedData, 'imageUrls': updatedImageUrls});
                 formController.deleteCategory(context, category);
               }
             },
             icon: const DeleteIcon())
       ],
-      width: 600,
-      height: 600,
+      width: constants.categoryFormWidth,
+      height: constants.categoryFormHeight,
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+
 import 'package:tablets/src/common/constants/constants.dart' as constants;
 
 class ProductCategory {
@@ -13,9 +14,11 @@ class ProductCategory {
     required this.imageUrls,
   });
 
-  String get coverImage => imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
+  String get coverImage =>
+      imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
-  List<String> get imageUrlsOrDefault => imageUrls.isNotEmpty ? imageUrls : [constants.defaultImageUrl];
+  List<String> get imageUrlsOrDefault =>
+      imageUrls.isNotEmpty ? imageUrls : [constants.defaultImageUrl];
 
   ProductCategory copyWith({
     String? name,
@@ -28,7 +31,7 @@ class ProductCategory {
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    return {
       'name': name,
       'imageUrls': imageUrls,
     };
@@ -36,25 +39,23 @@ class ProductCategory {
 
   factory ProductCategory.fromMap(Map<String, dynamic> map) {
     return ProductCategory(
-        name: map['name'] as String,
-        imageUrls: List<String>.from(
-          (map['imageUrls'] as List<String>),
-        ));
+      name: map['name'] ?? '',
+      imageUrls: List<String>.from(map['imageUrls']),
+    );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ProductCategory.fromJson(String source) =>
-      ProductCategory.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ProductCategory.fromJson(String source) => ProductCategory.fromMap(json.decode(source));
 
   @override
   String toString() => 'ProductCategory(name: $name, imageUrls: $imageUrls)';
 
   @override
-  bool operator ==(covariant ProductCategory other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other.name == name && listEquals(other.imageUrls, imageUrls);
+    return other is ProductCategory && other.name == name && listEquals(other.imageUrls, imageUrls);
   }
 
   @override

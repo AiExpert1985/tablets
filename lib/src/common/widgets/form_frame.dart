@@ -18,7 +18,7 @@ class FormFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       alignment: Alignment.center,
-      insetPadding: const EdgeInsets.all(1),
+      insetPadding: const EdgeInsets.all(10),
       scrollable: true,
       contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
       // title: Text(S.of(context).add_new_user),

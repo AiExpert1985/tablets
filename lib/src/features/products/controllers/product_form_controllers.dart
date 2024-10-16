@@ -2,22 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/image_slider_controller.dart';
-import 'package:tablets/src/features/category/model/product_category.dart';
-import 'package:tablets/src/features/category/repository/category_repository_provider.dart';
-// import 'package:tablets/src/features/products/view/dialog_form_add.dart';
-// import 'package:tablets/src/features/products/view/dialog_form_edit.dart';
+import 'package:tablets/src/features/products/model/product.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
+import 'package:tablets/src/features/products/view/product_dialog_form_add.dart';
+import 'package:tablets/src/features/products/view/product_dialog_form_edit.dart';
 import 'package:tablets/src/common/functions/user_messages.dart' as toastification;
-import 'package:tablets/src/features/category/view/dialog_form_add.dart';
-import 'package:tablets/src/features/category/view/dialog_form_edit.dart';
 
-class CategoryFormFieldsController {
-  CategoryFormFieldsController(
+class ProductFormFieldsController {
+  ProductFormFieldsController(
     this._repository,
     this._formData,
     this._imageSlider,
   );
-  final CategoryRepository _repository;
-  final CategoryUserFormData _formData;
+  final ProductRepository _repository;
+  final UserFormData _formData;
 
   final ImageSliderNotifier _imageSlider;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -33,13 +31,13 @@ class CategoryFormFieldsController {
     Navigator.of(context).pop();
   }
 
-  void addCategory(context) async {
+  void addProduct(context) async {
     if (!validateForm()) return;
     final updatedUrls = _imageSlider.savedUpdatedImages();
     _formData.update(key: 'imageUrls', value: updatedUrls);
     final updatedData = _formData.getState();
-    final category = ProductCategory.fromMap({...updatedData, 'imageUrls': updatedUrls});
-    final successful = await _repository.addCategoryToDB(category: category);
+    final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
+    final successful = await _repository.addProductToDB(product: product);
     if (successful) {
       toastification.success(
         context: context,
@@ -58,7 +56,7 @@ class CategoryFormFieldsController {
     _imageSlider.initialize();
     showDialog(
       context: context,
-      builder: (BuildContext context) => const AddCategoryForm(),
+      builder: (BuildContext context) => const AddProductForm(),
     ).whenComplete(_onFormClosing);
   }
 
@@ -70,18 +68,18 @@ class CategoryFormFieldsController {
     _formData.reset();
   }
 
-  void showEditForm({required BuildContext context, required ProductCategory category}) {
-    _imageSlider.initialize(urls: category.imageUrls);
-    _formData.initialize(category);
+  void showEditForm({required BuildContext context, required Product product}) {
+    _imageSlider.initialize(urls: product.imageUrls);
+    _formData.initialize(product);
     showDialog(
       context: context,
-      builder: (BuildContext ctx) => const EditCategoryForm(),
+      builder: (BuildContext ctx) => const EditProductForm(),
     ).whenComplete(_onFormClosing);
   }
 
-  void deleteCategory(BuildContext context, ProductCategory category) async {
+  void deleteProduct(BuildContext context, Product product) async {
     // add all urls to the tempurls list, they will be automatically deleted once form is closed
-    bool successful = await _repository.deleteCategoryFromDB(category: category);
+    bool successful = await _repository.deleteProductFromDB(product: product);
     if (successful) {
       if (context.mounted) {
         toastification.success(context: context, message: S.of(context).db_success_deleting_doc);
@@ -94,13 +92,14 @@ class CategoryFormFieldsController {
     if (context.mounted) closeForm(context);
   }
 
-  void updateCategory(BuildContext context, ProductCategory oldCategory) async {
+  void updateProduct(BuildContext context, Product oldProduct) async {
     if (!validateForm()) return;
     final updatedUrls = _imageSlider.savedUpdatedImages();
     _formData.update(key: 'imageUrls', value: updatedUrls);
     final updatedData = _formData.getState();
-    final category = ProductCategory.fromMap({...updatedData, 'imageUrls': updatedUrls});
-    final successful = await _repository.updateCategoryInDB(newCategory: category, oldCategory: oldCategory);
+    final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
+    final successful =
+        await _repository.updateProductInDB(newProduct: product, oldProduct: oldProduct);
     if (successful) {
       if (context.mounted) {
         toastification.success(context: context, message: S.of(context).db_success_updaging_doc);
@@ -114,20 +113,31 @@ class CategoryFormFieldsController {
   }
 }
 
-final categoryFormControllerProvider = Provider<CategoryFormFieldsController>((ref) {
-  final repository = ref.read(categoriesRepositoryProvider);
-  final formData = ref.watch(categoryFormDataProvider.notifier);
+final productFormControllerProvider = Provider<ProductFormFieldsController>((ref) {
+  final repository = ref.read(productsRepositoryProvider);
+  final formData = ref.watch(productFormDataProvider.notifier);
   final imageSliderController = ref.watch(imageSliderNotifierProvider.notifier);
-  return CategoryFormFieldsController(repository, formData, imageSliderController);
+  return ProductFormFieldsController(repository, formData, imageSliderController);
 });
 
-class CategoryUserFormData extends StateNotifier<Map<String, dynamic>> {
-  CategoryUserFormData(super.state);
+class UserFormData extends StateNotifier<Map<String, dynamic>> {
+  UserFormData(super.state);
 
-  void initialize(ProductCategory category) {
+  void initialize(Product product) {
     state = {
-      'name': category.name,
-      'imageUrls': category.imageUrls,
+      'code': product.code,
+      'name': product.name,
+      'sellRetailPrice': product.sellRetailPrice,
+      'sellWholePrice': product.sellWholePrice,
+      'packageType': product.packageType,
+      'packageWeight': product.packageWeight,
+      'numItemsInsidePackage': product.numItemsInsidePackage,
+      'alertWhenExceeds': product.alertWhenExceeds,
+      'altertWhenLessThan': product.altertWhenLessThan,
+      'salesmanComission': product.salesmanComission,
+      'imageUrls': product.imageUrls,
+      'category': product.category,
+      'initialQuantity': product.initialQuantity
     };
   }
 
@@ -142,5 +152,5 @@ class CategoryUserFormData extends StateNotifier<Map<String, dynamic>> {
   Map<String, dynamic> getState() => state;
 }
 
-final categoryFormDataProvider =
-    StateNotifierProvider<CategoryUserFormData, Map<String, dynamic>>((ref) => CategoryUserFormData({}));
+final productFormDataProvider =
+    StateNotifierProvider<UserFormData, Map<String, dynamic>>((ref) => UserFormData({}));

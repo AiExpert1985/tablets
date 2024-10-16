@@ -2,14 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/features/category/view/main_screen.dart';
+import 'package:tablets/src/features/category/view/category_main_screen.dart';
 import 'package:tablets/src/features/pending_bills/pending_bills.dart';
-import 'package:tablets/src/features/products/view/main_screen.dart';
+import 'package:tablets/src/features/products/view/product_main_screen.dart';
 import 'package:tablets/src/features/salesmen_live_locations/presentation/sales_men_live_location_screen.dart';
 import 'package:tablets/src/features/settings/settings_screen.dart';
 import 'package:tablets/src/features/transaction/presentation/transaction_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
-import 'package:tablets/src/features/login/view/login_screen.dart';
+import 'package:tablets/src/features/authentication/view/login_screen.dart';
 import 'package:tablets/src/routers/not_found_screen.dart';
 
 enum AppRoute {
@@ -72,7 +72,8 @@ final goRouterProvider = Provider<GoRouter>(
         GoRoute(
           path: '/salesmen',
           name: AppRoute.salesmen.name,
-          builder: (BuildContext context, GoRouterState state) => const SalesmenLiveLocationScreen(),
+          builder: (BuildContext context, GoRouterState state) =>
+              const SalesmenLiveLocationScreen(),
         ),
         GoRoute(
           path: '/settings',

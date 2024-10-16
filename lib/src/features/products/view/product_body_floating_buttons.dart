@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:tablets/src/features/category/controllers/drawer_provider.dart';
-import 'package:tablets/src/features/category/controllers/form_controllers.dart';
+import 'package:tablets/src/features/products/controllers/product_form_controllers.dart';
+import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
 
-class CategoryFloatingButtons extends ConsumerWidget {
-  const CategoryFloatingButtons({super.key});
+class ProductFloatingButtons extends ConsumerWidget {
+  const ProductFloatingButtons({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(categoryFormControllerProvider);
-    final drawerController = ref.watch(categoryDrawerControllerProvider);
+    final formController = ref.watch(productFormControllerProvider);
+    final drawerController = ref.watch(productsDrawerControllerProvider);
     const iconsColor = Color.fromARGB(255, 126, 106, 211);
     return SpeedDial(
       direction: SpeedDialDirection.up,

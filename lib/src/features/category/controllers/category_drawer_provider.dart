@@ -1,9 +1,9 @@
 import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/products/view/drawer_filters.dart';
+import 'package:tablets/src/features/category/view/category_drawer_filters.dart';
 
-class ProductDrawer {
+class CategoryDrawer {
   final AnyDrawerController drawerController = AnyDrawerController();
   void showSearchForm(BuildContext context) {
     showDrawer(
@@ -12,7 +12,7 @@ class ProductDrawer {
         return const Center(
           child: SafeArea(
             top: true,
-            child: ProductSearchForm(),
+            child: CategorySearchForm(),
           ),
         );
       },
@@ -55,6 +55,6 @@ class ProductDrawer {
   }
 }
 
-final productsDrawerControllerProvider = Provider<ProductDrawer>((ref) {
-  return ProductDrawer();
+final categoryDrawerControllerProvider = Provider<CategoryDrawer>((ref) {
+  return CategoryDrawer();
 });
