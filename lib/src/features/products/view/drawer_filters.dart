@@ -86,8 +86,7 @@ class GeneralSearchField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productFilters = ref.watch(productFiltersProvider);
-    dynamic initialValue = productFilters[name];
-
+    dynamic initialValue = productFilters[name]?['value'];
     if (initialValue != null) {
       initialValue = initialValue is String ? initialValue : initialValue.toString();
     }

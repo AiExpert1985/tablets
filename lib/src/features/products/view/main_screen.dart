@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
-import 'package:tablets/src/features/products/view/floating_buttons.dart';
-import 'package:tablets/src/features/products/view/products_table.dart';
+import 'package:tablets/src/features/products/view/body_floating_buttons.dart';
+import 'package:tablets/src/features/products/view/body_products_table.dart';
 
 class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});

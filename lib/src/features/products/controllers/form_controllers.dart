@@ -4,8 +4,8 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/image_slider_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/adding_form_dialog.dart';
-import 'package:tablets/src/features/products/view/editing_form_dialog.dart';
+import 'package:tablets/src/features/products/view/form_dialog_add.dart';
+import 'package:tablets/src/features/products/view/form_dialog_edit.dart';
 import 'package:tablets/src/common/functions/user_messages.dart' as toastification;
 
 class ProductFormFieldsController {
@@ -98,8 +98,7 @@ class ProductFormFieldsController {
     _formData.update(key: 'imageUrls', value: updatedUrls);
     final updatedData = _formData.getState();
     final product = Product.fromMap({...updatedData, 'imageUrls': updatedUrls});
-    final successful =
-        await _repository.updateProductInDB(newProduct: product, oldProduct: oldProduct);
+    final successful = await _repository.updateProductInDB(newProduct: product, oldProduct: oldProduct);
     if (successful) {
       if (context.mounted) {
         toastification.success(context: context, message: S.of(context).db_success_updaging_doc);
@@ -152,5 +151,4 @@ class UserFormData extends StateNotifier<Map<String, dynamic>> {
   Map<String, dynamic> getState() => state;
 }
 
-final productFormDataProvider =
-    StateNotifierProvider<UserFormData, Map<String, dynamic>>((ref) => UserFormData({}));
+final productFormDataProvider = StateNotifierProvider<UserFormData, Map<String, dynamic>>((ref) => UserFormData({}));
