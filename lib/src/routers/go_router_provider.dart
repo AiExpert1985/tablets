@@ -9,7 +9,7 @@ import 'package:tablets/src/features/categories/view/categories_screen.dart';
 import 'package:tablets/src/features/settings/settings_screen.dart';
 import 'package:tablets/src/features/transaction/presentation/transaction_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
-import 'package:tablets/src/features/authentication/view/login_screen.dart';
+import 'package:tablets/src/features/login/view/login_screen.dart';
 import 'package:tablets/src/routers/not_found_screen.dart';
 
 enum AppRoute {

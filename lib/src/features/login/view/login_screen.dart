@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/features/authentication/repository/auth_repository.dart';
+import 'package:tablets/src/features/login/repository/auth_repository.dart';
 import 'package:toastification/toastification.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
