@@ -18,8 +18,7 @@ class ProductsTable extends ConsumerWidget {
     final productStream = ref.watch(productsStreamProvider);
     final formController = ref.watch(productFormControllerProvider);
     final filterIsOn = ref.watch(productFilterSwitchProvider);
-    final productsListValue =
-        filterIsOn ? ref.read(productFilteredListProvider).getFilteredList() : productStream;
+    final productsListValue = filterIsOn ? ref.read(productFilteredListProvider).getFilteredList() : productStream;
     return AsyncValueWidget<List<Map<String, dynamic>>>(
         value: productsListValue,
         data: (products) {
@@ -30,7 +29,7 @@ class ProductsTable extends ConsumerWidget {
                 DataCell(Row(
                   children: [
                     InkWell(
-                      child: CircleAvatar(
+                      child: const CircleAvatar(
                         radius: 15,
                         foregroundImage: CachedNetworkImageProvider(constants.defaultImageUrl),
                       ),
