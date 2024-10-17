@@ -46,12 +46,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "حدث خطأ اثناء تحميل الملفات من قاعدة البيانات"),
         "db_error_login":
             MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء تسجيل الدخول"),
+        "db_error_saving_doc":
+            MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء الحفظ"),
         "db_error_updating_doc": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ اثناء تحديث معلومات في قاعدة البيانات"),
         "db_success_adding_doc":
             MessageLookupByLibrary.simpleMessage("تمت الاضافة بنجاح"),
         "db_success_deleting_doc":
             MessageLookupByLibrary.simpleMessage("تم الحذف بنجاح"),
+        "db_success_saving_doc":
+            MessageLookupByLibrary.simpleMessage("تم الحفظ بنجاح"),
         "db_success_updaging_doc":
             MessageLookupByLibrary.simpleMessage("تم التعديل بنجاح"),
         "delete": MessageLookupByLibrary.simpleMessage("حذف"),

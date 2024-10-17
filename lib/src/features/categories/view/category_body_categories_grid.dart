@@ -31,7 +31,7 @@ class CategoriesGrid extends ConsumerWidget {
           final category = ProductCategory.fromMap(categories[index]);
           return InkWell(
             hoverColor: const Color.fromARGB(255, 173, 170, 170),
-            onTap: () => formController.showEditForm(category: category, context: ctx),
+            onTap: () => formController.showForm(ctx, category: category),
             child: TitledImage(
               imageUrl: category.imageUrls[category.imageUrls.length - 1],
               title: category.name,

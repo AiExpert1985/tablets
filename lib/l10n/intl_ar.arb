@@ -65,6 +65,8 @@
     "db_error_adding_doc": "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات",
     "db_error_updating_doc": "حدث خطأ اثناء تحديث معلومات في قاعدة البيانات",
     "db_success_adding_doc": "تمت الاضافة بنجاح",
+    "db_success_saving_doc": "تم الحفظ بنجاح",
+    "db_error_saving_doc": "حدث خطأ اثناء الحفظ",
     "db_success_updaging_doc": "تم التعديل بنجاح",
     "db_success_deleting_doc": "تم الحذف بنجاح",
     "db_error_deleting_doc": "حدث خطأ اثناء حذف المستند من قاعدة البيانات",

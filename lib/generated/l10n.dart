@@ -700,11 +700,31 @@ class S {
     );
   }
 
-  /// `Document was added successfuly`
+  /// `Document was added successfully`
   String get db_success_adding_doc {
     return Intl.message(
-      'Document was added successfuly',
+      'Document was added successfully',
       name: 'db_success_adding_doc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document was saved successfully`
+  String get db_success_saving_doc {
+    return Intl.message(
+      'Document was saved successfully',
+      name: 'db_success_saving_doc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An error happened while saving from db`
+  String get db_error_saving_doc {
+    return Intl.message(
+      'An error happened while saving from db',
+      name: 'db_error_saving_doc',
       desc: '',
       args: [],
     );

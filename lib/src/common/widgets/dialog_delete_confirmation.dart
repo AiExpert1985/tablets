@@ -10,7 +10,7 @@ Future<bool?> showDeleteConfirmationDialog(
     {required BuildContext context, required String message}) {
   return showDialog<bool>(
     context: context,
-    builder: (BuildContext context) {
+    builder: (BuildContext ctx) {
       return AlertDialog(
         // title: const Text('Confirm Deletion'),
         content: Padding(
@@ -19,7 +19,7 @@ Future<bool?> showDeleteConfirmationDialog(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                S.of(context).alert_before_delete,
+                S.of(ctx).alert_before_delete,
                 style: const TextStyle(fontSize: 20),
                 textAlign: TextAlign.center,
               ),
@@ -40,20 +40,20 @@ Future<bool?> showDeleteConfirmationDialog(
                   children: [
                     const Icon(Icons.check, color: Colors.red),
                     gaps.VerticalGap.iconToText,
-                    Text(S.of(context).delete),
+                    Text(S.of(ctx).delete),
                   ],
                 ),
-                onPressed: () => Navigator.pop(context, true),
+                onPressed: () => Navigator.pop(ctx, true),
               ),
               TextButton(
                 child: Column(
                   children: [
                     const Icon(Icons.close),
                     gaps.VerticalGap.iconToText,
-                    Text(S.of(context).cancel),
+                    Text(S.of(ctx).cancel),
                   ],
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(ctx),
               ),
             ],
           ),

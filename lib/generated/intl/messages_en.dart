@@ -45,12 +45,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "An error happened while downloading files from database"),
         "db_error_login":
             MessageLookupByLibrary.simpleMessage("Error happened while login"),
+        "db_error_saving_doc": MessageLookupByLibrary.simpleMessage(
+            "An error happened while saving from db"),
         "db_error_updating_doc": MessageLookupByLibrary.simpleMessage(
             "An error happened while updating the database"),
         "db_success_adding_doc": MessageLookupByLibrary.simpleMessage(
-            "Document was added successfuly"),
+            "Document was added successfully"),
         "db_success_deleting_doc": MessageLookupByLibrary.simpleMessage(
             "Document was deleted successfully"),
+        "db_success_saving_doc": MessageLookupByLibrary.simpleMessage(
+            "Document was saved successfully"),
         "db_success_updaging_doc": MessageLookupByLibrary.simpleMessage(
             "Document was updated successfully "),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),

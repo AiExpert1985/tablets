@@ -21,9 +21,7 @@ class AddProductForm extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          ImageSlider(
-            userFormData['imageUrls'] ?? [constants.defaultImageUrl],
-          ),
+          ImageSlider(imageUrls: userFormData['imageUrls']),
           gaps.VerticalGap.formImageToFields,
           const ProductFormFields(),
         ],

@@ -24,13 +24,9 @@ class EditProductForm extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          ImageSlider(
-            userFormData['imageUrls'] ?? [constants.defaultImageUrl],
-          ),
+          ImageSlider(imageUrls: userFormData['imageUrls']),
           gaps.VerticalGap.formImageToFields,
-          const ProductFormFields(
-            editMode: true,
-          ),
+          const ProductFormFields(editMode: true),
         ],
       ),
       buttons: [
