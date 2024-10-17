@@ -1,8 +1,6 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/category/model/category.dart';
+import 'package:tablets/src/features/categories/model/category.dart';
 import 'package:tablets/src/common/functions/debug_print.dart' as debug;
 
 class CategoryRepository {
@@ -10,9 +8,10 @@ class CategoryRepository {
   final FirebaseFirestore _firestore;
 
   static String collectionName = 'categories';
-  static String nameKey = 'name';
+  static String dbReferenceKey = 'dbKey';
+  static String dbOrderKey = 'name';
 
-  Future<bool> addCategoryToDB({required ProductCategory category, File? pickedImage}) async {
+  Future<bool> addCategoryToDB(ProductCategory category) async {
     try {
       final docRef = _firestore.collection(collectionName).doc();
       await docRef.set(category.toMap());
@@ -24,15 +23,15 @@ class CategoryRepository {
     }
   }
 
-  Future<bool> updateCategoryInDB(
-      {required ProductCategory newCategory, required ProductCategory oldCategory}) async {
+  Future<bool> updateCategoryInDB(ProductCategory updatedCategory) async {
     try {
-      final query =
-          _firestore.collection(collectionName).where(nameKey, isEqualTo: oldCategory.name);
+      final query = _firestore
+          .collection(collectionName)
+          .where(dbReferenceKey, isEqualTo: updatedCategory.dbKey);
       final querySnapshot = await query.get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
-        await documentRef.update(newCategory.toMap());
+        await documentRef.update(updatedCategory.toMap());
       }
       return true;
     } catch (error) {
@@ -41,11 +40,11 @@ class CategoryRepository {
     }
   }
 
-  Future<bool> deleteCategoryFromDB({required ProductCategory category}) async {
+  Future<bool> deleteCategoryFromDB(ProductCategory category) async {
     try {
       final querySnapshot = await _firestore
           .collection(collectionName)
-          .where(nameKey, isEqualTo: category.name)
+          .where(dbReferenceKey, isEqualTo: category.dbKey)
           .get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
@@ -59,7 +58,7 @@ class CategoryRepository {
   }
 
   Stream<List<Map<String, dynamic>>> watchMapList() {
-    final ref = _firestore.collection(collectionName).orderBy(nameKey);
+    final ref = _firestore.collection(collectionName).orderBy(dbOrderKey);
     return ref
         .snapshots()
         .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
@@ -67,7 +66,7 @@ class CategoryRepository {
 
   /// below function was not tested
   Stream<List<ProductCategory>> watchCategoryList() {
-    final query = _firestore.collection(collectionName).orderBy(nameKey);
+    final query = _firestore.collection(collectionName).orderBy(dbReferenceKey);
     final ref = query.withConverter(
       fromFirestore: (doc, _) => ProductCategory.fromMap(doc.data()!),
       toFirestore: (ProductCategory product, options) => product.toMap(),

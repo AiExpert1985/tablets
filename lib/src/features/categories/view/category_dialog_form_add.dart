@@ -5,8 +5,9 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/constants/constants.dart' as constants;
-import 'package:tablets/src/features/category/controllers/category_form_controllers.dart';
-import 'package:tablets/src/features/category/view/category_form_fields.dart';
+import 'package:tablets/src/features/categories/controllers/category_form_controllers.dart';
+import 'package:tablets/src/features/categories/controllers/category_form_fields_data_provider.dart';
+import 'package:tablets/src/features/categories/view/category_form_fields.dart';
 
 class AddCategoryForm extends ConsumerWidget {
   const AddCategoryForm({super.key});
@@ -14,7 +15,7 @@ class AddCategoryForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formController = ref.watch(categoryFormControllerProvider);
-    final userFormData = ref.watch(categoryFormDataProvider);
+    final userFormData = ref.watch(categoryFormFieldsDataProvider);
     return FormFrame(
       formKey: formController.formKey,
       fields: Column(

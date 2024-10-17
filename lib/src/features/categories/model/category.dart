@@ -15,9 +15,11 @@ class ProductCategory {
     required this.imageUrls,
   });
 
-  String get coverImage => imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
+  String get coverImage =>
+      imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
-  List<String> get imageUrlsOrDefault => imageUrls.isNotEmpty ? imageUrls : [constants.defaultImageUrl];
+  List<String> get imageUrlsOrDefault =>
+      imageUrls.isNotEmpty ? imageUrls : [constants.defaultImageUrl];
 
   ProductCategory copyWith({
     String? dbKey,
@@ -52,15 +54,18 @@ class ProductCategory {
   factory ProductCategory.fromJson(String source) => ProductCategory.fromMap(json.decode(source));
 
   @override
-  String toString() => 'ProductCategory(name: $name, imageUrls: $imageUrls)';
+  String toString() => 'ProductCategory(dbKey: $dbKey, name: $name, imageUrls: $imageUrls)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is ProductCategory && other.name == name && listEquals(other.imageUrls, imageUrls);
+    return other is ProductCategory &&
+        other.dbKey == dbKey &&
+        other.name == name &&
+        listEquals(other.imageUrls, imageUrls);
   }
 
   @override
-  int get hashCode => name.hashCode ^ imageUrls.hashCode;
+  int get hashCode => dbKey.hashCode ^ name.hashCode ^ imageUrls.hashCode;
 }

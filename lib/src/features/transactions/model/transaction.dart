@@ -1,4 +1,4 @@
-class ProductCategory {
+class Transaction {
   String dbKey;
   int number;
   String name;
@@ -15,7 +15,7 @@ class ProductCategory {
   double? discount;
   double? paymentTransferFee;
 
-  ProductCategory({
+  Transaction({
     required this.dbKey,
     required this.number,
     required this.name,

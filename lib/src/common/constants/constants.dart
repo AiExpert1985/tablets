@@ -6,3 +6,5 @@ const double categoryFormHeight = 400;
 
 const double productFormWidth = 600;
 const double productFormHeight = 600;
+
+enum FieldDataTypes { int, double, string }

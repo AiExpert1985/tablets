@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/category/repository/category_stream_provider.dart';
+import 'package:tablets/src/features/categories/controllers/category_filter_fields_data_provider.dart';
+import 'package:tablets/src/features/categories/repository/category_stream_provider.dart';
 import 'package:tablets/src/common/functions/list_filters.dart' as filter_fn;
 
 class CategoryFilteredList {
@@ -37,10 +38,3 @@ class CategoryFiltersNotifier extends StateNotifier<Map<String, Map<String, dyna
 
   void reset() => state = {};
 }
-
-final categoryFiltersProvider =
-    StateNotifierProvider<CategoryFiltersNotifier, Map<String, Map<String, dynamic>>>((ref) {
-  return CategoryFiltersNotifier({});
-});
-
-final categoryFilterSwitchProvider = StateProvider<bool>((ref) => false);
