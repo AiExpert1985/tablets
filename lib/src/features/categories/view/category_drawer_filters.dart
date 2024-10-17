@@ -7,8 +7,8 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/list_filters.dart' as filters;
-import 'package:tablets/src/features/categories/controllers/category_filter_fields_data_provider.dart';
-import 'package:tablets/src/features/categories/controllers/category_filter_switch_data_provider.dart';
+import 'package:tablets/src/features/categories/controllers/category_filter_data_provider.dart';
+import 'package:tablets/src/features/categories/controllers/category_filter_controller_.dart';
 
 class CategorySearchForm extends ConsumerWidget {
   const CategorySearchForm({super.key});

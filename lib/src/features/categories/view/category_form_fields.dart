@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/widgets/form_input_field.dart';
-import 'package:tablets/src/features/categories/controllers/category_form_fields_data_provider.dart';
+import 'package:tablets/src/features/categories/controllers/category_form_data_provider.dart';
 
 class CategoryFormFields extends ConsumerWidget {
   const CategoryFormFields({super.key, this.editMode = false});

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/common/widgets/image_titled.dart';
-import 'package:tablets/src/features/categories/controllers/category_filter_controllers.dart';
-import 'package:tablets/src/features/categories/controllers/category_filter_switch_data_provider.dart';
-import 'package:tablets/src/features/categories/controllers/category_form_controllers.dart';
+import 'package:tablets/src/features/categories/controllers/category_filtered_list.dart';
+import 'package:tablets/src/features/categories/controllers/category_filter_controller_.dart';
+import 'package:tablets/src/features/categories/controllers/category_form_controller.dart';
 import 'package:tablets/src/features/categories/model/category.dart';
 import 'package:tablets/src/features/categories/repository/category_stream_provider.dart';
 

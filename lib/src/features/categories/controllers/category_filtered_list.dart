@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/categories/controllers/category_filter_fields_data_provider.dart';
+import 'package:tablets/src/features/categories/controllers/category_filter_data_provider.dart';
 import 'package:tablets/src/features/categories/repository/category_stream_provider.dart';
 import 'package:tablets/src/common/functions/list_filters.dart' as filter_fn;
 
