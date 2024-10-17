@@ -148,18 +148,15 @@ class GeneralFormField extends ConsumerWidget {
         validator: (value) {
           if (dataType == FieldDataTypes.string.name) {
             return validation.validateStringField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_strings);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
           }
           if (dataType == FieldDataTypes.int.name) {
             return validation.validateIntField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_integers);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
           }
           if (dataType == FieldDataTypes.double.name) {
             return validation.validateDoubleField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_doubles);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
           }
           return null;
         },
@@ -182,12 +179,10 @@ class ProductCategoryFormField extends ConsumerWidget {
         ),
         // if new item, then selectedItem should be null
         selectedItem: userFormData.keys.isNotEmpty
-            ? ProductCategory(
-                name: userFormData['category'], imageUrls: [constants.defaultImageUrl])
+            ? ProductCategory(name: userFormData['category'], imageUrls: userFormData['imageUrls'])
             : null,
-        items: (filter, t) => ref
-            .read(categoriesRepositoryProvider)
-            .fetchCategoryList(filterKey: 'name', filterValue: filter),
+        items: (filter, t) =>
+            ref.read(categoriesRepositoryProvider).fetchCategoryList(filterKey: 'name', filterValue: filter),
         compareFn: (i, s) => i == s,
         popupProps: PopupProps.dialog(
           title: Padding(
@@ -211,11 +206,9 @@ class ProductCategoryFormField extends ConsumerWidget {
           ),
         ),
         validator: (item) => validation.validateStringField(
-            fieldValue: item?.name,
-            errorMessage: S.of(context).input_validation_error_message_for_strings),
+            fieldValue: item?.name, errorMessage: S.of(context).input_validation_error_message_for_strings),
         itemAsString: (item) => item.name,
-        onSaved: (item) =>
-            ref.read(productFormDataProvider.notifier).update(key: 'category', value: item?.name),
+        onSaved: (item) => ref.read(productFormDataProvider.notifier).update(key: 'category', value: item?.name),
       ),
     );
   }

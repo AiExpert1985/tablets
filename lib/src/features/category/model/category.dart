@@ -5,26 +5,27 @@ import 'package:flutter/foundation.dart';
 import 'package:tablets/src/common/constants/constants.dart' as constants;
 
 class ProductCategory {
+  String dbKey;
   String name;
-
   List<String> imageUrls;
 
   ProductCategory({
+    required this.dbKey,
     required this.name,
     required this.imageUrls,
   });
 
-  String get coverImage =>
-      imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
+  String get coverImage => imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
-  List<String> get imageUrlsOrDefault =>
-      imageUrls.isNotEmpty ? imageUrls : [constants.defaultImageUrl];
+  List<String> get imageUrlsOrDefault => imageUrls.isNotEmpty ? imageUrls : [constants.defaultImageUrl];
 
   ProductCategory copyWith({
+    String? dbKey,
     String? name,
     List<String>? imageUrls,
   }) {
     return ProductCategory(
+      dbKey: dbKey ?? this.dbKey,
       name: name ?? this.name,
       imageUrls: imageUrls ?? this.imageUrls,
     );
@@ -32,6 +33,7 @@ class ProductCategory {
 
   Map<String, dynamic> toMap() {
     return {
+      'dbKey': dbKey,
       'name': name,
       'imageUrls': imageUrls,
     };
@@ -39,6 +41,7 @@ class ProductCategory {
 
   factory ProductCategory.fromMap(Map<String, dynamic> map) {
     return ProductCategory(
+      dbKey: map['dbKey'] ?? '',
       name: map['name'] ?? '',
       imageUrls: List<String>.from(map['imageUrls']),
     );
