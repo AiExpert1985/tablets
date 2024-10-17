@@ -6,8 +6,8 @@ import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
 
-class InputFormField extends ConsumerWidget {
-  const InputFormField({
+class FormInputField extends ConsumerWidget {
+  const FormInputField({
     required this.formDataUpdateFn,
     required this.dataType,
     required this.name,
