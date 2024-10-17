@@ -72,7 +72,7 @@ class ImageSliderNotifier extends StateNotifier<List<String>> {
   }
 }
 
-final imageSliderNotifierProvider = StateNotifierProvider<ImageSliderNotifier, List<String>>((ref) {
+final imagePickerProvider = StateNotifierProvider<ImageSliderNotifier, List<String>>((ref) {
   final imageStorage = ref.read(imageStorageProvider);
   return ImageSliderNotifier(imageStorage, []);
 });

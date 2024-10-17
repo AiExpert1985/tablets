@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/providers/image_slider_controller.dart';
+import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
@@ -49,7 +49,7 @@ class EditProductForm extends ConsumerWidget {
               );
               if (confiramtion != null && context.mounted) {
                 final updatedData = ref.read(productFormDataProvider);
-                final updatedImageUrls = ref.read(imageSliderNotifierProvider);
+                final updatedImageUrls = ref.read(imagePickerProvider);
                 final product = Product.fromMap({...updatedData, 'imageUrls': updatedImageUrls});
                 formController.deleteProduct(context, product);
               }

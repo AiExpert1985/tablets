@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/constants/constants.dart' as constants;
-import 'package:tablets/src/common/providers/image_slider_controller.dart';
+import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -13,7 +13,7 @@ class ImageSlider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final updatedImageUrls = ref.watch(imageSliderNotifierProvider);
+    final updatedImageUrls = ref.watch(imagePickerProvider);
     int displayedUrlIndex = updatedImageUrls.length - 1;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -42,12 +42,11 @@ class ImageSlider extends ConsumerWidget {
         gaps.VerticalGap.formImageToButtons,
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           IconButton(
-            onPressed: () => ref.read(imageSliderNotifierProvider.notifier).addImage(),
+            onPressed: () => ref.read(imagePickerProvider.notifier).addImage(),
             icon: const AddImageIcon(),
           ),
           IconButton(
-            onPressed: () =>
-                ref.read(imageSliderNotifierProvider.notifier).removeImage(displayedUrlIndex),
+            onPressed: () => ref.read(imagePickerProvider.notifier).removeImage(displayedUrlIndex),
             icon: const DeleteIcon(),
           )
         ])

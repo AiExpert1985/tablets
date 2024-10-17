@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/providers/image_slider_controller.dart';
+import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/view/product_dialog_form_add.dart';
@@ -116,7 +116,7 @@ class ProductFormFieldsController {
 final productFormControllerProvider = Provider<ProductFormFieldsController>((ref) {
   final repository = ref.read(productsRepositoryProvider);
   final formData = ref.watch(productFormDataProvider.notifier);
-  final imageSliderController = ref.watch(imageSliderNotifierProvider.notifier);
+  final imageSliderController = ref.watch(imagePickerProvider.notifier);
   return ProductFormFieldsController(repository, formData, imageSliderController);
 });
 

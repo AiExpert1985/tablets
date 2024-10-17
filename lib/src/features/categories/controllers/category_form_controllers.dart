@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/providers/image_slider_controller.dart';
+import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/categories/controllers/category_form_fields_data_provider.dart';
 import 'package:tablets/src/features/categories/model/category.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
-import 'package:tablets/src/common/functions/user_messages.dart' as toastification;
+import 'package:tablets/src/common/functions/user_messages.dart' as toast;
 import 'package:tablets/src/features/categories/view/category_form.dart';
 
 class CategoryFormController {
@@ -26,10 +26,7 @@ class CategoryFormController {
     showDialog(
       context: context,
       builder: (BuildContext ctx) => CategoryForm(isEditMode),
-    ).whenComplete(() {
-      _imageSlider.close();
-      _formData.reset();
-    });
+    ).whenComplete(() => _resetProviders()); // when form is closed, this will be executed
   }
 
   bool validateForm() {
@@ -47,11 +44,11 @@ class CategoryFormController {
     final success = isEditMode
         ? await _repository.updateCategoryInDB(category)
         : await _repository.addCategoryToDB(category);
-    if (!context.mounted) return; // just for protection
+    if (!context.mounted) return; // just for protection in async functions
     success
-        ? toastification.success(context: context, message: S.of(context).db_success_saving_doc)
-        : toastification.failure(context: context, message: S.of(context).db_error_saving_doc);
-    closeForm(context);
+        ? toast.success(context: context, message: S.of(context).db_success_saving_doc)
+        : toast.failure(context: context, message: S.of(context).db_error_saving_doc);
+    _closeForm(context);
   }
 
   void deleteCategory(BuildContext context) async {
@@ -61,19 +58,24 @@ class CategoryFormController {
     final successful = await _repository.deleteCategoryFromDB(category);
     if (!context.mounted) return;
     successful
-        ? toastification.success(context: context, message: S.of(context).db_success_deleting_doc)
-        : toastification.failure(context: context, message: S.of(context).db_error_deleting_doc);
-    closeForm(context);
+        ? toast.success(context: context, message: S.of(context).db_success_deleting_doc)
+        : toast.failure(context: context, message: S.of(context).db_error_deleting_doc);
+    _closeForm(context);
   }
 
-  void closeForm(BuildContext context) {
+  void _closeForm(BuildContext context) {
     Navigator.of(context).pop();
+  }
+
+  void _resetProviders() {
+    _imageSlider.close();
+    _formData.reset();
   }
 }
 
 final categoryFormControllerProvider = Provider<CategoryFormController>((ref) {
   final repository = ref.read(categoriesRepositoryProvider);
   final formData = ref.watch(categoryFormFieldsDataProvider.notifier);
-  final imageSliderController = ref.watch(imageSliderNotifierProvider.notifier);
+  final imageSliderController = ref.watch(imagePickerProvider.notifier);
   return CategoryFormController(repository, formData, imageSliderController);
 });
