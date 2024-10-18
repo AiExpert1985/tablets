@@ -17,7 +17,7 @@ class CategoryForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formController = ref.watch(categoryFormControllerProvider);
-    final userFormData = ref.watch(categoryFormFieldsDataProvider);
+    final userFormData = ref.watch(categoryFormDataProvider);
     return FormFrame(
       formKey: formController.formKey,
       fields: Column(

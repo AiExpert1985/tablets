@@ -1,7 +1,9 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 class Product {
+  String dbKey;
   int code;
   String name;
   double sellRetailPrice;
@@ -17,6 +19,7 @@ class Product {
   int initialQuantity;
 
   Product({
+    required this.dbKey,
     required this.code,
     required this.name,
     required this.sellRetailPrice,
@@ -33,6 +36,7 @@ class Product {
   });
 
   Product copyWith({
+    String? dbKey,
     int? code,
     String? name,
     double? sellRetailPrice,
@@ -48,6 +52,7 @@ class Product {
     int? initialQuantity,
   }) {
     return Product(
+      dbKey: dbKey ?? this.dbKey,
       code: code ?? this.code,
       name: name ?? this.name,
       sellRetailPrice: sellRetailPrice ?? this.sellRetailPrice,
@@ -66,6 +71,7 @@ class Product {
 
   Map<String, dynamic> toMap() {
     return {
+      'dbKey': dbKey,
       'code': code,
       'name': name,
       'sellRetailPrice': sellRetailPrice,
@@ -84,6 +90,7 @@ class Product {
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
+      dbKey: map['dbKey'] ?? '',
       code: map['code']?.toInt() ?? 0,
       name: map['name'] ?? '',
       sellRetailPrice: map['sellRetailPrice']?.toDouble() ?? 0.0,
@@ -104,16 +111,17 @@ class Product {
 
   factory Product.fromJson(String source) => Product.fromMap(json.decode(source));
 
-  /// I used only the name because in dropdown_search package, where I use dropdown to select product,
-  /// i need only its name, which automatically taken from toString method here
   @override
-  String toString() => 'Product $name';
+  String toString() {
+    return 'Product(dbKey: $dbKey, code: $code, name: $name, sellRetailPrice: $sellRetailPrice, sellWholePrice: $sellWholePrice, packageType: $packageType, packageWeight: $packageWeight, numItemsInsidePackage: $numItemsInsidePackage, alertWhenExceeds: $alertWhenExceeds, altertWhenLessThan: $altertWhenLessThan, salesmanComission: $salesmanComission, imageUrls: $imageUrls, category: $category, initialQuantity: $initialQuantity)';
+  }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
     return other is Product &&
+        other.dbKey == dbKey &&
         other.code == code &&
         other.name == name &&
         other.sellRetailPrice == sellRetailPrice &&
@@ -131,7 +139,8 @@ class Product {
 
   @override
   int get hashCode {
-    return code.hashCode ^
+    return dbKey.hashCode ^
+        code.hashCode ^
         name.hashCode ^
         sellRetailPrice.hashCode ^
         sellWholePrice.hashCode ^

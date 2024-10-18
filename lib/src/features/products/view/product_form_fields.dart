@@ -1,37 +1,35 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/widgets/form_input_field.dart';
 import 'package:tablets/src/features/categories/model/category.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
 import 'package:tablets/src/features/products/controllers/product_form_data_provider.dart';
+import 'package:tablets/src/common/constants/constants.dart';
 
-enum FieldDataTypes { int, double, string }
-
-class ProductFormFields extends ConsumerWidget {
+class ProductFormFields extends StatelessWidget {
   const ProductFormFields({super.key, this.editMode = false});
   final bool editMode;
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(productFormDataProvider);
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Row(
           children: [
-            GeneralFormField(
-              dataType: FieldDataTypes.int.name,
+            ProductFormInputField(
+              dataType: FieldDataTypes.int,
               name: 'code',
               displayedTitle: S.of(context).product_code,
             ),
             gaps.HorizontalGap.formFieldToField,
-            GeneralFormField(
-              dataType: FieldDataTypes.string.name,
+            ProductFormInputField(
+              dataType: FieldDataTypes.string,
               name: 'name',
               displayedTitle: S.of(context).product_name,
             ),
@@ -42,20 +40,20 @@ class ProductFormFields extends ConsumerWidget {
         gaps.VerticalGap.formFieldToField,
         Row(
           children: [
-            GeneralFormField(
-              dataType: FieldDataTypes.double.name,
+            ProductFormInputField(
+              dataType: FieldDataTypes.double,
               name: 'sellRetailPrice',
               displayedTitle: S.of(context).product_sell_retail_price,
             ),
             gaps.HorizontalGap.formFieldToField,
-            GeneralFormField(
-              dataType: FieldDataTypes.double.name,
+            ProductFormInputField(
+              dataType: FieldDataTypes.double,
               name: 'sellWholePrice',
               displayedTitle: S.of(context).product_sell_whole_price,
             ),
             gaps.HorizontalGap.formFieldToField,
-            GeneralFormField(
-              dataType: FieldDataTypes.double.name,
+            ProductFormInputField(
+              dataType: FieldDataTypes.double,
               name: 'salesmanComission',
               displayedTitle: S.of(context).product_salesman_comission,
             ),
@@ -64,20 +62,20 @@ class ProductFormFields extends ConsumerWidget {
         gaps.VerticalGap.formFieldToField,
         Row(
           children: [
-            GeneralFormField(
-              dataType: FieldDataTypes.int.name,
+            ProductFormInputField(
+              dataType: FieldDataTypes.int,
               name: 'initialQuantity',
               displayedTitle: S.of(context).product_initial_quantitiy,
             ),
             gaps.HorizontalGap.formFieldToField,
-            GeneralFormField(
-              dataType: FieldDataTypes.int.name,
+            ProductFormInputField(
+              dataType: FieldDataTypes.int,
               name: 'altertWhenLessThan',
               displayedTitle: S.of(context).product_altert_when_less_than,
             ),
             gaps.HorizontalGap.formFieldToField,
-            GeneralFormField(
-              dataType: FieldDataTypes.int.name,
+            ProductFormInputField(
+              dataType: FieldDataTypes.int,
               name: 'alertWhenExceeds',
               displayedTitle: S.of(context).product_alert_when_exceeds,
             ),
@@ -86,20 +84,20 @@ class ProductFormFields extends ConsumerWidget {
         gaps.VerticalGap.formFieldToField,
         Row(
           children: [
-            GeneralFormField(
-              dataType: FieldDataTypes.string.name,
+            ProductFormInputField(
+              dataType: FieldDataTypes.string,
               name: 'packageType',
               displayedTitle: S.of(context).product_package_type,
             ),
             gaps.HorizontalGap.formFieldToField,
-            GeneralFormField(
-              dataType: FieldDataTypes.double.name,
+            ProductFormInputField(
+              dataType: FieldDataTypes.double,
               name: 'packageWeight',
               displayedTitle: S.of(context).product_package_weight,
             ),
             gaps.HorizontalGap.formFieldToField,
-            GeneralFormField(
-              dataType: FieldDataTypes.int.name,
+            ProductFormInputField(
+              dataType: FieldDataTypes.int,
               name: 'numItemsInsidePackage',
               displayedTitle: S.of(context).product_num_items_inside_package,
             ),
@@ -110,61 +108,28 @@ class ProductFormFields extends ConsumerWidget {
   }
 }
 
-class GeneralFormField extends ConsumerWidget {
-  const GeneralFormField({
+class ProductFormInputField extends ConsumerWidget {
+  const ProductFormInputField({
     required this.dataType,
     required this.name,
     required this.displayedTitle,
     super.key,
   });
 
-  final String dataType;
+  final FieldDataTypes dataType;
   final String name;
   final String displayedTitle;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userFormData = ref.watch(productFormDataProvider);
-    dynamic initialValue = userFormData[name];
-
-    if (initialValue != null) {
-      initialValue = initialValue is String ? initialValue : initialValue.toString();
-    }
-    return Expanded(
-      child: FormBuilderTextField(
+    final productFormController = ref.watch(productFormDataProvider.notifier);
+    final formData = productFormController.getState();
+    return FormInputField(
+        formData: formData,
+        formDataUpdateFn: productFormController.update,
+        dataType: dataType,
         name: name,
-        initialValue: initialValue,
-        decoration: utils.formFieldDecoration(label: displayedTitle),
-        onSaved: (value) {
-          dynamic userValue = value;
-          if (dataType == FieldDataTypes.int.name) {
-            userValue = int.tryParse(value!);
-          }
-          if (dataType == FieldDataTypes.double.name) {
-            userValue = double.tryParse(value!);
-          }
-          ref.read(productFormDataProvider.notifier).update(key: name, value: userValue);
-        },
-        validator: (value) {
-          if (dataType == FieldDataTypes.string.name) {
-            return validation.validateStringField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_strings);
-          }
-          if (dataType == FieldDataTypes.int.name) {
-            return validation.validateIntField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_integers);
-          }
-          if (dataType == FieldDataTypes.double.name) {
-            return validation.validateDoubleField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_doubles);
-          }
-          return null;
-        },
-      ),
-    );
+        displayedTitle: displayedTitle);
   }
 }
 
@@ -173,7 +138,7 @@ class ProductCategoryFormField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userFormData = ref.read(productFormDataProvider);
+    final formData = ref.read(productFormDataProvider);
     return Expanded(
       child: DropdownSearch<ProductCategory>(
           mode: Mode.form,
@@ -181,11 +146,11 @@ class ProductCategoryFormField extends ConsumerWidget {
             decoration: utils.formFieldDecoration(label: S.of(context).category),
           ),
           // if new item, then selectedItem should be null
-          selectedItem: userFormData.keys.isNotEmpty
+          selectedItem: formData.keys.length > 1 // because by default we put dbKey in formData
               ? ProductCategory(
                   dbKey: utils.generateRandomString(len: 8),
-                  name: userFormData['category'],
-                  imageUrls: userFormData['imageUrls'])
+                  name: formData['category'],
+                  imageUrls: formData['imageUrls'])
               : null,
           items: (filter, t) => ref
               .read(categoriesRepositoryProvider)

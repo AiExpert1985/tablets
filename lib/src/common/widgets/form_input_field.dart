@@ -12,18 +12,22 @@ class FormInputField extends ConsumerWidget {
     required this.dataType,
     required this.name,
     required this.displayedTitle,
-    this.initialValue,
+    this.formData,
     super.key,
   });
 
-  final String? initialValue;
-  final void Function({required String key, required String value}) formDataUpdateFn;
+  final void Function({required String key, required dynamic value}) formDataUpdateFn;
   final FieldDataTypes dataType;
   final String name;
   final String displayedTitle;
+  final Map<String, dynamic>? formData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    dynamic initialValue = formData?[name];
+    if (initialValue != null) {
+      initialValue = dataType == FieldDataTypes.string ? initialValue : initialValue.toString();
+    }
     return Expanded(
       child: FormBuilderTextField(
         name: name,

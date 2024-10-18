@@ -35,7 +35,7 @@ class ProductsTable extends ConsumerWidget {
                         radius: 15,
                         foregroundImage: CachedNetworkImageProvider(constants.defaultImageUrl),
                       ),
-                      onTap: () => formController.showEditForm(context: context, product: product),
+                      onTap: () => formController.showForm(context, product: product),
                     ),
                     const SizedBox(width: 20),
                     Text(product.code.toString()),

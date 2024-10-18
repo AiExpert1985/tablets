@@ -75,7 +75,7 @@ class CategoryFormController {
 
 final categoryFormControllerProvider = Provider<CategoryFormController>((ref) {
   final repository = ref.read(categoriesRepositoryProvider);
-  final formData = ref.watch(categoryFormFieldsDataProvider.notifier);
+  final formData = ref.watch(categoryFormDataProvider.notifier);
   final imageSliderController = ref.watch(imagePickerProvider.notifier);
   return CategoryFormController(repository, formData, imageSliderController);
 });

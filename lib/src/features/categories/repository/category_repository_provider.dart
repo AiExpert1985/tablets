@@ -66,7 +66,7 @@ class CategoryRepository {
 
   /// below function was not tested
   Stream<List<ProductCategory>> watchCategoryList() {
-    final query = _firestore.collection(collectionName).orderBy(dbReferenceKey);
+    final query = _firestore.collection(collectionName).orderBy(dbOrderKey);
     final ref = query.withConverter(
       fromFirestore: (doc, _) => ProductCategory.fromMap(doc.data()!),
       toFirestore: (ProductCategory product, options) => product.toMap(),

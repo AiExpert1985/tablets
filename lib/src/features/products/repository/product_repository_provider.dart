@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/features/products/model/product.dart';
@@ -10,9 +8,10 @@ class ProductRepository {
   final FirebaseFirestore _firestore;
 
   static String collectionName = 'products';
-  static String nameKey = 'name';
+  static String dbReferenceKey = 'dbKey';
+  static String dbOrderKey = 'name';
 
-  Future<bool> addProductToDB({required Product product, File? pickedImage}) async {
+  Future<bool> addProductToDB(Product product) async {
     try {
       final docRef = _firestore.collection(collectionName).doc();
       await docRef.set(product.toMap());
@@ -24,14 +23,15 @@ class ProductRepository {
     }
   }
 
-  Future<bool> updateProductInDB({required Product newProduct, required Product oldProduct}) async {
+  Future<bool> updateProductInDB(Product updatedProduct) async {
     try {
-      final query =
-          _firestore.collection(collectionName).where(nameKey, isEqualTo: oldProduct.name);
+      final query = _firestore
+          .collection(collectionName)
+          .where(dbReferenceKey, isEqualTo: updatedProduct.dbKey);
       final querySnapshot = await query.get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
-        await documentRef.update(newProduct.toMap());
+        await documentRef.update(updatedProduct.toMap());
       }
       return true;
     } catch (error) {
@@ -40,10 +40,12 @@ class ProductRepository {
     }
   }
 
-  Future<bool> deleteProductFromDB({required Product product}) async {
+  Future<bool> deleteProductFromDB(Product product) async {
     try {
-      final querySnapshot =
-          await _firestore.collection(collectionName).where(nameKey, isEqualTo: product.name).get();
+      final querySnapshot = await _firestore
+          .collection(collectionName)
+          .where(dbReferenceKey, isEqualTo: product.dbKey)
+          .get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.delete();
@@ -56,7 +58,7 @@ class ProductRepository {
   }
 
   Stream<List<Map<String, dynamic>>> watchMapList() {
-    final ref = _firestore.collection(collectionName).orderBy(nameKey);
+    final ref = _firestore.collection(collectionName).orderBy(dbOrderKey);
     return ref
         .snapshots()
         .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
@@ -64,7 +66,7 @@ class ProductRepository {
 
   /// below function was not tested
   Stream<List<Product>> watchProductList() {
-    final query = _firestore.collection(collectionName).orderBy(nameKey);
+    final query = _firestore.collection(collectionName).orderBy(dbOrderKey);
     final ref = query.withConverter(
       fromFirestore: (doc, _) => Product.fromMap(doc.data()!),
       toFirestore: (Product product, options) => product.toMap(),
@@ -102,7 +104,7 @@ class ProductRepository {
   }
 }
 
-final productsRepositoryProvider = Provider<ProductRepository>((ref) {
+final productRepositoryProvider = Provider<ProductRepository>((ref) {
   final firestore = FirebaseFirestore.instance;
   return ProductRepository(firestore);
 });
