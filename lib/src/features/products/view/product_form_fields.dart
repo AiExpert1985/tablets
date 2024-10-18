@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/widgets/form_input_field.dart';
-import 'package:tablets/src/features/categories/model/category.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/functions/utils.dart' as utils;
@@ -34,7 +33,7 @@ class ProductFormFields extends StatelessWidget {
               displayedTitle: S.of(context).product_name,
             ),
             gaps.HorizontalGap.formFieldToField,
-            const ProductCategoryFormField()
+            ProductCategoryFormField()
           ],
         ),
         gaps.VerticalGap.formFieldToField,
@@ -134,27 +133,35 @@ class ProductFormInputField extends ConsumerWidget {
 }
 
 class ProductCategoryFormField extends ConsumerWidget {
-  const ProductCategoryFormField({super.key});
+  ProductCategoryFormField({super.key});
+  final Map<String, dynamic> initialValue = {};
+
+  void setInitialValue(ref, formData) async {
+    if (formData['category'] != null) {
+      Map<String, dynamic> categoryMap = await ref
+          .watch(categoryRepositoryProvider)
+          .fetchMapItem(filterKey: 'dbKey', filterValue: formData['category']);
+      initialValue.addAll(categoryMap);
+      tempPrint(initialValue);
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formData = ref.read(productFormDataProvider);
+    setInitialValue(ref, formData);
+    tempPrint(initialValue);
     return Expanded(
-      child: DropdownSearch<ProductCategory>(
+      child: DropdownSearch<Map<String, dynamic>>(
           mode: Mode.form,
           decoratorProps: DropDownDecoratorProps(
             decoration: utils.formFieldDecoration(label: S.of(context).category),
           ),
-          // if new item, then selectedItem should be null
-          selectedItem: formData.keys.length > 1 // because by default we put dbKey in formData
-              ? ProductCategory(
-                  dbKey: utils.generateRandomString(len: 8),
-                  name: formData['category'],
-                  imageUrls: formData['imageUrls'])
-              : null,
+          selectedItem:
+              initialValue.keys.isNotEmpty && initialValue['name'] != null ? initialValue : null,
           items: (filter, t) => ref
-              .read(categoriesRepositoryProvider)
-              .fetchCategoryList(filterKey: 'name', filterValue: filter),
+              .read(categoryRepositoryProvider)
+              .fetchMapList(filterKey: 'name', filterValue: filter),
           compareFn: (i, s) => i == s,
           popupProps: PopupProps.dialog(
             title: Padding(
@@ -178,19 +185,22 @@ class ProductCategoryFormField extends ConsumerWidget {
             ),
           ),
           validator: (item) => validation.validateStringField(
-                fieldValue: item?.name,
+                fieldValue: item?['name'],
                 errorMessage: S.of(context).input_validation_error_message_for_strings,
               ),
-          itemAsString: (item) => item.name,
+          itemAsString: (item) => item['name'],
           onSaved: (item) {
             tempPrint(item);
-            ref.read(productFormDataProvider.notifier).update(key: 'category', value: item?.dbKey);
+            ref
+                .read(productFormDataProvider.notifier)
+                .update(key: 'category', value: item?['dbKey']);
           }),
     );
   }
 }
 
-Widget popUpItem(BuildContext context, ProductCategory item, bool isDisabled, bool isSelected) {
+Widget popUpItem(
+    BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
@@ -204,12 +214,13 @@ Widget popUpItem(BuildContext context, ProductCategory item, bool isDisabled, bo
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
       child: ListTile(
         selected: isSelected,
-        title: Text(item.name),
+        title: Text(item['name']),
         // subtitle: Text(item.code.toString()),
         leading: CircleAvatar(
           // radius: 70,
           backgroundColor: Colors.white,
-          foregroundImage: CachedNetworkImageProvider(item.coverImage),
+          foregroundImage:
+              CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
         ),
       ),
     ),

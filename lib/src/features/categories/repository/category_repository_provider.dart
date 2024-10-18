@@ -76,6 +76,35 @@ class CategoryRepository {
         .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
+  Future<ProductCategory> fetchCategoryItem({String? filterKey, String? filterValue}) async {
+    Query query = _firestore.collection(collectionName);
+    if (filterKey != null) {
+      query = query
+          .where(filterKey, isGreaterThanOrEqualTo: filterValue)
+          .where(filterKey, isLessThan: '$filterValue\uf8ff');
+    }
+    final ref = query.withConverter(
+      fromFirestore: (doc, _) => ProductCategory.fromMap(doc.data()!),
+      toFirestore: (ProductCategory product, options) => product.toMap(),
+    );
+    final snapshot = await ref.get();
+    return snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList().first;
+  }
+
+  Future<Map<String, dynamic>> fetchMapItem({String? filterKey, String? filterValue}) async {
+    Query query = _firestore.collection(collectionName);
+    if (filterKey != null) {
+      query = query
+          .where(filterKey, isGreaterThanOrEqualTo: filterValue)
+          .where(filterKey, isLessThan: '$filterValue\uf8ff');
+    }
+    final snapshot = await query.get();
+    return snapshot.docs
+        .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
+        .toList()
+        .first;
+  }
+
   Future<List<ProductCategory>> fetchCategoryList({String? filterKey, String? filterValue}) async {
     Query query = _firestore.collection(collectionName);
     if (filterKey != null) {
@@ -104,7 +133,7 @@ class CategoryRepository {
   }
 }
 
-final categoriesRepositoryProvider = Provider<CategoryRepository>((ref) {
+final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
   final firestore = FirebaseFirestore.instance;
   return CategoryRepository(firestore);
 });
