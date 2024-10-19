@@ -14,6 +14,7 @@ class ProductFormFields extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formData = ref.watch(productFormDataProvider);
+
     final formDataNotifier = ref.read(productFormDataProvider.notifier);
     final categoryRepository = ref.read(categoryRepositoryProvider);
     return Column(
@@ -36,8 +37,8 @@ class ProductFormFields extends ConsumerWidget {
               title: S.of(context).category_selection,
               formData: formData,
               formDataUpdateFn: formDataNotifier.update,
-              dbItemFetchFn: categoryRepository.fetchMapItem,
-              dbListFetchFn: categoryRepository.fetchMapList,
+              dbItemFetchFn: categoryRepository.fetchItemAsMap,
+              dbListFetchFn: categoryRepository.fetchItemListAsMaps,
             ),
           ],
         ),

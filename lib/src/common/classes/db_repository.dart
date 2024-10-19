@@ -54,16 +54,16 @@ class DbRepository {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> watchItemAsMaps({String orderedBy = 'name'}) {
-    final ref = _firestore.collection(_collectionName).orderBy(orderedBy);
+  Stream<List<Map<String, dynamic>>> watchItemAsMaps() {
+    final ref = _firestore.collection(_collectionName);
     return ref
         .snapshots()
         .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
   /// below function was not tested
-  Stream<List<BaseItem>> watchItemsAsItems({String orderedBy = 'name'}) {
-    final query = _firestore.collection(_collectionName).orderBy(orderedBy);
+  Stream<List<BaseItem>> watchItemsAsItems() {
+    final query = _firestore.collection(_collectionName);
     final ref = query.withConverter(
       fromFirestore: (doc, _) => BaseItem.fromMap(doc.data()!),
       toFirestore: (BaseItem product, options) => product.toMap(),
@@ -73,9 +73,8 @@ class DbRepository {
         .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
-  Future<BaseItem> fetchItemAsObject(
-      {String? filterKey, String? filterValue, String orderedBy = 'name'}) async {
-    Query query = _firestore.collection(_collectionName).orderBy(orderedBy);
+  Future<BaseItem> fetchItemAsObject({String? filterKey, String? filterValue}) async {
+    Query query = _firestore.collection(_collectionName);
     if (filterKey != null) {
       query = query
           .where(filterKey, isGreaterThanOrEqualTo: filterValue)
@@ -89,9 +88,8 @@ class DbRepository {
     return snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList().first;
   }
 
-  Future<Map<String, dynamic>> fetchItemAsMap(
-      {String? filterKey, String? filterValue, String orderedBy = 'name'}) async {
-    Query query = _firestore.collection(_collectionName).orderBy(orderedBy);
+  Future<Map<String, dynamic>> fetchItemAsMap({String? filterKey, String? filterValue}) async {
+    Query query = _firestore.collection(_collectionName);
     if (filterKey != null) {
       query = query
           .where(filterKey, isGreaterThanOrEqualTo: filterValue)
@@ -104,9 +102,8 @@ class DbRepository {
         .first;
   }
 
-  Future<List<BaseItem>> fetchItemsAsObjects(
-      {String? filterKey, String? filterValue, String orderedBy = 'name'}) async {
-    Query query = _firestore.collection(_collectionName).orderBy(orderedBy);
+  Future<List<BaseItem>> fetchItemsAsObjects({String? filterKey, String? filterValue}) async {
+    Query query = _firestore.collection(_collectionName);
     if (filterKey != null) {
       query = query
           .where(filterKey, isGreaterThanOrEqualTo: filterValue)
@@ -121,9 +118,9 @@ class DbRepository {
   }
 
   /// below function was not tested
-  Future<List<Map<String, dynamic>>> fetchItemsAsMaps(
-      {String? filterKey, String? filterValue, String orderedBy = 'name'}) async {
-    Query query = _firestore.collection(_collectionName).orderBy(orderedBy);
+  Future<List<Map<String, dynamic>>> fetchItemListAsMaps(
+      {String? filterKey, String? filterValue}) async {
+    Query query = _firestore.collection(_collectionName);
     if (filterKey != null) {
       query = query
           .where(filterKey, isGreaterThanOrEqualTo: filterValue)

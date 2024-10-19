@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/categories/controllers/category_drawer_provider.dart';
 import 'package:tablets/src/features/categories/controllers/category_form_controller.dart';
+import 'package:tablets/src/features/categories/view/category_form.dart';
 
 class CategoryFloatingButtons extends ConsumerWidget {
   const CategoryFloatingButtons({super.key});
 
+  void showAddCategoryForm(BuildContext context, WidgetRef ref) {
+    ref.read(categoryFormDataProvider.notifier).initialize();
+    final imagePicker = ref.read(imagePickerProvider.notifier);
+    imagePicker.initialize();
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => const CategoryForm(),
+    ).whenComplete(imagePicker.close);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(categoryFormControllerProvider);
     final drawerController = ref.watch(categoryDrawerControllerProvider);
     const iconsColor = Color.fromARGB(255, 126, 106, 211);
     return SpeedDial(
@@ -34,7 +45,7 @@ class CategoryFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () => formController.showForm(context),
+          onTap: () => showAddCategoryForm(context, ref),
         ),
       ],
     );

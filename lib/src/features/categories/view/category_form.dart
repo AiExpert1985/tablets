@@ -1,37 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
-import 'package:tablets/src/features/categories/controllers/category_form_controller.dart';
-import 'package:tablets/src/features/categories/controllers/category_form_data_provider.dart';
+import 'package:tablets/src/features/categories/model/category.dart';
 import 'package:tablets/src/features/categories/view/category_form_fields.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/constants/constants.dart' as constants;
+import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 
 class CategoryForm extends ConsumerWidget {
-  const CategoryForm(this.isEditMode, {super.key});
+  const CategoryForm({this.isEditMode = false, super.key});
   final bool isEditMode;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(categoryFormControllerProvider);
-    final userFormData = ref.watch(categoryFormDataProvider);
+    final formController = ref.watch(productFormControllerProvider);
+    final formData = ref.watch(productFormDataProvider);
+    final formDataNotifier = ref.read(productFormDataProvider.notifier);
+    final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    ref.watch(imagePickerProvider);
     return FormFrame(
       formKey: formController.formKey,
       fields: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          ImageSlider(imageUrls: userFormData['imageUrls']),
+          ImageSlider(imageUrls: formData['imageUrls']),
           gaps.VerticalGap.formImageToFields,
           const CategoryFormFields(editMode: true),
         ],
       ),
       buttons: [
         IconButton(
-          onPressed: () => formController.saveCategory(context, isEditMode),
+          onPressed: () {
+            formController.validateForm();
+            final updateFormData = formDataNotifier.data;
+            final imageUrls = formImagesNotifier.saveChanges();
+            final category = ProductCategory.fromMap({...updateFormData, 'imageUrls': imageUrls});
+            formController.saveItemToDb(context, category, isEditMode);
+          },
           icon: const ApproveIcon(),
         ),
         IconButton(
@@ -42,11 +52,15 @@ class CategoryForm extends ConsumerWidget {
           visible: isEditMode,
           child: IconButton(
               onPressed: () async {
-                bool? confiramtion = await showDeleteConfirmationDialog(
-                    context: context, message: userFormData['name']);
+                bool? confiramtion =
+                    await showDeleteConfirmationDialog(context: context, message: formData['name']);
                 if (confiramtion != null) {
+                  final updateFormData = formDataNotifier.data;
+                  final imageUrls = formImagesNotifier.saveChanges();
+                  final category =
+                      ProductCategory.fromMap({...updateFormData, 'imageUrls': imageUrls});
                   // ignore: use_build_context_synchronously
-                  formController.deleteCategory(context);
+                  formController.deleteItemFromDb(context, category);
                 }
               },
               icon: const DeleteIcon()),

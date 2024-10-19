@@ -15,7 +15,5 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
     state = {...tempMap};
   }
 
-  void reset() => state = {};
-
   Map<String, dynamic> get data => state;
 }

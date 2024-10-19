@@ -57,7 +57,8 @@ class ImageSliderNotifier extends StateNotifier<List<String>> {
     state = [...tempList];
   }
 
-  List<String> savedUpdatedImages() {
+// delete all images removed by user and return the new updated Urls currently used
+  List<String> saveChanges() {
     for (String url in removedUrls) {
       _imageStorage.deleteImage(url);
     }

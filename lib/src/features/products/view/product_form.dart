@@ -19,7 +19,9 @@ class ProductForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formController = ref.watch(productFormControllerProvider);
     final formData = ref.watch(productFormDataProvider);
-    final formImages = ref.watch(imagePickerProvider);
+    final formDataNotifier = ref.read(productFormDataProvider.notifier);
+    final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    ref.watch(imagePickerProvider);
     return FormFrame(
       formKey: formController.formKey,
       fields: Column(
@@ -34,7 +36,10 @@ class ProductForm extends ConsumerWidget {
       buttons: [
         IconButton(
           onPressed: () {
-            final product = Product.fromMap({...formData, 'imageUrls': formImages});
+            formController.validateForm();
+            final updateFormData = formDataNotifier.data;
+            final imageUrls = formImagesNotifier.saveChanges();
+            final product = Product.fromMap({...updateFormData, 'imageUrls': imageUrls});
             formController.saveItemToDb(context, product, isEditMode);
           },
           icon: const ApproveIcon(),
@@ -50,7 +55,9 @@ class ProductForm extends ConsumerWidget {
                 bool? confiramtion =
                     await showDeleteConfirmationDialog(context: context, message: formData['name']);
                 if (confiramtion != null) {
-                  final product = Product.fromMap({...formData, 'imageUrls': formImages});
+                  final updateFormData = formDataNotifier.data;
+                  final imageUrls = formImagesNotifier.saveChanges();
+                  final product = Product.fromMap({...updateFormData, 'imageUrls': imageUrls});
                   // ignore: use_build_context_synchronously
                   formController.deleteItemFromDb(context, product);
                 }

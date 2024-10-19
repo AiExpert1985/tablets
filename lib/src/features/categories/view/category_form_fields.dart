@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/widgets/form_input_field.dart';
-import 'package:tablets/src/features/categories/controllers/category_form_data_provider.dart';
+import 'package:tablets/src/features/categories/controllers/category_form_controller.dart';
 
 class CategoryFormFields extends StatelessWidget {
   const CategoryFormFields({super.key, this.editMode = false});
@@ -33,7 +33,7 @@ class CategoryFormInputField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productFormController = ref.watch(categoryFormDataProvider.notifier);
-    final formData = productFormController.getState();
+    final formData = productFormController.data;
     return FormInputField(
         formData: formData,
         formDataUpdateFn: productFormController.update,

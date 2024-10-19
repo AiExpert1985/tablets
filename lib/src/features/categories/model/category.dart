@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import 'package:tablets/src/common/constants/constants.dart' as constants;
+import 'package:tablets/src/common/interfaces/base_item.dart';
 
-class ProductCategory {
+class ProductCategory implements BaseItem {
+  @override
   String dbKey;
+  @override
   String name;
+  @override
   List<String> imageUrls;
 
   ProductCategory({
@@ -15,7 +19,8 @@ class ProductCategory {
     required this.imageUrls,
   });
 
-  String get coverImage =>
+  @override
+  String get coverImageUrl =>
       imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
   List<String> get imageUrlsOrDefault =>
@@ -33,6 +38,7 @@ class ProductCategory {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'dbKey': dbKey,
