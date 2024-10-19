@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
+import 'package:tablets/src/features/products/view/product_form.dart';
 
 class ProductFloatingButtons extends ConsumerWidget {
   const ProductFloatingButtons({super.key});
 
+  void showAddProductForm(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => const ProductForm(),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(productFormControllerProvider);
     final drawerController = ref.watch(productsDrawerControllerProvider);
     const iconsColor = Color.fromARGB(255, 126, 106, 211);
     return SpeedDial(
@@ -34,7 +40,7 @@ class ProductFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () => formController.showForm(context),
+          onTap: () => showAddProductForm(context),
         ),
       ],
     );

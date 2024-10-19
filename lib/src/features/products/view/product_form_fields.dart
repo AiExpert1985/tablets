@@ -4,9 +4,9 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/widgets/form_drop_down_field.dart';
 import 'package:tablets/src/common/widgets/form_input_field.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
-import 'package:tablets/src/features/products/controllers/product_form_data_provider.dart';
 import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 
 class ProductFormFields extends ConsumerWidget {
   const ProductFormFields({super.key, this.editMode = false});
@@ -127,7 +127,7 @@ class ProductFormInputField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productFormController = ref.watch(productFormDataProvider.notifier);
-    final formData = productFormController.getState();
+    final formData = productFormController.data;
     return FormInputField(
         formData: formData,
         formDataUpdateFn: productFormController.update,

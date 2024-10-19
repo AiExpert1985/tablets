@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:tablets/src/common/interfaces/base_item.dart';
 
-class Product {
+class Product implements BaseItem {
+  @override
   String dbKey;
   int code;
+  @override
   String name;
   double sellRetailPrice;
   double sellWholePrice;
@@ -14,6 +17,7 @@ class Product {
   int alertWhenExceeds;
   int altertWhenLessThan;
   double salesmanComission;
+  @override
   List<String> imageUrls;
   String category;
   int initialQuantity;
@@ -34,6 +38,9 @@ class Product {
     required this.category,
     required this.initialQuantity,
   });
+
+  @override
+  String get coverImageUrl => imageUrls[imageUrls.length - 1];
 
   Product copyWith({
     String? dbKey,
@@ -69,6 +76,7 @@ class Product {
     );
   }
 
+  @override
   Map<String, dynamic> toMap() {
     return {
       'dbKey': dbKey,

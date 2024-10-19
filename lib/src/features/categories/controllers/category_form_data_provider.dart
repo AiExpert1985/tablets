@@ -20,6 +20,6 @@ class CategoryFormFieldsData extends StateNotifier<Map<String, dynamic>> {
   Map<String, dynamic> getState() => state;
 }
 
-final categoryFormDataProvider =
+final categoryFormFieldsDataProvider =
     StateNotifierProvider<CategoryFormFieldsData, Map<String, dynamic>>(
         (ref) => CategoryFormFieldsData({}));

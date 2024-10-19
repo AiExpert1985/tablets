@@ -2,13 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tablets/src/common/interfaces/base_item.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 
-class DBRepository {
-  DBRepository(this._firestore, this._collectionName, this._dbReferenceKey, this._dbOrderKey);
-  final FirebaseFirestore _firestore;
+class DbRepository {
+  DbRepository(this._collectionName);
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final String _collectionName;
-  final String _dbReferenceKey;
-  final String _dbOrderKey;
+  final String _dbReferenceKey = 'dbKey';
 
   Future<bool> addItem(BaseItem item) async {
     try {
@@ -55,16 +54,16 @@ class DBRepository {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> watchItemAsObjects() {
-    final ref = _firestore.collection(_collectionName).orderBy(_dbOrderKey);
+  Stream<List<Map<String, dynamic>>> watchItemAsMaps({String orderedBy = 'name'}) {
+    final ref = _firestore.collection(_collectionName).orderBy(orderedBy);
     return ref
         .snapshots()
         .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
   /// below function was not tested
-  Stream<List<BaseItem>> watchItemsAsMaps() {
-    final query = _firestore.collection(_collectionName).orderBy(_dbOrderKey);
+  Stream<List<BaseItem>> watchItemsAsItems({String orderedBy = 'name'}) {
+    final query = _firestore.collection(_collectionName).orderBy(orderedBy);
     final ref = query.withConverter(
       fromFirestore: (doc, _) => BaseItem.fromMap(doc.data()!),
       toFirestore: (BaseItem product, options) => product.toMap(),
@@ -74,8 +73,9 @@ class DBRepository {
         .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
-  Future<BaseItem> fetchItemAsObject({String? filterKey, String? filterValue}) async {
-    Query query = _firestore.collection(_collectionName);
+  Future<BaseItem> fetchItemAsObject(
+      {String? filterKey, String? filterValue, String orderedBy = 'name'}) async {
+    Query query = _firestore.collection(_collectionName).orderBy(orderedBy);
     if (filterKey != null) {
       query = query
           .where(filterKey, isGreaterThanOrEqualTo: filterValue)
@@ -89,8 +89,9 @@ class DBRepository {
     return snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList().first;
   }
 
-  Future<Map<String, dynamic>> fetchItemAsMap({String? filterKey, String? filterValue}) async {
-    Query query = _firestore.collection(_collectionName);
+  Future<Map<String, dynamic>> fetchItemAsMap(
+      {String? filterKey, String? filterValue, String orderedBy = 'name'}) async {
+    Query query = _firestore.collection(_collectionName).orderBy(orderedBy);
     if (filterKey != null) {
       query = query
           .where(filterKey, isGreaterThanOrEqualTo: filterValue)
@@ -103,8 +104,9 @@ class DBRepository {
         .first;
   }
 
-  Future<List<BaseItem>> fetchItemsAsObjects({String? filterKey, String? filterValue}) async {
-    Query query = _firestore.collection(_collectionName);
+  Future<List<BaseItem>> fetchItemsAsObjects(
+      {String? filterKey, String? filterValue, String orderedBy = 'name'}) async {
+    Query query = _firestore.collection(_collectionName).orderBy(orderedBy);
     if (filterKey != null) {
       query = query
           .where(filterKey, isGreaterThanOrEqualTo: filterValue)
@@ -120,8 +122,8 @@ class DBRepository {
 
   /// below function was not tested
   Future<List<Map<String, dynamic>>> fetchItemsAsMaps(
-      {String? filterKey, String? filterValue}) async {
-    Query query = _firestore.collection(_collectionName);
+      {String? filterKey, String? filterValue, String orderedBy = 'name'}) async {
+    Query query = _firestore.collection(_collectionName).orderBy(orderedBy);
     if (filterKey != null) {
       query = query
           .where(filterKey, isGreaterThanOrEqualTo: filterValue)

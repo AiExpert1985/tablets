@@ -5,19 +5,25 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/features/products/controllers/product_filtered_list_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_filter_controller_provider.dart';
-import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:data_table_2/data_table_2.dart';
-import 'package:tablets/src/features/products/repository/product_stream_provider.dart';
 import 'package:tablets/src/common/constants/constants.dart' as constants;
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
+import 'package:tablets/src/features/products/view/product_form.dart';
 
 class ProductsTable extends ConsumerWidget {
   const ProductsTable({super.key});
 
+  void showEditProductForm(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => const ProductForm(isEditMode: true),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productStream = ref.watch(productsStreamProvider);
-    final formController = ref.watch(productFormControllerProvider);
+    final productStream = ref.watch(productStreamProvider);
     final filterIsOn = ref.watch(productFilterSwitchProvider);
     final productsListValue =
         filterIsOn ? ref.read(productFilteredListProvider).getFilteredList() : productStream;
@@ -35,7 +41,7 @@ class ProductsTable extends ConsumerWidget {
                         radius: 15,
                         foregroundImage: CachedNetworkImageProvider(constants.defaultImageUrl),
                       ),
-                      onTap: () => formController.showForm(context, product: product),
+                      onTap: () => showEditProductForm(context),
                     ),
                     const SizedBox(width: 20),
                     Text(product.code.toString()),
