@@ -6,9 +6,11 @@ import 'package:tablets/src/common/interfaces/base_item.dart';
 class Product implements BaseItem {
   @override
   String dbKey;
-  int code;
   @override
   String name;
+  @override
+  List<String> imageUrls;
+  int code;
   double sellRetailPrice;
   double sellWholePrice;
   String packageType;
@@ -17,8 +19,6 @@ class Product implements BaseItem {
   int alertWhenExceeds;
   int altertWhenLessThan;
   double salesmanComission;
-  @override
-  List<String> imageUrls;
   String category;
   int initialQuantity;
 
