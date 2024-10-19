@@ -6,5 +6,4 @@ abstract class Transaction implements BaseItem {
   double get amount;
   String get currencty;
   String get notes;
-  String get counterParty;
 }

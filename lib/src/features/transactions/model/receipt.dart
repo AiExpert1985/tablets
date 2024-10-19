@@ -10,7 +10,7 @@ class Receipt implements Transaction {
   @override
   List<String> imageUrls;
   @override
-  int number;
+  int number; // receipt number, entered automatically (last_receipt + 1)
   @override
   DateTime date;
   @override
