@@ -3,15 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/widgets/form_drop_down_field.dart';
 import 'package:tablets/src/common/widgets/form_input_field.dart';
-import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/features/products/controllers/product_form_data_provider.dart';
 import 'package:tablets/src/common/constants/constants.dart';
+import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 
-class ProductFormFields extends StatelessWidget {
+class ProductFormFields extends ConsumerWidget {
   const ProductFormFields({super.key, this.editMode = false});
   final bool editMode;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formData = ref.read(productFormDataProvider);
     return Column(
       children: [
         Row(
@@ -28,7 +29,7 @@ class ProductFormFields extends StatelessWidget {
               displayedTitle: S.of(context).product_name,
             ),
             gaps.HorizontalGap.formFieldToField,
-            const DropDownFormField()
+            DropDownFormField(formData: formData),
           ],
         ),
         gaps.VerticalGap.formFieldToField,

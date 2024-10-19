@@ -10,7 +10,8 @@ import 'package:tablets/src/common/functions/form_validation.dart' as validation
 import 'package:tablets/src/features/products/controllers/product_form_data_provider.dart';
 
 class DropDownFormField extends ConsumerStatefulWidget {
-  const DropDownFormField({super.key});
+  const DropDownFormField({required this.formData, super.key});
+  final Map<String, dynamic> formData;
 
   @override
   ConsumerState<DropDownFormField> createState() => _DropDownFormFieldState();
@@ -24,16 +25,17 @@ class _DropDownFormFieldState extends ConsumerState<DropDownFormField> {
       Map<String, dynamic> categoryMap = await ref
           .watch(categoryRepositoryProvider)
           .fetchMapItem(filterKey: 'dbKey', filterValue: formData['category']);
-      setState(() {
-        initialValue.addAll(categoryMap); // Store the fetched data
-      });
+      if (mounted) {
+        setState(() {
+          initialValue.addAll(categoryMap); // Store the fetched data
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final formData = ref.read(productFormDataProvider);
-    setInitialValue(formData);
+    setInitialValue(widget.formData);
     return Expanded(
       child: DropdownSearch<Map<String, dynamic>>(
           mode: Mode.form,
