@@ -1,30 +1,40 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
-import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
-import 'package:tablets/src/features/products/controllers/product_form_data_provider.dart';
 
-class DropDownFormField extends ConsumerStatefulWidget {
-  const DropDownFormField({required this.formData, super.key});
+/// I used Stateful widget because it is the the best way I found to make the initial value visible
+/// after it is being fetched from DB, I didn't want to use riverpod providers because it lead to
+/// unnecessary complications
+class DropDownFormField extends StatefulWidget {
+  const DropDownFormField(
+      {required this.title,
+      required this.dbItemFetchFn,
+      required this.dbListFetchFn,
+      required this.formDataUpdateFn,
+      required this.formData,
+      super.key});
+  final String title;
   final Map<String, dynamic> formData;
+  final void Function({required String key, required dynamic value}) formDataUpdateFn;
+  final Future<Map<String, dynamic>> Function({String? filterKey, String? filterValue})
+      dbItemFetchFn;
+  final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue})
+      dbListFetchFn;
 
   @override
-  ConsumerState<DropDownFormField> createState() => _DropDownFormFieldState();
+  State<DropDownFormField> createState() => _DropDownFormFieldState();
 }
 
-class _DropDownFormFieldState extends ConsumerState<DropDownFormField> {
+class _DropDownFormFieldState extends State<DropDownFormField> {
   final Map<String, dynamic> initialValue = {};
 
   void setInitialValue(formData) async {
     if (formData['category'] != null) {
-      Map<String, dynamic> categoryMap = await ref
-          .watch(categoryRepositoryProvider)
-          .fetchMapItem(filterKey: 'dbKey', filterValue: formData['category']);
+      Map<String, dynamic> categoryMap =
+          await widget.dbItemFetchFn(filterKey: 'dbKey', filterValue: formData['category']);
       if (mounted) {
         setState(() {
           initialValue.addAll(categoryMap); // Store the fetched data
@@ -44,15 +54,13 @@ class _DropDownFormFieldState extends ConsumerState<DropDownFormField> {
           ),
           selectedItem:
               initialValue.keys.isNotEmpty && initialValue['name'] != null ? initialValue : null,
-          items: (filter, t) => ref
-              .read(categoryRepositoryProvider)
-              .fetchMapList(filterKey: 'name', filterValue: filter),
+          items: (filter, t) => widget.dbListFetchFn(filterKey: 'name', filterValue: filter),
           compareFn: (i, s) => i == s,
           popupProps: PopupProps.dialog(
             title: Padding(
               padding: const EdgeInsets.all(12),
               child: Text(
-                S.of(context).category_selection,
+                widget.title,
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
@@ -75,10 +83,7 @@ class _DropDownFormFieldState extends ConsumerState<DropDownFormField> {
               ),
           itemAsString: (item) => item['name'],
           onSaved: (item) {
-            tempPrint(item);
-            ref
-                .read(productFormDataProvider.notifier)
-                .update(key: 'category', value: item?['dbKey']);
+            widget.formDataUpdateFn(key: 'category', value: item?['dbKey']);
           }),
     );
   }

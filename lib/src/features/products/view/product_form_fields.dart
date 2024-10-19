@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/widgets/form_drop_down_field.dart';
 import 'package:tablets/src/common/widgets/form_input_field.dart';
+import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_form_data_provider.dart';
 import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
@@ -12,7 +13,9 @@ class ProductFormFields extends ConsumerWidget {
   final bool editMode;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formData = ref.read(productFormDataProvider);
+    final formData = ref.watch(productFormDataProvider);
+    final formDataNotifier = ref.read(productFormDataProvider.notifier);
+    final categoryRepository = ref.read(categoryRepositoryProvider);
     return Column(
       children: [
         Row(
@@ -29,7 +32,13 @@ class ProductFormFields extends ConsumerWidget {
               displayedTitle: S.of(context).product_name,
             ),
             gaps.HorizontalGap.formFieldToField,
-            DropDownFormField(formData: formData),
+            DropDownFormField(
+              title: S.of(context).category_selection,
+              formData: formData,
+              formDataUpdateFn: formDataNotifier.update,
+              dbItemFetchFn: categoryRepository.fetchMapItem,
+              dbListFetchFn: categoryRepository.fetchMapList,
+            ),
           ],
         ),
         gaps.VerticalGap.formFieldToField,
