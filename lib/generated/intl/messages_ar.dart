@@ -133,6 +133,31 @@ class MessageLookup extends MessageLookupByLibrary {
         "slogan":
             MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
+        "transaction_amount":
+            MessageLookupByLibrary.simpleMessage("مبلغ القائمة"),
+        "transaction_counterParty":
+            MessageLookupByLibrary.simpleMessage("الأسم"),
+        "transaction_currency": MessageLookupByLibrary.simpleMessage("العملة"),
+        "transaction_date":
+            MessageLookupByLibrary.simpleMessage("تاريخ القائمة"),
+        "transaction_discount": MessageLookupByLibrary.simpleMessage("الخصم"),
+        "transaction_item_gift": MessageLookupByLibrary.simpleMessage("هدية"),
+        "transaction_item_name":
+            MessageLookupByLibrary.simpleMessage("اسم المادة"),
+        "transaction_item_price":
+            MessageLookupByLibrary.simpleMessage("سعر القطعة"),
+        "transaction_item_quantity":
+            MessageLookupByLibrary.simpleMessage("العدد"),
+        "transaction_item_total_price":
+            MessageLookupByLibrary.simpleMessage("السعر الكلي"),
+        "transaction_name": MessageLookupByLibrary.simpleMessage("نوع القائمة"),
+        "transaction_notes": MessageLookupByLibrary.simpleMessage("الملاحظات"),
+        "transaction_number":
+            MessageLookupByLibrary.simpleMessage("رقم القائمة"),
+        "transaction_payment_type":
+            MessageLookupByLibrary.simpleMessage("طريقة الدفع"),
+        "transaction_salesman":
+            MessageLookupByLibrary.simpleMessage("اسم المندوب"),
         "transactions": MessageLookupByLibrary.simpleMessage("التعاملات"),
         "update_category":
             MessageLookupByLibrary.simpleMessage("تعديل معلومات الصنف"),

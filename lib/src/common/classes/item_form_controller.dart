@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/interfaces/base_item.dart';
 import 'package:tablets/src/common/functions/user_messages.dart' as toast;
 
@@ -20,8 +21,8 @@ class ItemFormController {
 
   void saveItemToDb(BuildContext context, BaseItem item, bool isEditMode) async {
     if (!validateForm()) return;
-    final success =
-        isEditMode ? await _repository.updateItem(item) : await _repository.addItem(item);
+    tempPrint(item.toMap());
+    final success = isEditMode ? await _repository.updateItem(item) : await _repository.addItem(item);
     if (!context.mounted) return; // just for protection in async functions
     success
         ? toast.success(context: context, message: S.of(context).db_success_saving_doc)

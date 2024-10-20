@@ -18,29 +18,21 @@ class MainDrawer extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   child: Column(children: [
                     MainDrawerButton(
-                        iconName: 'products',
-                        title: S.of(context).products,
-                        routeName: AppRoute.products.name),
+                        iconName: 'products', title: S.of(context).products, routeName: AppRoute.products.name),
                     gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
-                        iconName: 'categories',
-                        title: S.of(context).categories,
-                        routeName: AppRoute.categories.name),
+                        iconName: 'categories', title: S.of(context).categories, routeName: AppRoute.categories.name),
                     gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
-                        iconName: 'categories',
-                        title: S.of(context).pending_bills,
-                        routeName: AppRoute.pendingBills.name),
+                        iconName: 'transactions',
+                        title: S.of(context).transactions,
+                        routeName: AppRoute.transactions.name),
                     gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
-                        iconName: 'categories',
-                        title: S.of(context).categories,
-                        routeName: AppRoute.categories.name),
+                        iconName: 'categories', title: S.of(context).categories, routeName: AppRoute.categories.name),
                     gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
-                        iconName: 'categories',
-                        title: S.of(context).categories,
-                        routeName: AppRoute.categories.name),
+                        iconName: 'categories', title: S.of(context).categories, routeName: AppRoute.categories.name),
                     gaps.PushWidgets.toEnd,
                     MainDrawerButton(
                         iconName: 'categories',
@@ -86,8 +78,7 @@ class MainDrawerHeader extends StatelessWidget {
 }
 
 class MainDrawerButton extends StatelessWidget {
-  const MainDrawerButton(
-      {required this.iconName, required this.title, required this.routeName, super.key});
+  const MainDrawerButton({required this.iconName, required this.title, required this.routeName, super.key});
 
   final String iconName;
   final String title;

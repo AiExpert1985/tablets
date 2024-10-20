@@ -7,6 +7,7 @@ import 'package:tablets/src/features/pending_bills/pending_bills.dart';
 import 'package:tablets/src/features/products/view/product_main_screen.dart';
 import 'package:tablets/src/features/salesmen_live_locations/presentation/sales_men_live_location_screen.dart';
 import 'package:tablets/src/features/settings/settings_screen.dart';
+import 'package:tablets/src/features/transactions/view/transaction_main_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/view/login_screen.dart';
 import 'package:tablets/src/routers/not_found_screen.dart';
@@ -63,16 +64,15 @@ final goRouterProvider = Provider<GoRouter>(
           name: AppRoute.products.name,
           builder: (BuildContext context, GoRouterState state) => const ProductsScreen(),
         ),
-        // GoRoute(
-        //   path: '/transactions',
-        //   name: AppRoute.transactions.name,
-        //   builder: (BuildContext context, GoRouterState state) => const TransactionsScreen(),
-        // ),
+        GoRoute(
+          path: '/transactions',
+          name: AppRoute.transactions.name,
+          builder: (BuildContext context, GoRouterState state) => const TransactionsScreen(),
+        ),
         GoRoute(
           path: '/salesmen',
           name: AppRoute.salesmen.name,
-          builder: (BuildContext context, GoRouterState state) =>
-              const SalesmenLiveLocationScreen(),
+          builder: (BuildContext context, GoRouterState state) => const SalesmenLiveLocationScreen(),
         ),
         GoRoute(
           path: '/settings',

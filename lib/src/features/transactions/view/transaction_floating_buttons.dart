@@ -3,19 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
-import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
-import 'package:tablets/src/features/products/view/product_form.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
+import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
 class TransactionsFloatingButtons extends ConsumerWidget {
   const TransactionsFloatingButtons({super.key});
 
-  void showAddProductForm(BuildContext context, WidgetRef ref) {
-    ref.read(productFormDataProvider.notifier).initialize();
+  void showAddInvoiceForm(BuildContext context, WidgetRef ref) {
+    ref.read(transactionFormDataProvider.notifier).initialize();
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize();
     showDialog(
       context: context,
-      builder: (BuildContext ctx) => const ProductForm(),
+      builder: (BuildContext ctx) => const TransactionForm(),
     ).whenComplete(imagePicker.close);
   }
 
@@ -45,7 +45,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () => showAddProductForm(context, ref),
+          onTap: () => showAddInvoiceForm(context, ref),
         ),
       ],
     );

@@ -71,5 +71,20 @@
     "db_success_deleting_doc": "تم الحذف بنجاح",
     "db_error_deleting_doc": "حدث خطأ اثناء حذف المستند من قاعدة البيانات",
     "db_error_downloading_files": "حدث خطأ اثناء تحميل الملفات من قاعدة البيانات",
-    "alert_before_delete": "هل ترغب بحذف"
+    "alert_before_delete": "هل ترغب بحذف",
+    "transaction_name": "نوع القائمة",
+    "transaction_date": "تاريخ القائمة",
+    "transaction_number": "رقم القائمة",
+    "transaction_amount": "مبلغ القائمة",
+    "transaction_currency": "العملة",
+    "transaction_notes": "الملاحظات",
+    "transaction_counterParty": "الأسم",
+    "transaction_payment_type": "طريقة الدفع",
+    "transaction_salesman": "اسم المندوب",
+    "transaction_discount": "الخصم",
+    "transaction_item_name": "اسم المادة",
+    "transaction_item_quantity": "العدد",
+    "transaction_item_price": "سعر القطعة",
+    "transaction_item_gift": "هدية",
+    "transaction_item_total_price": "السعر الكلي"
 }

@@ -779,6 +779,156 @@ class S {
       args: [],
     );
   }
+
+  /// `Transaction type`
+  String get transaction_name {
+    return Intl.message(
+      'Transaction type',
+      name: 'transaction_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get transaction_date {
+    return Intl.message(
+      'Date',
+      name: 'transaction_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Number`
+  String get transaction_number {
+    return Intl.message(
+      'Number',
+      name: 'transaction_number',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount`
+  String get transaction_amount {
+    return Intl.message(
+      'Amount',
+      name: 'transaction_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Currency`
+  String get transaction_currency {
+    return Intl.message(
+      'Currency',
+      name: 'transaction_currency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notes`
+  String get transaction_notes {
+    return Intl.message(
+      'Notes',
+      name: 'transaction_notes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get transaction_counterParty {
+    return Intl.message(
+      'Name',
+      name: 'transaction_counterParty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment type`
+  String get transaction_payment_type {
+    return Intl.message(
+      'Payment type',
+      name: 'transaction_payment_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Salesman`
+  String get transaction_salesman {
+    return Intl.message(
+      'Salesman',
+      name: 'transaction_salesman',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Discount`
+  String get transaction_discount {
+    return Intl.message(
+      'Discount',
+      name: 'transaction_discount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Item`
+  String get transaction_item_name {
+    return Intl.message(
+      'Item',
+      name: 'transaction_item_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Quantity`
+  String get transaction_item_quantity {
+    return Intl.message(
+      'Quantity',
+      name: 'transaction_item_quantity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price`
+  String get transaction_item_price {
+    return Intl.message(
+      'Price',
+      name: 'transaction_item_price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gift`
+  String get transaction_item_gift {
+    return Intl.message(
+      'Gift',
+      name: 'transaction_item_gift',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total price`
+  String get transaction_item_total_price {
+    return Intl.message(
+      'Total price',
+      name: 'transaction_item_total_price',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

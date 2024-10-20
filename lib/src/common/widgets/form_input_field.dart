@@ -46,18 +46,15 @@ class FormInputField extends ConsumerWidget {
         validator: (value) {
           if (dataType == FieldDataTypes.string) {
             return validation.validateStringField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_strings);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
           }
           if (dataType == FieldDataTypes.int) {
             return validation.validateIntField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_integers);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
           }
           if (dataType == FieldDataTypes.double) {
             return validation.validateDoubleField(
-                fieldValue: value,
-                errorMessage: S.of(context).input_validation_error_message_for_doubles);
+                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
           }
           return null;
         },

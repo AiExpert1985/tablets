@@ -1,39 +1,38 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:tablets/src/common/interfaces/base_transaction.dart';
+import 'package:tablets/src/common/interfaces/base_item.dart';
 
-class Receipt implements BaseTransaction {
+// name Transactions because Transaction is a class name used by firebase cloud
+class Transaction implements BaseItem {
   @override
   String dbKey;
   @override
   String name; // transaction type: receipt, payment, gift, expenditure, invoice, returns, ...etc
   @override
   List<String> imageUrls;
-  @override
   int number; // receipt number, entered automatically (last_receipt + 1)
-  @override
-  DateTime date;
-  @override
+  String date;
   double amount; // amount of money
-  @override
-  String currencty; // $ or ID
-  @override
+  String currency; // $ or ID
   String notes;
   String counterParty; // name of customer
   String paymentType; // cash, debt
   String salesman; // dbKey of salesman
   List<String>? itemDbKeyList;
   double discount;
-  Receipt({
+  Transaction({
+    //required for all classes (BaseItem implementation)
     required this.dbKey,
     required this.name,
     required this.imageUrls,
+    // required for all transactions
     required this.number,
     required this.date,
     required this.amount,
-    required this.currencty,
+    required this.currency,
     required this.notes,
     required this.counterParty,
+    // optional based on type of transaction (Receipt, payment, invoice, )
     required this.paymentType,
     required this.salesman,
     required this.itemDbKeyList,
@@ -43,14 +42,14 @@ class Receipt implements BaseTransaction {
   @override
   String get coverImageUrl => imageUrls[imageUrls.length - 1];
 
-  Receipt copyWith({
+  Transaction copyWith({
     String? dbKey,
     String? name,
     List<String>? imageUrls,
     int? number,
-    DateTime? date,
+    String? date,
     double? amount,
-    String? currencty,
+    String? currency,
     String? notes,
     String? counterParty,
     String? paymentType,
@@ -58,14 +57,14 @@ class Receipt implements BaseTransaction {
     ValueGetter<List<String>?>? itemDbKeyList,
     double? discount,
   }) {
-    return Receipt(
+    return Transaction(
       dbKey: dbKey ?? this.dbKey,
       name: name ?? this.name,
       imageUrls: imageUrls ?? this.imageUrls,
       number: number ?? this.number,
       date: date ?? this.date,
       amount: amount ?? this.amount,
-      currencty: currencty ?? this.currencty,
+      currency: currency ?? this.currency,
       notes: notes ?? this.notes,
       counterParty: counterParty ?? this.counterParty,
       paymentType: paymentType ?? this.paymentType,
@@ -82,9 +81,9 @@ class Receipt implements BaseTransaction {
       'name': name,
       'imageUrls': imageUrls,
       'number': number,
-      'date': date.millisecondsSinceEpoch,
+      'date': date,
       'amount': amount,
-      'currencty': currencty,
+      'currency': currency,
       'notes': notes,
       'counterParty': counterParty,
       'paymentType': paymentType,
@@ -94,45 +93,45 @@ class Receipt implements BaseTransaction {
     };
   }
 
-  factory Receipt.fromMap(Map<String, dynamic> map) {
-    return Receipt(
+  factory Transaction.fromMap(Map<String, dynamic> map) {
+    return Transaction(
       dbKey: map['dbKey'] ?? '',
       name: map['name'] ?? '',
       imageUrls: List<String>.from(map['imageUrls']),
       number: map['number']?.toInt() ?? 0,
-      date: DateTime.fromMillisecondsSinceEpoch(map['date']),
+      date: map['date'],
       amount: map['amount']?.toDouble() ?? 0.0,
-      currencty: map['currencty'] ?? '',
+      currency: map['currency'] ?? '',
       notes: map['notes'] ?? '',
       counterParty: map['counterParty'] ?? '',
       paymentType: map['paymentType'] ?? '',
       salesman: map['salesman'] ?? '',
-      itemDbKeyList: List<String>.from(map['itemDbKeyList']),
+      itemDbKeyList: ['dsafsdf', 'safsdfsdf', 'sadfsdf'],
       discount: map['discount']?.toDouble() ?? 0.0,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Receipt.fromJson(String source) => Receipt.fromMap(json.decode(source));
+  factory Transaction.fromJson(String source) => Transaction.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'Receipt(name: $name, date: $date, amount: $amount, counterParty: $counterParty)';
+    return 'Transaction(name: $name, date: $date, amount: $amount, counterParty: $counterParty)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Receipt &&
+    return other is Transaction &&
         other.dbKey == dbKey &&
         other.name == name &&
         listEquals(other.imageUrls, imageUrls) &&
         other.number == number &&
         other.date == date &&
         other.amount == amount &&
-        other.currencty == currencty &&
+        other.currency == currency &&
         other.notes == notes &&
         other.counterParty == counterParty &&
         other.paymentType == paymentType &&
@@ -149,7 +148,7 @@ class Receipt implements BaseTransaction {
         number.hashCode ^
         date.hashCode ^
         amount.hashCode ^
-        currencty.hashCode ^
+        currency.hashCode ^
         notes.hashCode ^
         counterParty.hashCode ^
         paymentType.hashCode ^

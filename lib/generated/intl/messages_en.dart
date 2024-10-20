@@ -136,6 +136,29 @@ class MessageLookup extends MessageLookupByLibrary {
         "slogan": MessageLookupByLibrary.simpleMessage(
             "Tablets, where accounting started"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
+        "transaction_amount": MessageLookupByLibrary.simpleMessage("Amount"),
+        "transaction_counterParty":
+            MessageLookupByLibrary.simpleMessage("Name"),
+        "transaction_currency":
+            MessageLookupByLibrary.simpleMessage("Currency"),
+        "transaction_date": MessageLookupByLibrary.simpleMessage("Date"),
+        "transaction_discount":
+            MessageLookupByLibrary.simpleMessage("Discount"),
+        "transaction_item_gift": MessageLookupByLibrary.simpleMessage("Gift"),
+        "transaction_item_name": MessageLookupByLibrary.simpleMessage("Item"),
+        "transaction_item_price": MessageLookupByLibrary.simpleMessage("Price"),
+        "transaction_item_quantity":
+            MessageLookupByLibrary.simpleMessage("Quantity"),
+        "transaction_item_total_price":
+            MessageLookupByLibrary.simpleMessage("Total price"),
+        "transaction_name":
+            MessageLookupByLibrary.simpleMessage("Transaction type"),
+        "transaction_notes": MessageLookupByLibrary.simpleMessage("Notes"),
+        "transaction_number": MessageLookupByLibrary.simpleMessage("Number"),
+        "transaction_payment_type":
+            MessageLookupByLibrary.simpleMessage("Payment type"),
+        "transaction_salesman":
+            MessageLookupByLibrary.simpleMessage("Salesman"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
         "update_category":
             MessageLookupByLibrary.simpleMessage("Update category"),

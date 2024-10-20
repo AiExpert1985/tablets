@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/features/products/view/product_drawer_filters.dart';
 
-class ProductDrawer {
+class TransactionDrawer {
   final AnyDrawerController drawerController = AnyDrawerController();
   void showSearchForm(BuildContext context) {
     showDrawer(
@@ -55,6 +55,6 @@ class ProductDrawer {
   }
 }
 
-final transactionDrawerControllerProvider = Provider<ProductDrawer>((ref) {
-  return ProductDrawer();
+final transactionDrawerControllerProvider = Provider<TransactionDrawer>((ref) {
+  return TransactionDrawer();
 });

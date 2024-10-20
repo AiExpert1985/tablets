@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
-import 'package:tablets/src/features/products/view/product_items_table.dart';
 import 'package:tablets/src/features/transactions/view/transaction_floating_buttons.dart';
+import 'package:tablets/src/features/transactions/view/transaction_items_table.dart';
 
 class TransactionsScreen extends ConsumerWidget {
   const TransactionsScreen({super.key});
@@ -11,7 +11,7 @@ class TransactionsScreen extends ConsumerWidget {
     return const AppScreenFrame(
       screenBody: Stack(
         children: [
-          ProductsTable(),
+          TransactionsTable(),
           Positioned(
             bottom: 0,
             left: 0,

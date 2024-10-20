@@ -4,39 +4,39 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
-import 'package:tablets/src/features/products/controllers/product_filtered_list_provider.dart';
-import 'package:tablets/src/features/products/controllers/product_filter_controller_provider.dart';
-import 'package:tablets/src/features/products/model/product.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:tablets/src/common/constants/constants.dart' as constants;
-import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/products/view/product_form.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_filter_controller_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_filtered_list_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
+import 'package:tablets/src/features/transactions/model/transaction.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
+import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
 class TransactionsTable extends ConsumerWidget {
   const TransactionsTable({super.key});
 
-  void showEditProductForm(BuildContext context, WidgetRef ref, Product product) {
-    ref.read(transactionFormDataProvider.notifier).initialize(item: product);
+  void showEditReceiptForm(BuildContext context, WidgetRef ref, Transaction tansaction) {
+    ref.read(transactionFormDataProvider.notifier).initialize(item: tansaction);
     final imagePicker = ref.read(imagePickerProvider.notifier);
-    imagePicker.initialize(urls: product.imageUrls);
+    imagePicker.initialize(urls: tansaction.imageUrls);
     showDialog(
       context: context,
-      builder: (BuildContext ctx) => const ProductForm(isEditMode: true),
+      builder: (BuildContext ctx) => const TransactionForm(isEditMode: true),
     ).whenComplete(imagePicker.close);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productStream = ref.watch(productStreamProvider);
-    final filterIsOn = ref.watch(productFilterSwitchProvider);
-    final productsListValue =
-        filterIsOn ? ref.read(productFilteredListProvider).getFilteredList() : productStream;
+    final transactionStream = ref.watch(transactionStreamProvider);
+    final filterIsOn = ref.watch(transactionFilterSwitchProvider);
+    final transactionsListValue =
+        filterIsOn ? ref.read(transactionFilteredListProvider).getFilteredList() : transactionStream;
     return AsyncValueWidget<List<Map<String, dynamic>>>(
-        value: productsListValue,
-        data: (products) {
-          List<DataRow2> rows = products.map((map) {
-            Product product = Product.fromMap(map);
+        value: transactionsListValue,
+        data: (transactions) {
+          List<DataRow2> rows = transactions.map((map) {
+            Transaction transaction = Transaction.fromMap(map);
             return DataRow2(
               cells: [
                 DataCell(Row(
@@ -46,15 +46,15 @@ class TransactionsTable extends ConsumerWidget {
                         radius: 15,
                         foregroundImage: CachedNetworkImageProvider(constants.defaultImageUrl),
                       ),
-                      onTap: () => showEditProductForm(context, ref, product),
+                      onTap: () => showEditReceiptForm(context, ref, transaction),
                     ),
                     const SizedBox(width: 20),
-                    Text(product.code.toString()),
+                    Text(transaction.name.toString()),
                   ],
                 )),
-                DataCell(Text(product.name)),
-                DataCell(Text(product.sellRetailPrice.toString())),
-                DataCell(Text(product.sellWholePrice.toString())),
+                DataCell(Text(transaction.date.toString())),
+                DataCell(Text(transaction.number.toString())),
+                DataCell(Text(transaction.amount.toString())),
               ],
             );
           }).toList();
@@ -69,21 +69,21 @@ class TransactionsTable extends ConsumerWidget {
                   label: Row(
                     children: [
                       const SizedBox(width: 50),
-                      ColumnTitleText(S.of(context).product_code),
+                      ColumnTitleText(S.of(context).transaction_name),
                     ],
                   ),
                   size: ColumnSize.S,
                 ),
                 DataColumn2(
-                  label: ColumnTitleText(S.of(context).product_name),
+                  label: ColumnTitleText(S.of(context).transaction_date),
                   size: ColumnSize.S,
                 ),
                 DataColumn2(
-                  label: ColumnTitleText(S.of(context).product_sell_retail_price),
+                  label: ColumnTitleText(S.of(context).transaction_number),
                   size: ColumnSize.S,
                 ),
                 DataColumn2(
-                  label: ColumnTitleText(S.of(context).product_sell_whole_price),
+                  label: ColumnTitleText(S.of(context).transaction_amount),
                   size: ColumnSize.S,
                 ),
               ],

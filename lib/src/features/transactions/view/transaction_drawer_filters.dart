@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
-import 'package:tablets/src/features/products/controllers/product_filter_data_provider.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/list_filters.dart' as filters;
-import 'package:tablets/src/features/products/controllers/product_filter_controller_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_drawer_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_filter_controller_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_filter_data_provider.dart';
 
-class ProductSearchForm extends ConsumerWidget {
-  const ProductSearchForm({super.key});
+class TransactionSearchForm extends ConsumerWidget {
+  const TransactionSearchForm({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -50,18 +50,18 @@ class ProductSearchForm extends ConsumerWidget {
                 onPressed: () {
                   /// if filter is already on, we turn it off to make all list available for search
                   /// note that list filtering is only activated if filterSwitch changed status (on/off)
-                  if (ref.read(productFilterSwitchProvider)) {
-                    ref.read(productFilterSwitchProvider.notifier).update((state) => state = false);
+                  if (ref.read(transactionFilterSwitchProvider)) {
+                    ref.read(transactionFilterSwitchProvider.notifier).update((state) => state = false);
                   }
-                  ref.read(productFilterSwitchProvider.notifier).update((state) => state = true);
+                  ref.read(transactionFilterSwitchProvider.notifier).update((state) => state = true);
                 },
                 icon: const ApproveIcon(),
               ),
               IconButton(
                 onPressed: () {
-                  ref.read(productFilterSwitchProvider.notifier).update((state) => state = false);
-                  ref.read(productFiltersProvider.notifier).reset();
-                  ref.read(productsDrawerControllerProvider).drawerController.close();
+                  ref.read(transactionFilterSwitchProvider.notifier).update((state) => state = false);
+                  ref.read(transactionFiltersProvider.notifier).reset();
+                  ref.read(transactionDrawerControllerProvider).drawerController.close();
                 },
                 icon: const CancelIcon(),
               ),
@@ -89,18 +89,20 @@ class GeneralSearchField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productFilters = ref.watch(productFiltersProvider);
-    dynamic initialValue = productFilters[name]?['value'];
+    final transactionFilters = ref.watch(transactionFiltersProvider);
+    dynamic initialValue = transactionFilters[name]?['value'];
     if (initialValue != null) {
       initialValue = initialValue is String ? initialValue : initialValue.toString();
     }
-    return FormBuilderTextField(
-      name: name,
-      initialValue: initialValue,
-      decoration: utils.formFieldDecoration(label: displayedTitle),
-      onChanged: (value) => ref
-          .read(productFiltersProvider.notifier)
-          .update(key: name, value: value, dataType: dataType, filterCriteria: filterCriteria),
+    return Expanded(
+      child: FormBuilderTextField(
+        name: name,
+        initialValue: initialValue,
+        decoration: utils.formFieldDecoration(label: displayedTitle),
+        onChanged: (value) => ref
+            .read(transactionFiltersProvider.notifier)
+            .update(key: name, value: value, dataType: dataType, filterCriteria: filterCriteria),
+      ),
     );
   }
 }

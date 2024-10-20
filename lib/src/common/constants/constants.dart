@@ -7,4 +7,7 @@ const double categoryFormHeight = 400;
 const double productFormWidth = 600;
 const double productFormHeight = 600;
 
-enum FieldDataTypes { int, double, string }
+const double invoiceFormWidth = 600;
+const double invoiceFormHeight = 600;
+
+enum FieldDataTypes { int, double, string, datetime }
