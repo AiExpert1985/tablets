@@ -1,0 +1,73 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
+import 'package:tablets/src/common/widgets/form_frame.dart';
+import 'package:tablets/src/common/widgets/custom_icons.dart';
+import 'package:tablets/src/common/widgets/image_slider.dart';
+import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
+import 'package:tablets/src/common/constants/constants.dart' as constants;
+import 'package:tablets/src/features/products/model/product.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
+import 'package:tablets/src/features/transactions/view/receipt_form_fields.dart';
+
+class TransactionForm extends ConsumerWidget {
+  const TransactionForm({this.isEditMode = false, super.key});
+  final bool isEditMode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formController = ref.watch(transactionFormControllerProvider);
+    final formData = ref.watch(transactionFormDataProvider);
+    final formDataNotifier = ref.read(productFormDataProvider.notifier);
+    final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    ref.watch(imagePickerProvider);
+    return FormFrame(
+      formKey: formController.formKey,
+      fields: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ImageSlider(imageUrls: formData['imageUrls']),
+          gaps.VerticalGap.formImageToFields,
+          const ReceiptFormFields(editMode: true),
+        ],
+      ),
+      buttons: [
+        IconButton(
+          onPressed: () {
+            formController.validateForm();
+            final updateFormData = formDataNotifier.data;
+            final imageUrls = formImagesNotifier.saveChanges();
+            final product = Product.fromMap({...updateFormData, 'imageUrls': imageUrls});
+            formController.saveItemToDb(context, product, isEditMode);
+          },
+          icon: const ApproveIcon(),
+        ),
+        IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const CancelIcon(),
+        ),
+        Visibility(
+          visible: isEditMode,
+          child: IconButton(
+              onPressed: () async {
+                bool? confiramtion =
+                    await showDeleteConfirmationDialog(context: context, message: formData['name']);
+                if (confiramtion != null) {
+                  final updateFormData = formDataNotifier.data;
+                  final imageUrls = formImagesNotifier.saveChanges();
+                  final product = Product.fromMap({...updateFormData, 'imageUrls': imageUrls});
+                  // ignore: use_build_context_synchronously
+                  formController.deleteItemFromDb(context, product);
+                }
+              },
+              icon: const DeleteIcon()),
+        )
+      ],
+      width: constants.productFormWidth,
+      height: constants.productFormHeight,
+    );
+  }
+}
