@@ -36,7 +36,7 @@ class CategoriesGrid extends ConsumerWidget {
       data: (categories) => GridView.builder(
         itemCount: categories.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
+          crossAxisCount: 8,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
         ),
