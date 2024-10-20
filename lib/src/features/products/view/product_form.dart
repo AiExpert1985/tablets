@@ -36,7 +36,8 @@ class ProductForm extends ConsumerWidget {
       buttons: [
         IconButton(
           onPressed: () {
-            formController.validateForm();
+            if (!formController.validateData()) return;
+            formController.submitData();
             final updateFormData = formDataNotifier.data;
             final imageUrls = formImagesNotifier.saveChanges();
             final product = Product.fromMap({...updateFormData, 'imageUrls': imageUrls});

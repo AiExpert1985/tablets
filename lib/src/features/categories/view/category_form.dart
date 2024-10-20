@@ -5,11 +5,11 @@ import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
+import 'package:tablets/src/features/categories/controllers/category_form_controller.dart';
 import 'package:tablets/src/features/categories/model/category.dart';
 import 'package:tablets/src/features/categories/view/category_form_fields.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/constants/constants.dart' as constants;
-import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 
 class CategoryForm extends ConsumerWidget {
   const CategoryForm({this.isEditMode = false, super.key});
@@ -17,9 +17,9 @@ class CategoryForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(productFormControllerProvider);
-    final formData = ref.watch(productFormDataProvider);
-    final formDataNotifier = ref.read(productFormDataProvider.notifier);
+    final formController = ref.watch(categoryFormControllerProvider);
+    final formData = ref.watch(categoryFormDataProvider);
+    final formDataNotifier = ref.read(categoryFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
     ref.watch(imagePickerProvider);
     return FormFrame(
@@ -36,7 +36,8 @@ class CategoryForm extends ConsumerWidget {
       buttons: [
         IconButton(
           onPressed: () {
-            formController.validateForm();
+            if (!formController.validateData()) return;
+            formController.submitData();
             final updateFormData = formDataNotifier.data;
             final imageUrls = formImagesNotifier.saveChanges();
             final category = ProductCategory.fromMap({...updateFormData, 'imageUrls': imageUrls});

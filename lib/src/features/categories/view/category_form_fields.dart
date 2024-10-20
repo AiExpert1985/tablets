@@ -32,11 +32,11 @@ class CategoryFormInputField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productFormController = ref.watch(categoryFormDataProvider.notifier);
-    final formData = productFormController.data;
+    final categoryFormController = ref.watch(categoryFormDataProvider.notifier);
+    final formData = categoryFormController.data;
     return FormInputField(
         formData: formData,
-        onSaveFn: productFormController.update,
+        onSaveFn: categoryFormController.update,
         dataType: dataType,
         name: name,
         displayedTitle: displayedTitle);

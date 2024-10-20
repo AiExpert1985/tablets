@@ -11,12 +11,9 @@ class ItemFormController {
   final DbRepository _repository;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  bool validateForm() {
-    final isValid = formKey.currentState!.validate();
-    if (!isValid) return false;
-    formKey.currentState!.save();
-    return true;
-  }
+  bool validateData() => formKey.currentState!.validate();
+
+  void submitData() => formKey.currentState!.save();
 
   void saveItemToDb(BuildContext context, BaseItem item, bool isEditMode) async {
     final success =

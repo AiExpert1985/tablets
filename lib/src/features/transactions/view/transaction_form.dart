@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
@@ -33,7 +32,8 @@ class TransactionForm extends ConsumerWidget {
       buttons: [
         IconButton(
           onPressed: () {
-            if (!formController.validateForm()) return;
+            if (!formController.validateData()) return;
+            formController.submitData();
             final updateFormData = formDataNotifier.data;
             final imageUrls = formImagesNotifier.saveChanges();
             final transaction = Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
