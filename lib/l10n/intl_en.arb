@@ -54,6 +54,7 @@
     "input_validation_error_message_for_strings": "Enter a valid work",
     "input_validation_error_message_for_integers": "Enter an integer number",
     "input_validation_error_message_for_doubles": "Enter an integer number",
+    "input_validation_error_message_for_date": "Select a date",
     "error_importing_image": "An error happend while importing images",
     "settings": "Settings",
     "category": "Category",
@@ -86,5 +87,6 @@
     "transaction_item_quantity": "Quantity",
     "transaction_item_price": "Price",
     "transaction_item_gift": "Gift",
-    "transaction_item_total_price": "Total price"
+    "transaction_item_total_price": "Total price",
+    "date_picker_hint": "Select a date"
 }

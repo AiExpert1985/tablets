@@ -600,6 +600,16 @@ class S {
     );
   }
 
+  /// `Select a date`
+  String get input_validation_error_message_for_date {
+    return Intl.message(
+      'Select a date',
+      name: 'input_validation_error_message_for_date',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `An error happend while importing images`
   String get error_importing_image {
     return Intl.message(
@@ -925,6 +935,16 @@ class S {
     return Intl.message(
       'Total price',
       name: 'transaction_item_total_price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select a date`
+  String get date_picker_hint {
+    return Intl.message(
+      'Select a date',
+      name: 'date_picker_hint',
       desc: '',
       args: [],
     );

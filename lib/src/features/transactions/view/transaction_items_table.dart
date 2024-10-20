@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:data_table_2/data_table_2.dart';
@@ -30,8 +32,9 @@ class TransactionsTable extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionStream = ref.watch(transactionStreamProvider);
     final filterIsOn = ref.watch(transactionFilterSwitchProvider);
-    final transactionsListValue =
-        filterIsOn ? ref.read(transactionFilteredListProvider).getFilteredList() : transactionStream;
+    final transactionsListValue = filterIsOn
+        ? ref.read(transactionFilteredListProvider).getFilteredList()
+        : transactionStream;
     return AsyncValueWidget<List<Map<String, dynamic>>>(
         value: transactionsListValue,
         data: (transactions) {
@@ -52,7 +55,7 @@ class TransactionsTable extends ConsumerWidget {
                     Text(transaction.name.toString()),
                   ],
                 )),
-                DataCell(Text(transaction.date.toString())),
+                DataCell(Text(DateFormat('yyyy/MM/dd').format(transaction.date).toString())),
                 DataCell(Text(transaction.number.toString())),
                 DataCell(Text(transaction.amount.toString())),
               ],

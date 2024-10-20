@@ -33,9 +33,8 @@ class TransactionForm extends ConsumerWidget {
       buttons: [
         IconButton(
           onPressed: () {
-            formController.validateForm();
+            if (!formController.validateForm()) return;
             final updateFormData = formDataNotifier.data;
-            tempPrint(updateFormData);
             final imageUrls = formImagesNotifier.saveChanges();
             final transaction = Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
             formController.saveItemToDb(context, transaction, isEditMode);
@@ -50,11 +49,13 @@ class TransactionForm extends ConsumerWidget {
           visible: isEditMode,
           child: IconButton(
               onPressed: () async {
-                bool? confiramtion = await showDeleteConfirmationDialog(context: context, message: formData['name']);
+                bool? confiramtion =
+                    await showDeleteConfirmationDialog(context: context, message: formData['name']);
                 if (confiramtion != null) {
                   final updateFormData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();
-                  final transaction = Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
+                  final transaction =
+                      Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
                   // ignore: use_build_context_synchronously
                   formController.deleteItemFromDb(context, transaction);
                 }

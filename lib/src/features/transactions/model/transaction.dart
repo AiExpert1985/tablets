@@ -11,7 +11,7 @@ class Transaction implements BaseItem {
   @override
   List<String> imageUrls;
   int number; // receipt number, entered automatically (last_receipt + 1)
-  String date;
+  DateTime date;
   double amount; // amount of money
   String currency; // $ or ID
   String notes;
@@ -47,7 +47,7 @@ class Transaction implements BaseItem {
     String? name,
     List<String>? imageUrls,
     int? number,
-    String? date,
+    DateTime? date,
     double? amount,
     String? currency,
     String? notes,
@@ -95,19 +95,19 @@ class Transaction implements BaseItem {
 
   factory Transaction.fromMap(Map<String, dynamic> map) {
     return Transaction(
-      dbKey: map['dbKey'] ?? '',
-      name: map['name'] ?? '',
+      dbKey: map['dbKey'],
+      name: map['name'],
       imageUrls: List<String>.from(map['imageUrls']),
-      number: map['number']?.toInt() ?? 0,
-      date: map['date'],
-      amount: map['amount']?.toDouble() ?? 0.0,
-      currency: map['currency'] ?? '',
-      notes: map['notes'] ?? '',
-      counterParty: map['counterParty'] ?? '',
-      paymentType: map['paymentType'] ?? '',
-      salesman: map['salesman'] ?? '',
+      number: map['number'].toInt(),
+      date: map['date'].toDate(),
+      amount: map['amount']?.toDouble(),
+      currency: map['currency'],
+      notes: map['notes'],
+      counterParty: map['counterParty'],
+      paymentType: map['paymentType'],
+      salesman: map['salesman'],
       itemDbKeyList: ['dsafsdf', 'safsdfsdf', 'sadfsdf'],
-      discount: map['discount']?.toDouble() ?? 0.0,
+      discount: map['discount'].toDouble(),
     );
   }
 

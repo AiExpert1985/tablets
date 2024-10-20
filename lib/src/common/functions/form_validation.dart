@@ -38,3 +38,13 @@ String? validateDropDownField({
   }
   return null;
 }
+
+String? validateDatePicker({
+  required DateTime? fieldValue,
+  required String errorMessage,
+}) {
+  if (fieldValue == null) {
+    return errorMessage;
+  }
+  return null;
+}

@@ -37,6 +37,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "choose_image": MessageLookupByLibrary.simpleMessage("Choose image"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("Create a new account"),
+        "date_picker_hint":
+            MessageLookupByLibrary.simpleMessage("Select a date"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
             "An error happened while adding to the database"),
         "db_error_deleting_doc": MessageLookupByLibrary.simpleMessage(
@@ -69,6 +71,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("I already have account"),
         "info": MessageLookupByLibrary.simpleMessage("info"),
+        "input_validation_error_message_for_date":
+            MessageLookupByLibrary.simpleMessage("Select a date"),
         "input_validation_error_message_for_doubles":
             MessageLookupByLibrary.simpleMessage("Enter an integer number"),
         "input_validation_error_message_for_email":

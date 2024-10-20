@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/constants/constants.dart';
-import 'package:tablets/src/common/widgets/form_input_field.dart';
+import 'package:tablets/src/common/widgets/form_field_custom_input.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 
 class TransactionFormInputField extends ConsumerWidget {
@@ -22,7 +22,7 @@ class TransactionFormInputField extends ConsumerWidget {
     final formData = transactionFormController.data;
     return FormInputField(
         formData: formData,
-        formDataUpdateFn: transactionFormController.update,
+        onSaveFn: transactionFormController.update,
         dataType: dataType,
         name: name,
         displayedTitle: displayedTitle);

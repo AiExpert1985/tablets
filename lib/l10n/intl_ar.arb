@@ -54,6 +54,7 @@
     "input_validation_error_message_for_strings": "ادخل كلمة صحيحة",
     "input_validation_error_message_for_integers": "ادخل رقم صحيح",
     "input_validation_error_message_for_doubles": "ادخل رقم صحيح",
+    "input_validation_error_message_for_date": "قم بأختيار التاريخ",
     "error_importing_image": "حدث خطأ اثناء استيراد الصور",
     "settings": "الاعدادات",
     "category": "الصنف",
@@ -86,5 +87,6 @@
     "transaction_item_quantity": "العدد",
     "transaction_item_price": "سعر القطعة",
     "transaction_item_gift": "هدية",
-    "transaction_item_total_price": "السعر الكلي"
+    "transaction_item_total_price": "السعر الكلي",
+    "date_picker_hint": "اختيار التاريخ"
 }

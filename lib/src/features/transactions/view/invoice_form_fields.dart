@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
+import 'package:tablets/src/common/widgets/form_field_date_picker.dart';
 import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
@@ -14,7 +14,6 @@ class InvoiceFormFields extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formData = ref.watch(transactionFormDataProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final categoryRepository = ref.read(categoryRepositoryProvider);
     return Column(
       children: [
         Row(
@@ -31,17 +30,9 @@ class InvoiceFormFields extends ConsumerWidget {
               displayedTitle: S.of(context).transaction_name,
             ),
             gaps.HorizontalGap.formFieldToField,
-            // DropDownFormField(
-            //   title: S.of(context).category_selection,
-            //   formData: formData,
-            //   formDataUpdateFn: formDataNotifier.update,
-            //   dbItemFetchFn: categoryRepository.fetchItemAsMap,
-            //   dbListFetchFn: categoryRepository.fetchItemListAsMaps,
-            // ),
-            TransactionFormInputField(
-              dataType: FieldDataTypes.datetime,
-              name: 'date',
-              displayedTitle: S.of(context).transaction_date,
+            FormDatePickerField(
+              onSaveFn: formDataNotifier.update,
+              formData: formData,
             ),
           ],
         ),
@@ -98,7 +89,7 @@ class InvoiceFormFields extends ConsumerWidget {
               displayedTitle: S.of(context).transaction_notes,
             ),
           ],
-        )
+        ),
       ],
     );
   }

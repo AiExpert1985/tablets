@@ -38,6 +38,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "choose_image": MessageLookupByLibrary.simpleMessage("اختر صورة"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
+        "date_picker_hint":
+            MessageLookupByLibrary.simpleMessage("اختيار التاريخ"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات"),
         "db_error_deleting_doc": MessageLookupByLibrary.simpleMessage(
@@ -70,6 +72,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("لدي حساب في البرنامج"),
         "info": MessageLookupByLibrary.simpleMessage("معلومات"),
+        "input_validation_error_message_for_date":
+            MessageLookupByLibrary.simpleMessage("قم بأختيار التاريخ"),
         "input_validation_error_message_for_doubles":
             MessageLookupByLibrary.simpleMessage("ادخل رقم صحيح"),
         "input_validation_error_message_for_email":

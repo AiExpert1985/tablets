@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/widgets/form_drop_down_field.dart';
-import 'package:tablets/src/common/widgets/form_input_field.dart';
+import 'package:tablets/src/common/widgets/form_field_drop_down.dart';
+import 'package:tablets/src/common/widgets/form_field_custom_input.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
@@ -131,7 +131,7 @@ class ProductFormInputField extends ConsumerWidget {
     final formData = productFormController.data;
     return FormInputField(
         formData: formData,
-        formDataUpdateFn: productFormController.update,
+        onSaveFn: productFormController.update,
         dataType: dataType,
         name: name,
         displayedTitle: displayedTitle);
