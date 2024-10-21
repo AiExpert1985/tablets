@@ -22,12 +22,13 @@ class InvoiceFormFields extends ConsumerWidget {
             TransactionFormInputField(
               dataType: FieldDataTypes.string,
               name: 'counterParty',
-              displayedTitle: S.of(context).transaction_counterParty,
+              displayedTitle: S.of(context).transaction_customer_invoice_counterParty,
             ),
             gaps.HorizontalGap.formFieldToField,
-            FormDatePickerField(
-              onSaveFn: formDataNotifier.update,
-              formData: formData,
+            TransactionFormInputField(
+              dataType: FieldDataTypes.string,
+              name: 'salesman',
+              displayedTitle: S.of(context).transaction_salesman,
             ),
           ],
         ),
@@ -78,10 +79,9 @@ class InvoiceFormFields extends ConsumerWidget {
               name: 'paymentType',
             ),
             gaps.HorizontalGap.formFieldToField,
-            TransactionFormInputField(
-              dataType: FieldDataTypes.string,
-              name: 'salesman',
-              displayedTitle: S.of(context).transaction_salesman,
+            FormDatePickerField(
+              onSaveFn: formDataNotifier.update,
+              formData: formData,
             ),
           ],
         ),

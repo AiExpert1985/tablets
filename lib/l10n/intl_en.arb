@@ -79,7 +79,7 @@
     "transaction_amount": "Amount",
     "transaction_currency": "Currency",
     "transaction_notes": "Notes",
-    "transaction_counterParty": "Name",
+    "transaction_customer_invoice_counterParty": "Customer Name",
     "transaction_payment_type": "Payment type",
     "transaction_salesman": "Salesman",
     "transaction_discount": "Discount",

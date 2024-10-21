@@ -141,10 +141,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Tablets, where accounting started"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
         "transaction_amount": MessageLookupByLibrary.simpleMessage("Amount"),
-        "transaction_counterParty":
-            MessageLookupByLibrary.simpleMessage("Name"),
         "transaction_currency":
             MessageLookupByLibrary.simpleMessage("Currency"),
+        "transaction_customer_invoice_counterParty":
+            MessageLookupByLibrary.simpleMessage("Customer Name"),
         "transaction_date": MessageLookupByLibrary.simpleMessage("Date"),
         "transaction_discount":
             MessageLookupByLibrary.simpleMessage("Discount"),

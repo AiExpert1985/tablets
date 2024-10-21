@@ -850,11 +850,11 @@ class S {
     );
   }
 
-  /// `Name`
-  String get transaction_counterParty {
+  /// `Customer Name`
+  String get transaction_customer_invoice_counterParty {
     return Intl.message(
-      'Name',
-      name: 'transaction_counterParty',
+      'Customer Name',
+      name: 'transaction_customer_invoice_counterParty',
       desc: '',
       args: [],
     );
