@@ -40,7 +40,7 @@ class TransactionsTable extends ConsumerWidget {
           List<DataRow2> rows = transactions.map((map) {
             Transaction transaction = Transaction.fromMap(map);
             // item contains the name used in database, but I want to show to the user a different name
-            final screenName = transactionTypeDbNameToScreenName(context: context, dbName: transaction.name.toString());
+            final screenName = transactionTypeDbNameToScreenName(context: context, dbName: transaction.name);
             return DataRow2(
               cells: [
                 DataCell(Row(
