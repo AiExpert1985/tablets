@@ -159,10 +159,33 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Transaction type"),
         "transaction_notes": MessageLookupByLibrary.simpleMessage("Notes"),
         "transaction_number": MessageLookupByLibrary.simpleMessage("Number"),
+        "transaction_payment_Dinar":
+            MessageLookupByLibrary.simpleMessage("IQ Dinar"),
+        "transaction_payment_Dollar":
+            MessageLookupByLibrary.simpleMessage("US Dollar"),
+        "transaction_payment_cash":
+            MessageLookupByLibrary.simpleMessage("Cash"),
+        "transaction_payment_credit":
+            MessageLookupByLibrary.simpleMessage("Credit"),
         "transaction_payment_type":
             MessageLookupByLibrary.simpleMessage("Payment type"),
         "transaction_salesman":
             MessageLookupByLibrary.simpleMessage("Salesman"),
+        "transaction_type_customer_invoice":
+            MessageLookupByLibrary.simpleMessage("CustomerInvoice"),
+        "transaction_type_customer_receipt":
+            MessageLookupByLibrary.simpleMessage("CustomerReceipt"),
+        "transaction_type_customer_return":
+            MessageLookupByLibrary.simpleMessage("CustomerReturn"),
+        "transaction_type_expenditures":
+            MessageLookupByLibrary.simpleMessage("Expenditures"),
+        "transaction_type_gifts": MessageLookupByLibrary.simpleMessage("Gifts"),
+        "transaction_type_vender_invoice":
+            MessageLookupByLibrary.simpleMessage("VenderInvoice"),
+        "transaction_type_vender_return":
+            MessageLookupByLibrary.simpleMessage("VenderReturn"),
+        "transaction_type_vendor_receipt":
+            MessageLookupByLibrary.simpleMessage("VendorReceipt"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
         "update_category":
             MessageLookupByLibrary.simpleMessage("Update category"),

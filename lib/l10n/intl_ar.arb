@@ -88,5 +88,17 @@
     "transaction_item_price": "سعر القطعة",
     "transaction_item_gift": "هدية",
     "transaction_item_total_price": "السعر الكلي",
-    "date_picker_hint": "اختيار التاريخ"
+    "date_picker_hint": "اختيار التاريخ",
+    "transaction_payment_cash": "نقدي",
+    "transaction_payment_credit": "اجل",
+    "transaction_payment_Dinar": "دينار",
+    "transaction_payment_Dollar": "دولار",
+    "transaction_type_expenditures": "مصاريف",
+    "transaction_type_gifts": "هدية",
+    "transaction_type_customer_receipt": "وصل قبض",
+    "transaction_type_vendor_receipt": "وصل دفع",
+    "transaction_type_vender_return": "ارجاع مجهز",
+    "transaction_type_customer_return": "ارجاع زبون",
+    "transaction_type_vender_invoice": "قائمة مجهز",
+    "transaction_type_customer_invoice": "قائمة زبون"
 }

@@ -88,5 +88,17 @@
     "transaction_item_price": "Price",
     "transaction_item_gift": "Gift",
     "transaction_item_total_price": "Total price",
-    "date_picker_hint": "Select a date"
+    "date_picker_hint": "Select a date",
+    "transaction_payment_cash": "Cash",
+    "transaction_payment_credit": "Credit",
+    "transaction_payment_Dinar": "IQ Dinar",
+    "transaction_payment_Dollar": "US Dollar",
+    "transaction_type_expenditures": "Expenditures",
+    "transaction_type_gifts": "Gifts",
+    "transaction_type_customer_receipt": "CustomerReceipt",
+    "transaction_type_vendor_receipt": "VendorReceipt",
+    "transaction_type_vender_return": "VenderReturn",
+    "transaction_type_customer_return": "CustomerReturn",
+    "transaction_type_vender_invoice": "VenderInvoice",
+    "transaction_type_customer_invoice": "CustomerInvoice"
 }

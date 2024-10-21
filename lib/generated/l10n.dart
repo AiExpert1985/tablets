@@ -949,6 +949,126 @@ class S {
       args: [],
     );
   }
+
+  /// `Cash`
+  String get transaction_payment_cash {
+    return Intl.message(
+      'Cash',
+      name: 'transaction_payment_cash',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Credit`
+  String get transaction_payment_credit {
+    return Intl.message(
+      'Credit',
+      name: 'transaction_payment_credit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IQ Dinar`
+  String get transaction_payment_Dinar {
+    return Intl.message(
+      'IQ Dinar',
+      name: 'transaction_payment_Dinar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `US Dollar`
+  String get transaction_payment_Dollar {
+    return Intl.message(
+      'US Dollar',
+      name: 'transaction_payment_Dollar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expenditures`
+  String get transaction_type_expenditures {
+    return Intl.message(
+      'Expenditures',
+      name: 'transaction_type_expenditures',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gifts`
+  String get transaction_type_gifts {
+    return Intl.message(
+      'Gifts',
+      name: 'transaction_type_gifts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CustomerReceipt`
+  String get transaction_type_customer_receipt {
+    return Intl.message(
+      'CustomerReceipt',
+      name: 'transaction_type_customer_receipt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VendorReceipt`
+  String get transaction_type_vendor_receipt {
+    return Intl.message(
+      'VendorReceipt',
+      name: 'transaction_type_vendor_receipt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VenderReturn`
+  String get transaction_type_vender_return {
+    return Intl.message(
+      'VenderReturn',
+      name: 'transaction_type_vender_return',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CustomerReturn`
+  String get transaction_type_customer_return {
+    return Intl.message(
+      'CustomerReturn',
+      name: 'transaction_type_customer_return',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VenderInvoice`
+  String get transaction_type_vender_invoice {
+    return Intl.message(
+      'VenderInvoice',
+      name: 'transaction_type_vender_invoice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CustomerInvoice`
+  String get transaction_type_customer_invoice {
+    return Intl.message(
+      'CustomerInvoice',
+      name: 'transaction_type_customer_invoice',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

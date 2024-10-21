@@ -8,27 +8,25 @@ import 'package:tablets/src/common/functions/form_validation.dart' as validation
 /// I used Stateful widget because it is the the best way I found to make the initial value visible
 /// after it is being fetched from DB, I didn't want to use riverpod providers because it lead to
 /// unnecessary complications
-class DropDownFormField extends StatefulWidget {
-  const DropDownFormField(
+class DropDownWithSearchFormField extends StatefulWidget {
+  const DropDownWithSearchFormField(
       {required this.title,
       required this.dbItemFetchFn,
       required this.dbListFetchFn,
-      required this.formDataUpdateFn,
+      required this.onSaveFn,
       required this.formData,
       super.key});
   final String title;
   final Map<String, dynamic> formData;
-  final void Function({required String key, required dynamic value}) formDataUpdateFn;
-  final Future<Map<String, dynamic>> Function({String? filterKey, String? filterValue})
-      dbItemFetchFn;
-  final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue})
-      dbListFetchFn;
+  final void Function({required String key, required dynamic value}) onSaveFn;
+  final Future<Map<String, dynamic>> Function({String? filterKey, String? filterValue}) dbItemFetchFn;
+  final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue}) dbListFetchFn;
 
   @override
-  State<DropDownFormField> createState() => _DropDownFormFieldState();
+  State<DropDownWithSearchFormField> createState() => _DropDownWithSearchFormFieldState();
 }
 
-class _DropDownFormFieldState extends State<DropDownFormField> {
+class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormField> {
   final Map<String, dynamic> initialValue = {};
 
   void setInitialValue(formData) async {
@@ -52,8 +50,7 @@ class _DropDownFormFieldState extends State<DropDownFormField> {
           decoratorProps: DropDownDecoratorProps(
             decoration: utils.formFieldDecoration(label: S.of(context).category),
           ),
-          selectedItem:
-              initialValue.keys.isNotEmpty && initialValue['name'] != null ? initialValue : null,
+          selectedItem: initialValue.keys.isNotEmpty && initialValue['name'] != null ? initialValue : null,
           items: (filter, t) => widget.dbListFetchFn(filterKey: 'name', filterValue: filter),
           compareFn: (i, s) => i == s,
           popupProps: PopupProps.dialog(
@@ -83,14 +80,13 @@ class _DropDownFormFieldState extends State<DropDownFormField> {
               ),
           itemAsString: (item) => item['name'],
           onSaved: (item) {
-            widget.formDataUpdateFn(key: 'category', value: item?['dbKey']);
+            widget.onSaveFn(key: 'category', value: item?['dbKey']);
           }),
     );
   }
 }
 
-Widget popUpItem(
-    BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
+Widget popUpItem(BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
@@ -109,8 +105,7 @@ Widget popUpItem(
         leading: CircleAvatar(
           // radius: 70,
           backgroundColor: Colors.white,
-          foregroundImage:
-              CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
+          foregroundImage: CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
         ),
       ),
     ),

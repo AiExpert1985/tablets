@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:data_table_2/data_table_2.dart';
@@ -31,14 +32,15 @@ class TransactionsTable extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionStream = ref.watch(transactionStreamProvider);
     final filterIsOn = ref.watch(transactionFilterSwitchProvider);
-    final transactionsListValue = filterIsOn
-        ? ref.read(transactionFilteredListProvider).getFilteredList()
-        : transactionStream;
+    final transactionsListValue =
+        filterIsOn ? ref.read(transactionFilteredListProvider).getFilteredList() : transactionStream;
     return AsyncValueWidget<List<Map<String, dynamic>>>(
         value: transactionsListValue,
         data: (transactions) {
           List<DataRow2> rows = transactions.map((map) {
             Transaction transaction = Transaction.fromMap(map);
+            // item contains the name used in database, but I want to show to the user a different name
+            final screenName = transactionTypeDbNameToScreenName(context: context, dbName: transaction.name.toString());
             return DataRow2(
               cells: [
                 DataCell(Row(
@@ -51,7 +53,7 @@ class TransactionsTable extends ConsumerWidget {
                       onTap: () => showEditReceiptForm(context, ref, transaction),
                     ),
                     const SizedBox(width: 20),
-                    Text(transaction.name.toString()),
+                    Text(screenName),
                   ],
                 )),
                 DataCell(Text(DateFormat('yyyy/MM/dd').format(transaction.date).toString())),

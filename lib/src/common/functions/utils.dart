@@ -2,6 +2,8 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/functions/debug_print.dart' as debug;
 import 'package:image/image.dart' as img;
 
@@ -48,8 +50,7 @@ InputDecoration formFieldDecoration({String? label}) {
   );
 }
 
-List<Map<String, dynamic>> convertAsyncValueListToList(
-    AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
+List<Map<String, dynamic>> convertAsyncValueListToList(AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
   return asyncProductList.when(
       data: (products) => products,
       error: (e, st) {
@@ -60,4 +61,32 @@ List<Map<String, dynamic>> convertAsyncValueListToList(
         debug.errorPrint(message: 'product list is loading');
         return [];
       });
+}
+
+String transactionTypeDbNameToScreenName({required BuildContext context, required String dbName}) {
+  final Map<String, String> trasactionTypeLookup = {
+    TransactionTypes.expenditures.name: S.of(context).transaction_type_expenditures,
+    TransactionTypes.gifts.name: S.of(context).transaction_type_gifts,
+    TransactionTypes.customerReceipt.name: S.of(context).transaction_type_customer_receipt,
+    TransactionTypes.vendorReceipt.name: S.of(context).transaction_type_vendor_receipt,
+    TransactionTypes.venderReturn.name: S.of(context).transaction_type_vender_return,
+    TransactionTypes.customerReturn.name: S.of(context).transaction_type_customer_return,
+    TransactionTypes.venderInvoice.name: S.of(context).transaction_type_vender_invoice,
+    TransactionTypes.customerInvoice.name: S.of(context).transaction_type_customer_invoice
+  };
+  return trasactionTypeLookup[dbName] ?? dbName;
+}
+
+String transactionTypeScreenNameToDbName({required BuildContext context, required String screenName}) {
+  final Map<String, String> trasactionTypeLookup = {
+    S.of(context).transaction_type_expenditures: TransactionTypes.expenditures.name,
+    S.of(context).transaction_type_gifts: TransactionTypes.gifts.name,
+    S.of(context).transaction_type_customer_receipt: TransactionTypes.customerReceipt.name,
+    S.of(context).transaction_type_vendor_receipt: TransactionTypes.vendorReceipt.name,
+    S.of(context).transaction_type_vender_return: TransactionTypes.venderReturn.name,
+    S.of(context).transaction_type_customer_return: TransactionTypes.customerReturn.name,
+    S.of(context).transaction_type_vender_invoice: TransactionTypes.venderInvoice.name,
+    S.of(context).transaction_type_customer_invoice: TransactionTypes.customerInvoice.name
+  };
+  return trasactionTypeLookup[screenName] ?? screenName;
 }

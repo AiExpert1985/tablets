@@ -158,10 +158,33 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_notes": MessageLookupByLibrary.simpleMessage("الملاحظات"),
         "transaction_number":
             MessageLookupByLibrary.simpleMessage("رقم القائمة"),
+        "transaction_payment_Dinar":
+            MessageLookupByLibrary.simpleMessage("دينار"),
+        "transaction_payment_Dollar":
+            MessageLookupByLibrary.simpleMessage("دولار"),
+        "transaction_payment_cash":
+            MessageLookupByLibrary.simpleMessage("نقدي"),
+        "transaction_payment_credit":
+            MessageLookupByLibrary.simpleMessage("اجل"),
         "transaction_payment_type":
             MessageLookupByLibrary.simpleMessage("طريقة الدفع"),
         "transaction_salesman":
             MessageLookupByLibrary.simpleMessage("اسم المندوب"),
+        "transaction_type_customer_invoice":
+            MessageLookupByLibrary.simpleMessage("قائمة زبون"),
+        "transaction_type_customer_receipt":
+            MessageLookupByLibrary.simpleMessage("وصل قبض"),
+        "transaction_type_customer_return":
+            MessageLookupByLibrary.simpleMessage("ارجاع زبون"),
+        "transaction_type_expenditures":
+            MessageLookupByLibrary.simpleMessage("مصاريف"),
+        "transaction_type_gifts": MessageLookupByLibrary.simpleMessage("هدية"),
+        "transaction_type_vender_invoice":
+            MessageLookupByLibrary.simpleMessage("قائمة مجهز"),
+        "transaction_type_vender_return":
+            MessageLookupByLibrary.simpleMessage("ارجاع مجهز"),
+        "transaction_type_vendor_receipt":
+            MessageLookupByLibrary.simpleMessage("وصل دفع"),
         "transactions": MessageLookupByLibrary.simpleMessage("التعاملات"),
         "update_category":
             MessageLookupByLibrary.simpleMessage("تعديل معلومات الصنف"),

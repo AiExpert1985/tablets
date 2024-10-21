@@ -4,6 +4,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/widgets/form_field_date_picker.dart';
 import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common/widgets/form_field_drop_down_list.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/view/transaction_form_field.dart';
 
@@ -19,15 +20,9 @@ class InvoiceFormFields extends ConsumerWidget {
         Row(
           children: [
             TransactionFormInputField(
-              dataType: FieldDataTypes.int,
-              name: 'number',
-              displayedTitle: S.of(context).transaction_number,
-            ),
-            gaps.HorizontalGap.formFieldToField,
-            TransactionFormInputField(
               dataType: FieldDataTypes.string,
-              name: 'name',
-              displayedTitle: S.of(context).transaction_name,
+              name: 'counterParty',
+              displayedTitle: S.of(context).transaction_counterParty,
             ),
             gaps.HorizontalGap.formFieldToField,
             FormDatePickerField(
@@ -45,10 +40,15 @@ class InvoiceFormFields extends ConsumerWidget {
               displayedTitle: S.of(context).transaction_amount,
             ),
             gaps.HorizontalGap.formFieldToField,
-            TransactionFormInputField(
-              dataType: FieldDataTypes.string,
+            DropDownListFormField(
+              onSaveFn: formDataNotifier.update,
+              formData: formData,
+              itemList: [
+                S.of(context).transaction_payment_Dinar,
+                S.of(context).transaction_payment_Dollar,
+              ],
+              label: S.of(context).transaction_currency,
               name: 'currency',
-              displayedTitle: S.of(context).transaction_currency,
             ),
             gaps.HorizontalGap.formFieldToField,
             TransactionFormInputField(
@@ -62,15 +62,20 @@ class InvoiceFormFields extends ConsumerWidget {
         Row(
           children: [
             TransactionFormInputField(
-              dataType: FieldDataTypes.string,
-              name: 'counterParty',
-              displayedTitle: S.of(context).transaction_counterParty,
+              dataType: FieldDataTypes.int,
+              name: 'number',
+              displayedTitle: S.of(context).transaction_number,
             ),
             gaps.HorizontalGap.formFieldToField,
-            TransactionFormInputField(
-              dataType: FieldDataTypes.string,
+            DropDownListFormField(
+              onSaveFn: formDataNotifier.update,
+              formData: formData,
+              itemList: [
+                S.of(context).transaction_payment_cash,
+                S.of(context).transaction_payment_credit,
+              ],
+              label: S.of(context).transaction_payment_type,
               name: 'paymentType',
-              displayedTitle: S.of(context).transaction_payment_type,
             ),
             gaps.HorizontalGap.formFieldToField,
             TransactionFormInputField(

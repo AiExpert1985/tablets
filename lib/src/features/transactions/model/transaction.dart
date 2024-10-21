@@ -2,7 +2,17 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:tablets/src/common/interfaces/base_item.dart';
 
-// name Transactions because Transaction is a class name used by firebase cloud
+// used to represent below types of transactions:
+// (1) Expenditures: Salaries, Electricity, Rent, ... etc.
+// (2) Gift: Given to customers (it is considered a special type of expenditures) .
+// (3) VendorReceipt: Money payed to Venders.
+// (4) CustomerReceipt: Money Taken from Customers.
+// (5) VenderReturn: Items returned to Venders.
+// (6) CustomerReturn: Items returned from Customers.
+// (7) VenderInvoice: a bill of items bought from Venders.
+// (8) CustomerInvoice: bill of items sold to Customers.
+
+// Note that I named it Transactions because Transaction is a class name used by firebase cloud
 class Transaction implements BaseItem {
   @override
   String dbKey;
@@ -16,27 +26,27 @@ class Transaction implements BaseItem {
   String currency; // $ or ID
   String notes;
   String counterParty; // name of customer
-  String paymentType; // cash, debt
-  String salesman; // dbKey of salesman
+  String? paymentType; // cash, debt
+  String? salesman; // dbKey of salesman
   List<String>? itemDbKeyList;
-  double discount;
+  double? discount;
   Transaction({
     //required for all classes (BaseItem implementation)
     required this.dbKey,
     required this.name,
     required this.imageUrls,
-    // required for all transactions
+    // all actions must have below properties
     required this.number,
     required this.date,
     required this.amount,
     required this.currency,
     required this.notes,
     required this.counterParty,
-    // optional based on type of transaction (Receipt, payment, invoice, )
-    required this.paymentType,
-    required this.salesman,
-    required this.itemDbKeyList,
-    required this.discount,
+    // optional based on type of transaction
+    this.paymentType, // CustomerInvoice
+    this.salesman,
+    this.itemDbKeyList,
+    this.discount,
   });
 
   @override
