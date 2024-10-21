@@ -14,7 +14,8 @@ import 'package:tablets/src/common/interfaces/base_item.dart';
 // (8) CustomerInvoice: bill of items sold to Customers.
 
 // Note that I named it Transactions because Transaction is a class name used by firebase cloud
-//TODO   note when updating the class, and regenerate data class, then inside Transaction.fromMap function, the date must be -->   date: map['date'].toDate(),
+//! note when updating the class, and regenerate data class, then inside Transaction.fromMap function, the date must be
+//! map['date'].runtimeType == Timestamp ? map['date'].toDate() : map['date'],,
 class Transaction implements BaseItem {
   @override
   String dbKey;
