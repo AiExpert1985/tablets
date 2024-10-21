@@ -3,7 +3,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/form_validation.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
-import 'package:tablets/src/common/functions/utils.dart';
 
 class DropDownListFormField extends StatelessWidget {
   const DropDownListFormField(

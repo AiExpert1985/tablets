@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
@@ -54,6 +55,7 @@ class TransactionForm extends ConsumerWidget {
                   final updateFormData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();
                   final transaction = Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
+                  tempPrint(updateFormData);
                   // ignore: use_build_context_synchronously
                   formController.deleteItemFromDb(context, transaction);
                 }

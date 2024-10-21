@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tablets/src/common/interfaces/base_item.dart';
 
@@ -13,6 +14,7 @@ import 'package:tablets/src/common/interfaces/base_item.dart';
 // (8) CustomerInvoice: bill of items sold to Customers.
 
 // Note that I named it Transactions because Transaction is a class name used by firebase cloud
+//TODO   note when updating the class, and regenerate data class, then inside Transaction.fromMap function, the date must be -->   date: map['date'].toDate(),
 class Transaction implements BaseItem {
   @override
   String dbKey;
@@ -109,7 +111,7 @@ class Transaction implements BaseItem {
       name: map['name'],
       imageUrls: List<String>.from(map['imageUrls']),
       number: map['number'].toInt(),
-      date: map['date'].toDate(),
+      date: map['date'].runtimeType == Timestamp ? map['date'].toDate() : map['date'],
       amount: map['amount']?.toDouble(),
       currency: map['currency'],
       notes: map['notes'],
