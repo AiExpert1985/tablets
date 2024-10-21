@@ -127,6 +127,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Product subcategory"),
         "products": MessageLookupByLibrary.simpleMessage("Products"),
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
+        "salesman_name": MessageLookupByLibrary.simpleMessage("Name"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("Salesmen"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "save_changes": MessageLookupByLibrary.simpleMessage("Save changes"),

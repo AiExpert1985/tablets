@@ -100,5 +100,6 @@
     "transaction_type_vender_return": "ارجاع مجهز",
     "transaction_type_customer_return": "ارجاع زبون",
     "transaction_type_vender_invoice": "قائمة مجهز",
-    "transaction_type_customer_invoice": "قائمة زبون"
+    "transaction_type_customer_invoice": "قائمة زبون",
+    "salesman_name": "الأسم"
 }

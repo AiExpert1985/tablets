@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/categories/view/category_main_screen.dart';
 import 'package:tablets/src/features/pending_bills/pending_bills.dart';
 import 'package:tablets/src/features/products/view/product_main_screen.dart';
-import 'package:tablets/src/features/salesmen_live_locations/presentation/sales_men_live_location_screen.dart';
+import 'package:tablets/src/features/gps_locations/presentation/sales_men_live_location_screen.dart';
 import 'package:tablets/src/features/settings/settings_screen.dart';
 import 'package:tablets/src/features/transactions/view/transaction_main_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';

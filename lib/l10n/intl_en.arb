@@ -100,5 +100,6 @@
     "transaction_type_vender_return": "VenderReturn",
     "transaction_type_customer_return": "CustomerReturn",
     "transaction_type_vender_invoice": "VenderInvoice",
-    "transaction_type_customer_invoice": "CustomerInvoice"
+    "transaction_type_customer_invoice": "CustomerInvoice",
+    "salesman_name": "Name"
 }

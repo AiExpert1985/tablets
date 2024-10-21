@@ -1,4 +1,5 @@
 Tasks:
+    in category, S.of(context).product_name is used instead category, transaction might be also same
     protection agains the case where:
         ☐ a docuement is deleted while its reference is used in another place, example: delete a category used in an item
             one solution is to create a default category used in any case where original category isn't found

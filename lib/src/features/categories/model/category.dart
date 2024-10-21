@@ -20,11 +20,9 @@ class ProductCategory implements BaseItem {
   });
 
   @override
-  String get coverImageUrl =>
-      imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
+  String get coverImageUrl => imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
-  List<String> get imageUrlsOrDefault =>
-      imageUrls.isNotEmpty ? imageUrls : [constants.defaultImageUrl];
+  List<String> get imageUrlsOrDefault => imageUrls.isNotEmpty ? imageUrls : [constants.defaultImageUrl];
 
   ProductCategory copyWith({
     String? dbKey,
@@ -51,7 +49,7 @@ class ProductCategory implements BaseItem {
     return ProductCategory(
       dbKey: map['dbKey'] ?? '',
       name: map['name'] ?? '',
-      imageUrls: List<String>.from(map['imageUrls']),
+      imageUrls: map['imageUrls'] ?? [constants.defaultImageUrl],
     );
   }
 

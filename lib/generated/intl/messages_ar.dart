@@ -124,6 +124,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("التصنيف الفرعي "),
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),
+        "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
         "save_changes": MessageLookupByLibrary.simpleMessage("حفظ التعديلات"),
