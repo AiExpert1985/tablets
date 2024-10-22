@@ -49,7 +49,7 @@ class ProductCategory implements BaseItem {
     return ProductCategory(
       dbKey: map['dbKey'] ?? '',
       name: map['name'] ?? '',
-      imageUrls: map['imageUrls'] ?? [constants.defaultImageUrl],
+      imageUrls: List<String>.from(map['imageUrls']),
     );
   }
 

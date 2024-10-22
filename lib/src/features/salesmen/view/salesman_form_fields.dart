@@ -3,14 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/widgets/form_field_custom_input.dart';
-import 'package:tablets/src/features/categories/controllers/category_form_controller.dart';
+import 'package:tablets/src/features/salesmen/controllers/salesman_form_controller.dart';
 
-class CategoryFormFields extends StatelessWidget {
-  const CategoryFormFields({super.key, this.editMode = false});
+class SalesmanFormFields extends StatelessWidget {
+  const SalesmanFormFields({super.key, this.editMode = false});
   final bool editMode;
   @override
   Widget build(BuildContext context) {
-    return CategoryFormInputField(
+    return SalesmanFormInputField(
       dataType: FieldDataTypes.string,
       name: 'name',
       displayedTitle: S.of(context).salesman_name,
@@ -18,8 +18,8 @@ class CategoryFormFields extends StatelessWidget {
   }
 }
 
-class CategoryFormInputField extends ConsumerWidget {
-  const CategoryFormInputField({
+class SalesmanFormInputField extends ConsumerWidget {
+  const SalesmanFormInputField({
     required this.dataType,
     required this.name,
     required this.displayedTitle,
@@ -32,11 +32,11 @@ class CategoryFormInputField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categoryFormController = ref.watch(categoryFormDataProvider.notifier);
-    final formData = categoryFormController.data;
+    final salesmanFormController = ref.watch(salesmanFormDataProvider.notifier);
+    final formData = salesmanFormController.data;
     return FormInputField(
         formData: formData,
-        onSaveFn: categoryFormController.update,
+        onSaveFn: salesmanFormController.update,
         dataType: dataType,
         name: name,
         displayedTitle: displayedTitle);

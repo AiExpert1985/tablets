@@ -25,7 +25,7 @@
     "transactions": "التعاملات",
     "products": "المواد",
     "salesmen_movement": "المندوبين",
-    "pending_bills": "القوائم غير المثبقة",
+    "pending_transactions": "غير مثبت",
     "categories": "الاصناف",
     "category_selection": "اختيار الصنف ",
     "failure": "فشل",
@@ -101,5 +101,7 @@
     "transaction_type_customer_return": "ارجاع زبون",
     "transaction_type_vender_invoice": "قائمة مجهز",
     "transaction_type_customer_invoice": "قائمة زبون",
-    "salesman_name": "الأسم"
+    "salesman_name": "الأسم",
+    "category_name": "الأسم",
+    "salesmen": "المندوبين"
 }

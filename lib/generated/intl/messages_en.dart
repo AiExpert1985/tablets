@@ -32,6 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "categories": MessageLookupByLibrary.simpleMessage("Categories"),
         "category": MessageLookupByLibrary.simpleMessage("Category"),
+        "category_name": MessageLookupByLibrary.simpleMessage("Name"),
         "category_selection":
             MessageLookupByLibrary.simpleMessage("Select category"),
         "choose_image": MessageLookupByLibrary.simpleMessage("Choose image"),
@@ -97,7 +98,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "page_not_found":
             MessageLookupByLibrary.simpleMessage("Page is not found"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
-        "pending_bills": MessageLookupByLibrary.simpleMessage("Pending bills"),
+        "pending_transactions":
+            MessageLookupByLibrary.simpleMessage("Pending transactions"),
         "product_alert_when_exceeds": MessageLookupByLibrary.simpleMessage(
             "Alert when available more than"),
         "product_altert_when_less_than": MessageLookupByLibrary.simpleMessage(
@@ -128,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "products": MessageLookupByLibrary.simpleMessage("Products"),
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("Name"),
+        "salesmen": MessageLookupByLibrary.simpleMessage("Salesmen"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("Salesmen"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "save_changes": MessageLookupByLibrary.simpleMessage("Save changes"),

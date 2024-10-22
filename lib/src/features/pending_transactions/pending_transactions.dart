@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 
-class PendingBillsScreen extends ConsumerWidget {
-  const PendingBillsScreen({super.key});
+class PendingTransactions extends ConsumerWidget {
+  const PendingTransactions({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

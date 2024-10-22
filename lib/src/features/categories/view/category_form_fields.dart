@@ -13,7 +13,7 @@ class CategoryFormFields extends StatelessWidget {
     return CategoryFormInputField(
       dataType: FieldDataTypes.string,
       name: 'name',
-      displayedTitle: S.of(context).product_name,
+      displayedTitle: S.of(context).category_name,
     );
   }
 }

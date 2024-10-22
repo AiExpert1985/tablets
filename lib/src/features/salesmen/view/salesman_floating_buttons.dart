@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
-// import 'package:tablets/src/features/categories/view/category_form.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_drawer_provider.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_form_controller.dart';
+import 'package:tablets/src/features/salesmen/view/salesman_form.dart';
 
 class SalesmanFloatingButtons extends ConsumerWidget {
   const SalesmanFloatingButtons({super.key});

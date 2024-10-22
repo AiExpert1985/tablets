@@ -25,7 +25,7 @@
     "transactions": "Transactions",
     "products": "Products",
     "salesmen_movement": "Salesmen",
-    "pending_bills": "Pending bills",
+    "pending_transactions": "Pending transactions",
     "categories": "Categories",
     "category_selection": "Select category",
     "failure": "Failure",
@@ -101,5 +101,7 @@
     "transaction_type_customer_return": "CustomerReturn",
     "transaction_type_vender_invoice": "VenderInvoice",
     "transaction_type_customer_invoice": "CustomerInvoice",
-    "salesman_name": "Name"
+    "salesman_name": "Name",
+    "category_name": "Name",
+    "salesmen": "Salesmen"
 }

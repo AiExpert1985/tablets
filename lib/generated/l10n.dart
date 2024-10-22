@@ -310,11 +310,11 @@ class S {
     );
   }
 
-  /// `Pending bills`
-  String get pending_bills {
+  /// `Pending transactions`
+  String get pending_transactions {
     return Intl.message(
-      'Pending bills',
-      name: 'pending_bills',
+      'Pending transactions',
+      name: 'pending_transactions',
       desc: '',
       args: [],
     );
@@ -1075,6 +1075,26 @@ class S {
     return Intl.message(
       'Name',
       name: 'salesman_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get category_name {
+    return Intl.message(
+      'Name',
+      name: 'category_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Salesmen`
+  String get salesmen {
+    return Intl.message(
+      'Salesmen',
+      name: 'salesmen',
       desc: '',
       args: [],
     );

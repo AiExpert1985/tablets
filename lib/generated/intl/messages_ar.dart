@@ -33,6 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),
+        "category_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "category_selection":
             MessageLookupByLibrary.simpleMessage("اختيار الصنف "),
         "choose_image": MessageLookupByLibrary.simpleMessage("اختر صورة"),
@@ -96,8 +97,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
-        "pending_bills":
-            MessageLookupByLibrary.simpleMessage("القوائم غير المثبقة"),
+        "pending_transactions":
+            MessageLookupByLibrary.simpleMessage("غير مثبت"),
         "product_alert_when_exceeds":
             MessageLookupByLibrary.simpleMessage(" تنبيه عندما يتجاوز"),
         "product_altert_when_less_than":
@@ -125,6 +126,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
+        "salesmen": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
         "save_changes": MessageLookupByLibrary.simpleMessage("حفظ التعديلات"),

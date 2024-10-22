@@ -9,6 +9,7 @@ import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/constants/constants.dart' as constants;
 import 'package:tablets/src/features/salesmen/controllers/salesman_form_controller.dart';
 import 'package:tablets/src/features/salesmen/model/salesman.dart';
+import 'package:tablets/src/features/salesmen/view/salesman_form_fields.dart';
 
 class SalesmanForm extends ConsumerWidget {
   const SalesmanForm({this.isEditMode = false, super.key});
@@ -56,16 +57,16 @@ class SalesmanForm extends ConsumerWidget {
                 if (confiramtion != null) {
                   final updateFormData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();
-                  final category = Salesman.fromMap({...updateFormData, 'imageUrls': imageUrls});
+                  final salesman = Salesman.fromMap({...updateFormData, 'imageUrls': imageUrls});
                   // ignore: use_build_context_synchronously
-                  formController.deleteItemFromDb(context, category);
+                  formController.deleteItemFromDb(context, salesman);
                 }
               },
               icon: const DeleteIcon()),
         )
       ],
-      width: constants.categoryFormWidth,
-      height: constants.categoryFormHeight,
+      width: constants.salesmanFormWidth,
+      height: constants.salesmanFormHeight,
     );
   }
 }
