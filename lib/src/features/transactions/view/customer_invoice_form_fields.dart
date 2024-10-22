@@ -25,7 +25,7 @@ class InvoiceFormFields extends ConsumerWidget {
         Row(
           children: [
             DropDownWithSearchFormField(
-              nameKey: 'customer',
+              nameKey: 'counterParty',
               label: S.of(context).customer,
               formData: formData,
               onSaveFn: formDataNotifier.update,
