@@ -31,6 +31,8 @@ class MainDrawer extends StatelessWidget {
                     MainDrawerButton(
                         iconName: 'salesman', title: S.of(context).salesmen, routeName: AppRoute.salesman.name),
                     gaps.VerticalGap.mainDrawerIconToIcon,
+                    MainDrawerButton(
+                        iconName: 'customers', title: S.of(context).customers, routeName: AppRoute.customers.name),
                     gaps.PushWidgets.toEnd,
                     MainDrawerButton(
                         iconName: 'pending_transactions',

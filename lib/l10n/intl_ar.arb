@@ -103,5 +103,7 @@
     "transaction_type_customer_invoice": "قائمة زبون",
     "salesman_name": "الأسم",
     "category_name": "الأسم",
-    "salesmen": "المندوبين"
+    "salesmen": "المندوبين",
+    "customer_name": "الأسم",
+    "customers": "الزبائن"
 }

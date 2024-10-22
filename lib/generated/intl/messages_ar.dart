@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "choose_image": MessageLookupByLibrary.simpleMessage("اختر صورة"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
+        "customer_name": MessageLookupByLibrary.simpleMessage("الأسم"),
+        "customers": MessageLookupByLibrary.simpleMessage("الزبائن"),
         "date_picker_hint":
             MessageLookupByLibrary.simpleMessage("اختيار التاريخ"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(

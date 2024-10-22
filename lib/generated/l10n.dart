@@ -1099,6 +1099,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Name`
+  String get customer_name {
+    return Intl.message(
+      'Name',
+      name: 'customer_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Customers`
+  String get customers {
+    return Intl.message(
+      'Customers',
+      name: 'customers',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

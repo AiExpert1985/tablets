@@ -103,5 +103,7 @@
     "transaction_type_customer_invoice": "CustomerInvoice",
     "salesman_name": "Name",
     "category_name": "Name",
-    "salesmen": "Salesmen"
+    "salesmen": "Salesmen",
+    "customer_name": "Name",
+    "customers": "Customers"
 }

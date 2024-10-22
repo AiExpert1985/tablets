@@ -5,24 +5,18 @@ import 'package:flutter/foundation.dart';
 import 'package:tablets/src/common/constants/constants.dart' as constants;
 import 'package:tablets/src/common/interfaces/base_item.dart';
 
-class Salesman implements BaseItem {
+class Customer implements BaseItem {
   @override
   String dbKey;
   @override
   String name;
   @override
   List<String> imageUrls;
-  // String? phone;
-  // List<String>? customerDbKeys;
-  // List<String>? workRegions;
 
-  Salesman({
+  Customer({
     required this.dbKey,
     required this.name,
     required this.imageUrls,
-    // this.phone,
-    // this.customerDbKeys,
-    // this.workRegions,
   });
 
   @override
@@ -30,12 +24,12 @@ class Salesman implements BaseItem {
 
   List<String> get imageUrlsOrDefault => imageUrls.isNotEmpty ? imageUrls : [constants.defaultImageUrl];
 
-  Salesman copyWith({
+  Customer copyWith({
     String? dbKey,
     String? name,
     List<String>? imageUrls,
   }) {
-    return Salesman(
+    return Customer(
       dbKey: dbKey ?? this.dbKey,
       name: name ?? this.name,
       imageUrls: imageUrls ?? this.imageUrls,
@@ -51,8 +45,8 @@ class Salesman implements BaseItem {
     };
   }
 
-  factory Salesman.fromMap(Map<String, dynamic> map) {
-    return Salesman(
+  factory Customer.fromMap(Map<String, dynamic> map) {
+    return Customer(
       dbKey: map['dbKey'] ?? '',
       name: map['name'] ?? '',
       imageUrls: List<String>.from(map['imageUrls']),
@@ -61,7 +55,7 @@ class Salesman implements BaseItem {
 
   String toJson() => json.encode(toMap());
 
-  factory Salesman.fromJson(String source) => Salesman.fromMap(json.decode(source));
+  factory Customer.fromJson(String source) => Customer.fromMap(json.decode(source));
 
   @override
   String toString() => 'ProductCategory(dbKey: $dbKey, name: $name, imageUrls: $imageUrls)';
@@ -70,7 +64,7 @@ class Salesman implements BaseItem {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Salesman && other.dbKey == dbKey && other.name == name && listEquals(other.imageUrls, imageUrls);
+    return other is Customer && other.dbKey == dbKey && other.name == name && listEquals(other.imageUrls, imageUrls);
   }
 
   @override

@@ -13,6 +13,9 @@ const double invoiceFormHeight = 600;
 const double salesmanFormWidth = 350;
 const double salesmanFormHeight = 400;
 
+const double customerFormWidth = 350;
+const double customerFormHeight = 400;
+
 enum FieldDataTypes { int, double, string, datetime }
 
 enum TransactionTypes {

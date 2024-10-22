@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/features/categories/view/category_main_screen.dart';
+import 'package:tablets/src/features/customers/view/customer_main_screen.dart';
 import 'package:tablets/src/features/pending_transactions/pending_transactions.dart';
 import 'package:tablets/src/features/products/view/product_main_screen.dart';
 import 'package:tablets/src/features/gps_locations/presentation/sales_men_live_location_screen.dart';
@@ -13,7 +14,18 @@ import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/view/login_screen.dart';
 import 'package:tablets/src/routers/not_found_screen.dart';
 
-enum AppRoute { home, login, transactions, products, salesman, settings, categories, pendingTransactions, gps }
+enum AppRoute {
+  home,
+  login,
+  transactions,
+  products,
+  salesman,
+  settings,
+  categories,
+  pendingTransactions,
+  gps,
+  customers
+}
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
 
@@ -85,6 +97,11 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/salesman',
           name: AppRoute.salesman.name,
           builder: (BuildContext context, GoRouterState state) => const SalesmanScreen(),
+        ),
+        GoRoute(
+          path: '/customers',
+          name: AppRoute.customers.name,
+          builder: (BuildContext context, GoRouterState state) => const CustomerScreen(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),
