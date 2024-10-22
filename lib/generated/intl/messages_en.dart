@@ -38,6 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "choose_image": MessageLookupByLibrary.simpleMessage("Choose image"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("Create a new account"),
+        "customer": MessageLookupByLibrary.simpleMessage("Customer"),
         "customer_name": MessageLookupByLibrary.simpleMessage("Name"),
         "customers": MessageLookupByLibrary.simpleMessage("Customers"),
         "date_picker_hint":
@@ -132,6 +133,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "products": MessageLookupByLibrary.simpleMessage("Products"),
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("Name"),
+        "salesman_selection":
+            MessageLookupByLibrary.simpleMessage("Salesman selection"),
         "salesmen": MessageLookupByLibrary.simpleMessage("Salesmen"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("Salesmen"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),

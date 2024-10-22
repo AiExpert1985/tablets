@@ -105,5 +105,7 @@
     "category_name": "Name",
     "salesmen": "Salesmen",
     "customer_name": "Name",
-    "customers": "Customers"
+    "customers": "Customers",
+    "salesman_selection": "Salesman selection",
+    "customer": "Customer"
 }

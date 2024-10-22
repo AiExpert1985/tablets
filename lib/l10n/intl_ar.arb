@@ -81,7 +81,7 @@
     "transaction_notes": "الملاحظات",
     "transaction_customer_invoice_counterParty": "اسم الزبون",
     "transaction_payment_type": "طريقة الدفع",
-    "transaction_salesman": "اسم المندوب",
+    "transaction_salesman": "المندوب",
     "transaction_discount": "الخصم",
     "transaction_item_name": "اسم المادة",
     "transaction_item_quantity": "العدد",
@@ -105,5 +105,7 @@
     "category_name": "الأسم",
     "salesmen": "المندوبين",
     "customer_name": "الأسم",
-    "customers": "الزبائن"
+    "customers": "الزبائن",
+    "salesman_selection": "اختيار المندوب",
+    "customer": "الزبون"
 }

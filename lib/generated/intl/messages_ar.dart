@@ -39,6 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "choose_image": MessageLookupByLibrary.simpleMessage("اختر صورة"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
+        "customer": MessageLookupByLibrary.simpleMessage("الزبون"),
         "customer_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "customers": MessageLookupByLibrary.simpleMessage("الزبائن"),
         "date_picker_hint":
@@ -128,6 +129,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
+        "salesman_selection":
+            MessageLookupByLibrary.simpleMessage("اختيار المندوب"),
         "salesmen": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
@@ -173,8 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("اجل"),
         "transaction_payment_type":
             MessageLookupByLibrary.simpleMessage("طريقة الدفع"),
-        "transaction_salesman":
-            MessageLookupByLibrary.simpleMessage("اسم المندوب"),
+        "transaction_salesman": MessageLookupByLibrary.simpleMessage("المندوب"),
         "transaction_type_customer_invoice":
             MessageLookupByLibrary.simpleMessage("قائمة زبون"),
         "transaction_type_customer_receipt":

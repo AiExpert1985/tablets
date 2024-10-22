@@ -5,6 +5,9 @@ import 'package:tablets/src/common/widgets/form_field_date_picker.dart';
 import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
 import 'package:tablets/src/common/widgets/form_field_drop_down_list.dart';
+import 'package:tablets/src/common/widgets/form_field_drop_down_with_search.dart';
+import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/view/transaction_form_field.dart';
 
@@ -15,20 +18,33 @@ class InvoiceFormFields extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formData = ref.watch(transactionFormDataProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final salesmanRepository = ref.read(salesmanRepositoryProvider);
+    final customerRepository = ref.read(customerRepositoryProvider);
     return Column(
       children: [
         Row(
           children: [
-            TransactionFormInputField(
-              dataType: FieldDataTypes.string,
-              name: 'counterParty',
-              displayedTitle: S.of(context).transaction_customer_invoice_counterParty,
+            DropDownWithSearchFormField(
+              nameKey: 'customer',
+              label: S.of(context).customer,
+              formData: formData,
+              onSaveFn: formDataNotifier.update,
+              dbItemFetchFn: customerRepository.fetchItemAsMap,
+              dbListFetchFn: customerRepository.fetchItemListAsMaps,
             ),
+            // TransactionFormInputField(
+            //   dataType: FieldDataTypes.string,
+            //   name: 'counterParty',
+            //   displayedTitle: S.of(context).transaction_customer_invoice_counterParty,
+            // ),
             gaps.HorizontalGap.formFieldToField,
-            TransactionFormInputField(
-              dataType: FieldDataTypes.string,
-              name: 'salesman',
-              displayedTitle: S.of(context).transaction_salesman,
+            DropDownWithSearchFormField(
+              nameKey: 'salesman',
+              label: S.of(context).transaction_salesman,
+              formData: formData,
+              onSaveFn: formDataNotifier.update,
+              dbItemFetchFn: salesmanRepository.fetchItemAsMap,
+              dbListFetchFn: salesmanRepository.fetchItemListAsMaps,
             ),
           ],
         ),

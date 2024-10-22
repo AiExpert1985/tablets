@@ -10,13 +10,15 @@ import 'package:tablets/src/common/functions/form_validation.dart' as validation
 /// unnecessary complications
 class DropDownWithSearchFormField extends StatefulWidget {
   const DropDownWithSearchFormField(
-      {required this.title,
+      {required this.nameKey,
+      required this.label,
       required this.dbItemFetchFn,
       required this.dbListFetchFn,
       required this.onSaveFn,
       required this.formData,
       super.key});
-  final String title;
+  final String nameKey;
+  final String label;
   final Map<String, dynamic> formData;
   final void Function({required String key, required dynamic value}) onSaveFn;
   final Future<Map<String, dynamic>> Function({String? filterKey, String? filterValue}) dbItemFetchFn;
@@ -29,13 +31,12 @@ class DropDownWithSearchFormField extends StatefulWidget {
 class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormField> {
   final Map<String, dynamic> initialValue = {};
 
-  void setInitialValue(formData) async {
-    if (formData['category'] != null) {
-      Map<String, dynamic> categoryMap =
-          await widget.dbItemFetchFn(filterKey: 'dbKey', filterValue: formData['category']);
+  void setInitialValue(formData, nameKey) async {
+    if (formData[nameKey] != null) {
+      Map<String, dynamic> itemMap = await widget.dbItemFetchFn(filterKey: 'dbKey', filterValue: formData[nameKey]);
       if (mounted) {
         setState(() {
-          initialValue.addAll(categoryMap); // Store the fetched data
+          initialValue.addAll(itemMap); // Store the fetched data
         });
       }
     }
@@ -43,12 +44,14 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
 
   @override
   Widget build(BuildContext context) {
-    setInitialValue(widget.formData);
+    final nameKey = widget.nameKey;
+    final label = widget.label;
+    setInitialValue(widget.formData, nameKey);
     return Expanded(
       child: DropdownSearch<Map<String, dynamic>>(
           mode: Mode.form,
           decoratorProps: DropDownDecoratorProps(
-            decoration: utils.formFieldDecoration(label: S.of(context).category),
+            decoration: utils.formFieldDecoration(label: label),
           ),
           selectedItem: initialValue.keys.isNotEmpty && initialValue['name'] != null ? initialValue : null,
           items: (filter, t) => widget.dbListFetchFn(filterKey: 'name', filterValue: filter),
@@ -57,7 +60,7 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
             title: Padding(
               padding: const EdgeInsets.all(12),
               child: Text(
-                widget.title,
+                widget.label,
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
@@ -80,7 +83,7 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
               ),
           itemAsString: (item) => item['name'],
           onSaved: (item) {
-            widget.onSaveFn(key: 'category', value: item?['dbKey']);
+            widget.onSaveFn(key: nameKey, value: item?['dbKey']);
           }),
     );
   }

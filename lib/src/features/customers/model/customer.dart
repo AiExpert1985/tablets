@@ -22,8 +22,6 @@ class Customer implements BaseItem {
   @override
   String get coverImageUrl => imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
-  List<String> get imageUrlsOrDefault => imageUrls.isNotEmpty ? imageUrls : [constants.defaultImageUrl];
-
   Customer copyWith({
     String? dbKey,
     String? name,

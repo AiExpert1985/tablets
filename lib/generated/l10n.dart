@@ -1119,6 +1119,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Salesman selection`
+  String get salesman_selection {
+    return Intl.message(
+      'Salesman selection',
+      name: 'salesman_selection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Customer`
+  String get customer {
+    return Intl.message(
+      'Customer',
+      name: 'customer',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
