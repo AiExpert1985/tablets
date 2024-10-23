@@ -3,7 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/providers/storage_repository.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
-import 'package:tablets/src/common/constants/constants.dart' as constants;
+import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/functions/debug_print.dart' as debug;
 
 class CustomImagePicker {

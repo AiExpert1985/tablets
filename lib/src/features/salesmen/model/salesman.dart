@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:tablets/src/common/constants/constants.dart' as constants;
+import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/interfaces/base_item.dart';
 
 class Salesman implements BaseItem {
@@ -26,7 +26,8 @@ class Salesman implements BaseItem {
   });
 
   @override
-  String get coverImageUrl => imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
+  String get coverImageUrl =>
+      imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
   Salesman copyWith({
     String? dbKey,
@@ -68,7 +69,10 @@ class Salesman implements BaseItem {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Salesman && other.dbKey == dbKey && other.name == name && listEquals(other.imageUrls, imageUrls);
+    return other is Salesman &&
+        other.dbKey == dbKey &&
+        other.name == name &&
+        listEquals(other.imageUrls, imageUrls);
   }
 
   @override

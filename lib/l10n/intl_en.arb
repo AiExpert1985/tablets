@@ -115,5 +115,6 @@
     "item_total_price": "Total",
     "item_gifts_quantity": "Gifts Qtty.",
     "invoice_total_price": "Total price",
-    "invoice_total_weight": "Total weight"
+    "invoice_total_weight": "Total weight",
+    "transaction_total_amount_as_text": "Total as text"
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/gaps.dart' as gaps;
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -18,10 +18,14 @@ class MainDrawer extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   child: Column(children: [
                     MainDrawerButton(
-                        iconName: 'products', title: S.of(context).products, routeName: AppRoute.products.name),
+                        iconName: 'products',
+                        title: S.of(context).products,
+                        routeName: AppRoute.products.name),
                     gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
-                        iconName: 'categories', title: S.of(context).categories, routeName: AppRoute.categories.name),
+                        iconName: 'categories',
+                        title: S.of(context).categories,
+                        routeName: AppRoute.categories.name),
                     gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
                         iconName: 'transactions',
@@ -29,10 +33,14 @@ class MainDrawer extends StatelessWidget {
                         routeName: AppRoute.transactions.name),
                     gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
-                        iconName: 'salesman', title: S.of(context).salesmen, routeName: AppRoute.salesman.name),
+                        iconName: 'salesman',
+                        title: S.of(context).salesmen,
+                        routeName: AppRoute.salesman.name),
                     gaps.VerticalGap.mainDrawerIconToIcon,
                     MainDrawerButton(
-                        iconName: 'customers', title: S.of(context).customers, routeName: AppRoute.customers.name),
+                        iconName: 'customers',
+                        title: S.of(context).customers,
+                        routeName: AppRoute.customers.name),
                     gaps.PushWidgets.toEnd,
                     MainDrawerButton(
                         iconName: 'pending_transactions',
@@ -78,7 +86,8 @@ class MainDrawerHeader extends StatelessWidget {
 }
 
 class MainDrawerButton extends StatelessWidget {
-  const MainDrawerButton({required this.iconName, required this.title, required this.routeName, super.key});
+  const MainDrawerButton(
+      {required this.iconName, required this.title, required this.routeName, super.key});
 
   final String iconName;
   final String title;

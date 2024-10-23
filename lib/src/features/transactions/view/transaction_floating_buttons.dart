@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/constants/constants.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
@@ -58,7 +58,8 @@ class TransactionsFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () => showAddInvoiceForm(context, ref, formType: TransactionTypes.customerInvoice.name),
+          onTap: () =>
+              showAddInvoiceForm(context, ref, formType: TransactionTypes.customerInvoice.name),
         ),
       ],
     );

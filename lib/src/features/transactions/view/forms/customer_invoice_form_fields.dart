@@ -3,9 +3,10 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
+import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_field_date_picker.dart';
-import 'package:tablets/src/common/constants/constants.dart';
-import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/constants.dart' as constants;
+import 'package:tablets/src/common/values/gaps.dart' as gaps;
 import 'package:tablets/src/common/widgets/form_field_drop_down_list.dart';
 import 'package:tablets/src/common/widgets/form_field_drop_down_with_search.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
@@ -55,7 +56,7 @@ class InvoiceFormFields extends ConsumerWidget {
         Row(
           children: [
             TransactionFormInputField(
-              dataType: FieldDataTypes.double,
+              dataType: constants.FieldDataTypes.double,
               name: 'amount',
               displayedTitle: S.of(context).transaction_amount,
             ),
@@ -72,7 +73,7 @@ class InvoiceFormFields extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             TransactionFormInputField(
-              dataType: FieldDataTypes.double,
+              dataType: constants.FieldDataTypes.double,
               name: 'discount',
               displayedTitle: S.of(context).transaction_discount,
             ),
@@ -82,7 +83,7 @@ class InvoiceFormFields extends ConsumerWidget {
         Row(
           children: [
             TransactionFormInputField(
-              dataType: FieldDataTypes.int,
+              dataType: constants.FieldDataTypes.int,
               name: 'number',
               displayedTitle: S.of(context).transaction_number,
             ),
@@ -109,9 +110,23 @@ class InvoiceFormFields extends ConsumerWidget {
           children: [
             TransactionFormInputField(
               isRequired: false,
-              dataType: FieldDataTypes.string,
+              dataType: constants.FieldDataTypes.string,
               name: 'notes',
               displayedTitle: S.of(context).transaction_notes,
+            ),
+          ],
+        ),
+        gaps.VerticalGap.formFieldToField,
+        Row(
+          children: [
+            Visibility(
+              visible: settings.writeTotalPriceAsText,
+              child: TransactionFormInputField(
+                isRequired: false,
+                dataType: constants.FieldDataTypes.string,
+                name: 'totalAsText',
+                displayedTitle: S.of(context).transaction_total_amount_as_text,
+              ),
             ),
           ],
         ),
@@ -120,7 +135,7 @@ class InvoiceFormFields extends ConsumerWidget {
         gaps.VerticalGap.formFieldToField,
         gaps.VerticalGap.formFieldToField,
         SizedBox(
-          width: customerInvoiceFormWidth * 0.6,
+          width: constants.customerInvoiceFormWidth * 0.6,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

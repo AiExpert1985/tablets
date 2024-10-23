@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/gaps.dart' as gaps;
 
 class ApproveIcon extends StatelessWidget {
   const ApproveIcon({super.key});

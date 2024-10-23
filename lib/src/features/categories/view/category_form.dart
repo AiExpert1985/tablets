@@ -8,8 +8,8 @@ import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/features/categories/controllers/category_form_controller.dart';
 import 'package:tablets/src/features/categories/model/category.dart';
 import 'package:tablets/src/features/categories/view/category_form_fields.dart';
-import 'package:tablets/src/common/constants/gaps.dart' as gaps;
-import 'package:tablets/src/common/constants/constants.dart' as constants;
+import 'package:tablets/src/common/values/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/constants.dart' as constants;
 
 class CategoryForm extends ConsumerWidget {
   const CategoryForm({this.isEditMode = false, super.key});

@@ -3,7 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
-import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/gaps.dart' as gaps;
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/list_filters.dart' as filters;
 import 'package:tablets/src/features/salesmen/controllers/salesman_drawer_provider.dart';
@@ -37,7 +37,9 @@ class SalesmanSearchForm extends ConsumerWidget {
                   /// if filter is already on, we turn it off to make all list available for search
                   /// note that list filtering is only activated if filterSwitch changed status (on/off)
                   if (ref.read(salesmanFilterSwitchProvider)) {
-                    ref.read(salesmanFilterSwitchProvider.notifier).update((state) => state = false);
+                    ref
+                        .read(salesmanFilterSwitchProvider.notifier)
+                        .update((state) => state = false);
                   }
                   ref.read(salesmanFilterSwitchProvider.notifier).update((state) => state = true);
                 },

@@ -5,9 +5,9 @@ import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
-import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/gaps.dart' as gaps;
 import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
-import 'package:tablets/src/common/constants/constants.dart' as constants;
+import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/view/product_form_fields.dart';
 

@@ -71,23 +71,22 @@ class Transaction implements BaseItem {
     String? salesman,
     ValueGetter<List<String>?>? itemDbKeyList,
     double? discount,
-    String? totalAsText,
   }) {
     return Transaction(
-        dbKey: dbKey ?? this.dbKey,
-        name: name ?? this.name,
-        imageUrls: imageUrls ?? this.imageUrls,
-        number: number ?? this.number,
-        date: date ?? this.date,
-        amount: amount ?? this.amount,
-        currency: currency ?? this.currency,
-        notes: notes ?? this.notes,
-        counterParty: counterParty ?? this.counterParty,
-        paymentType: paymentType ?? this.paymentType,
-        salesman: salesman ?? this.salesman,
-        itemDbKeyList: itemDbKeyList != null ? itemDbKeyList() : this.itemDbKeyList,
-        discount: discount ?? this.discount,
-        totalAsText: totalAsText ?? this.totalAsText);
+      dbKey: dbKey ?? this.dbKey,
+      name: name ?? this.name,
+      imageUrls: imageUrls ?? this.imageUrls,
+      number: number ?? this.number,
+      date: date ?? this.date,
+      amount: amount ?? this.amount,
+      currency: currency ?? this.currency,
+      notes: notes ?? this.notes,
+      counterParty: counterParty ?? this.counterParty,
+      paymentType: paymentType ?? this.paymentType,
+      salesman: salesman ?? this.salesman,
+      itemDbKeyList: itemDbKeyList != null ? itemDbKeyList() : this.itemDbKeyList,
+      discount: discount ?? this.discount,
+    );
   }
 
   @override
@@ -106,7 +105,6 @@ class Transaction implements BaseItem {
       'salesman': salesman,
       'itemDbKeyList': itemDbKeyList,
       'discount': discount,
-      'totalAsText': totalAsText,
     };
   }
 
@@ -125,7 +123,6 @@ class Transaction implements BaseItem {
       salesman: map['salesman'],
       itemDbKeyList: ['dsafsdf', 'safsdfsdf', 'sadfsdf'],
       discount: map['discount'].toDouble(),
-      totalAsText: map['totalAsText'],
     );
   }
 
@@ -155,8 +152,7 @@ class Transaction implements BaseItem {
         other.paymentType == paymentType &&
         other.salesman == salesman &&
         listEquals(other.itemDbKeyList, itemDbKeyList) &&
-        other.discount == discount &&
-        other.totalAsText == totalAsText;
+        other.discount == discount;
   }
 
   @override
@@ -173,7 +169,6 @@ class Transaction implements BaseItem {
         paymentType.hashCode ^
         salesman.hashCode ^
         itemDbKeyList.hashCode ^
-        discount.hashCode ^
-        totalAsText.hashCode;
+        discount.hashCode;
   }
 }

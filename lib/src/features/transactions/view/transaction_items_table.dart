@@ -7,7 +7,7 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:data_table_2/data_table_2.dart';
-import 'package:tablets/src/common/constants/constants.dart' as constants;
+import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/features/transactions/controllers/transaction_filter_controller_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_filtered_list_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
@@ -32,15 +32,17 @@ class TransactionsTable extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionStream = ref.watch(transactionStreamProvider);
     final filterIsOn = ref.watch(transactionFilterSwitchProvider);
-    final transactionsListValue =
-        filterIsOn ? ref.read(transactionFilteredListProvider).getFilteredList() : transactionStream;
+    final transactionsListValue = filterIsOn
+        ? ref.read(transactionFilteredListProvider).getFilteredList()
+        : transactionStream;
     return AsyncValueWidget<List<Map<String, dynamic>>>(
         value: transactionsListValue,
         data: (transactions) {
           List<DataRow2> rows = transactions.map((map) {
             Transaction transaction = Transaction.fromMap(map);
             // item contains the name used in database, but I want to show to the user a different name
-            final screenName = transactionTypeDbNameToScreenName(context: context, dbName: transaction.name);
+            final screenName =
+                transactionTypeDbNameToScreenName(context: context, dbName: transaction.name);
             return DataRow2(
               cells: [
                 DataCell(Row(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HorizontalGap {
-  static const formFieldToField = SizedBox(width: 40);
+  static const formFieldToField = SizedBox(width: 25);
 }
 
 class VerticalGap {

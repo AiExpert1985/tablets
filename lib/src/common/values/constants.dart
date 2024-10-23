@@ -8,7 +8,7 @@ const double productFormWidth = 600;
 const double productFormHeight = 600;
 
 const double customerInvoiceFormWidth = 700;
-const double customerInvoiceFormHeight = 750;
+const double customerInvoiceFormHeight = 800;
 
 const double salesmanFormWidth = 350;
 const double salesmanFormHeight = 400;

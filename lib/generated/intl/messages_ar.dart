@@ -188,6 +188,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_payment_type":
             MessageLookupByLibrary.simpleMessage("طريقة الدفع"),
         "transaction_salesman": MessageLookupByLibrary.simpleMessage("المندوب"),
+        "transaction_total_amount_as_text":
+            MessageLookupByLibrary.simpleMessage("المبلغ كتابة"),
         "transaction_type_customer_invoice":
             MessageLookupByLibrary.simpleMessage("قائمة زبون"),
         "transaction_type_customer_receipt":

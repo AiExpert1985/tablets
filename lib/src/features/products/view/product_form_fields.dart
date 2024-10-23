@@ -4,8 +4,8 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/widgets/form_field_drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_field_custom_input.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
-import 'package:tablets/src/common/constants/constants.dart';
-import 'package:tablets/src/common/constants/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/values/gaps.dart' as gaps;
 import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 
 class ProductFormFields extends ConsumerWidget {

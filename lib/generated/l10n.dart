@@ -1219,6 +1219,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Total as text`
+  String get transaction_total_amount_as_text {
+    return Intl.message(
+      'Total as text',
+      name: 'transaction_total_amount_as_text',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

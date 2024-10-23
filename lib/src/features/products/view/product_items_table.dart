@@ -9,7 +9,7 @@ import 'package:tablets/src/features/products/controllers/product_filter_control
 import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:data_table_2/data_table_2.dart';
-import 'package:tablets/src/common/constants/constants.dart' as constants;
+import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/view/product_form.dart';
 

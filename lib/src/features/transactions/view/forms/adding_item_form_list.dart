@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/constants/constants.dart';
+import 'package:tablets/src/common/values/constants.dart';
 
 class AddingItemFormList extends StatelessWidget {
   const AddingItemFormList({super.key});

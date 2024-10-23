@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:tablets/src/common/constants/constants.dart' as constants;
+import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/interfaces/base_item.dart';
 
 class ProductCategory implements BaseItem {
@@ -20,7 +20,8 @@ class ProductCategory implements BaseItem {
   });
 
   @override
-  String get coverImageUrl => imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
+  String get coverImageUrl =>
+      imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
   ProductCategory copyWith({
     String? dbKey,

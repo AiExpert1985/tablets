@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/constants/constants.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/functions/debug_print.dart' as debug;
 import 'package:image/image.dart' as img;
 
@@ -50,7 +50,8 @@ InputDecoration formFieldDecoration({String? label}) {
   );
 }
 
-List<Map<String, dynamic>> convertAsyncValueListToList(AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
+List<Map<String, dynamic>> convertAsyncValueListToList(
+    AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
   return asyncProductList.when(
       data: (products) => products,
       error: (e, st) {
@@ -77,7 +78,8 @@ String transactionTypeDbNameToScreenName({required BuildContext context, require
   return trasactionTypeLookup[dbName] ?? dbName;
 }
 
-String transactionTypeScreenNameToDbName({required BuildContext context, required String screenName}) {
+String transactionTypeScreenNameToDbName(
+    {required BuildContext context, required String screenName}) {
   final Map<String, String> trasactionTypeLookup = {
     S.of(context).transaction_type_expenditures: TransactionTypes.expenditures.name,
     S.of(context).transaction_type_gifts: TransactionTypes.gifts.name,

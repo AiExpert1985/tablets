@@ -192,6 +192,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Payment type"),
         "transaction_salesman":
             MessageLookupByLibrary.simpleMessage("Salesman"),
+        "transaction_total_amount_as_text":
+            MessageLookupByLibrary.simpleMessage("Total as text"),
         "transaction_type_customer_invoice":
             MessageLookupByLibrary.simpleMessage("CustomerInvoice"),
         "transaction_type_customer_receipt":
