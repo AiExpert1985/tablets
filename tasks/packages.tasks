@@ -115,3 +115,12 @@ http:
         ☐ A powerful HTTP networking package for Dart/Flutter, supports Global configuration, Interceptors,
            FormData, Request cancellation, File uploading/downloading, Timeout, Custom adapters, Transformers, etc.
         ☐ https://pub.dev/packages/dio
+
+printing:
+    flutter_thermal_printer:
+        ☐ Package for all services for thermal printer in android, ios, macos, windows.
+        ☐ https://pub.dev/packages/flutter_thermal_printer
+
+    invoiceninja:
+        ☐ invoiceninja is a popular package that allows you to create PDF invoices and accept payments within your app
+        ☐ https://pub.dev/packages/invoiceninja

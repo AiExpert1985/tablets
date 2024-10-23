@@ -8,7 +8,7 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/constants/constants.dart' as constants;
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/features/transactions/view/customer_invoice_form_fields.dart';
+import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form_fields.dart';
 
 class TransactionForm extends ConsumerWidget {
   const TransactionForm({this.isEditMode = false, super.key});
@@ -50,11 +50,13 @@ class TransactionForm extends ConsumerWidget {
           visible: isEditMode,
           child: IconButton(
               onPressed: () async {
-                bool? confiramtion = await showDeleteConfirmationDialog(context: context, message: formData['name']);
+                bool? confiramtion =
+                    await showDeleteConfirmationDialog(context: context, message: formData['name']);
                 if (confiramtion != null) {
                   final updateFormData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();
-                  final transaction = Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
+                  final transaction =
+                      Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
                   tempPrint(updateFormData);
                   // ignore: use_build_context_synchronously
                   formController.deleteItemFromDb(context, transaction);
