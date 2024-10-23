@@ -95,9 +95,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "input_validation_error_message_for_user_privilage":
             MessageLookupByLibrary.simpleMessage("يجب تحديد صلاحيات المستخدم"),
         "invoice_total_price":
-            MessageLookupByLibrary.simpleMessage("مبلغ القائمة"),
+            MessageLookupByLibrary.simpleMessage("المبلغ الكلي للقائمة"),
         "invoice_total_weight":
-            MessageLookupByLibrary.simpleMessage("وزن القائمة"),
+            MessageLookupByLibrary.simpleMessage("الوزن الكلي للقائمة"),
         "item_gifts_quantity":
             MessageLookupByLibrary.simpleMessage("عدد الهدايا"),
         "item_name": MessageLookupByLibrary.simpleMessage("اسم المادة"),

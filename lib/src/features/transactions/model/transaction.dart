@@ -27,7 +27,7 @@ class Transaction implements BaseItem {
   DateTime date;
   double amount; // amount of money
   String currency; // $ or ID
-  String notes;
+  String? notes;
   String counterParty; // name of customer
   String? paymentType; // cash, debt
   String? salesman; // dbKey of salesman
@@ -43,7 +43,7 @@ class Transaction implements BaseItem {
     required this.date,
     required this.amount,
     required this.currency,
-    required this.notes,
+    this.notes,
     required this.counterParty,
     // optional based on type of transaction
     this.paymentType, // CustomerInvoice

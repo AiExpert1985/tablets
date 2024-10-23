@@ -105,10 +105,10 @@ class FormItemCell extends StatelessWidget {
 }
 
 // I made a design decision to make the width variable based on the size of the container
-const double itemHeight = invoiceFormHeight * 0.06;
-const double sequenceWidth = invoiceFormWidth * 0.1;
-const double nameWidth = invoiceFormWidth * 0.34;
-const double priceWidth = invoiceFormWidth * 0.12;
-const double soldQuantityWidth = invoiceFormWidth * 0.12;
-const double giftQantityWidth = invoiceFormWidth * 0.12;
-const double soldTotalPriceWidth = invoiceFormWidth * 0.13;
+const double itemHeight = customerInvoiceFormHeight * 0.06;
+const double sequenceWidth = customerInvoiceFormWidth * 0.1;
+const double nameWidth = customerInvoiceFormWidth * 0.34;
+const double priceWidth = customerInvoiceFormWidth * 0.12;
+const double soldQuantityWidth = customerInvoiceFormWidth * 0.12;
+const double giftQantityWidth = customerInvoiceFormWidth * 0.12;
+const double soldTotalPriceWidth = customerInvoiceFormWidth * 0.13;

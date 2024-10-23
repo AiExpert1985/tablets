@@ -65,8 +65,8 @@ class TransactionForm extends ConsumerWidget {
               icon: const DeleteIcon()),
         )
       ],
-      width: constants.invoiceFormWidth,
-      height: constants.invoiceFormHeight,
+      width: constants.customerInvoiceFormWidth,
+      height: constants.customerInvoiceFormHeight,
     );
   }
 }

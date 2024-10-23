@@ -114,6 +114,6 @@
     "item_sold_quantity": "العدد",
     "item_total_price": "السعر الكلي",
     "item_gifts_quantity": "عدد الهدايا",
-    "invoice_total_price": "مبلغ القائمة",
-    "invoice_total_weight": "وزن القائمة"
+    "invoice_total_price": "المبلغ الكلي للقائمة",
+    "invoice_total_weight": "الوزن الكلي للقائمة"
 }

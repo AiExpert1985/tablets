@@ -13,6 +13,7 @@ class FormInputField extends ConsumerWidget {
     required this.name, // required by the FormBuilder
     required this.displayedTitle, // decoration title
     required this.formData, // used for initial value
+    this.isRequired = true,
     super.key,
   });
 
@@ -21,6 +22,7 @@ class FormInputField extends ConsumerWidget {
   final String name;
   final String displayedTitle;
   final Map<String, dynamic> formData;
+  final bool isRequired; // if not required, then it will not be validated
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,21 +46,26 @@ class FormInputField extends ConsumerWidget {
           }
           onSaveFn(key: name, value: userValue);
         },
-        validator: (value) {
-          if (dataType == FieldDataTypes.string) {
-            return validation.validateStringField(
-                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
-          }
-          if (dataType == FieldDataTypes.int) {
-            return validation.validateIntField(
-                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
-          }
-          if (dataType == FieldDataTypes.double) {
-            return validation.validateDoubleField(
-                fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
-          }
-          return null;
-        },
+        validator: isRequired
+            ? (value) {
+                if (dataType == FieldDataTypes.string) {
+                  return validation.validateStringField(
+                      fieldValue: value,
+                      errorMessage: S.of(context).input_validation_error_message_for_strings);
+                }
+                if (dataType == FieldDataTypes.int) {
+                  return validation.validateIntField(
+                      fieldValue: value,
+                      errorMessage: S.of(context).input_validation_error_message_for_integers);
+                }
+                if (dataType == FieldDataTypes.double) {
+                  return validation.validateDoubleField(
+                      fieldValue: value,
+                      errorMessage: S.of(context).input_validation_error_message_for_doubles);
+                }
+                return null;
+              }
+            : null,
       ),
     );
   }

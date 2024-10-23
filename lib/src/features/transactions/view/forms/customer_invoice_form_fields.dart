@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/widgets/form_field_date_picker.dart';
 import 'package:tablets/src/common/constants/constants.dart';
 import 'package:tablets/src/common/constants/gaps.dart' as gaps;
@@ -23,6 +25,7 @@ class InvoiceFormFields extends ConsumerWidget {
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         FormTitle(S.of(context).transaction_type_customer_invoice),
         gaps.VerticalGap.formFieldToField,
@@ -37,11 +40,6 @@ class InvoiceFormFields extends ConsumerWidget {
               dbItemFetchFn: customerRepository.fetchItemAsMap,
               dbListFetchFn: customerRepository.fetchItemListAsMaps,
             ),
-            // TransactionFormInputField(
-            //   dataType: FieldDataTypes.string,
-            //   name: 'counterParty',
-            //   displayedTitle: S.of(context).transaction_customer_invoice_counterParty,
-            // ),
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
               nameKey: 'salesman',
@@ -110,6 +108,7 @@ class InvoiceFormFields extends ConsumerWidget {
         Row(
           children: [
             TransactionFormInputField(
+              isRequired: false,
               dataType: FieldDataTypes.string,
               name: 'notes',
               displayedTitle: S.of(context).transaction_notes,
@@ -117,7 +116,36 @@ class InvoiceFormFields extends ConsumerWidget {
           ],
         ),
         gaps.VerticalGap.formFieldToField,
-        const AddingItemFormList()
+        const AddingItemFormList(),
+        gaps.VerticalGap.formFieldToField,
+        gaps.VerticalGap.formFieldToField,
+        SizedBox(
+          width: customerInvoiceFormWidth * 0.6,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: FormBuilderTextField(
+                  textAlign: TextAlign.center,
+                  initialValue: '12345',
+                  name: 'invoiceTotal',
+                  readOnly: true,
+                  decoration: utils.formFieldDecoration(label: S.of(context).invoice_total_price),
+                ),
+              ),
+              gaps.HorizontalGap.formFieldToField,
+              Expanded(
+                child: FormBuilderTextField(
+                  textAlign: TextAlign.center,
+                  initialValue: '12345',
+                  name: 'invoiceTotal',
+                  readOnly: true,
+                  decoration: utils.formFieldDecoration(label: S.of(context).invoice_total_weight),
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
