@@ -107,5 +107,13 @@
     "customer_name": "Name",
     "customers": "Customers",
     "salesman_selection": "Salesman selection",
-    "customer": "Customer"
+    "customer": "Customer",
+    "item_sequence": "#",
+    "item_name": "Item name",
+    "item_price": "Price",
+    "item_sold_quantity": "Sold Qtty.",
+    "item_total_price": "Total",
+    "item_gifts_quantity": "Gifts Qtty.",
+    "invoice_total_price": "Total price",
+    "invoice_total_weight": "Total weight"
 }

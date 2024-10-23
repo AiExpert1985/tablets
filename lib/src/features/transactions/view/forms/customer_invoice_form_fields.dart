@@ -9,6 +9,8 @@ import 'package:tablets/src/common/widgets/form_field_drop_down_with_search.dart
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
+import 'package:tablets/src/features/transactions/view/forms/adding_item_form_list.dart';
+import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/transactions/view/forms/transaction_form_field.dart';
 
 class InvoiceFormFields extends ConsumerWidget {
@@ -22,6 +24,9 @@ class InvoiceFormFields extends ConsumerWidget {
     final customerRepository = ref.read(customerRepositoryProvider);
     return Column(
       children: [
+        FormTitle(S.of(context).transaction_type_customer_invoice),
+        gaps.VerticalGap.formFieldToField,
+        gaps.VerticalGap.formFieldToField,
         Row(
           children: [
             DropDownWithSearchFormField(
@@ -111,6 +116,8 @@ class InvoiceFormFields extends ConsumerWidget {
             ),
           ],
         ),
+        gaps.VerticalGap.formFieldToField,
+        const AddingItemFormList()
       ],
     );
   }

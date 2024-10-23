@@ -107,5 +107,13 @@
     "customer_name": "الأسم",
     "customers": "الزبائن",
     "salesman_selection": "اختيار المندوب",
-    "customer": "الزبون"
+    "customer": "الزبون",
+    "item_sequence": "تسلسل",
+    "item_name": "اسم المادة",
+    "item_price": "السعر",
+    "item_sold_quantity": "العدد",
+    "item_total_price": "السعر الكلي",
+    "item_gifts_quantity": "عدد الهدايا",
+    "invoice_total_price": "مبلغ القائمة",
+    "invoice_total_weight": "وزن القائمة"
 }

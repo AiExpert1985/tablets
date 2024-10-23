@@ -94,6 +94,17 @@ class MessageLookup extends MessageLookupByLibrary {
                 "يجب ان يحتوي الاسم على 4 احرف على الاقل"),
         "input_validation_error_message_for_user_privilage":
             MessageLookupByLibrary.simpleMessage("يجب تحديد صلاحيات المستخدم"),
+        "invoice_total_price":
+            MessageLookupByLibrary.simpleMessage("مبلغ القائمة"),
+        "invoice_total_weight":
+            MessageLookupByLibrary.simpleMessage("وزن القائمة"),
+        "item_gifts_quantity":
+            MessageLookupByLibrary.simpleMessage("عدد الهدايا"),
+        "item_name": MessageLookupByLibrary.simpleMessage("اسم المادة"),
+        "item_price": MessageLookupByLibrary.simpleMessage("السعر"),
+        "item_sequence": MessageLookupByLibrary.simpleMessage("تسلسل"),
+        "item_sold_quantity": MessageLookupByLibrary.simpleMessage("العدد"),
+        "item_total_price": MessageLookupByLibrary.simpleMessage("السعر الكلي"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),

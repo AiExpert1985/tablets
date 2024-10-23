@@ -95,6 +95,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "input_validation_error_message_for_user_privilage":
             MessageLookupByLibrary.simpleMessage(
                 "You must select user privilage"),
+        "invoice_total_price":
+            MessageLookupByLibrary.simpleMessage("Total price"),
+        "invoice_total_weight":
+            MessageLookupByLibrary.simpleMessage("Total weight"),
+        "item_gifts_quantity":
+            MessageLookupByLibrary.simpleMessage("Gifts Qtty."),
+        "item_name": MessageLookupByLibrary.simpleMessage("Item name"),
+        "item_price": MessageLookupByLibrary.simpleMessage("Price"),
+        "item_sequence": MessageLookupByLibrary.simpleMessage("#"),
+        "item_sold_quantity":
+            MessageLookupByLibrary.simpleMessage("Sold Qtty."),
+        "item_total_price": MessageLookupByLibrary.simpleMessage("Total"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),

@@ -1139,6 +1139,86 @@ class S {
       args: [],
     );
   }
+
+  /// `#`
+  String get item_sequence {
+    return Intl.message(
+      '#',
+      name: 'item_sequence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Item name`
+  String get item_name {
+    return Intl.message(
+      'Item name',
+      name: 'item_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Price`
+  String get item_price {
+    return Intl.message(
+      'Price',
+      name: 'item_price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sold Qtty.`
+  String get item_sold_quantity {
+    return Intl.message(
+      'Sold Qtty.',
+      name: 'item_sold_quantity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total`
+  String get item_total_price {
+    return Intl.message(
+      'Total',
+      name: 'item_total_price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gifts Qtty.`
+  String get item_gifts_quantity {
+    return Intl.message(
+      'Gifts Qtty.',
+      name: 'item_gifts_quantity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total price`
+  String get invoice_total_price {
+    return Intl.message(
+      'Total price',
+      name: 'invoice_total_price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total weight`
+  String get invoice_total_weight {
+    return Intl.message(
+      'Total weight',
+      name: 'invoice_total_weight',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
