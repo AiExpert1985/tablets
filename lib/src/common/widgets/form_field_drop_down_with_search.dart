@@ -10,19 +10,31 @@ import 'package:tablets/src/common/functions/form_validation.dart' as validation
 /// unnecessary complications
 class DropDownWithSearchFormField extends StatefulWidget {
   const DropDownWithSearchFormField(
-      {required this.nameKey,
+      {required this.formDataPropertyName,
+      this.selectedItemPropertyName = 'dbKey',
       required this.label,
       required this.dbItemFetchFn,
       required this.dbListFetchFn,
       required this.onSaveFn,
       required this.formData,
       super.key});
-  final String nameKey;
-  final String label;
-  final Map<String, dynamic> formData;
+  // formDataPropertyName: the key of formData that we want to
+  //used selected item to add/update its value, item formData[formDataPropertyName]
+  final String formDataPropertyName;
+  // selectedItemPropertyName: the name of the property of the selected item which is will be stored
+  // in formData[formDataPropertyName] or used to fetch initial value from db.
+  // if no value provided, then dbKey will be used
+  final String selectedItemPropertyName;
+  final String label; // label shown on the cell
+  final Map<String, dynamic> formData; // used to fetch initial data & to store selected item
+  // onSaveFn: used to store selected item in formData
   final void Function({required String key, required dynamic value}) onSaveFn;
-  final Future<Map<String, dynamic>> Function({String? filterKey, String? filterValue}) dbItemFetchFn;
-  final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue}) dbListFetchFn;
+  // dbItemFetchFn: fetch initial value from db
+  final Future<Map<String, dynamic>> Function({String? filterKey, String? filterValue})
+      dbItemFetchFn;
+  // dbItemFetchFn: fetch selection list of value form db.
+  final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue})
+      dbListFetchFn;
 
   @override
   State<DropDownWithSearchFormField> createState() => _DropDownWithSearchFormFieldState();
@@ -31,9 +43,10 @@ class DropDownWithSearchFormField extends StatefulWidget {
 class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormField> {
   final Map<String, dynamic> initialValue = {};
 
-  void setInitialValue(formData, nameKey) async {
+  void setInitialValue(formData, nameKey, selectedItemPropertyName) async {
     if (formData[nameKey] != null) {
-      Map<String, dynamic> itemMap = await widget.dbItemFetchFn(filterKey: 'dbKey', filterValue: formData[nameKey]);
+      Map<String, dynamic> itemMap = await widget.dbItemFetchFn(
+          filterKey: selectedItemPropertyName, filterValue: formData[nameKey]);
       if (mounted) {
         setState(() {
           initialValue.addAll(itemMap); // Store the fetched data
@@ -44,16 +57,19 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
 
   @override
   Widget build(BuildContext context) {
-    final nameKey = widget.nameKey;
+    final formDataPropertyName = widget.formDataPropertyName;
     final label = widget.label;
-    setInitialValue(widget.formData, nameKey);
+    final selectedItemPropertyName = widget.selectedItemPropertyName;
+    final formData = widget.formData;
+    setInitialValue(formData, formDataPropertyName, selectedItemPropertyName);
     return Expanded(
       child: DropdownSearch<Map<String, dynamic>>(
           mode: Mode.form,
           decoratorProps: DropDownDecoratorProps(
             decoration: utils.formFieldDecoration(label: label),
           ),
-          selectedItem: initialValue.keys.isNotEmpty && initialValue['name'] != null ? initialValue : null,
+          selectedItem:
+              initialValue.keys.isNotEmpty && initialValue['name'] != null ? initialValue : null,
           items: (filter, t) => widget.dbListFetchFn(filterKey: 'name', filterValue: filter),
           compareFn: (i, s) => i == s,
           popupProps: PopupProps.dialog(
@@ -83,13 +99,14 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
               ),
           itemAsString: (item) => item['name'],
           onSaved: (item) {
-            widget.onSaveFn(key: nameKey, value: item?['dbKey']);
+            widget.onSaveFn(key: formDataPropertyName, value: item?[selectedItemPropertyName]);
           }),
     );
   }
 }
 
-Widget popUpItem(BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
+Widget popUpItem(
+    BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
@@ -108,7 +125,8 @@ Widget popUpItem(BuildContext context, Map<String, dynamic> item, bool isDisable
         leading: CircleAvatar(
           // radius: 70,
           backgroundColor: Colors.white,
-          foregroundImage: CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
+          foregroundImage:
+              CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
         ),
       ),
     ),

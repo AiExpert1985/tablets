@@ -43,7 +43,7 @@ class CategoryForm extends ConsumerWidget {
             final category = ProductCategory.fromMap({...updateFormData, 'imageUrls': imageUrls});
             formController.saveItemToDb(context, category, isEditMode);
           },
-          icon: const ApproveIcon(),
+          icon: const SaveIcon(),
         ),
         IconButton(
           onPressed: () => Navigator.of(context).pop(),

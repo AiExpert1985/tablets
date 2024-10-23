@@ -10,7 +10,7 @@ class CategoryFloatingButtons extends ConsumerWidget {
   const CategoryFloatingButtons({super.key});
 
   void showAddCategoryForm(BuildContext context, WidgetRef ref) {
-    ref.read(categoryFormDataProvider.notifier).initialize();
+    ref.read(categoryFormDataProvider.notifier).initializeProperties();
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize();
     showDialog(

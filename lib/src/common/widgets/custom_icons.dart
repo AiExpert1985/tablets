@@ -10,6 +10,19 @@ class ApproveIcon extends StatelessWidget {
     return Column(children: [
       const Icon(Icons.check, color: Colors.green),
       gaps.VerticalGap.iconToText,
+      Text(S.of(context).approve)
+    ]);
+  }
+}
+
+class SaveIcon extends StatelessWidget {
+  const SaveIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      const Icon(Icons.check, color: Colors.green),
+      gaps.VerticalGap.iconToText,
       Text(S.of(context).save)
     ]);
   }
@@ -21,7 +34,10 @@ class CancelIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      const Icon(Icons.close),
+      const Icon(
+        Icons.close,
+        color: Colors.red,
+      ),
       gaps.VerticalGap.iconToText,
       Text(S.of(context).cancel),
     ]);
@@ -35,7 +51,7 @@ class DeleteIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Icon(Icons.delete, color: Colors.red),
+        const Icon(Icons.delete, color: Colors.blueAccent),
         gaps.VerticalGap.iconToText,
         Text(S.of(context).delete),
       ],

@@ -116,5 +116,6 @@
     "item_gifts_quantity": "عدد الهدايا",
     "invoice_total_price": "المبلغ الكلي للقائمة",
     "invoice_total_weight": "الوزن الكلي للقائمة",
-    "transaction_total_amount_as_text": "المبلغ كتابة"
+    "transaction_total_amount_as_text": "المبلغ كتابة",
+    "approve": "موافق"
 }

@@ -14,7 +14,7 @@ class SalesmanGrid extends ConsumerWidget {
   const SalesmanGrid({super.key});
 
   void showEditSalesmanForm(BuildContext context, WidgetRef ref, Salesman salesman) {
-    ref.read(salesmanFormDataProvider.notifier).initialize(item: salesman);
+    ref.read(salesmanFormDataProvider.notifier).initializeProperties(item: salesman);
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize(urls: salesman.imageUrls);
     showDialog(
@@ -29,7 +29,8 @@ class SalesmanGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final salesmantStream = ref.watch(salesmanStreamProvider);
     final filterIsOn = ref.watch(salesmanFilterSwitchProvider);
-    final salesmanListValue = filterIsOn ? ref.read(salesmanFilteredListProvider).getFilteredList() : salesmantStream;
+    final salesmanListValue =
+        filterIsOn ? ref.read(salesmanFilteredListProvider).getFilteredList() : salesmantStream;
     return AsyncValueWidget<List<Map<String, dynamic>>>(
       value: salesmanListValue,
       data: (categories) => GridView.builder(

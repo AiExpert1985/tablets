@@ -1229,6 +1229,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Yes`
+  String get approve {
+    return Intl.message(
+      'Yes',
+      name: 'approve',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

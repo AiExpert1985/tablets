@@ -7,7 +7,9 @@ class FormTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+      child: Text(title,
+          style: const TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 184, 7, 7))),
     );
   }
 }

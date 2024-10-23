@@ -36,7 +36,7 @@ class CustomerFormInputField extends ConsumerWidget {
     final formData = customerFormController.data;
     return FormInputField(
         formData: formData,
-        onSaveFn: customerFormController.update,
+        onSaveFn: customerFormController.updateProperty,
         dataType: dataType,
         name: name,
         displayedTitle: displayedTitle);

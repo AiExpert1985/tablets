@@ -30,6 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("اضافة مستخدم جديد"),
         "alert_before_delete":
             MessageLookupByLibrary.simpleMessage("هل ترغب بحذف"),
+        "approve": MessageLookupByLibrary.simpleMessage("موافق"),
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),

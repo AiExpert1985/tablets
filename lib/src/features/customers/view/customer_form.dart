@@ -43,7 +43,7 @@ class CustomerForm extends ConsumerWidget {
             final customer = Customer.fromMap({...updateFormData, 'imageUrls': imageUrls});
             formController.saveItemToDb(context, customer, isEditMode);
           },
-          icon: const ApproveIcon(),
+          icon: const SaveIcon(),
         ),
         IconButton(
           onPressed: () => Navigator.of(context).pop(),

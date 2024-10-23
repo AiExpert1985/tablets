@@ -10,7 +10,7 @@ class CustomerFloatingButtons extends ConsumerWidget {
   const CustomerFloatingButtons({super.key});
 
   void showAddCustomerForm(BuildContext context, WidgetRef ref) {
-    ref.read(customerFormDataProvider.notifier).initialize();
+    ref.read(customerFormDataProvider.notifier).initializeProperties();
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize();
     showDialog(

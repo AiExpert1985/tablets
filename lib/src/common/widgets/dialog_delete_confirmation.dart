@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/values/gaps.dart' as gaps;
+import 'package:tablets/src/common/widgets/custom_icons.dart';
 
 /// show a dialog to ask user to confirm the deletion
 /// return true if user confirmed the deletion
@@ -35,24 +35,12 @@ Future<bool?> showDeleteConfirmationDialog(
           OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
-              TextButton(
-                child: Column(
-                  children: [
-                    const Icon(Icons.check, color: Colors.red),
-                    gaps.VerticalGap.iconToText,
-                    Text(S.of(ctx).delete),
-                  ],
-                ),
+              IconButton(
+                icon: const ApproveIcon(),
                 onPressed: () => Navigator.pop(ctx, true),
               ),
-              TextButton(
-                child: Column(
-                  children: [
-                    const Icon(Icons.close),
-                    gaps.VerticalGap.iconToText,
-                    Text(S.of(ctx).cancel),
-                  ],
-                ),
+              IconButton(
+                icon: const CancelIcon(),
                 onPressed: () => Navigator.pop(ctx),
               ),
             ],

@@ -14,7 +14,7 @@ class CategoriesGrid extends ConsumerWidget {
   const CategoriesGrid({super.key});
 
   void showEditCategoryForm(BuildContext context, WidgetRef ref, ProductCategory category) {
-    ref.read(categoryFormDataProvider.notifier).initialize(item: category);
+    ref.read(categoryFormDataProvider.notifier).initializeProperties(item: category);
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize(urls: category.imageUrls);
     showDialog(

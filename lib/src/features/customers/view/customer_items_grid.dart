@@ -14,7 +14,7 @@ class CustomerGrid extends ConsumerWidget {
   const CustomerGrid({super.key});
 
   void showEditCustomerForm(BuildContext context, WidgetRef ref, Customer customer) {
-    ref.read(customerFormDataProvider.notifier).initialize(item: customer);
+    ref.read(customerFormDataProvider.notifier).initializeProperties(item: customer);
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize(urls: customer.imageUrls);
     showDialog(
@@ -29,7 +29,8 @@ class CustomerGrid extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final customertStream = ref.watch(customerStreamProvider);
     final filterIsOn = ref.watch(customerFilterSwitchProvider);
-    final customerListValue = filterIsOn ? ref.read(customerFilteredListProvider).getFilteredList() : customertStream;
+    final customerListValue =
+        filterIsOn ? ref.read(customerFilteredListProvider).getFilteredList() : customertStream;
     return AsyncValueWidget<List<Map<String, dynamic>>>(
       value: customerListValue,
       data: (categories) => GridView.builder(
