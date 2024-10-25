@@ -16,12 +16,12 @@ class FormDatePickerField extends StatelessWidget {
         decoration: utils.formFieldDecoration(label: S.of(context).transaction_date),
         textAlign: TextAlign.center,
         name: 'date',
-        initialValue: formData['date'].runtimeType == DateTime ? formData['date'] : null,
+        initialValue: formData['date']?.runtimeType == DateTime ? formData['date'] : null,
         fieldHintText: S.of(context).date_picker_hint,
         inputType: InputType.date,
         onSaved: (value) => onSaveFn(key: 'date', value: Timestamp.fromDate(value!)),
-        validator: (value) =>
-            validateDatePicker(fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_date),
+        validator: (value) => validateDatePicker(
+            fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_date),
       ),
     );
   }

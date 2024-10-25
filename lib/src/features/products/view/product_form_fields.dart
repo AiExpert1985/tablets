@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/widgets/form_field_drop_down_with_search.dart';
-import 'package:tablets/src/common/widgets/form_field_custom_input.dart';
+import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
+import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart' as gaps;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/common/widgets/form_field_custom_input.dart';
+import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 
 class TransactionFormInputField extends ConsumerWidget {
