@@ -8,15 +8,17 @@ import 'package:tablets/src/common/functions/form_validation.dart' as validation
 /// I used Stateful widget because it is the the best way I found to make the initial value visible
 /// after it is being fetched from DB, I didn't want to use riverpod providers because it lead to
 /// unnecessary complications
-class DropDownWithSearchFormField extends StatefulWidget {
-  const DropDownWithSearchFormField(
+class DropDownWithSearchFormFieldForSubList extends StatefulWidget {
+  const DropDownWithSearchFormFieldForSubList(
       {required this.formDataPropertyName,
+      this.formDataSubPropertyName,
       required this.dbItemFetchFn,
       required this.dbListFetchFn,
-      required this.onSaveFn,
+      required this.onChangedFn,
       required this.formData,
       this.selectedItemPropertyName = 'dbKey',
       this.label,
+      this.affectedSiblingProperties,
       super.key});
   // formDataPropertyName: the key of formData that we want to
   //used selected item to add/update its value, item formData[formDataPropertyName]
@@ -25,22 +27,34 @@ class DropDownWithSearchFormField extends StatefulWidget {
   // in formData[formDataPropertyName] or used to fetch initial value from db.
   // if no value provided, then dbKey will be used because all items have dbKey property
   final String selectedItemPropertyName;
+  // formDataSubPropertyName: in case the item we want to save is a property inside another property
+  // of formData, example: when I want to save the name of an item, inside the list of items
+  // that belongs to an inovice --> formData['items'] then in a list, I store the name of each item
+  // in this case the subProperty is the 'name' and the value is the actual name of the item stored
+  final String? formDataSubPropertyName;
   final String? label; // label shown on the cell
   final Map<String, dynamic> formData; // used to fetch initial data & to store selected item
-  // onSaveFn: used to store selected item in formData
-  final void Function({required String key, required dynamic value}) onSaveFn;
+  // onChangedFn: used to store selected item in formData
+  final void Function({required String key, required dynamic value, String? subKey}) onChangedFn;
   // dbItemFetchFn: fetch initial value from db
   final Future<Map<String, dynamic>> Function({String? filterKey, String? filterValue})
       dbItemFetchFn;
   // dbItemFetchFn: fetch selection list of value form db.
   final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue})
       dbListFetchFn;
+  // when we selected an item, it will be selected as an object, we usually display its name on the
+  // dropdown, but this item may also affect other sibling properties, usually as an initial value
+  // (which can be changed). so we use affectedProperties as a map contains :
+  // dataFormProperties: names of affected properties and dataForm
+  // repositoryProperties: names of properties in the fetchedItem which will be used for the values
+  // of dataForm
+  final Map<String, List<String>>? affectedSiblingProperties;
 
   @override
-  State<DropDownWithSearchFormField> createState() => _DropDownWithSearchFormFieldState();
+  State<DropDownWithSearchFormFieldForSubList> createState() => _DropDownWithSearchFormFieldState();
 }
 
-class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormField> {
+class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFieldForSubList> {
   final Map<String, dynamic> initialValue = {};
 
   void setInitialValue(formData, nameKey, selectedItemPropertyName) async {
@@ -65,9 +79,11 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
     return Expanded(
       child: DropdownSearch<Map<String, dynamic>>(
           mode: Mode.form,
-          decoratorProps: DropDownDecoratorProps(
-            decoration: utils.formFieldDecoration(label: label),
-          ),
+          decoratorProps: label != null
+              ? DropDownDecoratorProps(
+                  decoration: utils.formFieldDecoration(label: label),
+                )
+              : const DropDownDecoratorProps(decoration: InputDecoration(border: InputBorder.none)),
           selectedItem:
               initialValue.keys.isNotEmpty && initialValue['name'] != null ? initialValue : null,
           items: (filter, t) => widget.dbListFetchFn(filterKey: 'name', filterValue: filter),
@@ -100,8 +116,11 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
                 errorMessage: S.of(context).input_validation_error_message_for_strings,
               ),
           itemAsString: (item) => item['name'],
-          onSaved: (item) {
-            widget.onSaveFn(key: formDataPropertyName, value: item?[selectedItemPropertyName]);
+          onChanged: (item) {
+            widget.onChangedFn(
+                key: formDataPropertyName,
+                value: item?[selectedItemPropertyName],
+                subKey: widget.formDataSubPropertyName);
           }),
     );
   }
@@ -122,7 +141,10 @@ Widget popUpItem(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
       child: ListTile(
         selected: isSelected,
-        title: Text(item['name']),
+        title: Text(
+          item['name'],
+          textAlign: TextAlign.center,
+        ),
         // subtitle: Text(item.code.toString()),
         leading: CircleAvatar(
           // radius: 70,

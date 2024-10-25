@@ -37,7 +37,7 @@ class InvoiceFormFields extends ConsumerWidget {
               formDataPropertyName: 'counterParty',
               label: S.of(context).customer,
               formData: formData,
-              onSaveFn: formDataNotifier.updateProperty,
+              onSaveFn: formDataNotifier.update,
               dbItemFetchFn: customerRepository.fetchItemAsMap,
               dbListFetchFn: customerRepository.fetchItemListAsMaps,
             ),
@@ -46,7 +46,7 @@ class InvoiceFormFields extends ConsumerWidget {
               formDataPropertyName: 'salesman',
               label: S.of(context).transaction_salesman,
               formData: formData,
-              onSaveFn: formDataNotifier.updateProperty,
+              onSaveFn: formDataNotifier.update,
               dbItemFetchFn: salesmanRepository.fetchItemAsMap,
               dbListFetchFn: salesmanRepository.fetchItemListAsMaps,
             ),
@@ -62,7 +62,7 @@ class InvoiceFormFields extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
-              onSaveFn: formDataNotifier.updateProperty,
+              onSaveFn: formDataNotifier.update,
               formData: formData,
               itemList: [
                 S.of(context).transaction_payment_Dinar,
@@ -89,7 +89,7 @@ class InvoiceFormFields extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
-              onSaveFn: formDataNotifier.updateProperty,
+              onSaveFn: formDataNotifier.update,
               formData: formData,
               itemList: [
                 S.of(context).transaction_payment_cash,
@@ -100,7 +100,7 @@ class InvoiceFormFields extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             FormDatePickerField(
-              onSaveFn: formDataNotifier.updateProperty,
+              onSaveFn: formDataNotifier.update,
               formData: formData,
             ),
           ],

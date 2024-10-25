@@ -37,7 +37,7 @@ class ProductFormFields extends ConsumerWidget {
               formDataPropertyName: 'category',
               label: S.of(context).category_selection,
               formData: formData,
-              onSaveFn: formDataNotifier.updateProperty,
+              onSaveFn: formDataNotifier.update,
               dbItemFetchFn: categoryRepository.fetchItemAsMap,
               dbListFetchFn: categoryRepository.fetchItemListAsMaps,
             ),
@@ -132,7 +132,7 @@ class ProductFormInputField extends ConsumerWidget {
     final formData = productFormController.data;
     return FormInputField(
         formData: formData,
-        onSaveFn: productFormController.updateProperty,
+        onSaveFn: productFormController.update,
         dataType: dataType,
         name: name,
         displayedTitle: displayedTitle);

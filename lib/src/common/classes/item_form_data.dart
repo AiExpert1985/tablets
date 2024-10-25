@@ -11,7 +11,8 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   }
 
   /// add key, value pair to the existing state
-  void updateProperty({required String key, required dynamic value}) {
+  void update(
+      {required String key, required dynamic value, String? subKey, bool isSubKey = false}) {
     Map<String, dynamic> tempMap = {...state};
     tempMap[key] = value;
     state = {...tempMap};
@@ -29,6 +30,7 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   /// the targeted item inside the sub Map
   void updateSubProperty({required String key, String? subKey, required dynamic value}) {
     Map<String, dynamic> tempMap = {...state};
+    if (tempMap[key] == null) tempMap[key] = [];
     if (subKey == null) {
       tempMap[key].add(value); // tempMap here is a List of dynamic values
     } else {

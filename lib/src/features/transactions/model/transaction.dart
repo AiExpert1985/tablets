@@ -31,7 +31,7 @@ class Transaction implements BaseItem {
   String counterParty; // name of customer
   String? paymentType; // cash, debt
   String? salesman; // dbKey of salesman
-  List<String>? itemDbKeyList;
+  List<String>? items;
   double? discount;
   String? totalAsText;
   Transaction({
@@ -49,46 +49,13 @@ class Transaction implements BaseItem {
     // optional based on type of transaction
     this.paymentType, // CustomerInvoice
     this.salesman,
-    this.itemDbKeyList,
+    this.items,
     this.discount,
     this.totalAsText,
   });
 
   @override
   String get coverImageUrl => imageUrls[imageUrls.length - 1];
-
-  Transaction copyWith({
-    String? dbKey,
-    String? name,
-    List<String>? imageUrls,
-    int? number,
-    DateTime? date,
-    double? amount,
-    String? currency,
-    String? notes,
-    String? counterParty,
-    String? paymentType,
-    String? salesman,
-    ValueGetter<List<String>?>? itemDbKeyList,
-    double? discount,
-    String? totalAsText,
-  }) {
-    return Transaction(
-        dbKey: dbKey ?? this.dbKey,
-        name: name ?? this.name,
-        imageUrls: imageUrls ?? this.imageUrls,
-        number: number ?? this.number,
-        date: date ?? this.date,
-        amount: amount ?? this.amount,
-        currency: currency ?? this.currency,
-        notes: notes ?? this.notes,
-        counterParty: counterParty ?? this.counterParty,
-        paymentType: paymentType ?? this.paymentType,
-        salesman: salesman ?? this.salesman,
-        itemDbKeyList: itemDbKeyList != null ? itemDbKeyList() : this.itemDbKeyList,
-        discount: discount ?? this.discount,
-        totalAsText: totalAsText ?? this.totalAsText);
-  }
 
   @override
   Map<String, dynamic> toMap() {
@@ -104,7 +71,7 @@ class Transaction implements BaseItem {
       'counterParty': counterParty,
       'paymentType': paymentType,
       'salesman': salesman,
-      'itemDbKeyList': itemDbKeyList,
+      'itemDbKeyList': items,
       'discount': discount,
       'totalAsText': totalAsText,
     };
@@ -123,7 +90,7 @@ class Transaction implements BaseItem {
       counterParty: map['counterParty'],
       paymentType: map['paymentType'],
       salesman: map['salesman'],
-      itemDbKeyList: ['dsafsdf', 'safsdfsdf', 'sadfsdf'],
+      items: ['dsafsdf', 'safsdfsdf', 'sadfsdf'],
       discount: map['discount'].toDouble(),
       totalAsText: map['totalAsText'],
     );
@@ -154,7 +121,7 @@ class Transaction implements BaseItem {
         other.counterParty == counterParty &&
         other.paymentType == paymentType &&
         other.salesman == salesman &&
-        listEquals(other.itemDbKeyList, itemDbKeyList) &&
+        listEquals(other.items, items) &&
         other.discount == discount &&
         other.totalAsText == totalAsText;
   }
@@ -172,7 +139,7 @@ class Transaction implements BaseItem {
         counterParty.hashCode ^
         paymentType.hashCode ^
         salesman.hashCode ^
-        itemDbKeyList.hashCode ^
+        items.hashCode ^
         discount.hashCode ^
         totalAsText.hashCode;
   }
