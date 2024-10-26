@@ -26,9 +26,9 @@ class Transaction implements BaseItem {
   double amount; // amount of money
   String currency; // $ or ID
   String? notes;
-  Map<String, dynamic>? counterParty; // name of customer
+  String? counterParty; // name of customer
   String? paymentType; // cash, debt
-  Map<String, dynamic>? salesman; // dbKey of salesman
+  String? salesman; // dbKey of salesman
   List<Map<String, dynamic>>? items;
   double? discount;
   String? totalAsText;

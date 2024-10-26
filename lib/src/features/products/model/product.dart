@@ -19,7 +19,7 @@ class Product implements BaseItem {
   int alertWhenExceeds;
   int altertWhenLessThan;
   double salesmanComission;
-  Map<String, dynamic> category;
+  String category;
   int initialQuantity;
 
   Product({
@@ -55,7 +55,7 @@ class Product implements BaseItem {
     int? altertWhenLessThan,
     double? salesmanComission,
     List<String>? imageUrls,
-    Map<String, dynamic>? category,
+    String? category,
     int? initialQuantity,
   }) {
     return Product(

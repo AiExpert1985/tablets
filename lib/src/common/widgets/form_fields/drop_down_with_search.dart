@@ -50,24 +50,16 @@ class DropDownWithSearchFormField extends StatefulWidget {
 
 class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormField> {
   Map<String, dynamic>? setInitialValue(formData, fieldName, subItemSequence) {
-    Map<String, dynamic>? initialMap;
-    if (formData[fieldName] != null) {
-      if (subItemSequence != null) {
-        if (formData[fieldName][subItemSequence]['name'] != null) {
-          // here I made assumption that if we want to add anew sub item, then we should initial
-          // an empty Map, so there is alway a Map in the subItemSequence
-
-          initialMap = formData[fieldName][subItemSequence];
-        } else {
-          initialMap = null;
-        }
-      } else {
-        initialMap = formData[fieldName];
-      }
-    } else {
-      initialMap = null;
+    if (formData[fieldName] == null) {
+      return null;
     }
-    return initialMap;
+    if (subItemSequence == null) {
+      return {'name': formData[fieldName]};
+    }
+    if (formData[fieldName][subItemSequence]['name'] != null) {
+      return formData[fieldName][subItemSequence];
+    }
+    return null;
   }
 
   @override
@@ -123,6 +115,7 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
                 )
               : null,
           itemAsString: (item) {
+            tempPrint(item);
             return item['name'];
           },
           onChanged: (item) {
@@ -130,15 +123,15 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
 
             if (subItemSequence == null) {
               targetProperties.forEach((formKey, itemKey) {
-                tempPrint(item[itemKey].runtimeType);
-                formData[formKey] = {'name': item[itemKey]};
+                formData[formKey] = item[itemKey];
               });
-            } else {
-              targetProperties.forEach((formKey, itemKey) {
-                formData[fieldName][subItemSequence][formKey] = item[itemKey];
-              });
+              onChangedFn(formData);
+              return;
             }
-            tempPrint(formData);
+            targetProperties.forEach((formKey, itemKey) {
+              formData[fieldName][subItemSequence][formKey] = item[itemKey];
+            });
+
             onChangedFn(formData);
           }),
     );

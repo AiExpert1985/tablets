@@ -12,7 +12,7 @@ class Customer implements BaseItem {
   String name;
   @override
   List<String> imageUrls;
-  Map<String, dynamic> salesman;
+  String salesman;
 
   Customer({
     required this.dbKey,
@@ -59,7 +59,7 @@ class Customer implements BaseItem {
         other.dbKey == dbKey &&
         other.name == name &&
         listEquals(other.imageUrls, imageUrls) &&
-        mapEquals(other.salesman, salesman);
+        other.salesman == salesman;
   }
 
   @override
