@@ -6,7 +6,7 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/values/gaps.dart' as gaps;
-import 'package:tablets/src/common/values/constants.dart' as constants;
+import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_form_controller.dart';
 import 'package:tablets/src/features/salesmen/model/salesman.dart';
 import 'package:tablets/src/features/salesmen/view/salesman_form_fields.dart';
@@ -66,8 +66,8 @@ class SalesmanForm extends ConsumerWidget {
               icon: const DeleteIcon()),
         )
       ],
-      width: constants.salesmanFormWidth,
-      height: constants.salesmanFormHeight,
+      width: salesmanFormWidth,
+      height: salesmanFormHeight,
     );
   }
 }

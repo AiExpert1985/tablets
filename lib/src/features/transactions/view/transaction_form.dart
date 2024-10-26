@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
-import 'package:tablets/src/common/values/constants.dart' as constants;
+import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form_fields.dart';
@@ -28,7 +27,7 @@ class TransactionForm extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          InvoiceFormFields(editMode: true),
+          InvoiceFormFields(),
         ],
       ),
       buttons: [
@@ -60,7 +59,6 @@ class TransactionForm extends ConsumerWidget {
                   final imageUrls = formImagesNotifier.saveChanges();
                   final transaction =
                       Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
-                  tempPrint(updateFormData);
                   // ignore: use_build_context_synchronously
                   formController.deleteItemFromDb(context, transaction);
                 }
@@ -68,8 +66,8 @@ class TransactionForm extends ConsumerWidget {
               icon: const DeleteIcon()),
         )
       ],
-      width: constants.customerInvoiceFormWidth,
-      height: constants.customerInvoiceFormHeight,
+      width: customerInvoiceFormWidth,
+      height: customerInvoiceFormHeight,
     );
   }
 }

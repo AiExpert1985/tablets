@@ -28,7 +28,7 @@ Uint8List? compressImage(Uint8List? image, {int targetImageSizeInBytes = 51200})
   return image;
 }
 
-InputDecoration formFieldDecoration({String? label}) {
+InputDecoration formFieldDecoration({String? label, bool hideBorders = false}) {
   return InputDecoration(
     // floatingLabelAlignment: FloatingLabelAlignment.center,
     label: label == null
@@ -42,11 +42,13 @@ InputDecoration formFieldDecoration({String? label}) {
             ),
           ),
     alignLabelWithHint: true,
-    contentPadding: const EdgeInsets.all(12),
+    contentPadding: const EdgeInsets.all(8),
     isDense: true, // Add this line to remove the default padding
-    border: const OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(8)),
-    ),
+    border: hideBorders
+        ? null
+        : const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
   );
 }
 

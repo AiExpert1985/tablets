@@ -17,7 +17,7 @@ class ProductsTable extends ConsumerWidget {
   const ProductsTable({super.key});
 
   void showEditProductForm(BuildContext context, WidgetRef ref, Product product) {
-    ref.read(productFormDataProvider.notifier).initializeProperties(item: product);
+    ref.read(productFormDataProvider.notifier).initialize(initialData: product.toMap());
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize(urls: product.imageUrls);
     showDialog(

@@ -1,24 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search_for_sublist.dart';
-import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
+import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
+import 'package:tablets/src/common/values/form_dimenssions.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 
-class InvoiceItemList extends StatelessWidget {
-  const InvoiceItemList({super.key});
+class InvoiceItemList extends ConsumerWidget {
+  const InvoiceItemList(this.formFieldName, {super.key});
+  final String formFieldName;
+  Map<String, dynamic> addNewEmptyRow(formData, fieldName) {
+    // final emptyValues = {
+    //   'price': null,
+    //   'soldQuantity': null,
+    //   'giftQuantity': null,
+    //   'totalPrice': null
+    // };
+    if (formData[fieldName] != null) {
+      // formData[fieldName].add({});
+      (formData[fieldName] as List<dynamic>?)
+          ?.map((item) => item as Map<String, dynamic>)
+          .toList()
+          .add({});
+    } else {
+      formData[fieldName] = [{}];
+    }
+    return formData;
+  }
 
   @override
-  Widget build(BuildContext context) {
-    Map<String, dynamic> itemMap = {
-      'price': 'price',
-      'soldQuantity': 'soldQuantity',
-      'giftQuantity': 'giftQuantity',
-      'totalPrice': 'totalPrice'
-    };
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formController = ref.watch(transactionFormDataProvider.notifier);
+    final repository = ref.watch(productRepositoryProvider);
+    final initialFormData = formController.data;
+    final updatedFormData = addNewEmptyRow(initialFormData, formFieldName);
     return Container(
-      height: 300,
+      height: 350,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black38, width: 1.0),
         borderRadius: BorderRadius.circular(8.0),
@@ -28,14 +45,17 @@ class InvoiceItemList extends StatelessWidget {
         children: [
           const CustomerInvoiceItemListTitles(),
           Expanded(
-            child: ListView(
-              children: [
-                const CustomerInvoiceItemListTitles(),
-                CustomerInvoiceItemListData(
-                  sequence: 1,
-                  itemMap: itemMap,
-                ),
-              ],
+            child: ListView.builder(
+              itemCount: updatedFormData[formFieldName].length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: CustomerInvoiceItemListData(
+                      sequence: index,
+                      dbListFetchFn: repository.fetchItemListAsMaps,
+                      formData: formController.data,
+                      onChangedFn: formController.update),
+                );
+              },
             ),
           ),
         ],
@@ -45,15 +65,20 @@ class InvoiceItemList extends StatelessWidget {
 }
 
 class CustomerInvoiceItemListData extends ConsumerWidget {
-  const CustomerInvoiceItemListData({required this.sequence, required this.itemMap, super.key});
+  const CustomerInvoiceItemListData(
+      {required this.sequence,
+      required this.dbListFetchFn,
+      required this.onChangedFn,
+      required this.formData,
+      super.key});
   final int sequence;
-  // itemMap.keys must contain {'name',price', 'soldQuantity', 'giftQuantity', 'totalPrice'}
-  final Map<String, dynamic> itemMap;
+  final Map<String, dynamic> formData;
+  final void Function(Map<String, dynamic>) onChangedFn;
+  final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue})
+      dbListFetchFn;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(productFormDataProvider.notifier);
-    final repository = ref.watch(productRepositoryProvider);
     return Row(
       children: [
         InvoiceItemListCell(
@@ -62,24 +87,20 @@ class CustomerInvoiceItemListData extends ConsumerWidget {
             isTitle: true,
             width: nameWidth,
             cell: Expanded(
-              child: DropDownWithSearchFormFieldForSubList(
-                  formDataPropertyName: 'items',
-                  dbItemFetchFn: repository.fetchItemAsMap,
-                  dbListFetchFn: repository.fetchItemListAsMaps,
-                  onChangedFn: formController.updateSubProperty,
-                  formData: formController.data,
-                  selectedItemPropertyName: 'name'),
+              child: DropDownWithSearchFormField(
+                subItemSequence: 0,
+                hideBorders: true,
+                fieldName: 'items',
+                dbListFetchFn: dbListFetchFn,
+                onChangedFn: onChangedFn,
+                formData: formData,
+              ),
             )),
-        InvoiceItemListCell(isTitle: true, width: priceWidth, cell: Text(itemMap['price']!)),
-        InvoiceItemListCell(
-            isTitle: true, width: soldQuantityWidth, cell: Text(itemMap['soldQuantity']!)),
-        InvoiceItemListCell(
-            isTitle: true, width: giftQantityWidth, cell: Text(itemMap['giftQuantity']!)),
-        InvoiceItemListCell(
-            isTitle: true,
-            isLast: true,
-            width: soldTotalPriceWidth,
-            cell: Text(itemMap['totalPrice']!)),
+        const InvoiceItemListCell(isTitle: true, width: priceWidth, cell: Text('tempText')),
+        const InvoiceItemListCell(isTitle: true, width: soldQuantityWidth, cell: Text('TempText')),
+        const InvoiceItemListCell(isTitle: true, width: giftQantityWidth, cell: Text('tempText')),
+        const InvoiceItemListCell(
+            isTitle: true, isLast: true, width: soldTotalPriceWidth, cell: Text('tempText')),
       ],
     );
   }
@@ -152,9 +173,9 @@ class CustomerInvoiceItemListTitles extends StatelessWidget {
 }
 
 // I made a design decision to make the width variable based on the size of the container
-const double itemHeight = customerInvoiceFormHeight * 0.05;
-const double sequenceWidth = customerInvoiceFormWidth * 0.1;
-const double nameWidth = customerInvoiceFormWidth * 0.34;
+const double itemHeight = customerInvoiceFormHeight * 0.045;
+const double sequenceWidth = customerInvoiceFormWidth * 0.07;
+const double nameWidth = customerInvoiceFormWidth * 0.3;
 const double priceWidth = customerInvoiceFormWidth * 0.12;
 const double soldQuantityWidth = customerInvoiceFormWidth * 0.12;
 const double giftQantityWidth = customerInvoiceFormWidth * 0.12;

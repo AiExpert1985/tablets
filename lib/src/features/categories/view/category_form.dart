@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
@@ -9,7 +10,6 @@ import 'package:tablets/src/features/categories/controllers/category_form_contro
 import 'package:tablets/src/features/categories/model/category.dart';
 import 'package:tablets/src/features/categories/view/category_form_fields.dart';
 import 'package:tablets/src/common/values/gaps.dart' as gaps;
-import 'package:tablets/src/common/values/constants.dart' as constants;
 
 class CategoryForm extends ConsumerWidget {
   const CategoryForm({this.isEditMode = false, super.key});
@@ -67,8 +67,8 @@ class CategoryForm extends ConsumerWidget {
               icon: const DeleteIcon()),
         )
       ],
-      width: constants.categoryFormWidth,
-      height: constants.categoryFormHeight,
+      width: categoryFormWidth,
+      height: categoryFormHeight,
     );
   }
 }

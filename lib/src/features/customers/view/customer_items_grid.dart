@@ -14,7 +14,7 @@ class CustomerGrid extends ConsumerWidget {
   const CustomerGrid({super.key});
 
   void showEditCustomerForm(BuildContext context, WidgetRef ref, Customer customer) {
-    ref.read(customerFormDataProvider.notifier).initializeProperties(item: customer);
+    ref.read(customerFormDataProvider.notifier).initialize(initialData: customer.toMap());
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize(urls: customer.imageUrls);
     showDialog(

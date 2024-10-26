@@ -7,7 +7,7 @@ class HorizontalGap {
 class VerticalGap {
   static const formImageToFields = SizedBox(height: 25);
   static const formImageToButtons = SizedBox(height: 15);
-  static const formFieldToField = SizedBox(height: 15);
+  static const formFieldToField = SizedBox(height: 12);
   static const mainDrawerIconToIcon = SizedBox(height: 5);
   static const iconToText = SizedBox(height: 6);
   static const sideDrawerfieldsToButtons = SizedBox(height: 30);

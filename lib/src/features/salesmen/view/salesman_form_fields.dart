@@ -36,9 +36,9 @@ class SalesmanFormInputField extends ConsumerWidget {
     final formData = salesmanFormController.data;
     return FormInputField(
         formData: formData,
-        onSaveFn: salesmanFormController.update,
+        onChangedFn: salesmanFormController.update,
         dataType: dataType,
-        name: name,
-        displayedTitle: displayedTitle);
+        fieldName: name,
+        label: displayedTitle);
   }
 }

@@ -6,7 +6,7 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/values/gaps.dart' as gaps;
-import 'package:tablets/src/common/values/constants.dart' as constants;
+import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/view/customer_form_fields.dart';
@@ -66,8 +66,8 @@ class CustomerForm extends ConsumerWidget {
               icon: const DeleteIcon()),
         )
       ],
-      width: constants.customerFormWidth,
-      height: constants.customerFormHeight,
+      width: customerFormWidth,
+      height: customerFormHeight,
     );
   }
 }

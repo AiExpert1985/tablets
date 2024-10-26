@@ -7,7 +7,7 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/values/gaps.dart' as gaps;
 import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
-import 'package:tablets/src/common/values/constants.dart' as constants;
+import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/view/product_form_fields.dart';
 
@@ -66,8 +66,8 @@ class ProductForm extends ConsumerWidget {
               icon: const DeleteIcon()),
         )
       ],
-      width: constants.productFormWidth,
-      height: constants.productFormHeight,
+      width: productFormWidth,
+      height: productFormHeight,
     );
   }
 }

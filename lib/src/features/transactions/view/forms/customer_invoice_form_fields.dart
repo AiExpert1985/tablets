@@ -15,10 +15,10 @@ import 'package:tablets/src/features/transactions/controllers/transaction_form_c
 import 'package:tablets/src/features/transactions/view/forms/invoice_item_list.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/transactions/view/forms/transaction_form_field.dart';
+import 'package:tablets/src/common/values/form_dimenssions.dart';
 
 class InvoiceFormFields extends ConsumerWidget {
-  const InvoiceFormFields({super.key, this.editMode = false});
-  final bool editMode;
+  const InvoiceFormFields({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formData = ref.watch(transactionFormDataProvider);
@@ -34,20 +34,18 @@ class InvoiceFormFields extends ConsumerWidget {
         Row(
           children: [
             DropDownWithSearchFormField(
-              formDataPropertyName: 'counterParty',
+              fieldName: 'counterParty',
               label: S.of(context).customer,
               formData: formData,
-              onSaveFn: formDataNotifier.update,
-              dbItemFetchFn: customerRepository.fetchItemAsMap,
+              onChangedFn: formDataNotifier.update,
               dbListFetchFn: customerRepository.fetchItemListAsMaps,
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
-              formDataPropertyName: 'salesman',
+              fieldName: 'salesman',
               label: S.of(context).transaction_salesman,
               formData: formData,
-              onSaveFn: formDataNotifier.update,
-              dbItemFetchFn: salesmanRepository.fetchItemAsMap,
+              onChangedFn: formDataNotifier.update,
               dbListFetchFn: salesmanRepository.fetchItemListAsMaps,
             ),
           ],
@@ -62,14 +60,14 @@ class InvoiceFormFields extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
-              onSaveFn: formDataNotifier.update,
+              onChangedFn: formDataNotifier.update,
               formData: formData,
               itemList: [
                 S.of(context).transaction_payment_Dinar,
                 S.of(context).transaction_payment_Dollar,
               ],
               label: S.of(context).transaction_currency,
-              name: 'currency',
+              fieldName: 'currency',
             ),
             gaps.HorizontalGap.formFieldToField,
             TransactionFormInputField(
@@ -89,19 +87,21 @@ class InvoiceFormFields extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
-              onSaveFn: formDataNotifier.update,
+              onChangedFn: formDataNotifier.update,
               formData: formData,
               itemList: [
                 S.of(context).transaction_payment_cash,
                 S.of(context).transaction_payment_credit,
               ],
               label: S.of(context).transaction_payment_type,
-              name: 'paymentType',
+              fieldName: 'paymentType',
             ),
             gaps.HorizontalGap.formFieldToField,
             FormDatePickerField(
-              onSaveFn: formDataNotifier.update,
+              onChangedFn: formDataNotifier.update,
               formData: formData,
+              fieldName: 'date',
+              label: S.of(context).transaction_date,
             ),
           ],
         ),
@@ -131,11 +131,11 @@ class InvoiceFormFields extends ConsumerWidget {
           ],
         ),
         gaps.VerticalGap.formFieldToField,
-        const InvoiceItemList(),
+        const InvoiceItemList('items'),
         gaps.VerticalGap.formFieldToField,
         gaps.VerticalGap.formFieldToField,
         SizedBox(
-          width: constants.customerInvoiceFormWidth * 0.6,
+          width: customerInvoiceFormWidth * 0.6,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

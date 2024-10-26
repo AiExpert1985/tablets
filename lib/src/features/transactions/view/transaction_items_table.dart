@@ -19,7 +19,7 @@ class TransactionsTable extends ConsumerWidget {
   const TransactionsTable({super.key});
 
   void showEditReceiptForm(BuildContext context, WidgetRef ref, Transaction tansaction) {
-    ref.read(transactionFormDataProvider.notifier).initializeProperties(item: tansaction);
+    ref.read(transactionFormDataProvider.notifier).initialize(initialData: tansaction.toMap());
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize(urls: tansaction.imageUrls);
     showDialog(

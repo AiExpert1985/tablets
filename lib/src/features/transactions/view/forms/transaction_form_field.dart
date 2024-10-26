@@ -25,9 +25,9 @@ class TransactionFormInputField extends ConsumerWidget {
     return FormInputField(
         isRequired: isRequired,
         formData: formData,
-        onSaveFn: transactionFormController.update,
+        onChangedFn: transactionFormController.update,
         dataType: dataType,
-        name: name,
-        displayedTitle: displayedTitle);
+        fieldName: name,
+        label: displayedTitle);
   }
 }

@@ -34,11 +34,10 @@ class ProductFormFields extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
-              formDataPropertyName: 'category',
+              fieldName: 'category',
               label: S.of(context).category_selection,
               formData: formData,
-              onSaveFn: formDataNotifier.update,
-              dbItemFetchFn: categoryRepository.fetchItemAsMap,
+              onChangedFn: formDataNotifier.update,
               dbListFetchFn: categoryRepository.fetchItemListAsMaps,
             ),
           ],
@@ -132,9 +131,9 @@ class ProductFormInputField extends ConsumerWidget {
     final formData = productFormController.data;
     return FormInputField(
         formData: formData,
-        onSaveFn: productFormController.update,
+        onChangedFn: productFormController.update,
         dataType: dataType,
-        name: name,
-        displayedTitle: displayedTitle);
+        fieldName: name,
+        label: displayedTitle);
   }
 }

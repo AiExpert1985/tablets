@@ -8,69 +8,82 @@ import 'package:tablets/src/common/functions/form_validation.dart' as validation
 /// I used Stateful widget because it is the the best way I found to make the initial value visible
 /// after it is being fetched from DB, I didn't want to use riverpod providers because it lead to
 /// unnecessary complications
+/// note that, each item displayed must have property named 'name' because this property is used to
+/// fetch items from database, and also to be displayed in the drop down list
 class DropDownWithSearchFormField extends StatefulWidget {
   const DropDownWithSearchFormField(
-      {required this.formDataPropertyName,
-      required this.dbItemFetchFn,
-      required this.dbListFetchFn,
-      required this.onSaveFn,
-      required this.formData,
-      this.selectedItemPropertyName = 'dbKey',
+      {required this.formData,
+      required this.onChangedFn,
       this.label,
+      required this.fieldName,
+      // required this.dbItemFetchFn,
+      required this.dbListFetchFn,
+      this.isRequired = true,
+      this.hideBorders = false,
+      this.subItemSequence, // the sequence of item in the list of main form property,
       super.key});
   // formDataPropertyName: the key of formData that we want to
   //used selected item to add/update its value, item formData[formDataPropertyName]
-  final String formDataPropertyName;
+  final String fieldName;
   // selectedItemPropertyName: the name of the property of the selected item which is will be stored
   // in formData[formDataPropertyName] or used to fetch initial value from db.
-  // if no value provided, then dbKey will be used because all items have dbKey property
-  final String selectedItemPropertyName;
   final String? label; // label shown on the cell
   final Map<String, dynamic> formData; // used to fetch initial data & to store selected item
   // onSaveFn: used to store selected item in formData
-  final void Function({required String key, required dynamic value}) onSaveFn;
-  // dbItemFetchFn: fetch initial value from db
-  final Future<Map<String, dynamic>> Function({String? filterKey, String? filterValue})
-      dbItemFetchFn;
-  // dbItemFetchFn: fetch selection list of value form db.
+  final void Function(Map<String, dynamic>) onChangedFn;
   final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue})
       dbListFetchFn;
+  final bool hideBorders; // hide borders in decoration, used if the field in sub list
+  final bool isRequired; // if isRequired = false, then the field will not be validated
+  final int? subItemSequence;
 
   @override
   State<DropDownWithSearchFormField> createState() => _DropDownWithSearchFormFieldState();
 }
 
 class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormField> {
-  final Map<String, dynamic> initialValue = {};
+  Map<String, dynamic>? setInitialValue(formData, fieldName, subItemSequence) {
+    Map<String, dynamic>? initialMap;
+    if (formData[fieldName] != null) {
+      if (subItemSequence != null) {
+        if (formData[fieldName][subItemSequence]['name'] != null) {
+          // here I made assumption that if we want to add anew sub item, then we should initial
+          // an empty Map, so there is alway a Map in the subItemSequence
 
-  void setInitialValue(formData, nameKey, selectedItemPropertyName) async {
-    if (formData[nameKey] != null) {
-      Map<String, dynamic> itemMap = await widget.dbItemFetchFn(
-          filterKey: selectedItemPropertyName, filterValue: formData[nameKey]);
-      if (mounted) {
-        setState(() {
-          initialValue.addAll(itemMap); // Store the fetched data
-        });
+          initialMap = formData[fieldName][subItemSequence];
+        } else {
+          initialMap = null;
+        }
+      } else {
+        initialMap = formData[fieldName];
       }
+    } else {
+      initialMap = null;
     }
+    return initialMap;
   }
 
   @override
   Widget build(BuildContext context) {
-    final formDataPropertyName = widget.formDataPropertyName;
+    final onChangedFn = widget.onChangedFn;
+    final dbListFetchFn = widget.dbListFetchFn;
     final label = widget.label;
-    final selectedItemPropertyName = widget.selectedItemPropertyName;
     final formData = widget.formData;
-    setInitialValue(formData, formDataPropertyName, selectedItemPropertyName);
+    final hideBorders = widget.hideBorders;
+    final fieldName = widget.fieldName;
+    final subItemSequence = widget.subItemSequence;
+    final initialValue = setInitialValue(formData, fieldName, subItemSequence);
+
     return Expanded(
       child: DropdownSearch<Map<String, dynamic>>(
           mode: Mode.form,
           decoratorProps: DropDownDecoratorProps(
-            decoration: utils.formFieldDecoration(label: label),
+            decoration: hideBorders
+                ? utils.formFieldDecoration(label: label, hideBorders: true)
+                : utils.formFieldDecoration(label: label),
           ),
-          selectedItem:
-              initialValue.keys.isNotEmpty && initialValue['name'] != null ? initialValue : null,
-          items: (filter, t) => widget.dbListFetchFn(filterKey: 'name', filterValue: filter),
+          selectedItem: initialValue,
+          items: (filter, t) => dbListFetchFn(filterKey: 'name', filterValue: filter),
           compareFn: (i, s) => i == s,
           popupProps: PopupProps.dialog(
             title: label != null
@@ -100,8 +113,14 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
                 errorMessage: S.of(context).input_validation_error_message_for_strings,
               ),
           itemAsString: (item) => item['name'],
-          onSaved: (item) {
-            widget.onSaveFn(key: formDataPropertyName, value: item?[selectedItemPropertyName]);
+          onChanged: (item) {
+            if (item == null) return;
+            if (subItemSequence == null) {
+              formData[fieldName] = item;
+            } else {
+              formData[fieldName][subItemSequence] = item;
+            }
+            onChangedFn(formData);
           }),
     );
   }

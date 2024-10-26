@@ -14,7 +14,7 @@ class SalesmanGrid extends ConsumerWidget {
   const SalesmanGrid({super.key});
 
   void showEditSalesmanForm(BuildContext context, WidgetRef ref, Salesman salesman) {
-    ref.read(salesmanFormDataProvider.notifier).initializeProperties(item: salesman);
+    ref.read(salesmanFormDataProvider.notifier).initialize(initialData: salesman.toMap());
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize(urls: salesman.imageUrls);
     showDialog(

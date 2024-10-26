@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:tablets/src/common/interfaces/base_item.dart';
 
 // used to represent below types of transactions:
@@ -28,10 +26,10 @@ class Transaction implements BaseItem {
   double amount; // amount of money
   String currency; // $ or ID
   String? notes;
-  String counterParty; // name of customer
+  Map<String, dynamic>? counterParty; // name of customer
   String? paymentType; // cash, debt
-  String? salesman; // dbKey of salesman
-  List<String>? items;
+  Map<String, dynamic>? salesman; // dbKey of salesman
+  List<Map<String, dynamic>>? items;
   double? discount;
   String? totalAsText;
   Transaction({
@@ -71,7 +69,7 @@ class Transaction implements BaseItem {
       'counterParty': counterParty,
       'paymentType': paymentType,
       'salesman': salesman,
-      'itemDbKeyList': items,
+      'items': items,
       'discount': discount,
       'totalAsText': totalAsText,
     };
@@ -90,57 +88,16 @@ class Transaction implements BaseItem {
       counterParty: map['counterParty'],
       paymentType: map['paymentType'],
       salesman: map['salesman'],
-      items: ['dsafsdf', 'safsdfsdf', 'sadfsdf'],
+      items: (map['items'] as List<dynamic>?)
+          ?.map((item) => item as Map<String, dynamic>)
+          .toList(), // Cast to List<Map<String, dynamic>>?
       discount: map['discount'].toDouble(),
       totalAsText: map['totalAsText'],
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory Transaction.fromJson(String source) => Transaction.fromMap(json.decode(source));
-
   @override
   String toString() {
     return 'Transaction(name: $name, date: $date, amount: $amount, counterParty: $counterParty)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is Transaction &&
-        other.dbKey == dbKey &&
-        other.name == name &&
-        listEquals(other.imageUrls, imageUrls) &&
-        other.number == number &&
-        other.date == date &&
-        other.amount == amount &&
-        other.currency == currency &&
-        other.notes == notes &&
-        other.counterParty == counterParty &&
-        other.paymentType == paymentType &&
-        other.salesman == salesman &&
-        listEquals(other.items, items) &&
-        other.discount == discount &&
-        other.totalAsText == totalAsText;
-  }
-
-  @override
-  int get hashCode {
-    return dbKey.hashCode ^
-        name.hashCode ^
-        imageUrls.hashCode ^
-        number.hashCode ^
-        date.hashCode ^
-        amount.hashCode ^
-        currency.hashCode ^
-        notes.hashCode ^
-        counterParty.hashCode ^
-        paymentType.hashCode ^
-        salesman.hashCode ^
-        items.hashCode ^
-        discount.hashCode ^
-        totalAsText.hashCode;
   }
 }
