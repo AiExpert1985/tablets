@@ -88,6 +88,7 @@ class CustomerInvoiceItemListData extends ConsumerWidget {
             isTitle: true,
             width: nameWidth,
             cell: DropDownWithSearchFormField(
+              targetProperties: const {'name': 'name', 'price': 'sellWholePrice'},
               subItemSequence: sequence,
               hideBorders: true,
               fieldName: 'items',
@@ -170,6 +171,8 @@ class CustomerInvoiceItemListTitles extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formController = ref.watch(transactionFormDataProvider.notifier);
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         InvoiceItemListCell(
           isTitle: true,
@@ -178,9 +181,7 @@ class CustomerInvoiceItemListTitles extends ConsumerWidget {
           cell: IconButton(
             alignment: Alignment.topCenter,
             onPressed: () {
-              tempPrint(formController.data);
               addNewEmptyRow(formController);
-              tempPrint(formController.data);
             },
             icon: const Icon(Icons.add, color: Colors.green),
           ),

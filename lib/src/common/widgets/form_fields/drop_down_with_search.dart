@@ -16,12 +16,17 @@ class DropDownWithSearchFormField extends StatefulWidget {
       {required this.formData,
       required this.onChangedFn,
       this.label,
+      // the name of property in formData Map<String, dynamic>
       required this.fieldName,
       // required this.dbItemFetchFn,
       required this.dbListFetchFn,
       this.isRequired = true,
       this.hideBorders = false,
       this.subItemSequence, // the sequence of item in the list of main form property,
+      // a map for all properties of formData, and the corresponding properties in the targeted item
+      // example {'price':'sellWholePrice'} means that the value of sellWholePrice property
+      // in Product will be stored under the 'price' property in formData
+      required this.targetProperties,
       super.key});
   // formDataPropertyName: the key of formData that we want to
   //used selected item to add/update its value, item formData[formDataPropertyName]
@@ -37,6 +42,7 @@ class DropDownWithSearchFormField extends StatefulWidget {
   final bool hideBorders; // hide borders in decoration, used if the field in sub list
   final bool isRequired; // if isRequired = false, then the field will not be validated
   final int? subItemSequence;
+  final Map<String, String> targetProperties;
 
   @override
   State<DropDownWithSearchFormField> createState() => _DropDownWithSearchFormFieldState();
@@ -67,12 +73,14 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
   @override
   Widget build(BuildContext context) {
     final onChangedFn = widget.onChangedFn;
+    final isRequired = widget.isRequired;
     final dbListFetchFn = widget.dbListFetchFn;
     final label = widget.label;
     final formData = widget.formData;
     final hideBorders = widget.hideBorders;
     final fieldName = widget.fieldName;
     final subItemSequence = widget.subItemSequence;
+    final targetProperties = widget.targetProperties;
     final initialValue = setInitialValue(formData, fieldName, subItemSequence);
     return Expanded(
       child: DropdownSearch<Map<String, dynamic>>(
@@ -108,18 +116,29 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
               decoration: utils.formFieldDecoration(),
             ),
           ),
-          validator: (item) => validation.validateStringField(
-                fieldValue: item?['name'],
-                errorMessage: S.of(context).input_validation_error_message_for_strings,
-              ),
-          itemAsString: (item) => item['name'],
+          validator: (item) => isRequired
+              ? validation.validateStringField(
+                  fieldValue: item?['name'],
+                  errorMessage: S.of(context).input_validation_error_message_for_strings,
+                )
+              : null,
+          itemAsString: (item) {
+            return item['name'];
+          },
           onChanged: (item) {
             if (item == null) return;
+
             if (subItemSequence == null) {
-              formData[fieldName] = item;
+              targetProperties.forEach((formKey, itemKey) {
+                tempPrint(item[itemKey].runtimeType);
+                formData[formKey] = {'name': item[itemKey]};
+              });
             } else {
-              formData[fieldName][subItemSequence] = item;
+              targetProperties.forEach((formKey, itemKey) {
+                formData[fieldName][subItemSequence][formKey] = item[itemKey];
+              });
             }
+            tempPrint(formData);
             onChangedFn(formData);
           }),
     );

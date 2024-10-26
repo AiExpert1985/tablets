@@ -88,9 +88,7 @@ class Transaction implements BaseItem {
       counterParty: map['counterParty'],
       paymentType: map['paymentType'],
       salesman: map['salesman'],
-      items: (map['items'] as List<dynamic>?)
-          ?.map((item) => item as Map<String, dynamic>)
-          .toList(), // Cast to List<Map<String, dynamic>>?
+      items: (map['items'] as List<dynamic>?)?.map((item) => item as Map<String, dynamic>).toList(),
       discount: map['discount'].toDouble(),
       totalAsText: map['totalAsText'],
     );

@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/interfaces/base_item.dart';
+import 'package:tablets/src/common/values/constants.dart' as constants;
 
 class Customer implements BaseItem {
   @override
@@ -12,28 +12,18 @@ class Customer implements BaseItem {
   String name;
   @override
   List<String> imageUrls;
+  Map<String, dynamic> salesman;
 
   Customer({
     required this.dbKey,
     required this.name,
     required this.imageUrls,
+    required this.salesman,
   });
 
   @override
   String get coverImageUrl =>
       imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
-
-  Customer copyWith({
-    String? dbKey,
-    String? name,
-    List<String>? imageUrls,
-  }) {
-    return Customer(
-      dbKey: dbKey ?? this.dbKey,
-      name: name ?? this.name,
-      imageUrls: imageUrls ?? this.imageUrls,
-    );
-  }
 
   @override
   Map<String, dynamic> toMap() {
@@ -41,6 +31,7 @@ class Customer implements BaseItem {
       'dbKey': dbKey,
       'name': name,
       'imageUrls': imageUrls,
+      'salesman': salesman,
     };
   }
 
@@ -49,6 +40,7 @@ class Customer implements BaseItem {
       dbKey: map['dbKey'] ?? '',
       name: map['name'] ?? '',
       imageUrls: List<String>.from(map['imageUrls']),
+      salesman: map['salesman'] ?? '',
     );
   }
 
@@ -66,9 +58,12 @@ class Customer implements BaseItem {
     return other is Customer &&
         other.dbKey == dbKey &&
         other.name == name &&
-        listEquals(other.imageUrls, imageUrls);
+        listEquals(other.imageUrls, imageUrls) &&
+        mapEquals(other.salesman, salesman);
   }
 
   @override
-  int get hashCode => dbKey.hashCode ^ name.hashCode ^ imageUrls.hashCode;
+  int get hashCode {
+    return dbKey.hashCode ^ name.hashCode ^ imageUrls.hashCode ^ salesman.hashCode;
+  }
 }

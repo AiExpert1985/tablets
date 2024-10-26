@@ -34,6 +34,7 @@ class InvoiceFormFields extends ConsumerWidget {
         Row(
           children: [
             DropDownWithSearchFormField(
+              targetProperties: const {'counterParty': 'name', 'salesman': 'salesman'},
               fieldName: 'counterParty',
               label: S.of(context).customer,
               formData: formData,
@@ -41,13 +42,14 @@ class InvoiceFormFields extends ConsumerWidget {
               dbListFetchFn: customerRepository.fetchItemListAsMaps,
             ),
             gaps.HorizontalGap.formFieldToField,
-            DropDownWithSearchFormField(
-              fieldName: 'salesman',
-              label: S.of(context).transaction_salesman,
-              formData: formData,
-              onChangedFn: formDataNotifier.update,
-              dbListFetchFn: salesmanRepository.fetchItemListAsMaps,
-            ),
+            // DropDownWithSearchFormField(
+            //   targetProperties: const {'salesman': 'name'},
+            //   fieldName: 'salesman',
+            //   label: S.of(context).transaction_salesman,
+            //   formData: formData,
+            //   onChangedFn: formDataNotifier.update,
+            //   dbListFetchFn: salesmanRepository.fetchItemListAsMaps,
+            // ),
           ],
         ),
         gaps.VerticalGap.formFieldToField,
