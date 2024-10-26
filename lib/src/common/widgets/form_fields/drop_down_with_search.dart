@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
 
@@ -73,7 +74,6 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
     final fieldName = widget.fieldName;
     final subItemSequence = widget.subItemSequence;
     final initialValue = setInitialValue(formData, fieldName, subItemSequence);
-
     return Expanded(
       child: DropdownSearch<Map<String, dynamic>>(
           mode: Mode.form,

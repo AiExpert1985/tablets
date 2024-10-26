@@ -1,39 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 
 class InvoiceItemList extends ConsumerWidget {
-  const InvoiceItemList(this.formFieldName, {super.key});
-  final String formFieldName;
-  Map<String, dynamic> addNewEmptyRow(formData, fieldName) {
-    // final emptyValues = {
-    //   'price': null,
-    //   'soldQuantity': null,
-    //   'giftQuantity': null,
-    //   'totalPrice': null
-    // };
-    if (formData[fieldName] != null) {
-      // formData[fieldName].add({});
-      (formData[fieldName] as List<dynamic>?)
-          ?.map((item) => item as Map<String, dynamic>)
-          .toList()
-          .add({});
-    } else {
-      formData[fieldName] = [{}];
-    }
-    return formData;
-  }
+  const InvoiceItemList({super.key});
+  // final String formFieldName;
+  // Map<String, dynamic> addNewEmptyRow(formData, fieldName) {
+  //   // final emptyValues = {
+  //   //   'price': null,
+  //   //   'soldQuantity': null,
+  //   //   'giftQuantity': null,
+  //   //   'totalPrice': null
+  //   // };
+  //   if (formData[fieldName] != null) {
+  //     (formData[fieldName] as List<dynamic>?)
+  //         ?.map((item) => item as Map<String, dynamic>)
+  //         .toList()
+  //         .add({});
+  //   } else {
+  //     formData[fieldName] = [{}];
+  //   }
+  //   return formData;
+  // }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(transactionFormDataProvider);
     final formController = ref.watch(transactionFormDataProvider.notifier);
     final repository = ref.watch(productRepositoryProvider);
-    final initialFormData = formController.data;
-    final updatedFormData = addNewEmptyRow(initialFormData, formFieldName);
+    final formData = formController.data;
+    // final updatedFormData = addNewEmptyRow(initialFormData, formFieldName);
     return Container(
       height: 350,
       decoration: BoxDecoration(
@@ -46,7 +47,7 @@ class InvoiceItemList extends ConsumerWidget {
           const CustomerInvoiceItemListTitles(),
           Expanded(
             child: ListView.builder(
-              itemCount: updatedFormData[formFieldName].length,
+              itemCount: formData['items']?.length ?? 0,
               itemBuilder: (context, index) {
                 return ListTile(
                   title: CustomerInvoiceItemListData(
@@ -86,15 +87,13 @@ class CustomerInvoiceItemListData extends ConsumerWidget {
         InvoiceItemListCell(
             isTitle: true,
             width: nameWidth,
-            cell: Expanded(
-              child: DropDownWithSearchFormField(
-                subItemSequence: 0,
-                hideBorders: true,
-                fieldName: 'items',
-                dbListFetchFn: dbListFetchFn,
-                onChangedFn: onChangedFn,
-                formData: formData,
-              ),
+            cell: DropDownWithSearchFormField(
+              subItemSequence: sequence,
+              hideBorders: true,
+              fieldName: 'items',
+              dbListFetchFn: dbListFetchFn,
+              onChangedFn: onChangedFn,
+              formData: formData,
             )),
         const InvoiceItemListCell(isTitle: true, width: priceWidth, cell: Text('tempText')),
         const InvoiceItemListCell(isTitle: true, width: soldQuantityWidth, cell: Text('TempText')),
@@ -140,22 +139,52 @@ class InvoiceItemListCell extends StatelessWidget {
         ),
         width: width,
         height: itemHeight,
-        child: Center(child: cell));
+        child: Column(
+          children: [
+            cell,
+          ],
+        ));
   }
 }
 
-class CustomerInvoiceItemListTitles extends StatelessWidget {
+class CustomerInvoiceItemListTitles extends ConsumerWidget {
   const CustomerInvoiceItemListTitles({super.key});
+  void addNewEmptyRow(formController) {
+    Map<String, dynamic> formData = formController.data;
+    Map<String, dynamic> emptyMap = {};
+    // final emptyValues = {
+    //   'price': null,
+    //   'soldQuantity': null,
+    //   'giftQuantity': null,
+    //   'totalPrice': null
+    // };
+    if (formData['items'] != null) {
+      formData['items'].add(emptyMap);
+    } else {
+      formData['items'] = [emptyMap];
+    }
+    formController.update(formData);
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formController = ref.watch(transactionFormDataProvider.notifier);
     return Row(
       children: [
         InvoiceItemListCell(
-            isTitle: true,
-            isFirst: true,
-            width: sequenceWidth,
-            cell: Text(S.of(context).item_sequence)),
+          isTitle: true,
+          isFirst: true,
+          width: sequenceWidth,
+          cell: IconButton(
+            alignment: Alignment.topCenter,
+            onPressed: () {
+              tempPrint(formController.data);
+              addNewEmptyRow(formController);
+              tempPrint(formController.data);
+            },
+            icon: const Icon(Icons.add, color: Colors.green),
+          ),
+        ),
         InvoiceItemListCell(isTitle: true, width: nameWidth, cell: Text(S.of(context).item_name)),
         InvoiceItemListCell(isTitle: true, width: priceWidth, cell: Text(S.of(context).item_price)),
         InvoiceItemListCell(

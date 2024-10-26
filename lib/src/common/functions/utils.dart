@@ -42,7 +42,7 @@ InputDecoration formFieldDecoration({String? label, bool hideBorders = false}) {
             ),
           ),
     alignLabelWithHint: true,
-    contentPadding: const EdgeInsets.all(8),
+    contentPadding: const EdgeInsets.all(12),
     isDense: true, // Add this line to remove the default padding
     border: hideBorders
         ? null

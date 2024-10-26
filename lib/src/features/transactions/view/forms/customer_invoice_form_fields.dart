@@ -131,7 +131,7 @@ class InvoiceFormFields extends ConsumerWidget {
           ],
         ),
         gaps.VerticalGap.formFieldToField,
-        const InvoiceItemList('items'),
+        const InvoiceItemList(),
         gaps.VerticalGap.formFieldToField,
         gaps.VerticalGap.formFieldToField,
         SizedBox(

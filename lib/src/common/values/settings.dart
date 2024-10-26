@@ -1,1 +1,1 @@
-bool writeTotalPriceAsText = true;
+bool writeTotalPriceAsText = false;
