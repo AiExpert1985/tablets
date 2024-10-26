@@ -78,6 +78,7 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
       child: DropdownSearch<Map<String, dynamic>>(
           mode: Mode.form,
           decoratorProps: DropDownDecoratorProps(
+            textAlign: TextAlign.center,
             decoration: hideBorders
                 ? utils.formFieldDecoration(label: label, hideBorders: true)
                 : utils.formFieldDecoration(label: label),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
@@ -9,24 +8,6 @@ import 'package:tablets/src/features/transactions/controllers/transaction_form_c
 
 class InvoiceItemList extends ConsumerWidget {
   const InvoiceItemList({super.key});
-  // final String formFieldName;
-  // Map<String, dynamic> addNewEmptyRow(formData, fieldName) {
-  //   // final emptyValues = {
-  //   //   'price': null,
-  //   //   'soldQuantity': null,
-  //   //   'giftQuantity': null,
-  //   //   'totalPrice': null
-  //   // };
-  //   if (formData[fieldName] != null) {
-  //     (formData[fieldName] as List<dynamic>?)
-  //         ?.map((item) => item as Map<String, dynamic>)
-  //         .toList()
-  //         .add({});
-  //   } else {
-  //     formData[fieldName] = [{}];
-  //   }
-  //   return formData;
-  // }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -83,9 +64,8 @@ class CustomerInvoiceItemListData extends ConsumerWidget {
     return Row(
       children: [
         InvoiceItemListCell(
-            isTitle: true, isFirst: true, width: sequenceWidth, cell: Text(sequence.toString())),
+            isFirst: true, width: sequenceWidth, cell: Text((sequence + 1).toString())),
         InvoiceItemListCell(
-            isTitle: true,
             width: nameWidth,
             cell: DropDownWithSearchFormField(
               targetProperties: const {'name': 'name', 'price': 'sellWholePrice'},
@@ -96,11 +76,10 @@ class CustomerInvoiceItemListData extends ConsumerWidget {
               onChangedFn: onChangedFn,
               formData: formData,
             )),
-        const InvoiceItemListCell(isTitle: true, width: priceWidth, cell: Text('tempText')),
-        const InvoiceItemListCell(isTitle: true, width: soldQuantityWidth, cell: Text('TempText')),
-        const InvoiceItemListCell(isTitle: true, width: giftQantityWidth, cell: Text('tempText')),
-        const InvoiceItemListCell(
-            isTitle: true, isLast: true, width: soldTotalPriceWidth, cell: Text('tempText')),
+        const InvoiceItemListCell(width: priceWidth, cell: Text('tempText')),
+        const InvoiceItemListCell(width: soldQuantityWidth, cell: Text('TempText')),
+        const InvoiceItemListCell(width: giftQantityWidth, cell: Text('tempText')),
+        const InvoiceItemListCell(isLast: true, width: soldTotalPriceWidth, cell: Text('tempText')),
       ],
     );
   }
@@ -139,7 +118,7 @@ class InvoiceItemListCell extends StatelessWidget {
           ),
         ),
         width: width,
-        height: itemHeight,
+        height: height,
         child: Column(
           children: [
             cell,
@@ -178,6 +157,7 @@ class CustomerInvoiceItemListTitles extends ConsumerWidget {
           isTitle: true,
           isFirst: true,
           width: sequenceWidth,
+          height: titleHeight,
           cell: IconButton(
             alignment: Alignment.topCenter,
             onPressed: () {
@@ -186,15 +166,30 @@ class CustomerInvoiceItemListTitles extends ConsumerWidget {
             icon: const Icon(Icons.add, color: Colors.green),
           ),
         ),
-        InvoiceItemListCell(isTitle: true, width: nameWidth, cell: Text(S.of(context).item_name)),
-        InvoiceItemListCell(isTitle: true, width: priceWidth, cell: Text(S.of(context).item_price)),
         InvoiceItemListCell(
-            isTitle: true, width: soldQuantityWidth, cell: Text(S.of(context).item_sold_quantity)),
+            isTitle: true,
+            height: titleHeight,
+            width: nameWidth,
+            cell: Text(S.of(context).item_name)),
         InvoiceItemListCell(
-            isTitle: true, width: giftQantityWidth, cell: Text(S.of(context).item_gifts_quantity)),
+            isTitle: true,
+            height: titleHeight,
+            width: priceWidth,
+            cell: Text(S.of(context).item_price)),
+        InvoiceItemListCell(
+            isTitle: true,
+            height: titleHeight,
+            width: soldQuantityWidth,
+            cell: Text(S.of(context).item_sold_quantity)),
+        InvoiceItemListCell(
+            isTitle: true,
+            height: titleHeight,
+            width: giftQantityWidth,
+            cell: Text(S.of(context).item_gifts_quantity)),
         InvoiceItemListCell(
             isTitle: true,
             isLast: true,
+            height: titleHeight,
             width: soldTotalPriceWidth,
             cell: Text(S.of(context).item_total_price)),
       ],
@@ -203,7 +198,8 @@ class CustomerInvoiceItemListTitles extends ConsumerWidget {
 }
 
 // I made a design decision to make the width variable based on the size of the container
-const double itemHeight = customerInvoiceFormHeight * 0.045;
+const double titleHeight = customerInvoiceFormHeight * 0.055;
+const double itemHeight = customerInvoiceFormHeight * 0.05;
 const double sequenceWidth = customerInvoiceFormWidth * 0.07;
 const double nameWidth = customerInvoiceFormWidth * 0.3;
 const double priceWidth = customerInvoiceFormWidth * 0.12;

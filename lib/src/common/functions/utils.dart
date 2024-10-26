@@ -45,7 +45,7 @@ InputDecoration formFieldDecoration({String? label, bool hideBorders = false}) {
     contentPadding: const EdgeInsets.all(12),
     isDense: true, // Add this line to remove the default padding
     border: hideBorders
-        ? null
+        ? InputBorder.none
         : const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
