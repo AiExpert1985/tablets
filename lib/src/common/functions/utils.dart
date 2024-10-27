@@ -52,7 +52,8 @@ InputDecoration formFieldDecoration({String? label, bool hideBorders = false}) {
   );
 }
 
-List<Map<String, dynamic>> convertAsyncValueListToList(AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
+List<Map<String, dynamic>> convertAsyncValueListToList(
+    AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
   return asyncProductList.when(
       data: (products) => products,
       error: (e, st) {
@@ -79,7 +80,8 @@ String transactionTypeDbNameToScreenName({required BuildContext context, require
   return trasactionTypeLookup[dbName] ?? dbName;
 }
 
-String transactionTypeScreenNameToDbName({required BuildContext context, required String screenName}) {
+String transactionTypeScreenNameToDbName(
+    {required BuildContext context, required String screenName}) {
   final Map<String, String> trasactionTypeLookup = {
     S.of(context).transaction_type_expenditures: TransactionTypes.expenditures.name,
     S.of(context).transaction_type_gifts: TransactionTypes.gifts.name,
@@ -91,4 +93,13 @@ String transactionTypeScreenNameToDbName({required BuildContext context, require
     S.of(context).transaction_type_customer_invoice: TransactionTypes.customerInvoice.name
   };
   return trasactionTypeLookup[screenName] ?? screenName;
+}
+
+/// if the number ends with .0 (example 55.0), it will remove .0 and convert to String
+String doubleToString(dynamic value) {
+  // Check if the value is an integer
+  if (value == value.toInt()) {
+    return value.toInt().toString(); // Convert to int and return as string
+  }
+  return value.toString(); // Return as string if not an integer
 }

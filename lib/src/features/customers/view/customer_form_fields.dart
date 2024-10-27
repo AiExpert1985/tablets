@@ -44,7 +44,7 @@ class CustomerFormInputField extends ConsumerWidget {
               formData: formController.data,
               onChangedFn: formController.update,
               dataType: dataType,
-              fieldName: name,
+              property: name,
               label: displayedTitle),
           VerticalGap.formFieldToField,
           DropDownWithSearchFormField(

@@ -7,37 +7,39 @@ import 'package:tablets/src/features/transactions/controllers/transaction_form_c
 class TransactionFormInputField extends ConsumerWidget {
   const TransactionFormInputField({
     required this.dataType,
-    required this.fieldName,
-    this.title,
+    required this.property,
+    this.label,
     this.isRequired = true,
     this.hideBorders = false,
-    this.subFieldName,
-    this.subItemSequence,
+    this.subProperty,
+    this.subPropertyIndex,
+    this.controller,
     super.key,
   });
 
   final FieldDataTypes dataType;
-  final String fieldName;
-  final String? title;
+  final String property;
+  final String? label;
   final bool isRequired;
   final bool hideBorders;
-  final int? subItemSequence;
-  final String? subFieldName;
+  final int? subPropertyIndex;
+  final String? subProperty;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(transactionFormDataProvider);
-    final transactionFormController = ref.read(transactionFormDataProvider.notifier);
-    final formData = transactionFormController.data;
+    final formController = ref.read(transactionFormDataProvider.notifier);
+    final formData = formController.data;
     return FormInputField(
+        controller: controller,
         hideBorders: hideBorders,
         isRequired: isRequired,
         formData: formData,
-        onChangedFn: transactionFormController.update,
+        onChangedFn: formController.update,
         dataType: dataType,
-        fieldName: fieldName,
-        subItemProperty: subFieldName,
-        subItemSequence: subItemSequence,
-        label: title);
+        property: property,
+        subProperty: subProperty,
+        subPropertyIndex: subPropertyIndex,
+        label: label);
   }
 }

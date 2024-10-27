@@ -16,8 +16,8 @@ class TransactionForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(transactionFormControllerProvider);
-    final formData = ref.watch(transactionFormDataProvider);
+    final formController = ref.read(transactionFormControllerProvider);
+    final formData = ref.read(transactionFormDataProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
     ref.watch(imagePickerProvider);

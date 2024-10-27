@@ -38,7 +38,7 @@ class SalesmanFormInputField extends ConsumerWidget {
         formData: formData,
         onChangedFn: salesmanFormController.update,
         dataType: dataType,
-        fieldName: name,
+        property: name,
         label: displayedTitle);
   }
 }

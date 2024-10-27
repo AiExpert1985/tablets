@@ -1,113 +1,116 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
 
-class FormInputField extends StatefulWidget {
+class FormInputField extends ConsumerStatefulWidget {
   const FormInputField({
     required this.formData,
     required this.onChangedFn,
-    required this.fieldName,
+    required this.property,
     this.label,
-    this.isRequired = true, // if isRequired = false, then the field will not be validated
-    this.hideBorders = false, // hide borders in decoration, used if the field in sub list
-    // isReadOnly: sometimes we need item to be not editable, usually when it is set by another field
+    this.isRequired = true,
+    this.hideBorders = false,
     this.isReadOnly = false,
-    required this.dataType, // to be used for validation based on datatype (int, double, string)
-    this.subItemSequence,
-    this.subItemProperty,
+    required this.dataType,
+    this.subPropertyIndex,
+    this.subProperty,
+    this.controller,
     super.key,
   });
 
   final void Function(Map<String, dynamic>) onChangedFn;
   final FieldDataTypes dataType;
-  final String fieldName;
+  final String property;
   final Map<String, dynamic> formData;
   final String? label;
-  final bool isRequired; // if not required, then it will not be validated
-  final bool isReadOnly; // if isReadOnly = true, then user can't edit this field
+  final bool isRequired;
+  final bool isReadOnly;
   final bool hideBorders;
-  final int? subItemSequence;
-  final String? subItemProperty;
+  final int? subPropertyIndex;
+  final String? subProperty;
+  final TextEditingController? controller;
 
   @override
-  State<FormInputField> createState() => _FormInputFieldState();
+  FormInputFieldState createState() => FormInputFieldState();
 }
 
-class _FormInputFieldState extends State<FormInputField> {
-  dynamic initialValue;
+class FormInputFieldState extends ConsumerState<FormInputField> {
   @override
   void initState() {
     super.initState();
-    if (widget.subItemSequence == null) {
-      initialValue = widget.formData[widget.fieldName];
-      return;
+    if (widget.controller != null) {
+      widget.controller!.addListener(() {
+        tempPrint('Controller text changed: ${widget.controller?.text}');
+      });
     }
-    if (widget.subItemSequence! >= widget.formData[widget.fieldName].length) {
-      initialValue = null;
-      return;
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller != null) {
+      widget.controller!.removeListener(() {
+        tempPrint('Controller listener removed');
+      });
+      widget.controller!.dispose();
     }
-    initialValue = widget.formData[widget.fieldName][widget.subItemSequence][widget.subItemProperty];
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final onChangedFn = widget.onChangedFn;
-    final dataType = widget.dataType;
-    final fieldName = widget.fieldName;
-    final formData = widget.formData;
-    final label = widget.label;
-    final isRequired = widget.isRequired; // if not required, then it will not be validated
-    final isReadOnly = widget.isReadOnly; // if isReadOnly = true, then user can't edit this field
-    final hideBorders = widget.hideBorders;
-    final subItemSequence = widget.subItemSequence;
-    final subItemProperty = widget.subItemProperty;
-    if (initialValue != null) {
-      initialValue = dataType == FieldDataTypes.string ? initialValue : initialValue.toString();
-    }
     return Expanded(
       child: FormBuilderTextField(
-        readOnly: isReadOnly,
+        controller: widget.controller,
+        readOnly: widget.isReadOnly,
         textAlign: TextAlign.center,
-        name: fieldName,
-        initialValue: initialValue.runtimeType is String ? initialValue : initialValue?.toString(),
-        decoration: hideBorders
-            ? utils.formFieldDecoration(label: label, hideBorders: true)
-            : utils.formFieldDecoration(label: label),
+        name: widget.property,
+        decoration: widget.hideBorders
+            ? utils.formFieldDecoration(label: widget.label, hideBorders: true)
+            : utils.formFieldDecoration(label: widget.label),
         onChanged: (value) {
-          if (value == null) return; // since we update on change, we must ensure value isn't null
+          if (value == null) return;
           dynamic userValue = value;
-          if (dataType == FieldDataTypes.int) {
+          if (widget.dataType == FieldDataTypes.int) {
             userValue = int.tryParse(value);
           }
-          if (dataType == FieldDataTypes.double) {
+          if (widget.dataType == FieldDataTypes.double) {
             userValue = double.tryParse(value);
           }
-          if (subItemProperty == null) {
-            formData[fieldName] = userValue;
+          if (widget.subProperty == null) {
+            widget.formData[widget.property] = userValue;
           } else {
-            formData[fieldName] ??= [];
-            formData[fieldName][subItemSequence][subItemProperty] = userValue;
-          }
+            widget.formData[widget.property] ??= [];
 
-          onChangedFn(formData);
+            widget.formData[widget.property][widget.subPropertyIndex][widget.subProperty] =
+                userValue;
+          }
+          widget.onChangedFn(widget.formData);
         },
-        validator: isRequired
+        validator: widget.isRequired
             ? (value) {
-                if (dataType == FieldDataTypes.string) {
+                if (widget.dataType == FieldDataTypes.string) {
                   return validation.validateStringField(
-                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
+                      fieldValue: value,
+                      errorMessage: S.of(context).input_validation_error_message_for_strings);
                 }
-                if (dataType == FieldDataTypes.int) {
+
+                if (widget.dataType == FieldDataTypes.int) {
                   return validation.validateIntField(
-                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
+                      fieldValue: value,
+                      errorMessage: S.of(context).input_validation_error_message_for_integers);
                 }
-                if (dataType == FieldDataTypes.double) {
+
+                if (widget.dataType == FieldDataTypes.double) {
                   return validation.validateDoubleField(
-                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
+                      fieldValue: value,
+                      errorMessage: S.of(context).input_validation_error_message_for_doubles);
                 }
+
                 return null;
               }
             : null,

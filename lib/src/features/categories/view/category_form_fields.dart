@@ -38,7 +38,7 @@ class CategoryFormInputField extends ConsumerWidget {
         formData: formData,
         onChangedFn: categoryFormController.update,
         dataType: dataType,
-        fieldName: name,
+        property: name,
         label: displayedTitle);
   }
 }

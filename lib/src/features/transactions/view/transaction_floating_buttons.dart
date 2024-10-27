@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
@@ -10,6 +11,23 @@ import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
 class TransactionsFloatingButtons extends ConsumerWidget {
   const TransactionsFloatingButtons({super.key});
+
+  void updateTotalPrice(formController) {
+    final formData = formController.data;
+    Map<String, dynamic> priceData = {};
+    double totalPrice = 0;
+    try {
+      int noItems = formData['items']?.length ?? 0;
+      for (int i = 0; i < noItems; i++) {
+        totalPrice += formData['items'][i]['price'];
+      }
+    } catch (e) {
+      errorPrint(message: e);
+    } finally {
+      priceData['totalPrice'] = totalPrice;
+      formController.update(priceData);
+    }
+  }
 
   void showAddInvoiceForm(BuildContext context, WidgetRef ref, {String? formType}) {
     final imagePicker = ref.read(imagePickerProvider.notifier);
@@ -26,6 +44,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
         'date': DateTime.now(),
       });
     }
+    updateTotalPrice(formController);
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const TransactionForm(),

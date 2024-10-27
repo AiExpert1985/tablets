@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 
 class ItemFormData extends StateNotifier<Map<String, dynamic>> {
@@ -8,7 +9,9 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
       state = state = initialData ?? {'dbKey': generateRandomString(len: 8)};
 
   void update(Map<String, dynamic> formData) {
+    tempPrint(formData);
     state = {...state, ...formData};
+    // tempPrint('form is updated $state');
   }
 
   /// using notifier to get current state, used to get state instead of using the provider

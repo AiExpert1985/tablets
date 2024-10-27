@@ -133,7 +133,7 @@ class ProductFormInputField extends ConsumerWidget {
         formData: formData,
         onChangedFn: productFormController.update,
         dataType: dataType,
-        fieldName: name,
+        property: name,
         label: displayedTitle);
   }
 }

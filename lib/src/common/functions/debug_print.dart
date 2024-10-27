@@ -6,10 +6,10 @@ void errorPrint({message, stackTrace}) {
   int trimEnd = stackText.length < 225 ? stackText.length : 225;
   String details = stackText.substring(0, trimEnd);
 
-  debugPrint('||===== Hamandi ====> $message =====> $details======||');
+  debugPrint('||===== Catched Error ====> $message =====> $details======||');
 }
 
 /// Temporary print for texting code
 void tempPrint(message) {
-  debugPrint('||===== Temp Print ====> $message ======||');
+  debugPrint('||===== Debug Print ====> $message ======||');
 }

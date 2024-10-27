@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
-import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
@@ -19,32 +16,20 @@ import 'package:tablets/src/features/transactions/view/forms/transaction_form_fi
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 
 class InvoiceFormFields extends ConsumerWidget {
-  String calcuateTotalPrice(formData) {
-    double totalPrice = 0;
-    int noItems = formData['items'].length ?? 0;
-    for (int i = 0; i < noItems; i++) {
-      try {
-        totalPrice += formData['items'][i]['price'];
-      } catch (e) {
-        errorPrint(message: e);
-      }
-    }
-
-    return totalPrice.toString();
-  }
+  const InvoiceFormFields({super.key});
 
   String calcuateTotalWeight(formData) {
     int totalWeight = 0;
     return totalWeight.toString();
   }
 
-  const InvoiceFormFields({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formData = ref.read(transactionFormDataProvider);
-    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final formController = ref.read(transactionFormDataProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
+    ref.watch(transactionFormDataProvider);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -58,7 +43,7 @@ class InvoiceFormFields extends ConsumerWidget {
               property: 'counterParty',
               label: S.of(context).customer,
               formData: formData,
-              onChangedFn: formDataNotifier.update,
+              onChangedFn: formController.update,
               dbListFetchFn: customerRepository.fetchItemListAsMaps,
             ),
             gaps.HorizontalGap.formFieldToField,
@@ -66,7 +51,7 @@ class InvoiceFormFields extends ConsumerWidget {
               property: 'salesman',
               label: S.of(context).transaction_salesman,
               formData: formData,
-              onChangedFn: formDataNotifier.update,
+              onChangedFn: formController.update,
               dbListFetchFn: salesmanRepository.fetchItemListAsMaps,
             ),
           ],
@@ -76,12 +61,12 @@ class InvoiceFormFields extends ConsumerWidget {
           children: [
             TransactionFormInputField(
               dataType: constants.FieldDataTypes.double,
-              fieldName: 'amount',
-              title: S.of(context).transaction_amount,
+              property: 'amount',
+              label: S.of(context).transaction_amount,
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
-              onChangedFn: formDataNotifier.update,
+              onChangedFn: formController.update,
               formData: formData,
               itemList: [
                 S.of(context).transaction_payment_Dinar,
@@ -93,8 +78,8 @@ class InvoiceFormFields extends ConsumerWidget {
             gaps.HorizontalGap.formFieldToField,
             TransactionFormInputField(
               dataType: constants.FieldDataTypes.double,
-              fieldName: 'discount',
-              title: S.of(context).transaction_discount,
+              property: 'discount',
+              label: S.of(context).transaction_discount,
             ),
           ],
         ),
@@ -103,12 +88,12 @@ class InvoiceFormFields extends ConsumerWidget {
           children: [
             TransactionFormInputField(
               dataType: constants.FieldDataTypes.int,
-              fieldName: 'number',
-              title: S.of(context).transaction_number,
+              property: 'number',
+              label: S.of(context).transaction_number,
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
-              onChangedFn: formDataNotifier.update,
+              onChangedFn: formController.update,
               formData: formData,
               itemList: [
                 S.of(context).transaction_payment_cash,
@@ -119,7 +104,7 @@ class InvoiceFormFields extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             FormDatePickerField(
-              onChangedFn: formDataNotifier.update,
+              onChangedFn: formController.update,
               formData: formData,
               fieldName: 'date',
               label: S.of(context).transaction_date,
@@ -132,8 +117,8 @@ class InvoiceFormFields extends ConsumerWidget {
             TransactionFormInputField(
               isRequired: false,
               dataType: constants.FieldDataTypes.string,
-              fieldName: 'notes',
-              title: S.of(context).transaction_notes,
+              property: 'notes',
+              label: S.of(context).transaction_notes,
             ),
           ],
         ),
@@ -145,8 +130,8 @@ class InvoiceFormFields extends ConsumerWidget {
               child: TransactionFormInputField(
                 isRequired: false,
                 dataType: constants.FieldDataTypes.string,
-                fieldName: 'totalAsText',
-                title: S.of(context).transaction_total_amount_as_text,
+                property: 'totalAsText',
+                label: S.of(context).transaction_total_amount_as_text,
               ),
             ),
           ],
@@ -160,24 +145,16 @@ class InvoiceFormFields extends ConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: FormBuilderTextField(
-                  textAlign: TextAlign.center,
-                  initialValue: calcuateTotalPrice(formData),
-                  name: 'totalPrice',
-                  readOnly: true,
-                  decoration: utils.formFieldDecoration(label: S.of(context).invoice_total_price),
-                ),
+              TransactionFormInputField(
+                dataType: constants.FieldDataTypes.double,
+                label: S.of(context).invoice_total_price,
+                property: 'totalPrice',
               ),
               gaps.HorizontalGap.formFieldToField,
-              Expanded(
-                child: FormBuilderTextField(
-                  textAlign: TextAlign.center,
-                  initialValue: calcuateTotalWeight(formData),
-                  name: 'totalWeight',
-                  readOnly: true,
-                  decoration: utils.formFieldDecoration(label: S.of(context).invoice_total_weight),
-                ),
+              TransactionFormInputField(
+                dataType: constants.FieldDataTypes.double,
+                label: S.of(context).invoice_total_weight,
+                property: 'totalWeight',
               ),
             ],
           ),
