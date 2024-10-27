@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
@@ -19,11 +20,22 @@ import 'package:tablets/src/common/values/form_dimenssions.dart';
 
 class InvoiceFormFields extends ConsumerWidget {
   String calcuateTotalPrice(formData) {
-    return 'total price';
+    double totalPrice = 0;
+    int noItems = formData['items'].length ?? 0;
+    for (int i = 0; i < noItems; i++) {
+      try {
+        totalPrice += formData['items'][i]['price'];
+      } catch (e) {
+        tempPrint(formData['items'][i]['price'].runtimeType);
+      }
+    }
+
+    return totalPrice.toString();
   }
 
   String calcuateTotalWeight(formData) {
-    return 'total weight';
+    int totalWeight = 0;
+    return totalWeight.toString();
   }
 
   const InvoiceFormFields({super.key});
