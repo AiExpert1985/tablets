@@ -11,7 +11,8 @@ class InvoiceItemList extends ConsumerWidget {
 
   List<Widget> createDataRows(formController, repository) {
     List<Widget> rows = [];
-    for (var i = 0; i < formController.data['items'].length; i++) {
+    int numItems = formController.data['items']?.length ?? 0;
+    for (var i = 0; i < numItems; i++) {
       rows.add(CustomerInvoiceItemListData(
           sequence: i,
           dbListFetchFn: repository.fetchItemListAsMaps,
