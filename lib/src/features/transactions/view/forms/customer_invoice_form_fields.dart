@@ -26,7 +26,7 @@ class InvoiceFormFields extends ConsumerWidget {
       try {
         totalPrice += formData['items'][i]['price'];
       } catch (e) {
-        tempPrint(formData['items'][i]['price'].runtimeType);
+        errorPrint(message: e);
       }
     }
 
@@ -41,7 +41,7 @@ class InvoiceFormFields extends ConsumerWidget {
   const InvoiceFormFields({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formData = ref.watch(transactionFormDataProvider);
+    final formData = ref.read(transactionFormDataProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);

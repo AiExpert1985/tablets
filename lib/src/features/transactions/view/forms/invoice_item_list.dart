@@ -27,20 +27,22 @@ class InvoiceItemList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(transactionFormDataProvider);
-    final formController = ref.watch(transactionFormDataProvider.notifier);
-    final repository = ref.watch(productRepositoryProvider);
-    return Container(
-      height: 350,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black38, width: 1.0),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          const CustomerInvoiceItemListTitles(),
-          ...createDataRows(formController, repository),
-        ],
+    final formController = ref.read(transactionFormDataProvider.notifier);
+    final repository = ref.read(productRepositoryProvider);
+    return SingleChildScrollView(
+      child: Container(
+        height: 350,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black38, width: 1.0),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            const CustomerInvoiceItemListTitles(),
+            ...createDataRows(formController, repository),
+          ],
+        ),
       ),
     );
   }
@@ -114,7 +116,6 @@ class InvoiceItemListCell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(transactionFormDataProvider);
     return Container(
         decoration: BoxDecoration(
           border: Border(
@@ -156,7 +157,7 @@ class CustomerInvoiceItemListTitles extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(transactionFormDataProvider.notifier);
+    final formController = ref.read(transactionFormDataProvider.notifier);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,

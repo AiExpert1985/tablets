@@ -27,7 +27,7 @@ class TransactionFormInputField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(transactionFormDataProvider);
-    final transactionFormController = ref.watch(transactionFormDataProvider.notifier);
+    final transactionFormController = ref.read(transactionFormDataProvider.notifier);
     final formData = transactionFormController.data;
     return FormInputField(
         hideBorders: hideBorders,

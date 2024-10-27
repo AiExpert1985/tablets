@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
 
-class FormInputField extends ConsumerWidget {
+class FormInputField extends StatefulWidget {
   const FormInputField({
     required this.formData,
     required this.onChangedFn,
@@ -33,15 +32,38 @@ class FormInputField extends ConsumerWidget {
   final int? subItemSequence;
   final String? subItemProperty;
 
-  dynamic calculateInitialValue() {
-    if (subItemSequence == null) return formData[fieldName];
-    if (subItemSequence! >= formData[fieldName].length) return null;
-    return formData[fieldName][subItemSequence][subItemProperty];
+  @override
+  State<FormInputField> createState() => _FormInputFieldState();
+}
+
+class _FormInputFieldState extends State<FormInputField> {
+  dynamic initialValue;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.subItemSequence == null) {
+      initialValue = widget.formData[widget.fieldName];
+      return;
+    }
+    if (widget.subItemSequence! >= widget.formData[widget.fieldName].length) {
+      initialValue = null;
+      return;
+    }
+    initialValue = widget.formData[widget.fieldName][widget.subItemSequence][widget.subItemProperty];
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    dynamic initialValue = calculateInitialValue();
+  Widget build(BuildContext context) {
+    final onChangedFn = widget.onChangedFn;
+    final dataType = widget.dataType;
+    final fieldName = widget.fieldName;
+    final formData = widget.formData;
+    final label = widget.label;
+    final isRequired = widget.isRequired; // if not required, then it will not be validated
+    final isReadOnly = widget.isReadOnly; // if isReadOnly = true, then user can't edit this field
+    final hideBorders = widget.hideBorders;
+    final subItemSequence = widget.subItemSequence;
+    final subItemProperty = widget.subItemProperty;
     if (initialValue != null) {
       initialValue = dataType == FieldDataTypes.string ? initialValue : initialValue.toString();
     }
@@ -50,7 +72,7 @@ class FormInputField extends ConsumerWidget {
         readOnly: isReadOnly,
         textAlign: TextAlign.center,
         name: fieldName,
-        initialValue: initialValue,
+        initialValue: initialValue.runtimeType is String ? initialValue : initialValue?.toString(),
         decoration: hideBorders
             ? utils.formFieldDecoration(label: label, hideBorders: true)
             : utils.formFieldDecoration(label: label),
