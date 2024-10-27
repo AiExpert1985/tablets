@@ -6,7 +6,6 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
-import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 
 class CustomerFormFields extends StatelessWidget {

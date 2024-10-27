@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
+import 'package:tablets/src/features/transactions/view/forms/transaction_form_field.dart';
 
 class InvoiceItemList extends ConsumerWidget {
   const InvoiceItemList({super.key});
@@ -66,7 +68,7 @@ class CustomerInvoiceItemListData extends ConsumerWidget {
         InvoiceItemListCell(
             width: nameWidth,
             cell: DropDownWithSearchFormField(
-              targetProperties: const {'name': 'name', 'price': 'sellWholePrice'},
+              targetProperties: const {'name': 'name', 'price': 'sellWholePrice', 'weight': 'packageWeight'},
               subItemSequence: sequence,
               hideBorders: true,
               fieldName: 'items',
@@ -74,7 +76,17 @@ class CustomerInvoiceItemListData extends ConsumerWidget {
               onChangedFn: onChangedFn,
               formData: formData,
             )),
-        const InvoiceItemListCell(width: priceWidth, cell: Text('tempText')),
+        InvoiceItemListCell(
+          width: priceWidth,
+          cell: TransactionFormInputField(
+            isRequired: false,
+            subFieldName: 'price',
+            subItemSequence: sequence,
+            hideBorders: true,
+            dataType: constants.FieldDataTypes.double,
+            fieldName: 'items',
+          ),
+        ),
         const InvoiceItemListCell(width: soldQuantityWidth, cell: Text('TempText')),
         const InvoiceItemListCell(width: giftQantityWidth, cell: Text('tempText')),
         const InvoiceItemListCell(isLast: true, width: soldTotalPriceWidth, cell: Text('tempText')),
@@ -83,7 +95,7 @@ class CustomerInvoiceItemListData extends ConsumerWidget {
   }
 }
 
-class InvoiceItemListCell extends StatelessWidget {
+class InvoiceItemListCell extends ConsumerWidget {
   const InvoiceItemListCell(
       {required this.width,
       required this.cell,
@@ -100,14 +112,15 @@ class InvoiceItemListCell extends StatelessWidget {
   final Widget cell;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(transactionFormDataProvider);
     return Container(
         decoration: BoxDecoration(
           border: Border(
-            left: !isLast ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0) : BorderSide.none,
-            right: !isFirst ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0) : BorderSide.none,
-            bottom: isTitle ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0) : BorderSide.none,
-          ),
+              left: !isLast ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0) : BorderSide.none,
+              right:
+                  !isFirst ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0) : BorderSide.none,
+              bottom: const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0)),
         ),
         width: width,
         height: height,

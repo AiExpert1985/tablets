@@ -57,8 +57,8 @@ class InvoiceFormFields extends ConsumerWidget {
           children: [
             TransactionFormInputField(
               dataType: constants.FieldDataTypes.double,
-              name: 'amount',
-              displayedTitle: S.of(context).transaction_amount,
+              fieldName: 'amount',
+              title: S.of(context).transaction_amount,
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
@@ -74,8 +74,8 @@ class InvoiceFormFields extends ConsumerWidget {
             gaps.HorizontalGap.formFieldToField,
             TransactionFormInputField(
               dataType: constants.FieldDataTypes.double,
-              name: 'discount',
-              displayedTitle: S.of(context).transaction_discount,
+              fieldName: 'discount',
+              title: S.of(context).transaction_discount,
             ),
           ],
         ),
@@ -84,8 +84,8 @@ class InvoiceFormFields extends ConsumerWidget {
           children: [
             TransactionFormInputField(
               dataType: constants.FieldDataTypes.int,
-              name: 'number',
-              displayedTitle: S.of(context).transaction_number,
+              fieldName: 'number',
+              title: S.of(context).transaction_number,
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
@@ -113,8 +113,8 @@ class InvoiceFormFields extends ConsumerWidget {
             TransactionFormInputField(
               isRequired: false,
               dataType: constants.FieldDataTypes.string,
-              name: 'notes',
-              displayedTitle: S.of(context).transaction_notes,
+              fieldName: 'notes',
+              title: S.of(context).transaction_notes,
             ),
           ],
         ),
@@ -126,8 +126,8 @@ class InvoiceFormFields extends ConsumerWidget {
               child: TransactionFormInputField(
                 isRequired: false,
                 dataType: constants.FieldDataTypes.string,
-                name: 'totalAsText',
-                displayedTitle: S.of(context).transaction_total_amount_as_text,
+                fieldName: 'totalAsText',
+                title: S.of(context).transaction_total_amount_as_text,
               ),
             ),
           ],
