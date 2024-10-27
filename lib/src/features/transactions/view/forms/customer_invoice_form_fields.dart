@@ -18,6 +18,14 @@ import 'package:tablets/src/features/transactions/view/forms/transaction_form_fi
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 
 class InvoiceFormFields extends ConsumerWidget {
+  String calcuateTotalPrice(formData) {
+    return 'total price';
+  }
+
+  String calcuateTotalWeight(formData) {
+    return 'total weight';
+  }
+
   const InvoiceFormFields({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,8 +42,8 @@ class InvoiceFormFields extends ConsumerWidget {
         Row(
           children: [
             DropDownWithSearchFormField(
-              targetProperties: const {'counterParty': 'name', 'salesman': 'salesman'},
-              fieldName: 'counterParty',
+              relatedProperties: const {'counterParty': 'name', 'salesman': 'salesman'},
+              property: 'counterParty',
               label: S.of(context).customer,
               formData: formData,
               onChangedFn: formDataNotifier.update,
@@ -43,8 +51,7 @@ class InvoiceFormFields extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
-              targetProperties: const {'salesman': 'name'},
-              fieldName: 'salesman',
+              property: 'salesman',
               label: S.of(context).transaction_salesman,
               formData: formData,
               onChangedFn: formDataNotifier.update,
@@ -144,8 +151,8 @@ class InvoiceFormFields extends ConsumerWidget {
               Expanded(
                 child: FormBuilderTextField(
                   textAlign: TextAlign.center,
-                  initialValue: '12345',
-                  name: 'invoiceTotal',
+                  initialValue: calcuateTotalPrice(formData),
+                  name: 'totalPrice',
                   readOnly: true,
                   decoration: utils.formFieldDecoration(label: S.of(context).invoice_total_price),
                 ),
@@ -154,8 +161,8 @@ class InvoiceFormFields extends ConsumerWidget {
               Expanded(
                 child: FormBuilderTextField(
                   textAlign: TextAlign.center,
-                  initialValue: '12345',
-                  name: 'invoiceTotal',
+                  initialValue: calcuateTotalWeight(formData),
+                  name: 'totalWeight',
                   readOnly: true,
                   decoration: utils.formFieldDecoration(label: S.of(context).invoice_total_weight),
                 ),

@@ -32,6 +32,8 @@ class Transaction implements BaseItem {
   List<Map<String, dynamic>>? items;
   double? discount;
   String? totalAsText;
+  int? totalWeight;
+  int? totalPrice;
   Transaction({
     //required for all classes (BaseItem implementation)
     required this.dbKey,
@@ -50,6 +52,8 @@ class Transaction implements BaseItem {
     this.items,
     this.discount,
     this.totalAsText,
+    this.totalWeight,
+    this.totalPrice,
   });
 
   @override
@@ -72,6 +76,8 @@ class Transaction implements BaseItem {
       'items': items,
       'discount': discount,
       'totalAsText': totalAsText,
+      'weight': totalWeight,
+      'price': totalPrice,
     };
   }
 
@@ -91,6 +97,8 @@ class Transaction implements BaseItem {
       items: (map['items'] as List<dynamic>?)?.map((item) => item as Map<String, dynamic>).toList(),
       discount: map['discount'].toDouble(),
       totalAsText: map['totalAsText'],
+      totalWeight: map['weight'],
+      totalPrice: map['price'],
     );
   }
 

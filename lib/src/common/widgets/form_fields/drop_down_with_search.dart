@@ -14,51 +14,54 @@ import 'package:tablets/src/common/functions/form_validation.dart' as validation
 class DropDownWithSearchFormField extends ConsumerWidget {
   const DropDownWithSearchFormField(
       {required this.formData,
-      required this.onChangedFn,
+      required this.onChangedFn, //used to store selected item in formData
+      this.relatedProperties,
       this.label,
       // the name of property in formData Map<String, dynamic>
-      required this.fieldName,
-      // required this.dbItemFetchFn,
+      required this.property,
+      this.relatedSubProperties,
+      this.subProperty,
       required this.dbListFetchFn,
       this.isRequired = true,
       this.hideBorders = false,
-      this.subItemSequence, // the sequence of item in the list of main form property,
+      this.subPropertyIndex, // the sequence of item in the list of main form property,
       // a map for all properties of formData, and the corresponding properties in the targeted item
       // example {'price':'sellWholePrice'} means that the value of sellWholePrice property
       // in Product will be stored under the 'price' property in formData
-      required this.targetProperties,
+      // required this.targetProperties,
       super.key});
   // formDataPropertyName: the key of formData that we want to
   //used selected item to add/update its value, item formData[formDataPropertyName]
-  final String fieldName;
+  final String property;
   // selectedItemPropertyName: the name of the property of the selected item which is will be stored
   // in formData[formDataPropertyName] or used to fetch initial value from db.
   final String? label; // label shown on the cell
   final Map<String, dynamic> formData; // used to fetch initial data & to store selected item
-  // onSaveFn: used to store selected item in formData
+
   final void Function(Map<String, dynamic>) onChangedFn;
   final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue}) dbListFetchFn;
   final bool hideBorders; // hide borders in decoration, used if the field in sub list
   final bool isRequired; // if isRequired = false, then the field will not be validated
-  final int? subItemSequence;
-  final Map<String, String> targetProperties;
+  final String? subProperty;
+  final int? subPropertyIndex;
+  final Map<String, String>? relatedSubProperties;
+  final Map<String, String>? relatedProperties;
 
-  Map<String, dynamic>? setInitialValue(formData, fieldName, subItemSequence) {
-    if (formData[fieldName] == null) {
-      return null;
+  Map<String, dynamic>? setInitialValue() {
+    if (formData[property] == null) return null;
+
+    if (subPropertyIndex == null) {
+      return {'name': formData[property]};
     }
-    if (subItemSequence == null) {
-      return {'name': formData[fieldName]};
-    }
-    if (formData[fieldName][subItemSequence]['name'] != null) {
-      return formData[fieldName][subItemSequence];
+    if (formData[property][subPropertyIndex]['name'] != null) {
+      return formData[property][subPropertyIndex];
     }
     return null;
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final initialValue = setInitialValue(formData, fieldName, subItemSequence);
+    final initialValue = setInitialValue();
     return Expanded(
       child: DropdownSearch<Map<String, dynamic>>(
           mode: Mode.form,
@@ -105,16 +108,17 @@ class DropDownWithSearchFormField extends ConsumerWidget {
           },
           onChanged: (item) {
             if (item == null) return;
-
-            if (subItemSequence == null) {
-              targetProperties.forEach((formKey, itemKey) {
+            if (subPropertyIndex == null) {
+              formData[property] = item['name'];
+              relatedProperties?.forEach((formKey, itemKey) {
                 formData[formKey] = item[itemKey];
               });
               onChangedFn(formData);
               return;
             }
-            targetProperties.forEach((formKey, itemKey) {
-              formData[fieldName][subItemSequence][formKey] = item[itemKey];
+            formData[property][subPropertyIndex][subProperty] = item['name'];
+            relatedSubProperties?.forEach((formKey, itemKey) {
+              formData[property][subPropertyIndex][formKey] = item[itemKey];
             });
 
             onChangedFn(formData);

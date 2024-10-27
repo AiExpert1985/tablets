@@ -34,8 +34,7 @@ class ProductFormFields extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
-              targetProperties: const {'category': 'name'},
-              fieldName: 'category',
+              property: 'category',
               label: S.of(context).category_selection,
               formData: formData,
               onChangedFn: formDataNotifier.update,

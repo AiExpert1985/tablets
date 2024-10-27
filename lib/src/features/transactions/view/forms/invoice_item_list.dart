@@ -68,13 +68,14 @@ class CustomerInvoiceItemListData extends ConsumerWidget {
         InvoiceItemListCell(
             width: nameWidth,
             cell: DropDownWithSearchFormField(
-              targetProperties: const {'name': 'name', 'price': 'sellWholePrice', 'weight': 'packageWeight'},
-              subItemSequence: sequence,
-              hideBorders: true,
-              fieldName: 'items',
+              formData: formData,
+              property: 'items',
+              subProperty: 'name',
+              subPropertyIndex: sequence,
+              relatedSubProperties: const {'price': 'sellWholePrice', 'weight': 'packageWeight'},
               dbListFetchFn: dbListFetchFn,
               onChangedFn: onChangedFn,
-              formData: formData,
+              hideBorders: true,
             )),
         InvoiceItemListCell(
           width: priceWidth,
