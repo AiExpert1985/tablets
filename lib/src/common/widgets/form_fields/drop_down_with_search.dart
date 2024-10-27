@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
 
@@ -11,7 +11,7 @@ import 'package:tablets/src/common/functions/form_validation.dart' as validation
 /// unnecessary complications
 /// note that, each item displayed must have property named 'name' because this property is used to
 /// fetch items from database, and also to be displayed in the drop down list
-class DropDownWithSearchFormField extends StatefulWidget {
+class DropDownWithSearchFormField extends ConsumerWidget {
   const DropDownWithSearchFormField(
       {required this.formData,
       required this.onChangedFn,
@@ -37,18 +37,12 @@ class DropDownWithSearchFormField extends StatefulWidget {
   final Map<String, dynamic> formData; // used to fetch initial data & to store selected item
   // onSaveFn: used to store selected item in formData
   final void Function(Map<String, dynamic>) onChangedFn;
-  final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue})
-      dbListFetchFn;
+  final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue}) dbListFetchFn;
   final bool hideBorders; // hide borders in decoration, used if the field in sub list
   final bool isRequired; // if isRequired = false, then the field will not be validated
   final int? subItemSequence;
   final Map<String, String> targetProperties;
 
-  @override
-  State<DropDownWithSearchFormField> createState() => _DropDownWithSearchFormFieldState();
-}
-
-class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormField> {
   Map<String, dynamic>? setInitialValue(formData, fieldName, subItemSequence) {
     if (formData[fieldName] == null) {
       return null;
@@ -63,16 +57,7 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
   }
 
   @override
-  Widget build(BuildContext context) {
-    final onChangedFn = widget.onChangedFn;
-    final isRequired = widget.isRequired;
-    final dbListFetchFn = widget.dbListFetchFn;
-    final label = widget.label;
-    final formData = widget.formData;
-    final hideBorders = widget.hideBorders;
-    final fieldName = widget.fieldName;
-    final subItemSequence = widget.subItemSequence;
-    final targetProperties = widget.targetProperties;
+  Widget build(BuildContext context, WidgetRef ref) {
     final initialValue = setInitialValue(formData, fieldName, subItemSequence);
     return Expanded(
       child: DropdownSearch<Map<String, dynamic>>(
@@ -91,7 +76,7 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
                 ? Padding(
                     padding: const EdgeInsets.all(12),
                     child: Text(
-                      label,
+                      label!,
                       textAlign: TextAlign.center,
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -116,7 +101,6 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
                 )
               : null,
           itemAsString: (item) {
-            tempPrint(item);
             return item['name'];
           },
           onChanged: (item) {
@@ -139,8 +123,7 @@ class _DropDownWithSearchFormFieldState extends State<DropDownWithSearchFormFiel
   }
 }
 
-Widget popUpItem(
-    BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
+Widget popUpItem(BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
@@ -159,8 +142,7 @@ Widget popUpItem(
         leading: CircleAvatar(
           // radius: 70,
           backgroundColor: Colors.white,
-          foregroundImage:
-              CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
+          foregroundImage: CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
         ),
       ),
     ),
