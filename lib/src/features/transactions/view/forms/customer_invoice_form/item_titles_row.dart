@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_cell.dart';
@@ -21,6 +22,8 @@ class CustomerInvoiceItemTitles extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formController = ref.read(transactionFormDataProvider.notifier);
+    final textEditingNotifier = ref.read(textEditingControllerListProvider.notifier);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -32,6 +35,7 @@ class CustomerInvoiceItemTitles extends ConsumerWidget {
           cell: IconButton(
             // alignment: Alignment.topCenter,
             onPressed: () {
+              textEditingNotifier.addController();
               addNewEmptyRow(formController);
             },
             icon: const Icon(Icons.add, color: Colors.green),

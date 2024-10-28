@@ -12,12 +12,14 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
       required this.dbListFetchFn,
       required this.onChangedFn,
       required this.formData,
+      required this.priceTextEditingController,
       super.key});
   final int sequence;
   final Map<String, dynamic> formData;
   final void Function(Map<String, dynamic>) onChangedFn;
   final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue})
       dbListFetchFn;
+  final TextEditingController priceTextEditingController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,6 +43,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
         ItemDataCell(
           width: priceWidth,
           cell: TransactionFormInputField(
+            controller: priceTextEditingController,
             isRequired: false,
             subProperty: 'price',
             subPropertyIndex: sequence,

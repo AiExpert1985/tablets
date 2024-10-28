@@ -1,7 +1,11 @@
+Daily Tasks:
+    ☐ Use controllers for items
+    ☐ decoration of total price
+    ☐ adding total weight
+
 Tasks:
-    make list orderable by clicking on any title (especially in transactions)
-    in category, S.of(context).product_name is used instead category, transaction might be also same
-    protection agains the case where:
+    ☐ make list orderable by clicking on any title (especially in transactions)
+    ☐ in category, S.of(context).product_name is used instead category, transaction might be also same protection agains the case where:
         ☐ a docuement is deleted while its reference is used in another place, example: delete a category used in an item
             one solution is to create a default category used in any case where original category isn't found
     ☐ make Exapanded inside the field widget not the Form

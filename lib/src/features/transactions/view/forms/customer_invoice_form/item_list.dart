@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/item_data_row.dart';
@@ -8,13 +9,15 @@ import 'package:tablets/src/features/transactions/view/forms/customer_invoice_fo
 class CustomerInvoiceItemList extends ConsumerWidget {
   const CustomerInvoiceItemList({super.key});
 
-  List<Widget> createItemWidgets(formController, repository) {
+  List<Widget> createItemWidgets(formController, repository, textEditingControllers) {
     List<Widget> rows = [];
     final Map<String, dynamic> formData = formController.data;
+
     if (!formData.containsKey('items')) return rows;
     for (var i = 0; i < formController.data['items'].length; i++) {
       rows.add(
         CustomerInvoiceItemDataRow(
+            priceTextEditingController: textEditingControllers[i],
             sequence: i,
             dbListFetchFn: repository.fetchItemListAsMaps,
             formData: formController.data,
@@ -29,7 +32,13 @@ class CustomerInvoiceItemList extends ConsumerWidget {
     ref.watch(transactionFormDataProvider);
     final formController = ref.read(transactionFormDataProvider.notifier);
     final repository = ref.read(productRepositoryProvider);
-    final itemWidgets = createItemWidgets(formController, repository);
+    final textEditingControllers = ref.read(textEditingControllerListProvider);
+    int numItems = textEditingControllers.length;
+    for (int i = 0; i < numItems && i < numItems; i++) {
+      textEditingControllers[i].text =
+          formController.data['items'][i]['price'].toString(); // Update the controller's text
+    }
+    final itemWidgets = createItemWidgets(formController, repository, textEditingControllers);
     return Container(
       height: 350,
       decoration: BoxDecoration(

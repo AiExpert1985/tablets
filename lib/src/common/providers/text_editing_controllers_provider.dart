@@ -19,6 +19,14 @@ class TextEditingControllerListNotifier extends StateNotifier<List<TextEditingCo
     }
   }
 
+  void updateControllerText({required int index, required String value}) {
+    if (index >= 0 && index < state.length) {
+      final newState = List<TextEditingController>.from(state); // Create a new list
+      newState[index].text = value; // Dispose of the controller// Remove the controller
+      state = newState; // Update the state
+    }
+  }
+
   // Method to clear all controllers
   void clearControllers() {
     for (var controller in state) {
