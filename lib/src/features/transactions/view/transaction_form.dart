@@ -50,15 +50,12 @@ class TransactionForm extends ConsumerWidget {
           visible: isEditMode,
           child: IconButton(
               onPressed: () async {
-                final message = utils.transactionTypeDbNameToScreenName(
-                    context: context, dbName: formData['name']);
-                bool? confiramtion =
-                    await showDeleteConfirmationDialog(context: context, message: message);
+                final message = utils.transactionTypeDbNameToScreenName(context: context, dbName: formData['name']);
+                bool? confiramtion = await showDeleteConfirmationDialog(context: context, message: message);
                 if (confiramtion != null) {
                   final updateFormData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();
-                  final transaction =
-                      Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
+                  final transaction = Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
                   // ignore: use_build_context_synchronously
                   formController.deleteItemFromDb(context, transaction);
                 }

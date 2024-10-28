@@ -19,7 +19,6 @@ class FormInputField extends ConsumerStatefulWidget {
     required this.dataType,
     this.subPropertyIndex,
     this.subProperty,
-    this.controller,
     super.key,
   });
 
@@ -33,31 +32,42 @@ class FormInputField extends ConsumerStatefulWidget {
   final bool hideBorders;
   final int? subPropertyIndex;
   final String? subProperty;
-  final TextEditingController? controller;
 
   @override
   FormInputFieldState createState() => FormInputFieldState();
 }
 
 class FormInputFieldState extends ConsumerState<FormInputField> {
+  late TextEditingController controller = TextEditingController();
+  final WidgetStatesController _statesController = WidgetStatesController();
+
+  void setBoxValue() {
+    tempPrint('setBoxValue is called');
+    dynamic initialValue;
+    if (widget.formData[widget.property] == null) {
+      initialValue = '';
+    } else if (widget.subProperty == null) {
+      initialValue = widget.formData[widget.property];
+    } else {
+      initialValue = widget.formData[widget.property][widget.subPropertyIndex][widget.subProperty] ?? 0;
+    }
+
+    controller.text = initialValue.runtimeType is String ? initialValue : initialValue.toString();
+
+    // return initialValue.runtimeType is String ? initialValue : initialValue.toString();
+  }
+
   @override
   void initState() {
+    controller.addListener(() {
+      tempPrint('listener has listened');
+    });
     super.initState();
-    if (widget.controller != null) {
-      widget.controller!.addListener(() {
-        tempPrint('Controller text changed: ${widget.controller?.text}');
-      });
-    }
   }
 
   @override
   void dispose() {
-    if (widget.controller != null) {
-      widget.controller!.removeListener(() {
-        tempPrint('Controller listener removed');
-      });
-      widget.controller!.dispose();
-    }
+    controller.dispose();
     super.dispose();
   }
 
@@ -65,7 +75,7 @@ class FormInputFieldState extends ConsumerState<FormInputField> {
   Widget build(BuildContext context) {
     return Expanded(
       child: FormBuilderTextField(
-        controller: widget.controller,
+        controller: controller,
         readOnly: widget.isReadOnly,
         textAlign: TextAlign.center,
         name: widget.property,
@@ -73,44 +83,48 @@ class FormInputFieldState extends ConsumerState<FormInputField> {
             ? utils.formFieldDecoration(label: widget.label, hideBorders: true)
             : utils.formFieldDecoration(label: widget.label),
         onChanged: (value) {
-          if (value == null) return;
+          tempPrint('onChanged is called');
+        },
+        statesController: _statesController,
+        onReset: () => tempPrint('onRest is called'),
+        onSaved: (value) {
+          if (value == null || value == '') return;
           dynamic userValue = value;
           if (widget.dataType == FieldDataTypes.int) {
+            tempPrint('1');
             userValue = int.tryParse(value);
           }
           if (widget.dataType == FieldDataTypes.double) {
             userValue = double.tryParse(value);
+            tempPrint('2');
           }
           if (widget.subProperty == null) {
+            tempPrint('3');
             widget.formData[widget.property] = userValue;
           } else {
+            tempPrint('4');
             widget.formData[widget.property] ??= [];
-
-            widget.formData[widget.property][widget.subPropertyIndex][widget.subProperty] =
-                userValue;
+            widget.formData[widget.property][widget.subPropertyIndex][widget.subProperty] = userValue;
           }
+          tempPrint(widget.formData);
           widget.onChangedFn(widget.formData);
         },
         validator: widget.isRequired
             ? (value) {
                 if (widget.dataType == FieldDataTypes.string) {
                   return validation.validateStringField(
-                      fieldValue: value,
-                      errorMessage: S.of(context).input_validation_error_message_for_strings);
+                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
                 }
 
                 if (widget.dataType == FieldDataTypes.int) {
                   return validation.validateIntField(
-                      fieldValue: value,
-                      errorMessage: S.of(context).input_validation_error_message_for_integers);
+                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
                 }
 
                 if (widget.dataType == FieldDataTypes.double) {
                   return validation.validateDoubleField(
-                      fieldValue: value,
-                      errorMessage: S.of(context).input_validation_error_message_for_doubles);
+                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
                 }
-
                 return null;
               }
             : null,
