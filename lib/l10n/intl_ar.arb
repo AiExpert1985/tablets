@@ -110,7 +110,7 @@
     "customer": "الزبون",
     "item_sequence": "تسلسل",
     "item_name": "اسم المادة",
-    "item_price": "السعر",
+    "item_price": "سعر المادة",
     "item_sold_quantity": "العدد",
     "item_total_price": "السعر الكلي",
     "item_gifts_quantity": "عدد الهدايا",

@@ -102,7 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_gifts_quantity":
             MessageLookupByLibrary.simpleMessage("عدد الهدايا"),
         "item_name": MessageLookupByLibrary.simpleMessage("اسم المادة"),
-        "item_price": MessageLookupByLibrary.simpleMessage("السعر"),
+        "item_price": MessageLookupByLibrary.simpleMessage("سعر المادة"),
         "item_sequence": MessageLookupByLibrary.simpleMessage("تسلسل"),
         "item_sold_quantity": MessageLookupByLibrary.simpleMessage("العدد"),
         "item_total_price": MessageLookupByLibrary.simpleMessage("السعر الكلي"),

@@ -10,17 +10,29 @@ import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dar
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
-import 'package:tablets/src/features/transactions/view/forms/invoice_item_list.dart';
+import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/item_list.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
-import 'package:tablets/src/features/transactions/view/forms/transaction_form_field.dart';
+import 'package:tablets/src/features/transactions/view/forms/text_input_field.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 
-class InvoiceFormFields extends ConsumerWidget {
-  const InvoiceFormFields({super.key});
+class CustomerInvoiceForm extends ConsumerWidget {
+  const CustomerInvoiceForm({super.key});
 
   String calcuateTotalWeight(formData) {
     int totalWeight = 0;
     return totalWeight.toString();
+  }
+
+  String calculateTotalPrice(formController) {
+    final Map<String, dynamic> formData = formController.data;
+    double totalPrice = 0;
+    if (!formData.containsKey('items')) return totalPrice.toString();
+    for (int i = 0; i < formData['items'].length; i++) {
+      if (formData['items'][i].containsKey('price')) {
+        totalPrice += formData['items'][i]['price'];
+      }
+    }
+    return totalPrice.toString();
   }
 
   @override
@@ -59,12 +71,6 @@ class InvoiceFormFields extends ConsumerWidget {
         gaps.VerticalGap.formFieldToField,
         Row(
           children: [
-            TransactionFormInputField(
-              dataType: constants.FieldDataTypes.double,
-              property: 'amount',
-              label: S.of(context).transaction_amount,
-            ),
-            gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
               onChangedFn: formController.update,
               formData: formData,
@@ -137,7 +143,7 @@ class InvoiceFormFields extends ConsumerWidget {
           ],
         ),
         gaps.VerticalGap.formFieldToField,
-        const InvoiceItemList(),
+        const CustomerInvoiceItemList(),
         gaps.VerticalGap.formFieldToField,
         gaps.VerticalGap.formFieldToField,
         SizedBox(
@@ -145,17 +151,8 @@ class InvoiceFormFields extends ConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TransactionFormInputField(
-                dataType: constants.FieldDataTypes.double,
-                label: S.of(context).invoice_total_price,
-                property: 'totalPrice',
-              ),
               gaps.HorizontalGap.formFieldToField,
-              TransactionFormInputField(
-                dataType: constants.FieldDataTypes.double,
-                label: S.of(context).invoice_total_weight,
-                property: 'totalWeight',
-              ),
+              Text(calculateTotalPrice(formController)),
             ],
           ),
         ),

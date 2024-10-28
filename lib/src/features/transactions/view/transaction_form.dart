@@ -8,7 +8,7 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form_fields.dart';
+import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/form.dart';
 
 class TransactionForm extends ConsumerWidget {
   const TransactionForm({this.isEditMode = false, super.key});
@@ -27,7 +27,7 @@ class TransactionForm extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          InvoiceFormFields(),
+          CustomerInvoiceForm(),
         ],
       ),
       buttons: [
@@ -50,12 +50,15 @@ class TransactionForm extends ConsumerWidget {
           visible: isEditMode,
           child: IconButton(
               onPressed: () async {
-                final message = utils.transactionTypeDbNameToScreenName(context: context, dbName: formData['name']);
-                bool? confiramtion = await showDeleteConfirmationDialog(context: context, message: message);
+                final message = utils.transactionTypeDbNameToScreenName(
+                    context: context, dbName: formData['name']);
+                bool? confiramtion =
+                    await showDeleteConfirmationDialog(context: context, message: message);
                 if (confiramtion != null) {
                   final updateFormData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();
-                  final transaction = Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
+                  final transaction =
+                      Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
                   // ignore: use_build_context_synchronously
                   formController.deleteItemFromDb(context, transaction);
                 }
