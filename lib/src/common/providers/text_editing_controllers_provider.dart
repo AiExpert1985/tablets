@@ -6,7 +6,9 @@ class TextEditingControllerListNotifier extends StateNotifier<List<TextEditingCo
   TextEditingControllerListNotifier() : super([]);
 
   void addController() {
-    state = [...state, TextEditingController()]; // Add a new controller
+    TextEditingController controller = TextEditingController();
+    controller.addListener;
+    state = [...state, controller]; // Add a new controller
   }
 
   // Method to remove a TextEditingController at a specific index

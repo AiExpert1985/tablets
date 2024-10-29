@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
@@ -33,11 +34,6 @@ class CustomerInvoiceItemList extends ConsumerWidget {
     final formController = ref.read(transactionFormDataProvider.notifier);
     final repository = ref.read(productRepositoryProvider);
     final textEditingControllers = ref.read(textEditingControllerListProvider);
-    int numItems = textEditingControllers.length;
-    for (int i = 0; i < numItems && i < numItems; i++) {
-      textEditingControllers[i].text =
-          formController.data['items'][i]['price'].toString(); // Update the controller's text
-    }
     final itemWidgets = createItemWidgets(formController, repository, textEditingControllers);
     return Container(
       height: 350,

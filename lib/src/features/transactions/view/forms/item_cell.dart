@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 
 class ItemDataCell extends ConsumerWidget {
   const ItemDataCell(
@@ -22,12 +23,9 @@ class ItemDataCell extends ConsumerWidget {
     return Container(
         decoration: BoxDecoration(
           border: Border(
-              left: !isLast
-                  ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0)
-                  : BorderSide.none,
-              right: !isFirst
-                  ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0)
-                  : BorderSide.none,
+              left: !isLast ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0) : BorderSide.none,
+              right:
+                  !isFirst ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0) : BorderSide.none,
               bottom: const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0)),
         ),
         width: width,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
@@ -17,8 +18,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
   final int sequence;
   final Map<String, dynamic> formData;
   final void Function(Map<String, dynamic>) onChangedFn;
-  final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue})
-      dbListFetchFn;
+  final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue}) dbListFetchFn;
   final TextEditingController priceTextEditingController;
 
   @override
@@ -39,6 +39,11 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
               dbListFetchFn: dbListFetchFn,
               onChangedFn: onChangedFn,
               hideBorders: true,
+              updateReletedFieldFn: () {
+                if (formData.containsKey('items') && formData['items'][sequence].containsKey('price')) {
+                  priceTextEditingController.text = formData['items'][sequence]['price'].toString();
+                }
+              },
             )),
         ItemDataCell(
           width: priceWidth,

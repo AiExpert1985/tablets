@@ -3,6 +3,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
 
@@ -29,6 +30,7 @@ class DropDownWithSearchFormField extends ConsumerWidget {
       // example {'price':'sellWholePrice'} means that the value of sellWholePrice property
       // in Product will be stored under the 'price' property in formData
       // required this.targetProperties,
+      this.updateReletedFieldFn,
       super.key});
   // formDataPropertyName: the key of formData that we want to
   //used selected item to add/update its value, item formData[formDataPropertyName]
@@ -46,6 +48,9 @@ class DropDownWithSearchFormField extends ConsumerWidget {
   final int? subPropertyIndex;
   final Map<String, String>? relatedSubProperties;
   final Map<String, String>? relatedProperties;
+  // this is the only way I found to use dropdwon field to update the TextEditingController of adjacent text field
+  // the idea is to pass a function and it runs, it is not optimal, but it is the best I found so far
+  final VoidCallback? updateReletedFieldFn;
 
   Map<String, dynamic>? setInitialValue() {
     if (formData[property] == null) return null;
@@ -120,6 +125,9 @@ class DropDownWithSearchFormField extends ConsumerWidget {
             relatedSubProperties?.forEach((formKey, itemKey) {
               formData[property][subPropertyIndex][formKey] = item[itemKey];
             });
+            if (updateReletedFieldFn != null) {
+              updateReletedFieldFn!();
+            }
 
             onChangedFn(formData);
           }),
