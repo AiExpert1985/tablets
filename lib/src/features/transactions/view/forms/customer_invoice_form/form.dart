@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
+import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
@@ -17,29 +19,13 @@ import 'package:tablets/src/features/transactions/view/forms/text_input_field.da
 class CustomerInvoiceForm extends ConsumerWidget {
   const CustomerInvoiceForm({super.key});
 
-  String calcuateTotalWeight(formData) {
-    int totalWeight = 0;
-    return totalWeight.toString();
-  }
-
-  String calculateTotalAmount(formController) {
-    final Map<String, dynamic> formData = formController.data;
-    double totalAmount = 0;
-    if (!formData.containsKey('items')) return totalAmount.toString();
-    for (int i = 0; i < formData['items'].length; i++) {
-      if (formData['items'][i].containsKey('price')) {
-        totalAmount += formData['items'][i]['price'];
-      }
-    }
-    return totalAmount.toString();
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formData = ref.read(transactionFormDataProvider);
     final formController = ref.read(transactionFormDataProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
+    final textEditingControllers = ref.read(textFieldsControllerProvider);
     ref.watch(transactionFormDataProvider);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -145,16 +131,29 @@ class CustomerInvoiceForm extends ConsumerWidget {
         const CustomerInvoiceItemList(),
         gaps.VerticalGap.formFieldToField,
         gaps.VerticalGap.formFieldToField,
-        // SizedBox(
-        //   width: customerInvoiceFormWidth * 0.6,
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       gaps.HorizontalGap.formFieldToField,
-        //       Text(calculateTotalAmount(formController)),
-        //     ],
-        //   ),
-        // ),
+        SizedBox(
+          width: customerInvoiceFormWidth * 0.6,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TransactionFormInputField(
+                controller: textEditingControllers['totalAmount'],
+                isReadOnly: true,
+                dataType: constants.FieldDataTypes.double,
+                label: S.of(context).invoice_total_price,
+                property: 'totalAmount',
+              ),
+              gaps.HorizontalGap.formFieldToField,
+              TransactionFormInputField(
+                controller: textEditingControllers['totalWeight'],
+                isReadOnly: true,
+                dataType: constants.FieldDataTypes.double,
+                label: S.of(context).invoice_total_weight,
+                property: 'totalWeight',
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

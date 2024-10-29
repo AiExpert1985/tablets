@@ -14,6 +14,8 @@ class TransactionFormInputField extends ConsumerWidget {
     this.subProperty,
     this.subPropertyIndex,
     this.controller,
+    this.isReadOnly = false,
+    this.updateReletedFieldsFn,
     super.key,
   });
 
@@ -24,13 +26,17 @@ class TransactionFormInputField extends ConsumerWidget {
   final bool hideBorders;
   final int? subPropertyIndex;
   final String? subProperty;
+  final bool isReadOnly;
   final TextEditingController? controller;
+  final VoidCallback? updateReletedFieldsFn;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formController = ref.read(transactionFormDataProvider.notifier);
     final formData = formController.data;
     return FormInputField(
+        updateReletedFieldsFn: updateReletedFieldsFn,
+        isReadOnly: isReadOnly,
         controller: controller,
         hideBorders: hideBorders,
         isRequired: isRequired,

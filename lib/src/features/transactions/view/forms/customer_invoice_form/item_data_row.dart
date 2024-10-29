@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_cell.dart';
 import 'package:tablets/src/features/transactions/view/forms/text_input_field.dart';
 
@@ -12,16 +16,34 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
       required this.dbListFetchFn,
       required this.onChangedFn,
       required this.formData,
-      required this.priceTextEditingController,
       super.key});
   final int sequence;
   final Map<String, dynamic> formData;
   final void Function(Map<String, dynamic>) onChangedFn;
   final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue}) dbListFetchFn;
-  final TextEditingController priceTextEditingController;
+
+  String updateTotalWeight(formData) {
+    int totalWeight = 0;
+    return totalWeight.toString();
+  }
+
+  void updateTotalAmount(ItemFormData formController) {
+    final formData = formController.data;
+    double totalAmount = 0;
+    if (!formData.containsKey('items')) return;
+    for (int i = 0; i < formData['items'].length; i++) {
+      if (formData['items'][i].containsKey('price')) {
+        totalAmount += formData['items'][i]['price'];
+      }
+    }
+    formController.update({...formData, 'totalAmount': totalAmount});
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final formData = ref.read(transactionFormDataProvider);
+    final formController = ref.read(transactionFormDataProvider.notifier);
+    final textEditingController = ref.read(textFieldsControllerProvider);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,22 +60,30 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
               dbListFetchFn: dbListFetchFn,
               onChangedFn: onChangedFn,
               hideBorders: true,
-              updateReletedFieldFn: () {
+              updateReletedFieldsFn: () {
                 if (formData.containsKey('items') && formData['items'][sequence].containsKey('price')) {
-                  priceTextEditingController.text = formData['items'][sequence]['price'].toString();
+                  textEditingController['items'][sequence].text = formData['items'][sequence]['price'].toString();
+                  updateTotalAmount(formController);
+                  textEditingController['totalAmount'].text = formData['totalAmount'].toString();
                 }
               },
             )),
         ItemDataCell(
           width: priceWidth,
           cell: TransactionFormInputField(
-            controller: priceTextEditingController,
+            controller: textEditingController['items'][sequence],
             isRequired: false,
             subProperty: 'price',
             subPropertyIndex: sequence,
             hideBorders: true,
             dataType: constants.FieldDataTypes.double,
             property: 'items',
+            updateReletedFieldsFn: () {
+              if (formData.containsKey('totalAmount')) {
+                textEditingController['totalAmount'].text = formData['totalAmount'].toString();
+                updateTotalAmount(formController);
+              }
+            },
           ),
         ),
         const ItemDataCell(width: soldQuantityWidth, cell: Text('TempText')),

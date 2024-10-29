@@ -12,31 +12,10 @@ import 'package:tablets/src/features/transactions/view/forms/customer_invoice_fo
 class CustomerInvoiceItemList extends ConsumerWidget {
   const CustomerInvoiceItemList({super.key});
 
-  // List<Widget> createItemWidgets(formController, repository, textEditingControllers) {
-  //   List<Widget> rows = [];
-  //   final Map<String, dynamic> formData = formController.data;
-
-  //   if (!formData.containsKey('items')) return rows;
-  //   for (var i = 0; i < formController.data['items'].length; i++) {
-  //     tempPrint('inside createItemWidgets');
-  //     rows.add(
-  //       CustomerInvoiceItemDataRow(
-  //           priceTextEditingController: textEditingControllers['items'][i],
-  //           sequence: i,
-  //           dbListFetchFn: repository.fetchItemListAsMaps,
-  //           formData: formController.data,
-  //           onChangedFn: formController.update),
-  //     );
-  //   }
-  //   return rows;
-  // }
-
   List<Widget> createItemWidgets(
       ItemFormData formController, DbRepository repository, Map<String, dynamic> textEditingControllers) {
     List<Widget> rows = [];
     final Map<String, dynamic> formData = formController.data;
-    tempPrint(formData);
-    tempPrint(textEditingControllers);
     if (!formData.containsKey('items') || formData['items'] is! List) {
       errorPrint(message: 'Warning: No items found in form data or items is not a List');
       return rows;
@@ -47,10 +26,8 @@ class CustomerInvoiceItemList extends ConsumerWidget {
         errorPrint(message: 'Warning: Missing TextEditingController for item index: $i');
         continue;
       }
-      tempPrint('Creating widget for item index: $i');
       rows.add(
         CustomerInvoiceItemDataRow(
-          priceTextEditingController: textEditingControllers['items']![i],
           sequence: i,
           dbListFetchFn: repository.fetchItemListAsMaps,
           formData: formData,

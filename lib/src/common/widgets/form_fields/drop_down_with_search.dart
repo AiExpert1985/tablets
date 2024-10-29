@@ -29,7 +29,7 @@ class DropDownWithSearchFormField extends ConsumerWidget {
       // example {'price':'sellWholePrice'} means that the value of sellWholePrice property
       // in Product will be stored under the 'price' property in formData
       // required this.targetProperties,
-      this.updateReletedFieldFn,
+      this.updateReletedFieldsFn,
       super.key});
   // formDataPropertyName: the key of formData that we want to
   //used selected item to add/update its value, item formData[formDataPropertyName]
@@ -49,7 +49,7 @@ class DropDownWithSearchFormField extends ConsumerWidget {
   final Map<String, String>? relatedProperties;
   // this is the only way I found to use dropdwon field to update the TextEditingController of adjacent text field
   // the idea is to pass a function and it runs, it is not optimal, but it is the best I found so far
-  final VoidCallback? updateReletedFieldFn;
+  final VoidCallback? updateReletedFieldsFn;
 
   Map<String, dynamic>? setInitialValue() {
     if (formData[property] == null) return null;
@@ -124,11 +124,11 @@ class DropDownWithSearchFormField extends ConsumerWidget {
             relatedSubProperties?.forEach((formKey, itemKey) {
               formData[property][subPropertyIndex][formKey] = item[itemKey];
             });
-            if (updateReletedFieldFn != null) {
-              updateReletedFieldFn!();
-            }
 
             onChangedFn(formData);
+            if (updateReletedFieldsFn != null) {
+              updateReletedFieldsFn!();
+            }
           }),
     );
   }

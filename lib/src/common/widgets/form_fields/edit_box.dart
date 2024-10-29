@@ -22,6 +22,7 @@ class FormInputField extends ConsumerWidget {
     this.subPropertyIndex,
     this.subProperty,
     this.controller,
+    this.updateReletedFieldsFn,
     super.key,
   });
 
@@ -36,6 +37,9 @@ class FormInputField extends ConsumerWidget {
   final int? subPropertyIndex;
   final String? subProperty;
   final TextEditingController? controller;
+  // this is the only way I found to use dropdwon field to update the TextEditingController of adjacent text field
+  // the idea is to pass a function and it runs, it is not optimal, but it is the best I found so far
+  final VoidCallback? updateReletedFieldsFn;
 
   String getInitialValue() {
     dynamic initialValue;
@@ -53,9 +57,9 @@ class FormInputField extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Expanded(
       child: FormBuilderTextField(
-        // initialValue: controller == null ? getInitialValue() : null,
+        initialValue: controller == null ? getInitialValue() : null,
         controller: controller,
-        readOnly: isReadOnly,
+        enabled: !isReadOnly,
         textAlign: TextAlign.center,
         name: property,
         decoration: hideBorders
@@ -77,6 +81,9 @@ class FormInputField extends ConsumerWidget {
             formData[property][subPropertyIndex][subProperty] = userValue;
           }
           onChangedFn(formData);
+          if (updateReletedFieldsFn != null) {
+            updateReletedFieldsFn!();
+          }
         },
         validator: isRequired
             ? (value) {
