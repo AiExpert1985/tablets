@@ -32,8 +32,8 @@ class Transaction implements BaseItem {
   List<Map<String, dynamic>>? items;
   double? discount;
   String? totalAsText;
-  int? totalWeight;
-  int? totalPrice;
+  double? totalWeight;
+  double totalAmount;
   Transaction({
     //required for all classes (BaseItem implementation)
     required this.dbKey,
@@ -53,7 +53,7 @@ class Transaction implements BaseItem {
     this.discount,
     this.totalAsText,
     this.totalWeight,
-    this.totalPrice,
+    required this.totalAmount,
   });
 
   @override
@@ -76,8 +76,8 @@ class Transaction implements BaseItem {
       'items': items,
       'discount': discount,
       'totalAsText': totalAsText,
-      'weight': totalWeight,
-      'price': totalPrice,
+      'totalWeight': totalWeight,
+      'totalAmount': totalAmount,
     };
   }
 
@@ -97,13 +97,13 @@ class Transaction implements BaseItem {
       items: (map['items'] as List<dynamic>?)?.map((item) => item as Map<String, dynamic>).toList(),
       discount: map['discount'].toDouble(),
       totalAsText: map['totalAsText'],
-      totalWeight: map['weight'],
-      totalPrice: map['price'],
+      totalWeight: map['totalWeight'],
+      totalAmount: map['totalAmount'],
     );
   }
 
   @override
   String toString() {
-    return 'Transaction(name: $name, date: $date, amount: $amount, counterParty: $counterParty)';
+    return 'Transaction(name: $name, date: $date, amount: $totalAmount, counterParty: $counterParty)';
   }
 }

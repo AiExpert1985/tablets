@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 
 class ItemDataCell extends ConsumerWidget {
   const ItemDataCell(

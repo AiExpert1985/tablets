@@ -27,10 +27,11 @@ class TransactionsFloatingButtons extends ConsumerWidget {
         'date': DateTime.now(),
       });
     }
-    // create empty list of TextEditingControllers, to be used later when items are added
-    // it is used mainly to set inital price when item is selected from drop down
-    // the value of the item list will be taken from formData (which was taken from product chosen)
-    ref.read(textEditingControllerListProvider);
+    // for below text field we need to add  controllers because the are updated by other fields
+    // for example total price it updated by the item prices
+    final textFieldController = ref.read(textFieldsControllerProvider.notifier);
+    textFieldController.addController(fieldName: 'totalAmount');
+    textFieldController.addController(fieldName: 'totalWeight');
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const TransactionForm(),
@@ -63,8 +64,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () =>
-              showAddInvoiceForm(context, ref, formType: TransactionTypes.customerInvoice.name),
+          onTap: () => showAddInvoiceForm(context, ref, formType: TransactionTypes.customerInvoice.name),
         ),
       ],
     );

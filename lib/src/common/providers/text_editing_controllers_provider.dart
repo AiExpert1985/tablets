@@ -1,51 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Define a StateNotifier for managing a list of TextEditingController
-class TextEditingControllerListNotifier extends StateNotifier<List<TextEditingController>> {
-  TextEditingControllerListNotifier() : super([]);
+class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
+  TextControllerNotifier() : super({});
 
-  void addController() {
-    TextEditingController controller = TextEditingController();
-    controller.addListener;
-    state = [...state, controller]; // Add a new controller
+  // Method to add a TextEditingController
+  void addController({required String fieldName}) {
+    state = {
+      ...state,
+      fieldName: TextEditingController(),
+    };
   }
 
-  // Method to remove a TextEditingController at a specific index
-  void removeController(int index) {
-    if (index >= 0 && index < state.length) {
-      final newState = List<TextEditingController>.from(state); // Create a new list
-      newState[index].dispose(); // Dispose of the controller
-      newState.removeAt(index); // Remove the controller
-      state = newState; // Update the state
+  // Method to add a TextEditingController to a list by key and index
+  void addControllerToList({required String fieldName}) {
+    final controller = TextEditingController();
+    final List<TextEditingController> list;
+    if (state.containsKey(fieldName) && state[fieldName] is List<TextEditingController>) {
+      list = state[fieldName];
+      list.add(controller);
+    } else {
+      list = [controller];
+    }
+    state = {
+      ...state,
+      fieldName: list,
+    };
+  }
+
+  // Method to remove a TextEditingController from a list by key and index
+  void removeControllerFromList({required String fieldName, required int index}) {
+    if (state.containsKey(fieldName) && state[fieldName] is List<TextEditingController>) {
+      final list = state[fieldName] as List<TextEditingController>;
+      if (index >= 0 && index < list.length) {
+        list.removeAt(index);
+        state = {
+          ...state,
+          fieldName: list,
+        };
+      }
     }
   }
 
-  void updateControllerText({required int index, required String value}) {
-    if (index >= 0 && index < state.length) {
-      final newState = List<TextEditingController>.from(state); // Create a new list
-      newState[index].text = value; // Dispose of the controller// Remove the controller
-      state = newState; // Update the state
+  // Method to get a controller or a list of controllers
+  dynamic getControllerFromList({required String fieldName, required int index}) {
+    if (state.containsKey(fieldName) && state[fieldName] is List<TextEditingController>) {
+      final list = state[fieldName] as List<TextEditingController>;
+      if (index >= 0 && index < list.length) {
+        return state[fieldName];
+      }
+      return null;
     }
   }
 
-  // Method to clear all controllers
-  void clearControllers() {
-    for (var controller in state) {
-      controller.dispose(); // Dispose of each controller
-    }
-    state = []; // Reset to an empty list
+  // Method to get a controller or a list of controllers
+  dynamic getController({required String fieldName}) {
+    return state[fieldName];
   }
 
-  // Dispose method to clean up controllers when the notifier is disposed
+  // Dispose method to clean up controllers
+  void disposeControllers() {
+    state.forEach((key, value) {
+      if (value is TextEditingController) {
+        value.dispose();
+      } else if (value is List<TextEditingController>) {
+        for (var controller in value) {
+          controller.dispose();
+        }
+      }
+    });
+    state = {}; // Clear the state
+  }
+
   @override
   void dispose() {
-    clearControllers(); // Ensure all controllers are disposed
+    disposeControllers();
     super.dispose();
   }
 }
 
-final textEditingControllerListProvider =
-    StateNotifierProvider<TextEditingControllerListNotifier, List<TextEditingController>>((ref) {
-  return TextEditingControllerListNotifier();
+// Define a provider for the TextEditingController map
+final textFieldsControllerProvider = StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
+  return TextControllerNotifier();
 });

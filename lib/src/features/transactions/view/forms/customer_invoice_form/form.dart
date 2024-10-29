@@ -13,7 +13,6 @@ import 'package:tablets/src/features/transactions/controllers/transaction_form_c
 import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/item_list.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/transactions/view/forms/text_input_field.dart';
-import 'package:tablets/src/common/values/form_dimenssions.dart';
 
 class CustomerInvoiceForm extends ConsumerWidget {
   const CustomerInvoiceForm({super.key});
@@ -23,16 +22,16 @@ class CustomerInvoiceForm extends ConsumerWidget {
     return totalWeight.toString();
   }
 
-  String calculateTotalPrice(formController) {
+  String calculateTotalAmount(formController) {
     final Map<String, dynamic> formData = formController.data;
-    double totalPrice = 0;
-    if (!formData.containsKey('items')) return totalPrice.toString();
+    double totalAmount = 0;
+    if (!formData.containsKey('items')) return totalAmount.toString();
     for (int i = 0; i < formData['items'].length; i++) {
       if (formData['items'][i].containsKey('price')) {
-        totalPrice += formData['items'][i]['price'];
+        totalAmount += formData['items'][i]['price'];
       }
     }
-    return totalPrice.toString();
+    return totalAmount.toString();
   }
 
   @override
@@ -132,7 +131,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
         Row(
           children: [
             Visibility(
-              visible: settings.writeTotalPriceAsText,
+              visible: settings.writeTotalAmountAsText,
               child: TransactionFormInputField(
                 isRequired: false,
                 dataType: constants.FieldDataTypes.string,
@@ -146,16 +145,16 @@ class CustomerInvoiceForm extends ConsumerWidget {
         const CustomerInvoiceItemList(),
         gaps.VerticalGap.formFieldToField,
         gaps.VerticalGap.formFieldToField,
-        SizedBox(
-          width: customerInvoiceFormWidth * 0.6,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              gaps.HorizontalGap.formFieldToField,
-              Text(calculateTotalPrice(formController)),
-            ],
-          ),
-        ),
+        // SizedBox(
+        //   width: customerInvoiceFormWidth * 0.6,
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: [
+        //       gaps.HorizontalGap.formFieldToField,
+        //       Text(calculateTotalAmount(formController)),
+        //     ],
+        //   ),
+        // ),
       ],
     );
   }

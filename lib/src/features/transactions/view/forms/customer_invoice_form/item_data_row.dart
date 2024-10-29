@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
@@ -59,7 +58,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
         ),
         const ItemDataCell(width: soldQuantityWidth, cell: Text('TempText')),
         const ItemDataCell(width: giftQantityWidth, cell: Text('tempText')),
-        const ItemDataCell(isLast: true, width: soldTotalPriceWidth, cell: Text('tempText')),
+        const ItemDataCell(isLast: true, width: soldTotalAmountWidth, cell: Text('tempText')),
       ],
     );
   }
@@ -73,4 +72,4 @@ const double nameWidth = customerInvoiceFormWidth * 0.345;
 const double priceWidth = customerInvoiceFormWidth * 0.16;
 const double soldQuantityWidth = customerInvoiceFormWidth * 0.1;
 const double giftQantityWidth = customerInvoiceFormWidth * 0.1;
-const double soldTotalPriceWidth = customerInvoiceFormWidth * 0.17;
+const double soldTotalAmountWidth = customerInvoiceFormWidth * 0.17;
