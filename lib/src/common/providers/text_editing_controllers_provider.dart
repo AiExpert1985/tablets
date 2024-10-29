@@ -58,7 +58,9 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     return state[fieldName];
   }
 
-  // Dispose method to clean up controllers
+  // this method is very important, and should be called when every you finish
+  // your work with TextEditingControllers otherwise they will keep their values
+  // and that causes bugs in the code
   void disposeControllers() {
     state.forEach((key, value) {
       if (value is TextEditingController) {
@@ -80,6 +82,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
 }
 
 // Define a provider for the TextEditingController map
-final textFieldsControllerProvider = StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
+final textFieldsControllerProvider =
+    StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
   return TextControllerNotifier();
 });

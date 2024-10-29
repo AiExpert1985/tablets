@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/item_data_row.dart';
 import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/item_titles_row.dart';
@@ -13,7 +11,7 @@ class CustomerInvoiceItemList extends ConsumerWidget {
   const CustomerInvoiceItemList({super.key});
 
   List<Widget> createItemWidgets(
-      ItemFormData formController, DbRepository repository, Map<String, dynamic> textEditingControllers) {
+      ItemFormData formController, Map<String, dynamic> textEditingControllers) {
     List<Widget> rows = [];
     final Map<String, dynamic> formData = formController.data;
     if (!formData.containsKey('items') || formData['items'] is! List) {
@@ -22,16 +20,14 @@ class CustomerInvoiceItemList extends ConsumerWidget {
     }
     final items = formData['items'] as List;
     for (var i = 0; i < items.length; i++) {
-      if (!textEditingControllers.containsKey('items') || textEditingControllers['items']!.length <= i) {
+      if (!textEditingControllers.containsKey('items') ||
+          textEditingControllers['items']!.length <= i) {
         errorPrint(message: 'Warning: Missing TextEditingController for item index: $i');
         continue;
       }
       rows.add(
         CustomerInvoiceItemDataRow(
           sequence: i,
-          dbListFetchFn: repository.fetchItemListAsMaps,
-          formData: formData,
-          onChangedFn: formController.update,
         ),
       );
     }
@@ -42,9 +38,8 @@ class CustomerInvoiceItemList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(transactionFormDataProvider);
     final formController = ref.read(transactionFormDataProvider.notifier);
-    final repository = ref.read(productRepositoryProvider);
     final textFieldsControllers = ref.read(textFieldsControllerProvider);
-    final itemWidgets = createItemWidgets(formController, repository, textFieldsControllers);
+    final itemWidgets = createItemWidgets(formController, textFieldsControllers);
     return Container(
       height: 350,
       decoration: BoxDecoration(

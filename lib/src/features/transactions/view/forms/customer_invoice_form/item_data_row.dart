@@ -6,22 +6,14 @@ import 'package:tablets/src/common/providers/text_editing_controllers_provider.d
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_cell.dart';
 import 'package:tablets/src/features/transactions/view/forms/text_input_field.dart';
 
 class CustomerInvoiceItemDataRow extends ConsumerWidget {
-  const CustomerInvoiceItemDataRow(
-      {required this.sequence,
-      required this.dbListFetchFn,
-      required this.onChangedFn,
-      required this.formData,
-      super.key});
+  const CustomerInvoiceItemDataRow({required this.sequence, super.key});
   final int sequence;
-  final Map<String, dynamic> formData;
-  final void Function(Map<String, dynamic>) onChangedFn;
-  final Future<List<Map<String, dynamic>>> Function({String? filterKey, String? filterValue}) dbListFetchFn;
-
   String updateTotalWeight(formData) {
     int totalWeight = 0;
     return totalWeight.toString();
@@ -36,14 +28,14 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
         totalAmount += formData['items'][i]['price'];
       }
     }
-    formController.update({...formData, 'totalAmount': totalAmount});
+    formController.update({'totalAmount': totalAmount});
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formData = ref.read(transactionFormDataProvider);
     final formController = ref.read(transactionFormDataProvider.notifier);
     final textEditingController = ref.read(textFieldsControllerProvider);
+    final repository = ref.read(productRepositoryProvider);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,20 +44,21 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
         ItemDataCell(
             width: nameWidth,
             cell: DropDownWithSearchFormField(
-              formData: formData,
+              formData: formController.data,
               property: 'items',
               subProperty: 'name',
               subPropertyIndex: sequence,
               relatedSubProperties: const {'price': 'sellWholePrice', 'weight': 'packageWeight'},
-              dbListFetchFn: dbListFetchFn,
-              onChangedFn: onChangedFn,
+              dbListFetchFn: repository.fetchItemListAsMaps,
+              onChangedFn: formController.update,
               hideBorders: true,
               updateReletedFieldsFn: () {
-                if (formData.containsKey('items') && formData['items'][sequence].containsKey('price')) {
-                  textEditingController['items'][sequence].text = formData['items'][sequence]['price'].toString();
-                  updateTotalAmount(formController);
-                  textEditingController['totalAmount'].text = formData['totalAmount'].toString();
+                if (!formController.data.containsKey('items') ||
+                    !(formController.data['items'][sequence].containsKey('price'))) {
+                  return;
                 }
+                textEditingController['items'][sequence].text =
+                    formController.data['items'][sequence]['price'].toString();
               },
             )),
         ItemDataCell(
@@ -79,10 +72,10 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
             dataType: constants.FieldDataTypes.double,
             property: 'items',
             updateReletedFieldsFn: () {
-              if (formData.containsKey('totalAmount')) {
-                textEditingController['totalAmount'].text = formData['totalAmount'].toString();
-                updateTotalAmount(formController);
-              }
+              updateTotalAmount(formController);
+              tempPrint(formController.data);
+              textEditingController['totalAmount'].text =
+                  formController.data['totalAmount'].toString();
             },
           ),
         ),

@@ -9,6 +9,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // ignore:depend_on_referenced_packages
 import 'package:flutter_web_plugins/url_strategy.dart';
 
+// // Custom ProviderObserver to log listeners
+// // it is temporary to check how riverpod dispose providers, and I will delete it later
+// class Logger extends ProviderObserver {
+//   @override
+//   void didUpdateProvider(
+//     ProviderBase provider,
+//     Object? previousValue,
+//     Object? newValue,
+//     ProviderContainer container,
+//   ) {
+//     tempPrint('Provider: ${provider.name ?? provider.runtimeType} updated: $newValue');
+//   }
+// }
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -20,7 +34,10 @@ void main() async {
   registerErrorHandlers();
   my_initializer.customInialization();
 
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(
+    // observers: [Logger()],
+    child: MyApp(),
+  ));
 }
 
 void registerErrorHandlers() {

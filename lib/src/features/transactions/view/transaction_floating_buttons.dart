@@ -35,7 +35,11 @@ class TransactionsFloatingButtons extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const TransactionForm(),
-    ).whenComplete(imagePicker.close);
+    ).whenComplete(() {
+      imagePicker.close();
+      // it is important to call disposeControllers here, because it doesn't dispose automatically
+      textFieldController.disposeControllers();
+    });
   }
 
   @override
@@ -64,7 +68,8 @@ class TransactionsFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () => showAddInvoiceForm(context, ref, formType: TransactionTypes.customerInvoice.name),
+          onTap: () =>
+              showAddInvoiceForm(context, ref, formType: TransactionTypes.customerInvoice.name),
         ),
       ],
     );
