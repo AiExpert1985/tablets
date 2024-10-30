@@ -13,7 +13,7 @@ import 'package:tablets/src/features/products/view/product_form_fields.dart';
 
 class ProductForm extends ConsumerWidget {
   const ProductForm({this.isEditMode = false, super.key});
-  final bool isEditMode;
+  final bool isEditMode; // used by formController to decide whether to save or update in db
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

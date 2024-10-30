@@ -10,19 +10,19 @@ import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/gaps.dart' as gaps;
 import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
+import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/item_list.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
-import 'package:tablets/src/features/transactions/view/forms/text_input_field.dart';
 
 class CustomerInvoiceForm extends ConsumerWidget {
   const CustomerInvoiceForm({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.read(transactionFormDataProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
     final textEditingControllers = ref.read(textFieldsControllerProvider);
@@ -37,21 +37,21 @@ class CustomerInvoiceForm extends ConsumerWidget {
           children: [
             DropDownWithSearchFormField(
               label: S.of(context).customer,
-              initialValue: formController.getProperty(property: 'counterParty'),
+              initialValue: formDataNotifier.getProperty(property: 'counterParty'),
               dbRepository: customerRepository,
               onChangedFn: (item) {
-                formController.updateProperties({'counterParty': item['name']});
+                formDataNotifier.updateProperties({'counterParty': item['name']});
                 // update related property
-                formController.updateProperties({'salesman': item['salesman']});
+                formDataNotifier.updateProperties({'salesman': item['salesman']});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
               label: S.of(context).transaction_salesman,
-              initialValue: formController.getProperty(property: 'salesman'),
+              initialValue: formDataNotifier.getProperty(property: 'salesman'),
               dbRepository: salesmanRepository,
               onChangedFn: (item) {
-                formController.updateProperties({'counterParty': item['name']});
+                formDataNotifier.updateProperties({'counterParty': item['name']});
               },
             ),
           ],
@@ -60,7 +60,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
         Row(
           children: [
             DropDownListFormField(
-              initialValue: formController.getProperty(property: 'currency'),
+              initialValue: formDataNotifier.getProperty(property: 'currency'),
               itemList: [
                 S.of(context).transaction_payment_Dinar,
                 S.of(context).transaction_payment_Dollar,
@@ -68,28 +68,36 @@ class CustomerInvoiceForm extends ConsumerWidget {
               label: S.of(context).transaction_currency,
               name: 'currency',
               onChangedFn: (value) {
-                formController.updateProperties({'currency': value});
+                formDataNotifier.updateProperties({'currency': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
-            TransactionFormInputField(
+            FormInputField(
+              initialValue: formDataNotifier.getProperty(property: 'discount'),
+              name: 'discount',
               dataType: constants.FieldDataTypes.double,
-              property: 'discount',
               label: S.of(context).transaction_discount,
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'discount': double.parse(value)});
+              },
             ),
           ],
         ),
         gaps.VerticalGap.formFieldToField,
         Row(
           children: [
-            TransactionFormInputField(
+            FormInputField(
               dataType: constants.FieldDataTypes.int,
-              property: 'number',
+              name: 'number',
               label: S.of(context).transaction_number,
+              initialValue: formDataNotifier.getProperty(property: 'number'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'number': int.parse(value)});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
-              initialValue: formController.getProperty(property: 'paymentType'),
+              initialValue: formDataNotifier.getProperty(property: 'paymentType'),
               itemList: [
                 S.of(context).transaction_payment_cash,
                 S.of(context).transaction_payment_credit,
@@ -97,18 +105,18 @@ class CustomerInvoiceForm extends ConsumerWidget {
               label: S.of(context).transaction_payment_type,
               name: 'paymentType',
               onChangedFn: (value) {
-                formController.updateProperties({'paymentType': value});
+                formDataNotifier.updateProperties({'paymentType': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
             FormDatePickerField(
-              initialValue: formController.getProperty(property: 'date') is Timestamp
-                  ? formController.getProperty(property: 'date').toDate()
-                  : formController.getProperty(property: 'date'),
+              initialValue: formDataNotifier.getProperty(property: 'date') is Timestamp
+                  ? formDataNotifier.getProperty(property: 'date').toDate()
+                  : formDataNotifier.getProperty(property: 'date'),
               name: 'date',
               label: S.of(context).transaction_date,
               onChangedFn: (date) {
-                formController.updateProperties({'date': Timestamp.fromDate(date!)});
+                formDataNotifier.updateProperties({'date': Timestamp.fromDate(date!)});
               },
             ),
           ],
@@ -116,11 +124,15 @@ class CustomerInvoiceForm extends ConsumerWidget {
         gaps.VerticalGap.formFieldToField,
         Row(
           children: [
-            TransactionFormInputField(
+            FormInputField(
               isRequired: false,
               dataType: constants.FieldDataTypes.string,
-              property: 'notes',
+              name: 'notes',
               label: S.of(context).transaction_notes,
+              initialValue: formDataNotifier.getProperty(property: 'notes'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'notes': value});
+              },
             ),
           ],
         ),
@@ -129,11 +141,15 @@ class CustomerInvoiceForm extends ConsumerWidget {
           children: [
             Visibility(
               visible: settings.writeTotalAmountAsText,
-              child: TransactionFormInputField(
+              child: FormInputField(
                 isRequired: false,
                 dataType: constants.FieldDataTypes.string,
-                property: 'totalAsText',
+                name: 'totalAsText',
                 label: S.of(context).transaction_total_amount_as_text,
+                initialValue: formDataNotifier.getProperty(property: 'totalAsText'),
+                onChangedFn: (value) {
+                  formDataNotifier.updateProperties({'totalAsText': value});
+                },
               ),
             ),
           ],
@@ -147,20 +163,28 @@ class CustomerInvoiceForm extends ConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TransactionFormInputField(
+              FormInputField(
                 controller: textEditingControllers['totalAmount'],
                 isReadOnly: true,
                 dataType: constants.FieldDataTypes.double,
                 label: S.of(context).invoice_total_price,
-                property: 'totalAmount',
+                name: 'totalAmount',
+                initialValue: formDataNotifier.getProperty(property: 'totalAmount'),
+                onChangedFn: (value) {
+                  formDataNotifier.updateProperties({'totalAmount': double.parse(value)});
+                },
               ),
               gaps.HorizontalGap.formFieldToField,
-              TransactionFormInputField(
+              FormInputField(
                 controller: textEditingControllers['totalWeight'],
                 isReadOnly: true,
                 dataType: constants.FieldDataTypes.double,
                 label: S.of(context).invoice_total_weight,
-                property: 'totalWeight',
+                name: 'totalWeight',
+                initialValue: formDataNotifier.getProperty(property: 'totalWeight'),
+                onChangedFn: (value) {
+                  formDataNotifier.updateProperties({'totalWeight': double.parse(value)});
+                },
               ),
             ],
           ),

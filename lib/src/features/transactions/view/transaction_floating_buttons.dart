@@ -15,11 +15,11 @@ class TransactionsFloatingButtons extends ConsumerWidget {
   void showAddInvoiceForm(BuildContext context, WidgetRef ref, {String? formType}) {
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize();
-    final formController = ref.read(transactionFormDataProvider.notifier);
-    formController.initialize();
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    formDataNotifier.initialize();
     // give defaults values for drop down lists based on codition represents the transaction type
     if (formType != null && formType == TransactionTypes.customerInvoice.name) {
-      formController.updateProperties({
+      formDataNotifier.updateProperties({
         'currency': S.of(context).transaction_payment_Dinar,
         'paymentType': S.of(context).transaction_payment_credit,
         'discount': 0,

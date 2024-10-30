@@ -8,16 +8,16 @@ import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/features/categories/controllers/category_form_controller.dart';
 import 'package:tablets/src/features/categories/model/category.dart';
-import 'package:tablets/src/features/categories/view/category_form_fields.dart';
 import 'package:tablets/src/common/values/gaps.dart' as gaps;
+import 'package:tablets/src/features/categories/view/category_form_fields.dart';
 
 class CategoryForm extends ConsumerWidget {
   const CategoryForm({this.isEditMode = false, super.key});
-  final bool isEditMode;
+  final bool isEditMode; // used by formController to decide whether to save or update in db
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(categoryFormControllerProvider);
+    final formController = ref.read(categoryFormControllerProvider);
     final formData = ref.watch(categoryFormDataProvider);
     final formDataNotifier = ref.read(categoryFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
@@ -30,7 +30,7 @@ class CategoryForm extends ConsumerWidget {
         children: [
           ImageSlider(imageUrls: formData['imageUrls']),
           gaps.VerticalGap.formImageToFields,
-          const CategoryFormFields(editMode: true),
+          const CategoryFormFields(),
         ],
       ),
       buttons: [

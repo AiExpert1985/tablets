@@ -13,7 +13,7 @@ import 'package:tablets/src/features/customers/view/customer_form_fields.dart';
 
 class CustomerForm extends ConsumerWidget {
   const CustomerForm({this.isEditMode = false, super.key});
-  final bool isEditMode;
+  final bool isEditMode; // used by formController to decide whether to update or save in db
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +30,7 @@ class CustomerForm extends ConsumerWidget {
         children: [
           ImageSlider(imageUrls: formData['imageUrls']),
           gaps.VerticalGap.formImageToFields,
-          const CustomerFormFields(editMode: true),
+          const CustomerFormFields(),
         ],
       ),
       buttons: [

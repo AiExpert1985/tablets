@@ -19,9 +19,7 @@ class CategoriesGrid extends ConsumerWidget {
     imagePicker.initialize(urls: category.imageUrls);
     showDialog(
       context: context,
-      builder: (BuildContext ctx) => const CategoryForm(
-        isEditMode: true,
-      ),
+      builder: (BuildContext ctx) => const CategoryForm(isEditMode: true),
     ).whenComplete(imagePicker.close);
   }
 

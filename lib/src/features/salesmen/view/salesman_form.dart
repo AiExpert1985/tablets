@@ -30,7 +30,7 @@ class SalesmanForm extends ConsumerWidget {
         children: [
           ImageSlider(imageUrls: formData['imageUrls']),
           gaps.VerticalGap.formImageToFields,
-          const SalesmanFormFields(editMode: true),
+          const SalesmanFormFields(),
         ],
       ),
       buttons: [

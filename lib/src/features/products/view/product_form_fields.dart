@@ -13,30 +13,38 @@ class ProductFormFields extends ConsumerWidget {
   final bool editMode;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(productFormDataProvider.notifier);
+    final formDataNotifier = ref.watch(productFormDataProvider.notifier);
     final repository = ref.read(categoryRepositoryProvider);
     return Column(
       children: [
         Row(
           children: [
-            ProductFormInputField(
+            FormInputField(
               dataType: FieldDataTypes.int,
               name: 'code',
-              displayedTitle: S.of(context).product_code,
+              label: S.of(context).product_code,
+              initialValue: formDataNotifier.getProperty(property: 'code'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'code': int.parse(value)});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
-            ProductFormInputField(
+            FormInputField(
               dataType: FieldDataTypes.string,
               name: 'name',
-              displayedTitle: S.of(context).product_name,
+              label: S.of(context).product_name,
+              initialValue: formDataNotifier.getProperty(property: 'name'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'name': value});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
               label: S.of(context).category_selection,
-              initialValue: formController.getProperty(property: 'category'),
+              initialValue: formDataNotifier.getProperty(property: 'category'),
               dbRepository: repository,
               onChangedFn: (item) {
-                formController.updateProperties({'salesman': item['name']});
+                formDataNotifier.updateProperties({'salesman': item['name']});
               },
             ),
           ],
@@ -44,95 +52,106 @@ class ProductFormFields extends ConsumerWidget {
         gaps.VerticalGap.formFieldToField,
         Row(
           children: [
-            ProductFormInputField(
+            FormInputField(
               dataType: FieldDataTypes.double,
               name: 'sellRetailPrice',
-              displayedTitle: S.of(context).product_sell_retail_price,
+              label: S.of(context).product_sell_retail_price,
+              initialValue: formDataNotifier.getProperty(property: 'sellRetailPrice'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'sellRetailPrice': double.parse(value)});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
-            ProductFormInputField(
+            FormInputField(
               dataType: FieldDataTypes.double,
               name: 'sellWholePrice',
-              displayedTitle: S.of(context).product_sell_whole_price,
+              label: S.of(context).product_sell_whole_price,
+              initialValue: formDataNotifier.getProperty(property: 'sellWholePrice'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'sellWholePrice': double.parse(value)});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
-            ProductFormInputField(
+            FormInputField(
               dataType: FieldDataTypes.double,
               name: 'salesmanComission',
-              displayedTitle: S.of(context).product_salesman_comission,
+              label: S.of(context).product_salesman_comission,
+              initialValue: formDataNotifier.getProperty(property: 'salesmanComission'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'salesmanComission': double.parse(value)});
+              },
             ),
           ],
         ),
         gaps.VerticalGap.formFieldToField,
         Row(
           children: [
-            ProductFormInputField(
+            FormInputField(
               dataType: FieldDataTypes.int,
               name: 'initialQuantity',
-              displayedTitle: S.of(context).product_initial_quantitiy,
+              label: S.of(context).product_initial_quantitiy,
+              initialValue: formDataNotifier.getProperty(property: 'initialQuantity'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'initialQuantity': int.parse(value)});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
-            ProductFormInputField(
+            FormInputField(
               dataType: FieldDataTypes.int,
               name: 'altertWhenLessThan',
-              displayedTitle: S.of(context).product_altert_when_less_than,
+              label: S.of(context).product_altert_when_less_than,
+              initialValue: formDataNotifier.getProperty(property: 'altertWhenLessThan'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'altertWhenLessThan': int.parse(value)});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
-            ProductFormInputField(
+            FormInputField(
               dataType: FieldDataTypes.int,
               name: 'alertWhenExceeds',
-              displayedTitle: S.of(context).product_alert_when_exceeds,
+              label: S.of(context).product_alert_when_exceeds,
+              initialValue: formDataNotifier.getProperty(property: 'alertWhenExceeds'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'alertWhenExceeds': int.parse(value)});
+              },
             ),
           ],
         ),
         gaps.VerticalGap.formFieldToField,
         Row(
           children: [
-            ProductFormInputField(
+            FormInputField(
               dataType: FieldDataTypes.string,
               name: 'packageType',
-              displayedTitle: S.of(context).product_package_type,
+              label: S.of(context).product_package_type,
+              initialValue: formDataNotifier.getProperty(property: 'packageType'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'packageType': value});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
-            ProductFormInputField(
+            FormInputField(
               dataType: FieldDataTypes.double,
               name: 'packageWeight',
-              displayedTitle: S.of(context).product_package_weight,
+              label: S.of(context).product_package_weight,
+              initialValue: formDataNotifier.getProperty(property: 'packageWeight'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'packageWeight': double.parse(value)});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
-            ProductFormInputField(
+            FormInputField(
               dataType: FieldDataTypes.int,
               name: 'numItemsInsidePackage',
-              displayedTitle: S.of(context).product_num_items_inside_package,
+              label: S.of(context).product_num_items_inside_package,
+              initialValue: formDataNotifier.getProperty(property: 'numItemsInsidePackage'),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'numItemsInsidePackage': int.parse(value)});
+              },
             ),
           ],
         )
       ],
     );
-  }
-}
-
-class ProductFormInputField extends ConsumerWidget {
-  const ProductFormInputField({
-    required this.dataType,
-    required this.name,
-    required this.displayedTitle,
-    super.key,
-  });
-
-  final FieldDataTypes dataType;
-  final String name;
-  final String displayedTitle;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final productFormController = ref.watch(productFormDataProvider.notifier);
-    final formData = productFormController.data;
-    return FormInputField(
-        formData: formData,
-        onChangedFn: productFormController.updateProperties,
-        dataType: dataType,
-        property: name,
-        label: displayedTitle);
   }
 }

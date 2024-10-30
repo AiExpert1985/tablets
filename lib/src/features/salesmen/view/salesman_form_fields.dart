@@ -5,40 +5,19 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_form_controller.dart';
 
-class SalesmanFormFields extends StatelessWidget {
-  const SalesmanFormFields({super.key, this.editMode = false});
-  final bool editMode;
-  @override
-  Widget build(BuildContext context) {
-    return SalesmanFormInputField(
-      dataType: FieldDataTypes.string,
-      name: 'name',
-      displayedTitle: S.of(context).salesman_name,
-    );
-  }
-}
-
-class SalesmanFormInputField extends ConsumerWidget {
-  const SalesmanFormInputField({
-    required this.dataType,
-    required this.name,
-    required this.displayedTitle,
-    super.key,
-  });
-
-  final FieldDataTypes dataType;
-  final String name;
-  final String displayedTitle;
-
+class SalesmanFormFields extends ConsumerWidget {
+  const SalesmanFormFields({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final salesmanFormController = ref.watch(salesmanFormDataProvider.notifier);
-    final formData = salesmanFormController.data;
+    final formDataNotifier = ref.watch(salesmanFormDataProvider.notifier);
     return FormInputField(
-        formData: formData,
-        onChangedFn: salesmanFormController.updateProperties,
-        dataType: dataType,
-        property: name,
-        label: displayedTitle);
+      dataType: FieldDataTypes.string,
+      name: 'name',
+      label: S.of(context).salesman_name,
+      initialValue: formDataNotifier.getProperty(property: 'name'),
+      onChangedFn: (value) {
+        formDataNotifier.updateProperties({'name': value});
+      },
+    );
   }
 }

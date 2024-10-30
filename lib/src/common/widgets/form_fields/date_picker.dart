@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/form_validation.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 
@@ -16,9 +14,9 @@ class FormDatePickerField extends StatelessWidget {
     this.hideBorders = false,
     super.key,
   });
-  final String? label;
+  final String? label; // label displayed on the field (can be shown in Arabic)
   final DateTime? initialValue;
-  final String name;
+  final String name; // Widget needs it, not used by me
   final bool hideBorders; // hide borders in decoration, used if the field in sub list
   final bool isRequired; // if isRequired = false, then the field will not be validated
   final void Function(DateTime?) onChangedFn;

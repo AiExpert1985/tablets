@@ -11,9 +11,9 @@ class CustomerInvoiceItemList extends ConsumerWidget {
   const CustomerInvoiceItemList({super.key});
 
   List<Widget> createItemWidgets(
-      ItemFormData formController, Map<String, dynamic> textEditingControllers) {
+      ItemFormData formDataNotifier, Map<String, dynamic> textEditingControllers) {
     List<Widget> rows = [];
-    final Map<String, dynamic> formData = formController.data;
+    final Map<String, dynamic> formData = formDataNotifier.data;
     if (!formData.containsKey('items') || formData['items'] is! List) {
       return rows;
     }
@@ -32,9 +32,9 @@ class CustomerInvoiceItemList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(transactionFormDataProvider);
-    final formController = ref.read(transactionFormDataProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textFieldsControllers = ref.read(textFieldsControllerProvider);
-    final itemWidgets = createItemWidgets(formController, textFieldsControllers);
+    final itemWidgets = createItemWidgets(formDataNotifier, textFieldsControllers);
     return Container(
       height: 350,
       decoration: BoxDecoration(

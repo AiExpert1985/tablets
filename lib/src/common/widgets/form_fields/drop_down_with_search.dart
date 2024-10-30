@@ -17,12 +17,12 @@ class DropDownWithSearchFormField extends ConsumerWidget {
       this.initialValue,
       super.key});
 
-  final DbRepository dbRepository;
+  final DbRepository dbRepository; // used to bring items (from database) shown in the list
   final String? initialValue; // must contains 'name' property
   final String? label; // label shown on the cell
-  final void Function(Map<String, dynamic>) onChangedFn;
   final bool hideBorders; // hide borders in decoration, used if the field in sub list
   final bool isRequired; // if isRequired = false, then the field will not be validated
+  final void Function(Map<String, dynamic>) onChangedFn;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,7 +37,8 @@ class DropDownWithSearchFormField extends ConsumerWidget {
               : utils.formFieldDecoration(label: label),
         ),
         selectedItem: initalItem,
-        items: (filter, t) => dbRepository.fetchItemListAsMaps(filterKey: 'name', filterValue: filter),
+        items: (filter, t) =>
+            dbRepository.fetchItemListAsMaps(filterKey: 'name', filterValue: filter),
         compareFn: (i, s) => i == s,
         popupProps: PopupProps.dialog(
           title: label != null
@@ -80,7 +81,8 @@ class DropDownWithSearchFormField extends ConsumerWidget {
   }
 }
 
-Widget popUpItem(BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
+Widget popUpItem(
+    BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
@@ -99,7 +101,8 @@ Widget popUpItem(BuildContext context, Map<String, dynamic> item, bool isDisable
         leading: CircleAvatar(
           // radius: 70,
           backgroundColor: Colors.white,
-          foregroundImage: CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
+          foregroundImage:
+              CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
         ),
       ),
     ),

@@ -10,7 +10,7 @@ class CustomerInvoiceItemTitles extends ConsumerWidget {
   const CustomerInvoiceItemTitles({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.read(transactionFormDataProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
 
     return Row(
@@ -28,7 +28,7 @@ class CustomerInvoiceItemTitles extends ConsumerWidget {
               textEditingNotifier.addControllerToList(fieldName: 'items');
               // add new empty Map to the list of items property in formData, which will be
               // used to generate a row of fields, these fields will add data to the empty Map
-              formController.updateSubProperties(property: 'items', subProperties: {});
+              formDataNotifier.updateSubProperties(property: 'items', subProperties: {});
             },
             icon: const Icon(Icons.add, color: Colors.green),
           ),

@@ -5,18 +5,18 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
+import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_cell.dart';
-import 'package:tablets/src/features/transactions/view/forms/text_input_field.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 
 class CustomerInvoiceItemDataRow extends ConsumerWidget {
   const CustomerInvoiceItemDataRow({required this.index, super.key});
   final int index;
 
-  void updateTotalWeight(ItemFormData formController) {
-    Map<String, dynamic> formData = formController.data;
+  void updateTotalWeight(ItemFormData formDataNotifier) {
+    Map<String, dynamic> formData = formDataNotifier.data;
     double totalWeight = 0;
     if (!formData.containsKey('items') || formData['items'] is! List<Map<String, dynamic>>) {
       errorPrint(
@@ -36,11 +36,11 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
       }
       totalWeight += weight;
     }
-    formController.updateProperties({'totalWeight': totalWeight});
+    formDataNotifier.updateProperties({'totalWeight': totalWeight});
   }
 
-  void updateTotalAmount(ItemFormData formController) {
-    Map<String, dynamic> formData = formController.data;
+  void updateTotalAmount(ItemFormData formDataNotifier) {
+    Map<String, dynamic> formData = formDataNotifier.data;
     double totalAmount = 0;
     if (!formData.containsKey('items') || formData['items'] is! List<Map<String, dynamic>>) {
       errorPrint(
@@ -60,12 +60,12 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
       }
       totalAmount += price;
     }
-    formController.updateProperties({'totalAmount': totalAmount});
+    formDataNotifier.updateProperties({'totalAmount': totalAmount});
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.read(transactionFormDataProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textEditingController = ref.read(textFieldsControllerProvider.notifier);
     final repository = ref.read(productRepositoryProvider);
     return Row(
@@ -76,7 +76,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
         ItemDataCell(
             width: nameWidth,
             cell: DropDownWithSearchFormField(
-              initialValue: formController.getSubProperty(
+              initialValue: formDataNotifier.getSubProperty(
                   property: 'items', index: index, subProperty: 'name'),
               hideBorders: true,
               dbRepository: repository,
@@ -87,43 +87,44 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
                 // (2) update the totalWeight of the form based on all items weight
                 // note: totalPrice isn't updated here because it is updated by the price field
                 //       which is triggered by the change of field.
-                formController.updateSubProperties(property: 'items', index: index, subProperties: {
+                formDataNotifier
+                    .updateSubProperties(property: 'items', index: index, subProperties: {
                   'price': item['sellWholePrice'],
                   'weight': item['packageWeight'],
                 });
                 if (!textEditingController.isValidSubController(
                     fieldName: 'items', subControllerIndex: index)) return;
                 textEditingController.data['items'][index].text =
-                    formController.data['items'][index]['price'].toString();
-                updateTotalWeight(formController);
-                if (!formController.isValidProperty(property: 'totalWeight')) {
+                    formDataNotifier.data['items'][index]['price'].toString();
+                updateTotalWeight(formDataNotifier);
+                if (!formDataNotifier.isValidProperty(property: 'totalWeight')) {
                   errorPrint(message: 'formData[totalWeight] is not valid');
                   return;
                 }
                 textEditingController.data['totalWeight'].text =
-                    formController.data['totalWeight'].toString();
+                    formDataNotifier.data['totalWeight'].toString();
               },
             )),
         ItemDataCell(
           width: priceWidth,
-          cell: TransactionFormInputField(
+          cell: FormInputField(
             controller: textEditingController.data['items'][index],
             isRequired: false,
-            subProperty: 'price',
-            subPropertyIndex: index,
             hideBorders: true,
             dataType: constants.FieldDataTypes.double,
-            property: 'items',
-            updateReletedFieldsFn: () {
+            name: 'items',
+            onChangedFn: (value) {
               // this method is executed throught two ways, first when the field is updated by the user
               // and the second is automatic when user selects and item through adjacent product selection dropdown
-              updateTotalAmount(formController);
-              if (!formController.isValidProperty(property: 'totalAmount')) {
+              formDataNotifier.updateSubProperties(
+                  property: 'items', index: index, subProperties: {'price': double.parse(value)});
+              updateTotalAmount(formDataNotifier);
+              if (!formDataNotifier.isValidProperty(property: 'totalAmount')) {
                 errorPrint(message: 'formData[totalAmount] is not valid');
                 return;
               }
               textEditingController.data['totalAmount'].text =
-                  formController.data['totalAmount'].toString();
+                  formDataNotifier.data['totalAmount'].toString();
             },
           ),
         ),

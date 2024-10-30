@@ -8,50 +8,31 @@ import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 
-class CustomerFormFields extends StatelessWidget {
-  const CustomerFormFields({super.key, this.editMode = false});
-  final bool editMode;
-  @override
-  Widget build(BuildContext context) {
-    return CustomerFormInputField(
-      dataType: FieldDataTypes.string,
-      name: 'name',
-      displayedTitle: S.of(context).salesman_name,
-    );
-  }
-}
-
-class CustomerFormInputField extends ConsumerWidget {
-  const CustomerFormInputField({
-    required this.dataType,
-    required this.name,
-    required this.displayedTitle,
-    super.key,
-  });
-
-  final FieldDataTypes dataType;
-  final String name;
-  final String displayedTitle;
+class CustomerFormFields extends ConsumerWidget {
+  const CustomerFormFields({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.watch(customerFormDataProvider.notifier);
+    final formDataNotifier = ref.watch(customerFormDataProvider.notifier);
     final repository = ref.watch(salesmanRepositoryProvider);
     return Expanded(
       child: Column(
         children: [
           FormInputField(
-              formData: formController.data,
-              onChangedFn: formController.updateProperties,
-              dataType: dataType,
-              property: name,
-              label: displayedTitle),
+            onChangedFn: (value) {
+              formDataNotifier.updateProperties({'name': value});
+            },
+            initialValue: formDataNotifier.getProperty(property: 'name'),
+            dataType: FieldDataTypes.string,
+            name: 'name',
+            label: S.of(context).salesman_name,
+          ),
           VerticalGap.formFieldToField,
           DropDownWithSearchFormField(
-            initialValue: formController.getProperty(property: 'salesman'),
+            initialValue: formDataNotifier.getProperty(property: 'salesman'),
             dbRepository: repository,
             onChangedFn: (item) {
-              formController.updateProperties({'salesman': item['name']});
+              formDataNotifier.updateProperties({'salesman': item['name']});
             },
           )
         ],

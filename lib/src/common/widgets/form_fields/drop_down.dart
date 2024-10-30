@@ -14,13 +14,13 @@ class DropDownListFormField extends StatelessWidget {
       this.isRequired = true,
       this.hideBorders = false,
       super.key});
-  final String? initialValue;
-  final String name;
-  final List<String> itemList;
-  final String? label;
-  final void Function(String?) onChangedFn;
+  final String? label; // label displayed in the field
+  final String name; // used by the widget, not used by me
+  final List<String> itemList; // list of items to be show
   final bool hideBorders; // hide borders in decoration, used if the field in sub list
   final bool isRequired; // if isRequired = false, then the field will not be validated
+  final String? initialValue;
+  final void Function(String?) onChangedFn;
 
   @override
   Widget build(BuildContext context) {
