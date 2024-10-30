@@ -36,7 +36,7 @@ class ProductFormFields extends ConsumerWidget {
               initialValue: formController.data['category'],
               dbRepository: repository,
               onChangedFn: (item) {
-                formController.updateProperty({'salesman': item['name']});
+                formController.updateProperties({'salesman': item['name']});
               },
             ),
           ],
@@ -130,7 +130,7 @@ class ProductFormInputField extends ConsumerWidget {
     final formData = productFormController.data;
     return FormInputField(
         formData: formData,
-        onChangedFn: productFormController.updateProperty,
+        onChangedFn: productFormController.updateProperties,
         dataType: dataType,
         property: name,
         label: displayedTitle);

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 
 class ItemFormData extends StateNotifier<Map<String, dynamic>> {
@@ -7,19 +8,34 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   void initialize({Map<String, dynamic>? initialData}) =>
       state = state = initialData ?? {'dbKey': generateRandomString(len: 8)};
 
-  void updateProperty(Map<String, dynamic> formData) {
-    state = {...state, ...formData};
+  void updateProperties(Map<String, dynamic> properties) {
+    state = {...state, ...properties};
   }
 
-  void updateSubProperty({required String property, required Map<String, dynamic> propertyData}) {
-    Map<String, dynamic> newState = Map.from(state);
-    if (newState.containsKey(property) && newState[property] is List<Map<String, dynamic>>) {
-      newState[property].add(propertyData);
-    } else {
-      List<Map<String, dynamic>> newList = [propertyData];
-      newState[property] = newList;
+  /// if no index is passed, subProperties will be appended to the list
+  /// if an index is provided, the data will be updated at the given index
+  void updateSubProperties(
+      {required String property, int? index, required Map<String, dynamic> subProperties}) {
+    final newState = {...state};
+    if (!newState.containsKey(property)) {
+      newState[property] = [subProperties];
+      state = newState;
+      return;
     }
-    state = Map.from(newState);
+    final existingList = newState[property];
+    if (existingList is! List<Map<String, dynamic>>) {
+      errorPrint(message: 'Property "$property" is not of type List<Map<String, dynamic>>');
+      return;
+    }
+    if (index == null) {
+      newState[property].add(subProperties);
+      state = newState;
+      return;
+    }
+    if (index >= 0 && index < newState[property].length) {
+      existingList[index] = {...existingList[index], ...subProperties};
+    }
+    errorPrint(message: 'subproperty were not added to property "$property" at index $index');
   }
 
   /// checks whether state contains the mentioned property
@@ -28,11 +44,12 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   }
 
   /// checks whether state contains the mentioned subProperty
-  bool isValidSubProperty({required String property, required int index, required String subProperty}) {
+  bool isValidSubProperty(
+      {required String property, required int index, required String subProperty}) {
     if (!state.containsKey(property)) return false;
     if (state[property] is! List<Map<String, dynamic>>) return false;
-    if (index < state['items'].length) return false;
-    if (state['items'][index].containsKey('price')) return false;
+    if (index < 0 && index > state[property].length) return false;
+    if (!state[property][index].containsKey(subProperty)) return false;
     return true;
   }
 

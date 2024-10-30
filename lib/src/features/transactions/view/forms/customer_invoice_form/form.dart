@@ -40,9 +40,9 @@ class CustomerInvoiceForm extends ConsumerWidget {
               initialValue: formController.data['counterParty'],
               dbRepository: customerRepository,
               onChangedFn: (item) {
-                formController.updateProperty({'counterParty': item['name']});
+                formController.updateProperties({'counterParty': item['name']});
                 // update related property
-                formController.updateProperty({'salesman': item['salesman']});
+                formController.updateProperties({'salesman': item['salesman']});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
@@ -51,7 +51,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
               initialValue: formController.data['salesman'],
               dbRepository: salesmanRepository,
               onChangedFn: (item) {
-                formController.updateProperty({'counterParty': item['name']});
+                formController.updateProperties({'counterParty': item['name']});
               },
             ),
           ],
@@ -60,7 +60,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
         Row(
           children: [
             DropDownListFormField(
-              onChangedFn: formController.updateProperty,
+              onChangedFn: formController.updateProperties,
               formData: formData,
               itemList: [
                 S.of(context).transaction_payment_Dinar,
@@ -87,7 +87,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
-              onChangedFn: formController.updateProperty,
+              onChangedFn: formController.updateProperties,
               formData: formData,
               itemList: [
                 S.of(context).transaction_payment_cash,
@@ -98,7 +98,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             FormDatePickerField(
-              onChangedFn: formController.updateProperty,
+              onChangedFn: formController.updateProperties,
               formData: formData,
               fieldName: 'date',
               label: S.of(context).transaction_date,

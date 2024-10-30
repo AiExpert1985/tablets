@@ -58,6 +58,17 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     return state[fieldName];
   }
 
+  bool isValidController({required String fieldName}) {
+    return state.containsKey(fieldName);
+  }
+
+  bool isValidSubController({required String fieldName, required int subControllerIndex}) {
+    if (!state.containsKey(fieldName)) return false;
+    if (state[fieldName] is! List<TextEditingController>) return false;
+    if (state[fieldName][subControllerIndex] is! TextEditingController) return false;
+    return true;
+  }
+
   // this method is very important, and should be called when every you finish
   // your work with TextEditingControllers otherwise they will keep their values
   // and that causes bugs in the code
@@ -79,6 +90,8 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     disposeControllers();
     super.dispose();
   }
+
+  Map<String, dynamic> get data => state;
 }
 
 // Define a provider for the TextEditingController map

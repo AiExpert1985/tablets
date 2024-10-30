@@ -19,7 +19,9 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
     Map<String, dynamic> formData = formController.data;
     double totalWeight = 0;
     if (!formData.containsKey('items') || formData['items'] is! List<Map<String, dynamic>>) {
-      errorPrint(message: 'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
+      errorPrint(
+          message:
+              'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
       return;
     }
     for (var item in formData['items']) {
@@ -34,14 +36,16 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
       }
       totalWeight += weight;
     }
-    formController.updateProperty({'totalWeight': totalWeight});
+    formController.updateProperties({'totalWeight': totalWeight});
   }
 
   void updateTotalAmount(ItemFormData formController) {
     Map<String, dynamic> formData = formController.data;
     double totalAmount = 0;
     if (!formData.containsKey('items') || formData['items'] is! List<Map<String, dynamic>>) {
-      errorPrint(message: 'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
+      errorPrint(
+          message:
+              'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
       return;
     }
     for (var item in formData['items']) {
@@ -56,13 +60,13 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
       }
       totalAmount += price;
     }
-    formController.updateProperty({'totalAmount': totalAmount});
+    formController.updateProperties({'totalAmount': totalAmount});
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formController = ref.read(transactionFormDataProvider.notifier);
-    final textEditingController = ref.read(textFieldsControllerProvider);
+    final textEditingController = ref.read(textFieldsControllerProvider.notifier);
     final repository = ref.read(productRepositoryProvider);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -72,40 +76,40 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
         ItemDataCell(
             width: nameWidth,
             cell: DropDownWithSearchFormField(
-              initialValue: formController.isValidSubProperty(property: 'items', index: index, subProperty: 'name')
+              initialValue: formController.isValidSubProperty(
+                      property: 'items', index: index, subProperty: 'name')
                   ? formController.data['items'][index]['name']
                   : null,
               hideBorders: true,
               dbRepository: repository,
               onChangedFn: (item) {
-                // update related fields using the item selected (of type Map<String, dynamic>)
-                // (1) update the price, and the weight of the item,
-                // (2) update the totalWeight of the form based on item weight
-                // note: we don't update the totalPrice here because it is updated by the price field
-                //       we triggered price field which updates the totalPrice based on the price of item selected
-                formController.updateSubProperty(property: 'items', propertyData: {
+                // updates related fields using the item selected (of type Map<String, dynamic>)
+                // (1) updates the price of current item
+                // (2) updates the weight of current item,
+                // (2) update the totalWeight of the form based on all items weight
+                // note: totalPrice isn't updated here because it is updated by the price field
+                //       which is triggered by the change of field.
+                formController.updateSubProperties(property: 'items', index: index, subProperties: {
                   'price': item['sellWholePrice'],
                   'weight': item['packageWeight'],
                 });
-                tempPrint(formController.data);
-                if (!formController.isValidSubProperty(property: 'items', index: index, subProperty: 'price') ||
-                    !formController.isValidSubProperty(property: 'items', index: index, subProperty: 'weight')) {
-                  errorPrint(message: 'formData[items][i][price] or formData[items][i][weight] is not valid');
-                  return;
-                }
-                textEditingController['items'][index].text = formController.data['items'][index]['price'].toString();
+                if (!textEditingController.isValidSubController(
+                    fieldName: 'items', subControllerIndex: index)) return;
+                textEditingController.data['items'][index].text =
+                    formController.data['items'][index]['price'].toString();
                 updateTotalWeight(formController);
                 if (!formController.isValidProperty(property: 'totalWeight')) {
                   errorPrint(message: 'formData[totalWeight] is not valid');
                   return;
                 }
-                textEditingController['totalWeight'].text = formController.data['totalWeight'].toString();
+                textEditingController.data['totalWeight'].text =
+                    formController.data['totalWeight'].toString();
               },
             )),
         ItemDataCell(
           width: priceWidth,
           cell: TransactionFormInputField(
-            controller: textEditingController['items'][index],
+            controller: textEditingController.data['items'][index],
             isRequired: false,
             subProperty: 'price',
             subPropertyIndex: index,
@@ -120,7 +124,8 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
                 errorPrint(message: 'formData[totalAmount] is not valid');
                 return;
               }
-              textEditingController['totalAmount'].text = formController.data['totalAmount'].toString();
+              textEditingController.data['totalAmount'].text =
+                  formController.data['totalAmount'].toString();
             },
           ),
         ),

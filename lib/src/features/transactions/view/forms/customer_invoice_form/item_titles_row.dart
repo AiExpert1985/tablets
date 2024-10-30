@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
@@ -9,17 +8,6 @@ import 'package:tablets/src/features/transactions/view/forms/item_cell.dart';
 
 class CustomerInvoiceItemTitles extends ConsumerWidget {
   const CustomerInvoiceItemTitles({super.key});
-  void addNewEmptyRow(ItemFormData formController) {
-    Map<String, dynamic> formData = formController.data;
-    Map<String, dynamic> emptyMap = {'price': 0, 'soldQuantity': 0, 'giftQuantity': 0};
-    if (formData['items'] != null) {
-      formData['items'].add(emptyMap);
-    } else {
-      formData['items'] = [emptyMap];
-    }
-    formController.updateProperty(formData);
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formController = ref.read(transactionFormDataProvider.notifier);
@@ -36,18 +24,27 @@ class CustomerInvoiceItemTitles extends ConsumerWidget {
           cell: IconButton(
             // alignment: Alignment.topCenter,
             onPressed: () {
+              // add controller to the price text field
               textEditingNotifier.addControllerToList(fieldName: 'items');
-              addNewEmptyRow(formController);
+              // add new empty Map to the list of items property in formData, which will be
+              // used to generate a row of fields, these fields will add data to the empty Map
+              formController.updateSubProperties(property: 'items', subProperties: {});
             },
             icon: const Icon(Icons.add, color: Colors.green),
           ),
         ),
-        ItemDataCell(isTitle: true, width: customerInvoiceNameWidth, cell: Text(S.of(context).item_name)),
-        ItemDataCell(isTitle: true, width: customerInvoicePriceWidth, cell: Text(S.of(context).item_price)),
         ItemDataCell(
-            isTitle: true, width: customerInvoiceSoldQuantityWidth, cell: Text(S.of(context).item_sold_quantity)),
+            isTitle: true, width: customerInvoiceNameWidth, cell: Text(S.of(context).item_name)),
         ItemDataCell(
-            isTitle: true, width: customerInvoiceGiftQantityWidth, cell: Text(S.of(context).item_gifts_quantity)),
+            isTitle: true, width: customerInvoicePriceWidth, cell: Text(S.of(context).item_price)),
+        ItemDataCell(
+            isTitle: true,
+            width: customerInvoiceSoldQuantityWidth,
+            cell: Text(S.of(context).item_sold_quantity)),
+        ItemDataCell(
+            isTitle: true,
+            width: customerInvoiceGiftQantityWidth,
+            cell: Text(S.of(context).item_gifts_quantity)),
         ItemDataCell(
             isTitle: true,
             isLast: true,
