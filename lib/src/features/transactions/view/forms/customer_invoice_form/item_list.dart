@@ -10,8 +10,7 @@ import 'package:tablets/src/features/transactions/view/forms/customer_invoice_fo
 class CustomerInvoiceItemList extends ConsumerWidget {
   const CustomerInvoiceItemList({super.key});
 
-  List<Widget> createItemWidgets(
-      ItemFormData formController, Map<String, dynamic> textEditingControllers) {
+  List<Widget> createItemWidgets(ItemFormData formController, Map<String, dynamic> textEditingControllers) {
     List<Widget> rows = [];
     final Map<String, dynamic> formData = formController.data;
     if (!formData.containsKey('items') || formData['items'] is! List) {
@@ -20,14 +19,13 @@ class CustomerInvoiceItemList extends ConsumerWidget {
     }
     final items = formData['items'] as List;
     for (var i = 0; i < items.length; i++) {
-      if (!textEditingControllers.containsKey('items') ||
-          textEditingControllers['items']!.length <= i) {
+      if (!textEditingControllers.containsKey('items') || textEditingControllers['items']!.length <= i) {
         errorPrint(message: 'Warning: Missing TextEditingController for item index: $i');
         continue;
       }
       rows.add(
         CustomerInvoiceItemDataRow(
-          sequence: i,
+          index: i,
         ),
       );
     }

@@ -41,7 +41,7 @@ class TransactionFormInputField extends ConsumerWidget {
         hideBorders: hideBorders,
         isRequired: isRequired,
         formData: formData,
-        onChangedFn: formController.update,
+        onChangedFn: formController.updateProperty,
         dataType: dataType,
         property: property,
         subProperty: subProperty,

@@ -19,7 +19,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
     formController.initialize();
     // give defaults values for drop down lists based on codition represents the transaction type
     if (formType != null && formType == TransactionTypes.customerInvoice.name) {
-      formController.update({
+      formController.updateProperty({
         'currency': S.of(context).transaction_payment_Dinar,
         'paymentType': S.of(context).transaction_payment_credit,
         'discount': 0,
@@ -68,8 +68,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () =>
-              showAddInvoiceForm(context, ref, formType: TransactionTypes.customerInvoice.name),
+          onTap: () => showAddInvoiceForm(context, ref, formType: TransactionTypes.customerInvoice.name),
         ),
       ],
     );

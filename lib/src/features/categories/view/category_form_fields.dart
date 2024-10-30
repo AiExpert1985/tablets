@@ -36,7 +36,7 @@ class CategoryFormInputField extends ConsumerWidget {
     final formData = categoryFormController.data;
     return FormInputField(
         formData: formData,
-        onChangedFn: categoryFormController.update,
+        onChangedFn: categoryFormController.updateProperty,
         dataType: dataType,
         property: name,
         label: displayedTitle);

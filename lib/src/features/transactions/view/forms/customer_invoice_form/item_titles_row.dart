@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
@@ -8,7 +9,7 @@ import 'package:tablets/src/features/transactions/view/forms/item_cell.dart';
 
 class CustomerInvoiceItemTitles extends ConsumerWidget {
   const CustomerInvoiceItemTitles({super.key});
-  void addNewEmptyRow(formController) {
+  void addNewEmptyRow(ItemFormData formController) {
     Map<String, dynamic> formData = formController.data;
     Map<String, dynamic> emptyMap = {'price': 0, 'soldQuantity': 0, 'giftQuantity': 0};
     if (formData['items'] != null) {
@@ -16,7 +17,7 @@ class CustomerInvoiceItemTitles extends ConsumerWidget {
     } else {
       formData['items'] = [emptyMap];
     }
-    formController.update(formData);
+    formController.updateProperty(formData);
   }
 
   @override

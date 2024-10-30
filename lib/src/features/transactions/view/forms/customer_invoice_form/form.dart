@@ -36,20 +36,23 @@ class CustomerInvoiceForm extends ConsumerWidget {
         Row(
           children: [
             DropDownWithSearchFormField(
-              relatedProperties: const {'counterParty': 'name', 'salesman': 'salesman'},
-              property: 'counterParty',
               label: S.of(context).customer,
-              formData: formData,
-              onChangedFn: formController.update,
-              dbListFetchFn: customerRepository.fetchItemListAsMaps,
+              initialValue: formController.data['counterParty'],
+              dbRepository: customerRepository,
+              onChangedFn: (item) {
+                formController.updateProperty({'counterParty': item['name']});
+                // update related property
+                formController.updateProperty({'salesman': item['salesman']});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
-              property: 'salesman',
               label: S.of(context).transaction_salesman,
-              formData: formData,
-              onChangedFn: formController.update,
-              dbListFetchFn: salesmanRepository.fetchItemListAsMaps,
+              initialValue: formController.data['salesman'],
+              dbRepository: salesmanRepository,
+              onChangedFn: (item) {
+                formController.updateProperty({'counterParty': item['name']});
+              },
             ),
           ],
         ),
@@ -57,7 +60,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
         Row(
           children: [
             DropDownListFormField(
-              onChangedFn: formController.update,
+              onChangedFn: formController.updateProperty,
               formData: formData,
               itemList: [
                 S.of(context).transaction_payment_Dinar,
@@ -84,7 +87,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
-              onChangedFn: formController.update,
+              onChangedFn: formController.updateProperty,
               formData: formData,
               itemList: [
                 S.of(context).transaction_payment_cash,
@@ -95,7 +98,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             FormDatePickerField(
-              onChangedFn: formController.update,
+              onChangedFn: formController.updateProperty,
               formData: formData,
               fieldName: 'date',
               label: S.of(context).transaction_date,

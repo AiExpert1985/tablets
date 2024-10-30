@@ -12,8 +12,8 @@ import 'package:tablets/src/features/transactions/view/forms/text_input_field.da
 import 'package:tablets/src/common/values/constants.dart' as constants;
 
 class CustomerInvoiceItemDataRow extends ConsumerWidget {
-  const CustomerInvoiceItemDataRow({required this.sequence, super.key});
-  final int sequence;
+  const CustomerInvoiceItemDataRow({required this.index, super.key});
+  final int index;
 
   void updateTotalWeight(ItemFormData formController) {
     Map<String, dynamic> formData = formController.data;
@@ -34,7 +34,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
       }
       totalWeight += weight;
     }
-    formController.update({'totalWeight': totalWeight});
+    formController.updateProperty({'totalWeight': totalWeight});
   }
 
   void updateTotalAmount(ItemFormData formController) {
@@ -56,7 +56,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
       }
       totalAmount += price;
     }
-    formController.update({'totalAmount': totalAmount});
+    formController.updateProperty({'totalAmount': totalAmount});
   }
 
   @override
@@ -68,44 +68,47 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        ItemDataCell(isFirst: true, width: sequenceWidth, cell: Text((sequence + 1).toString())),
+        ItemDataCell(isFirst: true, width: sequenceWidth, cell: Text((index + 1).toString())),
         ItemDataCell(
             width: nameWidth,
             cell: DropDownWithSearchFormField(
-              formData: formController.data,
-              property: 'items',
-              subProperty: 'name',
-              subPropertyIndex: sequence,
-              relatedSubProperties: const {'price': 'sellWholePrice', 'weight': 'packageWeight'},
-              dbListFetchFn: repository.fetchItemListAsMaps,
-              onChangedFn: formController.update,
+              initialValue: formController.isValidSubProperty(property: 'items', index: index, subProperty: 'name')
+                  ? formController.data['items'][index]['name']
+                  : null,
               hideBorders: true,
-              updateReletedFieldsFn: () {
-                // here we update the price, and the item, and also the totalWeight
-                // we don't update the totalPrice here because it is updated by the price field
-                // which is triggered automatically when this field is changed
-                if (!formController.data.containsKey('items')) {
-                  errorPrint(message: 'formData[items] does not exist');
+              dbRepository: repository,
+              onChangedFn: (item) {
+                // update related fields using the item selected (of type Map<String, dynamic>)
+                // (1) update the price, and the weight of the item,
+                // (2) update the totalWeight of the form based on item weight
+                // note: we don't update the totalPrice here because it is updated by the price field
+                //       we triggered price field which updates the totalPrice based on the price of item selected
+                formController.updateSubProperty(property: 'items', propertyData: {
+                  'price': item['sellWholePrice'],
+                  'weight': item['packageWeight'],
+                });
+                tempPrint(formController.data);
+                if (!formController.isValidSubProperty(property: 'items', index: index, subProperty: 'price') ||
+                    !formController.isValidSubProperty(property: 'items', index: index, subProperty: 'weight')) {
+                  errorPrint(message: 'formData[items][i][price] or formData[items][i][weight] is not valid');
                   return;
                 }
-                if (!(formController.data['items'][sequence].containsKey('price')) ||
-                    !(formController.data['items'][sequence].containsKey('weight'))) {
-                  errorPrint(message: 'formData[items][i][price] or formData[items][i][weight] does not exist');
-                  return;
-                }
-                textEditingController['items'][sequence].text =
-                    formController.data['items'][sequence]['price'].toString();
+                textEditingController['items'][index].text = formController.data['items'][index]['price'].toString();
                 updateTotalWeight(formController);
+                if (!formController.isValidProperty(property: 'totalWeight')) {
+                  errorPrint(message: 'formData[totalWeight] is not valid');
+                  return;
+                }
                 textEditingController['totalWeight'].text = formController.data['totalWeight'].toString();
               },
             )),
         ItemDataCell(
           width: priceWidth,
           cell: TransactionFormInputField(
-            controller: textEditingController['items'][sequence],
+            controller: textEditingController['items'][index],
             isRequired: false,
             subProperty: 'price',
-            subPropertyIndex: sequence,
+            subPropertyIndex: index,
             hideBorders: true,
             dataType: constants.FieldDataTypes.double,
             property: 'items',
@@ -113,6 +116,10 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
               // this method is executed throught two ways, first when the field is updated by the user
               // and the second is automatic when user selects and item through adjacent product selection dropdown
               updateTotalAmount(formController);
+              if (!formController.isValidProperty(property: 'totalAmount')) {
+                errorPrint(message: 'formData[totalAmount] is not valid');
+                return;
+              }
               textEditingController['totalAmount'].text = formController.data['totalAmount'].toString();
             },
           ),

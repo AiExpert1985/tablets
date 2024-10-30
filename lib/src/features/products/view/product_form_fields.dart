@@ -13,10 +13,8 @@ class ProductFormFields extends ConsumerWidget {
   final bool editMode;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formData = ref.watch(productFormDataProvider);
-
-    final formDataNotifier = ref.read(productFormDataProvider.notifier);
-    final categoryRepository = ref.read(categoryRepositoryProvider);
+    final formController = ref.watch(productFormDataProvider.notifier);
+    final repository = ref.read(categoryRepositoryProvider);
     return Column(
       children: [
         Row(
@@ -34,11 +32,12 @@ class ProductFormFields extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
-              property: 'category',
               label: S.of(context).category_selection,
-              formData: formData,
-              onChangedFn: formDataNotifier.update,
-              dbListFetchFn: categoryRepository.fetchItemListAsMaps,
+              initialValue: formController.data['category'],
+              dbRepository: repository,
+              onChangedFn: (item) {
+                formController.updateProperty({'salesman': item['name']});
+              },
             ),
           ],
         ),
@@ -131,7 +130,7 @@ class ProductFormInputField extends ConsumerWidget {
     final formData = productFormController.data;
     return FormInputField(
         formData: formData,
-        onChangedFn: productFormController.update,
+        onChangedFn: productFormController.updateProperty,
         dataType: dataType,
         property: name,
         label: displayedTitle);

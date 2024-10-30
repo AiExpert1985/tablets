@@ -42,16 +42,17 @@ class CustomerFormInputField extends ConsumerWidget {
         children: [
           FormInputField(
               formData: formController.data,
-              onChangedFn: formController.update,
+              onChangedFn: formController.updateProperty,
               dataType: dataType,
               property: name,
               label: displayedTitle),
           VerticalGap.formFieldToField,
           DropDownWithSearchFormField(
-            formData: formController.data,
-            onChangedFn: formController.update,
-            property: 'salesman',
-            dbListFetchFn: repository.fetchItemListAsMaps,
+            initialValue: formController.data['salesman'],
+            dbRepository: repository,
+            onChangedFn: (item) {
+              formController.updateProperty({'salesman': item['name']});
+            },
           )
         ],
       ),
