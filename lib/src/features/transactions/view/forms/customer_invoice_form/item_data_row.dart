@@ -3,30 +3,58 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_cell.dart';
 import 'package:tablets/src/features/transactions/view/forms/text_input_field.dart';
+import 'package:tablets/src/common/values/constants.dart' as constants;
 
 class CustomerInvoiceItemDataRow extends ConsumerWidget {
   const CustomerInvoiceItemDataRow({required this.sequence, super.key});
   final int sequence;
-  String updateTotalWeight(formData) {
-    int totalWeight = 0;
-    return totalWeight.toString();
+
+  void updateTotalWeight(ItemFormData formController) {
+    Map<String, dynamic> formData = formController.data;
+    double totalWeight = 0;
+    if (!formData.containsKey('items') || formData['items'] is! List<Map<String, dynamic>>) {
+      errorPrint(message: 'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
+      return;
+    }
+    for (var item in formData['items']) {
+      if (!item.containsKey('weight')) {
+        errorPrint(message: 'form[items] does not contain (weight) key');
+        continue;
+      }
+      final weight = item['weight'];
+      if (weight is! double) {
+        errorPrint(message: 'formData[items][i][weight] is not of type double');
+        continue;
+      }
+      totalWeight += weight;
+    }
+    formController.update({'totalWeight': totalWeight});
   }
 
   void updateTotalAmount(ItemFormData formController) {
-    final formData = formController.data;
+    Map<String, dynamic> formData = formController.data;
     double totalAmount = 0;
-    if (!formData.containsKey('items')) return;
-    for (int i = 0; i < formData['items'].length; i++) {
-      if (formData['items'][i].containsKey('price')) {
-        totalAmount += formData['items'][i]['price'];
+    if (!formData.containsKey('items') || formData['items'] is! List<Map<String, dynamic>>) {
+      errorPrint(message: 'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
+      return;
+    }
+    for (var item in formData['items']) {
+      if (!item.containsKey('price')) {
+        errorPrint(message: 'form[items] does not contain (price) key');
+        continue;
       }
+      final price = item['price'];
+      if (price is! double) {
+        errorPrint(message: 'formData[items][i][price] is not of type double');
+        continue;
+      }
+      totalAmount += price;
     }
     formController.update({'totalAmount': totalAmount});
   }
@@ -53,12 +81,22 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
               onChangedFn: formController.update,
               hideBorders: true,
               updateReletedFieldsFn: () {
-                if (!formController.data.containsKey('items') ||
-                    !(formController.data['items'][sequence].containsKey('price'))) {
+                // here we update the price, and the item, and also the totalWeight
+                // we don't update the totalPrice here because it is updated by the price field
+                // which is triggered automatically when this field is changed
+                if (!formController.data.containsKey('items')) {
+                  errorPrint(message: 'formData[items] does not exist');
+                  return;
+                }
+                if (!(formController.data['items'][sequence].containsKey('price')) ||
+                    !(formController.data['items'][sequence].containsKey('weight'))) {
+                  errorPrint(message: 'formData[items][i][price] or formData[items][i][weight] does not exist');
                   return;
                 }
                 textEditingController['items'][sequence].text =
                     formController.data['items'][sequence]['price'].toString();
+                updateTotalWeight(formController);
+                textEditingController['totalWeight'].text = formController.data['totalWeight'].toString();
               },
             )),
         ItemDataCell(
@@ -72,10 +110,10 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
             dataType: constants.FieldDataTypes.double,
             property: 'items',
             updateReletedFieldsFn: () {
+              // this method is executed throught two ways, first when the field is updated by the user
+              // and the second is automatic when user selects and item through adjacent product selection dropdown
               updateTotalAmount(formController);
-              tempPrint(formController.data);
-              textEditingController['totalAmount'].text =
-                  formController.data['totalAmount'].toString();
+              textEditingController['totalAmount'].text = formController.data['totalAmount'].toString();
             },
           ),
         ),
