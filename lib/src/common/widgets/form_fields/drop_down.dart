@@ -6,19 +6,19 @@ import 'package:tablets/src/common/functions/utils.dart' as utils;
 
 class DropDownListFormField extends StatelessWidget {
   const DropDownListFormField(
-      {required this.formData,
+      {this.initialValue,
       required this.onChangedFn,
       this.label,
-      required this.fieldName,
+      required this.name,
       required this.itemList,
       this.isRequired = true,
       this.hideBorders = false,
       super.key});
-  final String fieldName;
+  final String? initialValue;
+  final String name;
   final List<String> itemList;
   final String? label;
-  final void Function(Map<String, dynamic>) onChangedFn;
-  final Map<String, dynamic> formData;
+  final void Function(String?) onChangedFn;
   final bool hideBorders; // hide borders in decoration, used if the field in sub list
   final bool isRequired; // if isRequired = false, then the field will not be validated
 
@@ -26,7 +26,7 @@ class DropDownListFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: FormBuilderDropdown(
-          initialValue: formData[fieldName],
+          initialValue: initialValue,
           decoration: hideBorders
               ? utils.formFieldDecoration(label: label, hideBorders: true)
               : utils.formFieldDecoration(label: label),
@@ -36,12 +36,11 @@ class DropDownListFormField extends StatelessWidget {
                     errorMessage: S.of(context).input_validation_error_message_for_strings,
                   )
               : null,
-          onChanged: (newValue) {
-            if (newValue == null) return;
-            formData[fieldName] = newValue.toString();
-            onChangedFn(formData);
+          onChanged: (value) {
+            if (value == null) return;
+            onChangedFn(value);
           },
-          name: fieldName,
+          name: name,
           items: itemList
               .map((item) => DropdownMenuItem(
                     alignment: AlignmentDirectional.center,

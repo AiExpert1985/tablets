@@ -76,10 +76,8 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
         ItemDataCell(
             width: nameWidth,
             cell: DropDownWithSearchFormField(
-              initialValue: formController.isValidSubProperty(
-                      property: 'items', index: index, subProperty: 'name')
-                  ? formController.data['items'][index]['name']
-                  : null,
+              initialValue: formController.getSubProperty(
+                  property: 'items', index: index, subProperty: 'name'),
               hideBorders: true,
               dbRepository: repository,
               onChangedFn: (item) {

@@ -48,7 +48,7 @@ class CustomerFormInputField extends ConsumerWidget {
               label: displayedTitle),
           VerticalGap.formFieldToField,
           DropDownWithSearchFormField(
-            initialValue: formController.data['salesman'],
+            initialValue: formController.getProperty(property: 'salesman'),
             dbRepository: repository,
             onChangedFn: (item) {
               formController.updateProperties({'salesman': item['name']});

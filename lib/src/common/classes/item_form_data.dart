@@ -56,6 +56,19 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
     return true;
   }
 
+  // usually this is used for initialValue for form fields, which takes either a value or null
+  dynamic getProperty({required String property}) {
+    if (!state.containsKey(property)) return;
+    return state[property];
+  }
+
+  // usually this is used for initialValue for form fields, which takes either a value or null
+  dynamic getSubProperty(
+      {required String property, required int index, required String subProperty}) {
+    if (!isValidSubProperty(property: property, index: index, subProperty: subProperty)) return;
+    return state[property][index][subProperty];
+  }
+
   /// using notifier to get current state, used to get state instead of using the provider
   /// I used this way because I faced some issues when using the provider to get the updated state
   Map<String, dynamic> get data => state;

@@ -33,7 +33,7 @@ class ProductFormFields extends ConsumerWidget {
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
               label: S.of(context).category_selection,
-              initialValue: formController.data['category'],
+              initialValue: formController.getProperty(property: 'category'),
               dbRepository: repository,
               onChangedFn: (item) {
                 formController.updateProperties({'salesman': item['name']});

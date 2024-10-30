@@ -37,7 +37,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
           children: [
             DropDownWithSearchFormField(
               label: S.of(context).customer,
-              initialValue: formController.data['counterParty'],
+              initialValue: formController.getProperty(property: 'counterParty'),
               dbRepository: customerRepository,
               onChangedFn: (item) {
                 formController.updateProperties({'counterParty': item['name']});
@@ -48,7 +48,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
               label: S.of(context).transaction_salesman,
-              initialValue: formController.data['salesman'],
+              initialValue: formController.getProperty(property: 'salesman'),
               dbRepository: salesmanRepository,
               onChangedFn: (item) {
                 formController.updateProperties({'counterParty': item['name']});
@@ -60,14 +60,16 @@ class CustomerInvoiceForm extends ConsumerWidget {
         Row(
           children: [
             DropDownListFormField(
-              onChangedFn: formController.updateProperties,
-              formData: formController.data,
+              initialValue: formController.getProperty(property: 'currency'),
               itemList: [
                 S.of(context).transaction_payment_Dinar,
                 S.of(context).transaction_payment_Dollar,
               ],
               label: S.of(context).transaction_currency,
-              fieldName: 'currency',
+              name: 'currency',
+              onChangedFn: (value) {
+                formController.updateProperties({'currency': value});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
             TransactionFormInputField(
@@ -87,25 +89,24 @@ class CustomerInvoiceForm extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
-              onChangedFn: formController.updateProperties,
-              formData: formController.data,
+              initialValue: formController.getProperty(property: 'paymentType'),
               itemList: [
                 S.of(context).transaction_payment_cash,
                 S.of(context).transaction_payment_credit,
               ],
               label: S.of(context).transaction_payment_type,
-              fieldName: 'paymentType',
+              name: 'paymentType',
+              onChangedFn: (value) {
+                formController.updateProperties({'paymentType': value});
+              },
             ),
             gaps.HorizontalGap.formFieldToField,
             FormDatePickerField(
-              initialValue: formController.isValidProperty(property: 'date') &&
-                      formController.data['date']?.runtimeType == DateTime
-                  ? formController.data['date']
-                  : null,
-              fieldName: 'date',
+              initialValue: formController.getProperty(property: 'date'),
+              name: 'date',
               label: S.of(context).transaction_date,
               onChangedFn: (date) {
-                formController.updateProperties({'date': Timestamp.fromDate(date!)});
+                formController.updateProperties({'date': date!});
               },
             ),
           ],
