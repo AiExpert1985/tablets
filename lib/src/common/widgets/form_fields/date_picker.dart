@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FormDatePickerField extends StatelessWidget {
   const FormDatePickerField({
-    required this.formData,
+    this.initialValue,
     required this.onChangedFn,
     required this.fieldName,
     this.label,
@@ -15,12 +15,12 @@ class FormDatePickerField extends StatelessWidget {
     this.hideBorders = false,
     super.key,
   });
+  final DateTime? initialValue;
   final String? label;
-  final Map<String, dynamic> formData;
   final String fieldName;
   final bool hideBorders; // hide borders in decoration, used if the field in sub list
   final bool isRequired; // if isRequired = false, then the field will not be validated
-  final void Function(Map<String, dynamic>) onChangedFn;
+  final void Function(DateTime?) onChangedFn;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -30,13 +30,13 @@ class FormDatePickerField extends StatelessWidget {
             : utils.formFieldDecoration(label: label),
         textAlign: TextAlign.center,
         name: fieldName,
-        initialValue: formData[fieldName]?.runtimeType == DateTime ? formData[fieldName] : null,
+        initialValue: initialValue,
         fieldHintText: S.of(context).date_picker_hint,
         inputType: InputType.date,
         onChanged: (value) {
-          if (value == null) return; // since we update on change, we must ensure value isn't null
-          formData[fieldName] = Timestamp.fromDate(value);
-          onChangedFn(formData);
+          // since we update on change, we must ensure value isn't null
+          if (value == null) return;
+          onChangedFn(value);
         },
         validator: (value) => isRequired
             ? validateDatePicker(

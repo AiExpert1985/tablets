@@ -34,8 +34,11 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
     }
     if (index >= 0 && index < newState[property].length) {
       existingList[index] = {...existingList[index], ...subProperties};
+      return;
     }
-    errorPrint(message: 'subproperty were not added to property "$property" at index $index');
+    errorPrint(
+        message:
+            'subproperty $subProperties were not added to property "$property" at index $index');
   }
 
   /// checks whether state contains the mentioned property

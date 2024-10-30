@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -21,7 +22,6 @@ class CustomerInvoiceForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formData = ref.read(transactionFormDataProvider);
     final formController = ref.read(transactionFormDataProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
@@ -61,7 +61,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
           children: [
             DropDownListFormField(
               onChangedFn: formController.updateProperties,
-              formData: formData,
+              formData: formController.data,
               itemList: [
                 S.of(context).transaction_payment_Dinar,
                 S.of(context).transaction_payment_Dollar,
@@ -88,7 +88,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             gaps.HorizontalGap.formFieldToField,
             DropDownListFormField(
               onChangedFn: formController.updateProperties,
-              formData: formData,
+              formData: formController.data,
               itemList: [
                 S.of(context).transaction_payment_cash,
                 S.of(context).transaction_payment_credit,
@@ -98,10 +98,15 @@ class CustomerInvoiceForm extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             FormDatePickerField(
-              onChangedFn: formController.updateProperties,
-              formData: formData,
+              initialValue: formController.isValidProperty(property: 'date') &&
+                      formController.data['date']?.runtimeType == DateTime
+                  ? formController.data['date']
+                  : null,
               fieldName: 'date',
               label: S.of(context).transaction_date,
+              onChangedFn: (date) {
+                formController.updateProperties({'date': Timestamp.fromDate(date!)});
+              },
             ),
           ],
         ),
