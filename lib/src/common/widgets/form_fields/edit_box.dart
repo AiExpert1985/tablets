@@ -38,13 +38,13 @@ class FormInputField extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Expanded(
       child: FormBuilderTextField(
-        // // if controller is used, initialValue should be neglected
-        // initialValue: controller != null
-        //     ? null
-        //     : initialValue != null && initialValue is! String
-        //         ? initialValue.toString()
-        //         : initialValue,
-        // controller: controller,
+        // if controller is used, initialValue should be neglected
+        initialValue: controller != null
+            ? null
+            : initialValue != null && initialValue is! String
+                ? initialValue.toString()
+                : initialValue,
+        controller: controller,
         enabled: !isReadOnly,
         textAlign: TextAlign.center,
         name: name,
