@@ -102,11 +102,13 @@ class CustomerInvoiceForm extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             FormDatePickerField(
-              initialValue: formController.getProperty(property: 'date'),
+              initialValue: formController.getProperty(property: 'date') is Timestamp
+                  ? formController.getProperty(property: 'date').toDate()
+                  : formController.getProperty(property: 'date'),
               name: 'date',
               label: S.of(context).transaction_date,
               onChangedFn: (date) {
-                formController.updateProperties({'date': date!});
+                formController.updateProperties({'date': Timestamp.fromDate(date!)});
               },
             ),
           ],
