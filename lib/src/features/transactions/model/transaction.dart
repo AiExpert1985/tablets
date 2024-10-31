@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/interfaces/base_item.dart';
 
 // used to represent below types of transactions:
@@ -23,7 +24,6 @@ class Transaction implements BaseItem {
   List<String> imageUrls;
   int number; // receipt number, entered automatically (last_receipt + 1)
   DateTime date;
-  double amount; // amount of money
   String currency; // $ or ID
   String? notes;
   String? counterParty; // name of customer
@@ -42,7 +42,6 @@ class Transaction implements BaseItem {
     // all actions must have below properties
     required this.number,
     required this.date,
-    required this.amount,
     required this.currency,
     this.notes,
     required this.counterParty,
@@ -67,7 +66,6 @@ class Transaction implements BaseItem {
       'imageUrls': imageUrls,
       'number': number,
       'date': date,
-      'amount': amount,
       'currency': currency,
       'notes': notes,
       'counterParty': counterParty,
@@ -82,13 +80,13 @@ class Transaction implements BaseItem {
   }
 
   factory Transaction.fromMap(Map<String, dynamic> map) {
+    tempPrint('I am now calling Transaction.fromMp');
     return Transaction(
       dbKey: map['dbKey'],
       name: map['name'],
       imageUrls: List<String>.from(map['imageUrls']),
       number: map['number'].toInt(),
       date: map['date'].runtimeType == Timestamp ? map['date'].toDate() : map['date'],
-      amount: map['amount']?.toDouble(),
       currency: map['currency'],
       notes: map['notes'],
       counterParty: map['counterParty'],

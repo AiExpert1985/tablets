@@ -14,8 +14,7 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
 
   /// if no index is passed, subProperties will be appended to the list
   /// if an index is provided, the data will be updated at the given index
-  void updateSubProperties(
-      {required String property, int? index, required Map<String, dynamic> subProperties}) {
+  void updateSubProperties({required String property, int? index, required Map<String, dynamic> subProperties}) {
     final newState = {...state};
     if (!newState.containsKey(property)) {
       newState[property] = [subProperties];
@@ -36,9 +35,7 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
       existingList[index] = {...existingList[index], ...subProperties};
       return;
     }
-    errorPrint(
-        message:
-            'subproperty $subProperties were not added to property "$property" at index $index');
+    errorPrint(message: 'subproperty $subProperties were not added to property "$property" at index $index');
   }
 
   /// checks whether state contains the mentioned property
@@ -47,8 +44,7 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   }
 
   /// checks whether state contains the mentioned subProperty
-  bool isValidSubProperty(
-      {required String property, required int index, required String subProperty}) {
+  bool isValidSubProperty({required String property, required int index, required String subProperty}) {
     if (!state.containsKey(property)) return false;
     if (state[property] is! List<Map<String, dynamic>>) return false;
     if (index < 0 && index > state[property].length) return false;
@@ -63,8 +59,7 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   }
 
   // usually this is used for initialValue for form fields, which takes either a value or null
-  dynamic getSubProperty(
-      {required String property, required int index, required String subProperty}) {
+  dynamic getSubProperty({required String property, required int index, required String subProperty}) {
     if (!isValidSubProperty(property: property, index: index, subProperty: subProperty)) return;
     return state[property][index][subProperty];
   }
@@ -72,4 +67,29 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   /// using notifier to get current state, used to get state instead of using the provider
   /// I used this way because I faced some issues when using the provider to get the updated state
   Map<String, dynamic> get data => state;
+
+// used for debuggin purpose
+  String getFormDataTypes() {
+    final StringBuffer dataTypesBuffer = StringBuffer('{');
+
+    state.forEach((key, value) {
+      if (value is! List) {
+        dataTypesBuffer.write("'$key': ${value.runtimeType}, ");
+      } else {
+        dataTypesBuffer.write('$key: [');
+        dataTypesBuffer.write(value.map((item) {
+          if (item is Map) {
+            return '{${item.entries.map((entry) {
+              return "'${entry.key}': ${entry.value.runtimeType}";
+            }).join(', ')}}';
+          }
+          return item.runtimeType.toString();
+        }).join(', '));
+        dataTypesBuffer.write('], ');
+      }
+    });
+
+    dataTypesBuffer.write('}');
+    return dataTypesBuffer.toString();
+  }
 }

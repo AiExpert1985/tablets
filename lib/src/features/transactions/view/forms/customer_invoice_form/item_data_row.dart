@@ -19,9 +19,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
     Map<String, dynamic> formData = formDataNotifier.data;
     double totalWeight = 0;
     if (!formData.containsKey('items') || formData['items'] is! List<Map<String, dynamic>>) {
-      errorPrint(
-          message:
-              'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
+      errorPrint(message: 'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
       return;
     }
     for (var item in formData['items']) {
@@ -43,9 +41,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
     Map<String, dynamic> formData = formDataNotifier.data;
     double totalAmount = 0;
     if (!formData.containsKey('items') || formData['items'] is! List<Map<String, dynamic>>) {
-      errorPrint(
-          message:
-              'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
+      errorPrint(message: 'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
       return;
     }
     for (var item in formData['items']) {
@@ -76,8 +72,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
         ItemDataCell(
             width: nameWidth,
             cell: DropDownWithSearchFormField(
-              initialValue: formDataNotifier.getSubProperty(
-                  property: 'items', index: index, subProperty: 'name'),
+              initialValue: formDataNotifier.getSubProperty(property: 'items', index: index, subProperty: 'name'),
               hideBorders: true,
               dbRepository: repository,
               onChangedFn: (item) {
@@ -87,13 +82,11 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
                 // (2) update the totalWeight of the form based on all items weight
                 // note: totalPrice isn't updated here because it is updated by the price field
                 //       which is triggered by the change of field.
-                formDataNotifier
-                    .updateSubProperties(property: 'items', index: index, subProperties: {
+                formDataNotifier.updateSubProperties(property: 'items', index: index, subProperties: {
                   'price': item['sellWholePrice'],
                   'weight': item['packageWeight'],
                 });
-                if (!textEditingController.isValidSubController(
-                    fieldName: 'items', subControllerIndex: index)) return;
+                if (!textEditingController.isValidSubController(fieldName: 'items', subControllerIndex: index)) return;
                 textEditingController.data['items'][index].text =
                     formDataNotifier.data['items'][index]['price'].toString();
                 updateTotalWeight(formDataNotifier);
@@ -101,8 +94,10 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
                   errorPrint(message: 'formData[totalWeight] is not valid');
                   return;
                 }
-                textEditingController.data['totalWeight'].text =
-                    formDataNotifier.data['totalWeight'].toString();
+                textEditingController.data['totalWeight'].text = formDataNotifier.data['totalWeight'].toString();
+                tempPrint('after');
+                tempPrint(formDataNotifier.data);
+                tempPrint(formDataNotifier.getFormDataTypes());
               },
             )),
         ItemDataCell(
@@ -112,19 +107,18 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
             isRequired: false,
             hideBorders: true,
             dataType: constants.FieldDataTypes.double,
-            name: 'items',
+            name: 'price',
             onChangedFn: (value) {
               // this method is executed throught two ways, first when the field is updated by the user
               // and the second is automatic when user selects and item through adjacent product selection dropdown
-              formDataNotifier.updateSubProperties(
-                  property: 'items', index: index, subProperties: {'price': double.parse(value)});
+              formDataNotifier
+                  .updateSubProperties(property: 'items', index: index, subProperties: {'price': double.parse(value)});
               updateTotalAmount(formDataNotifier);
               if (!formDataNotifier.isValidProperty(property: 'totalAmount')) {
                 errorPrint(message: 'formData[totalAmount] is not valid');
                 return;
               }
-              textEditingController.data['totalAmount'].text =
-                  formDataNotifier.data['totalAmount'].toString();
+              textEditingController.data['totalAmount'].text = formDataNotifier.data['totalAmount'].toString();
             },
           ),
         ),

@@ -22,7 +22,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
       formDataNotifier.updateProperties({
         'currency': S.of(context).transaction_payment_Dinar,
         'paymentType': S.of(context).transaction_payment_credit,
-        'discount': 0,
+        'discount': 0.0,
         'name': formType,
         'date': DateTime.now(),
       });
@@ -68,8 +68,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () =>
-              showAddInvoiceForm(context, ref, formType: TransactionTypes.customerInvoice.name),
+          onTap: () => showAddInvoiceForm(context, ref, formType: TransactionTypes.customerInvoice.name),
         ),
       ],
     );

@@ -20,10 +20,10 @@ class FormInputField extends ConsumerWidget {
     super.key,
   });
 
-  final String? initialValue;
+  final dynamic initialValue;
   final String? label; // label displayed in the fiedl
   final FieldDataTypes dataType; // used mainly for validation (based on datatype) purpose
-  final void Function(String) onChangedFn;
+  final void Function(dynamic) onChangedFn;
   // isReadOnly used for fields that I don't want to be edited by user, for example
   // totalprice of an invoice which is the sum of item prices in the invoice
   final bool isReadOnly;
@@ -53,33 +53,21 @@ class FormInputField extends ConsumerWidget {
             : utils.formFieldDecoration(label: label),
         onChanged: (value) {
           if (value == null || value.trim().isEmpty) return;
-          // I need to convert to dynamic because entered value may be converted to different types
-          // (int, double, String) based on the datatype of data intended for this field
-          dynamic userValue = value;
-          if (dataType == FieldDataTypes.int) {
-            userValue = int.tryParse(value);
-          }
-          if (dataType == FieldDataTypes.double) {
-            userValue = double.tryParse(value);
-          }
-          onChangedFn(userValue);
+          onChangedFn(value);
         },
         validator: isRequired
             ? (value) {
                 if (dataType == FieldDataTypes.string) {
                   return validation.validateStringField(
-                      fieldValue: value,
-                      errorMessage: S.of(context).input_validation_error_message_for_strings);
+                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
                 }
                 if (dataType == FieldDataTypes.int) {
                   return validation.validateIntField(
-                      fieldValue: value,
-                      errorMessage: S.of(context).input_validation_error_message_for_integers);
+                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
                 }
                 if (dataType == FieldDataTypes.double) {
                   return validation.validateDoubleField(
-                      fieldValue: value,
-                      errorMessage: S.of(context).input_validation_error_message_for_doubles);
+                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
                 }
                 return null;
               }

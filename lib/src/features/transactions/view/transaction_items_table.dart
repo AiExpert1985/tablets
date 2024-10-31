@@ -32,17 +32,15 @@ class TransactionsTable extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionStream = ref.watch(transactionStreamProvider);
     final filterIsOn = ref.watch(transactionFilterSwitchProvider);
-    final transactionsListValue = filterIsOn
-        ? ref.read(transactionFilteredListProvider).getFilteredList()
-        : transactionStream;
+    final transactionsListValue =
+        filterIsOn ? ref.read(transactionFilteredListProvider).getFilteredList() : transactionStream;
     return AsyncValueWidget<List<Map<String, dynamic>>>(
         value: transactionsListValue,
         data: (transactions) {
           List<DataRow2> rows = transactions.map((map) {
             Transaction transaction = Transaction.fromMap(map);
             // item contains the name used in database, but I want to show to the user a different name
-            final screenName =
-                transactionTypeDbNameToScreenName(context: context, dbName: transaction.name);
+            final screenName = transactionTypeDbNameToScreenName(context: context, dbName: transaction.name);
             return DataRow2(
               cells: [
                 DataCell(Row(
@@ -60,7 +58,7 @@ class TransactionsTable extends ConsumerWidget {
                 )),
                 DataCell(Text(DateFormat('yyyy/MM/dd').format(transaction.date).toString())),
                 DataCell(Text(transaction.number.toString())),
-                DataCell(Text(transaction.amount.toString())),
+                DataCell(Text(transaction.totalAmount.toString())),
               ],
             );
           }).toList();
