@@ -10,17 +10,14 @@ import 'package:tablets/src/features/transactions/view/forms/customer_invoice_fo
 class CustomerInvoiceItemList extends ConsumerWidget {
   const CustomerInvoiceItemList({super.key});
 
-  List<Widget> createItemWidgets(
-      ItemFormData formDataNotifier, Map<String, dynamic> textEditingControllers) {
+  List<Widget> createItemWidgets(ItemFormData formDataNotifier, Map<String, dynamic> textEditingControllers) {
     List<Widget> rows = [];
-    final Map<String, dynamic> formData = formDataNotifier.data;
-    if (!formData.containsKey('items') || formData['items'] is! List) {
+    if (!formDataNotifier.data.containsKey('items') || formDataNotifier.data['items'] is! List) {
       return rows;
     }
-    final items = formData['items'] as List<Map<String, dynamic>>;
+    final items = formDataNotifier.data['items'] as List<Map<String, dynamic>>;
     for (var i = 0; i < items.length; i++) {
-      if (!textEditingControllers.containsKey('items') ||
-          textEditingControllers['items']!.length <= i) {
+      if (!textEditingControllers.containsKey('items') || textEditingControllers['items']!.length <= i) {
         errorPrint(message: 'Warning: Missing TextEditingController for item index: $i');
         continue;
       }

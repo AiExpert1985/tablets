@@ -16,13 +16,12 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
   final int index;
 
   void updateTotalWeight(ItemFormData formDataNotifier) {
-    Map<String, dynamic> formData = formDataNotifier.data;
     double totalWeight = 0;
-    if (!formData.containsKey('items') || formData['items'] is! List<Map<String, dynamic>>) {
+    if (!formDataNotifier.data.containsKey('items') || formDataNotifier.data['items'] is! List<Map<String, dynamic>>) {
       errorPrint(message: 'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
       return;
     }
-    for (var item in formData['items']) {
+    for (var item in formDataNotifier.data['items']) {
       if (!item.containsKey('weight')) {
         errorPrint(message: 'form[items] does not contain (weight) key');
         continue;
@@ -38,13 +37,12 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
   }
 
   void updateTotalAmount(ItemFormData formDataNotifier) {
-    Map<String, dynamic> formData = formDataNotifier.data;
     double totalAmount = 0;
-    if (!formData.containsKey('items') || formData['items'] is! List<Map<String, dynamic>>) {
+    if (!formDataNotifier.data.containsKey('items') || formDataNotifier.data['items'] is! List<Map<String, dynamic>>) {
       errorPrint(message: 'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
       return;
     }
-    for (var item in formData['items']) {
+    for (var item in formDataNotifier.data['items']) {
       if (!item.containsKey('price')) {
         errorPrint(message: 'form[items] does not contain (price) key');
         continue;
@@ -95,9 +93,6 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
                   return;
                 }
                 textEditingController.data['totalWeight'].text = formDataNotifier.data['totalWeight'].toString();
-                tempPrint('after');
-                tempPrint(formDataNotifier.data);
-                tempPrint(formDataNotifier.getFormDataTypes());
               },
             )),
         ItemDataCell(
@@ -111,8 +106,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
             onChangedFn: (value) {
               // this method is executed throught two ways, first when the field is updated by the user
               // and the second is automatic when user selects and item through adjacent product selection dropdown
-              formDataNotifier
-                  .updateSubProperties(property: 'items', index: index, subProperties: {'price': double.parse(value)});
+              formDataNotifier.updateSubProperties(property: 'items', index: index, subProperties: {'price': value});
               updateTotalAmount(formDataNotifier);
               if (!formDataNotifier.isValidProperty(property: 'totalAmount')) {
                 errorPrint(message: 'formData[totalAmount] is not valid');

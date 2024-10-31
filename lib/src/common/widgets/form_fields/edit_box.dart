@@ -53,6 +53,22 @@ class FormInputField extends ConsumerWidget {
             : utils.formFieldDecoration(label: label),
         onChanged: (value) {
           if (value == null || value.trim().isEmpty) return;
+          if (dataType == FieldDataTypes.int) {
+            try {
+              onChangedFn(int.parse(value));
+              return;
+            } catch (e) {
+              return;
+            }
+          }
+          if (dataType == FieldDataTypes.double) {
+            try {
+              onChangedFn(double.parse(value));
+              return;
+            } catch (e) {
+              return;
+            }
+          }
           onChangedFn(value);
         },
         validator: isRequired

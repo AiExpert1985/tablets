@@ -18,7 +18,6 @@ class SalesmanForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formController = ref.watch(salesmanFormControllerProvider);
-    final formData = ref.watch(salesmanFormDataProvider);
     final formDataNotifier = ref.read(salesmanFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
     ref.watch(imagePickerProvider);
@@ -28,7 +27,7 @@ class SalesmanForm extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          ImageSlider(imageUrls: formData['imageUrls']),
+          ImageSlider(imageUrls: formDataNotifier.data['imageUrls']),
           gaps.VerticalGap.formImageToFields,
           const SalesmanFormFields(),
         ],
@@ -54,7 +53,7 @@ class SalesmanForm extends ConsumerWidget {
           child: IconButton(
               onPressed: () async {
                 bool? confiramtion =
-                    await showDeleteConfirmationDialog(context: context, message: formData['name']);
+                    await showDeleteConfirmationDialog(context: context, message: formDataNotifier.data['name']);
                 if (confiramtion != null) {
                   final updateFormData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();

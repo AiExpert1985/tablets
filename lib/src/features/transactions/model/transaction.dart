@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/interfaces/base_item.dart';
 
 // used to represent below types of transactions:
@@ -80,7 +79,6 @@ class Transaction implements BaseItem {
   }
 
   factory Transaction.fromMap(Map<String, dynamic> map) {
-    tempPrint('I am now calling Transaction.fromMp');
     return Transaction(
       dbKey: map['dbKey'],
       name: map['name'],

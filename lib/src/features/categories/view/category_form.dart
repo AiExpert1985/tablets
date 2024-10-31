@@ -18,7 +18,7 @@ class CategoryForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formController = ref.read(categoryFormControllerProvider);
-    final formData = ref.watch(categoryFormDataProvider);
+    // final formData = ref.watch(categoryFormDataProvider);
     final formDataNotifier = ref.read(categoryFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
     ref.watch(imagePickerProvider);
@@ -28,7 +28,7 @@ class CategoryForm extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          ImageSlider(imageUrls: formData['imageUrls']),
+          ImageSlider(imageUrls: formDataNotifier.data['imageUrls']),
           gaps.VerticalGap.formImageToFields,
           const CategoryFormFields(),
         ],
@@ -54,12 +54,11 @@ class CategoryForm extends ConsumerWidget {
           child: IconButton(
               onPressed: () async {
                 bool? confiramtion =
-                    await showDeleteConfirmationDialog(context: context, message: formData['name']);
+                    await showDeleteConfirmationDialog(context: context, message: formDataNotifier.data['name']);
                 if (confiramtion != null) {
                   final updateFormData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();
-                  final category =
-                      ProductCategory.fromMap({...updateFormData, 'imageUrls': imageUrls});
+                  final category = ProductCategory.fromMap({...updateFormData, 'imageUrls': imageUrls});
                   // ignore: use_build_context_synchronously
                   formController.deleteItemFromDb(context, category);
                 }
