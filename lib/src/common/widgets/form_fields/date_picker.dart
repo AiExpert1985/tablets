@@ -25,9 +25,7 @@ class FormDatePickerField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: FormBuilderDateTimePicker(
-        decoration: hideBorders
-            ? utils.formFieldDecoration(label: label, hideBorders: true)
-            : utils.formFieldDecoration(label: label),
+        decoration: utils.formFieldDecoration(label: label, hideBorders: hideBorders),
         textAlign: TextAlign.center,
         name: name,
         initialValue: initialValue,

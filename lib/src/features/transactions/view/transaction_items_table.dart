@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
@@ -22,6 +23,11 @@ class TransactionsTable extends ConsumerWidget {
     ref.read(transactionFormDataProvider.notifier).initialize(initialData: tansaction.toMap());
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize(urls: tansaction.imageUrls);
+    // for below text field we need to add  controllers because the are updated by other fields
+    // for example total price it updated by the item prices
+    final textFieldController = ref.read(textFieldsControllerProvider.notifier);
+    textFieldController.addController(fieldName: 'totalAmount');
+    textFieldController.addController(fieldName: 'totalWeight');
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const TransactionForm(isEditMode: true),
@@ -32,15 +38,17 @@ class TransactionsTable extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionStream = ref.watch(transactionStreamProvider);
     final filterIsOn = ref.watch(transactionFilterSwitchProvider);
-    final transactionsListValue =
-        filterIsOn ? ref.read(transactionFilteredListProvider).getFilteredList() : transactionStream;
+    final transactionsListValue = filterIsOn
+        ? ref.read(transactionFilteredListProvider).getFilteredList()
+        : transactionStream;
     return AsyncValueWidget<List<Map<String, dynamic>>>(
         value: transactionsListValue,
         data: (transactions) {
           List<DataRow2> rows = transactions.map((map) {
             Transaction transaction = Transaction.fromMap(map);
             // item contains the name used in database, but I want to show to the user a different name
-            final screenName = transactionTypeDbNameToScreenName(context: context, dbName: transaction.name);
+            final screenName =
+                transactionTypeDbNameToScreenName(context: context, dbName: transaction.name);
             return DataRow2(
               cells: [
                 DataCell(Row(

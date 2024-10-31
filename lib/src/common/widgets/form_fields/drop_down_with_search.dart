@@ -32,12 +32,11 @@ class DropDownWithSearchFormField extends ConsumerWidget {
         mode: Mode.form,
         decoratorProps: DropDownDecoratorProps(
           textAlign: TextAlign.center,
-          decoration: hideBorders
-              ? utils.formFieldDecoration(label: label, hideBorders: true)
-              : utils.formFieldDecoration(label: label),
+          decoration: utils.formFieldDecoration(label: label, hideBorders: hideBorders),
         ),
         selectedItem: initalItem,
-        items: (filter, t) => dbRepository.fetchItemListAsMaps(filterKey: 'name', filterValue: filter),
+        items: (filter, t) =>
+            dbRepository.fetchItemListAsMaps(filterKey: 'name', filterValue: filter),
         compareFn: (i, s) => i == s,
         popupProps: PopupProps.dialog(
           title: label != null
@@ -80,7 +79,8 @@ class DropDownWithSearchFormField extends ConsumerWidget {
   }
 }
 
-Widget popUpItem(BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
+Widget popUpItem(
+    BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
@@ -99,7 +99,8 @@ Widget popUpItem(BuildContext context, Map<String, dynamic> item, bool isDisable
         leading: CircleAvatar(
           // radius: 70,
           backgroundColor: Colors.white,
-          foregroundImage: CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
+          foregroundImage:
+              CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
         ),
       ),
     ),

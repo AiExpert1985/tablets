@@ -27,9 +27,7 @@ class DropDownListFormField extends StatelessWidget {
     return Expanded(
       child: FormBuilderDropdown(
           initialValue: initialValue,
-          decoration: hideBorders
-              ? utils.formFieldDecoration(label: label, hideBorders: true)
-              : utils.formFieldDecoration(label: label),
+          decoration: utils.formFieldDecoration(label: label, hideBorders: hideBorders),
           validator: isRequired
               ? (value) => validateTextField(
                     fieldValue: value.toString(),

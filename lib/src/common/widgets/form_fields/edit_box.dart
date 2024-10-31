@@ -39,44 +39,51 @@ class FormInputField extends ConsumerWidget {
     return Expanded(
       child: FormBuilderTextField(
         // if controller is used, initialValue should be neglected
-        initialValue: controller != null
-            ? null
-            : initialValue != null && initialValue is! String
-                ? initialValue.toString()
-                : initialValue,
+        initialValue: _getInitialValue(),
         controller: controller,
         enabled: !isReadOnly,
         textAlign: TextAlign.center,
         name: name,
-        decoration: hideBorders
-            ? utils.formFieldDecoration(label: label, hideBorders: true)
-            : utils.formFieldDecoration(label: label),
-        onChanged: (value) {
-          if (value == null || value.trim().isEmpty) return;
-          if (dataType == FieldDataTypes.num) {
-            try {
-              onChangedFn(double.parse(value));
-              return;
-            } catch (e) {
-              return;
-            }
-          }
-          onChangedFn(value);
-        },
-        validator: isRequired
-            ? (value) {
-                if (dataType == FieldDataTypes.string) {
-                  return validation.validateTextField(
-                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_text);
-                }
-                if (dataType == FieldDataTypes.num) {
-                  return validation.validateNumberField(
-                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers);
-                }
-                return null;
-              }
-            : null,
+        decoration: utils.formFieldDecoration(label: label, hideBorders: hideBorders),
+        onChanged: _onChanged,
+        validator: isRequired ? _validator(context) : null,
       ),
     );
+  }
+
+  dynamic _getInitialValue() {
+    if (controller != null) return null;
+    return initialValue is! String ? initialValue?.toString() : initialValue;
+  }
+
+  void _onChanged(String? value) {
+    if (value == null || value.trim().isEmpty) return;
+    try {
+      if (dataType == FieldDataTypes.num) {
+        onChangedFn(double.parse(value));
+      } else {
+        onChangedFn(value);
+      }
+    } catch (e) {
+      debugPrint('Error parsing value: $value, Error: $e');
+    }
+  }
+
+  FormFieldValidator<String>? _validator(BuildContext context) {
+    return (value) {
+      if (dataType == FieldDataTypes.string) {
+        return validation.validateTextField(
+          fieldValue: value,
+          errorMessage: S.of(context).input_validation_error_message_for_text,
+        );
+      }
+      if (dataType == FieldDataTypes.num) {
+        return validation.validateNumberField(
+          fieldValue: value,
+          errorMessage: S.of(context).input_validation_error_message_for_numbers,
+        );
+      }
+      return null;
+    };
   }
 }
