@@ -37,8 +37,7 @@ class DropDownWithSearchFormField extends ConsumerWidget {
               : utils.formFieldDecoration(label: label),
         ),
         selectedItem: initalItem,
-        items: (filter, t) =>
-            dbRepository.fetchItemListAsMaps(filterKey: 'name', filterValue: filter),
+        items: (filter, t) => dbRepository.fetchItemListAsMaps(filterKey: 'name', filterValue: filter),
         compareFn: (i, s) => i == s,
         popupProps: PopupProps.dialog(
           title: label != null
@@ -64,9 +63,9 @@ class DropDownWithSearchFormField extends ConsumerWidget {
           ),
         ),
         validator: (item) => isRequired
-            ? validation.validateStringField(
+            ? validation.validateTextField(
                 fieldValue: item?['name'],
-                errorMessage: S.of(context).input_validation_error_message_for_strings,
+                errorMessage: S.of(context).input_validation_error_message_for_text,
               )
             : null,
         itemAsString: (item) {
@@ -81,8 +80,7 @@ class DropDownWithSearchFormField extends ConsumerWidget {
   }
 }
 
-Widget popUpItem(
-    BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
+Widget popUpItem(BuildContext context, Map<String, dynamic> item, bool isDisabled, bool isSelected) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 8),
     decoration: !isSelected
@@ -101,8 +99,7 @@ Widget popUpItem(
         leading: CircleAvatar(
           // radius: 70,
           backgroundColor: Colors.white,
-          foregroundImage:
-              CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
+          foregroundImage: CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
         ),
       ),
     ),

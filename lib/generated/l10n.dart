@@ -570,31 +570,21 @@ class S {
     );
   }
 
-  /// `Enter a valid work`
-  String get input_validation_error_message_for_strings {
+  /// `Enter a valid word`
+  String get input_validation_error_message_for_text {
     return Intl.message(
-      'Enter a valid work',
-      name: 'input_validation_error_message_for_strings',
+      'Enter a valid word',
+      name: 'input_validation_error_message_for_text',
       desc: '',
       args: [],
     );
   }
 
   /// `Enter an integer number`
-  String get input_validation_error_message_for_integers {
+  String get input_validation_error_message_for_numbers {
     return Intl.message(
       'Enter an integer number',
-      name: 'input_validation_error_message_for_integers',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter an integer number`
-  String get input_validation_error_message_for_doubles {
-    return Intl.message(
-      'Enter an integer number',
-      name: 'input_validation_error_message_for_doubles',
+      name: 'input_validation_error_message_for_numbers',
       desc: '',
       args: [],
     );

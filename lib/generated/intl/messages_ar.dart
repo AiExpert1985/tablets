@@ -79,16 +79,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "info": MessageLookupByLibrary.simpleMessage("معلومات"),
         "input_validation_error_message_for_date":
             MessageLookupByLibrary.simpleMessage("قم بأختيار التاريخ"),
-        "input_validation_error_message_for_doubles":
-            MessageLookupByLibrary.simpleMessage("ادخل رقم صحيح"),
         "input_validation_error_message_for_email":
             MessageLookupByLibrary.simpleMessage("ادخل بريد الكتروني صحيح"),
-        "input_validation_error_message_for_integers":
+        "input_validation_error_message_for_numbers":
             MessageLookupByLibrary.simpleMessage("ادخل رقم صحيح"),
         "input_validation_error_message_for_password":
             MessageLookupByLibrary.simpleMessage(
                 "يجب ان تكون كلمة المرور 6 رموز على الاقل"),
-        "input_validation_error_message_for_strings":
+        "input_validation_error_message_for_text":
             MessageLookupByLibrary.simpleMessage("ادخل كلمة صحيحة"),
         "input_validation_error_message_for_user_name":
             MessageLookupByLibrary.simpleMessage(

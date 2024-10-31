@@ -101,7 +101,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
             controller: textEditingController.data['items'][index],
             isRequired: false,
             hideBorders: true,
-            dataType: constants.FieldDataTypes.double,
+            dataType: constants.FieldDataTypes.num,
             name: 'price',
             onChangedFn: (value) {
               // this method is executed throught two ways, first when the field is updated by the user

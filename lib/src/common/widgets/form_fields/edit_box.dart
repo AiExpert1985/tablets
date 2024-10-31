@@ -53,15 +53,7 @@ class FormInputField extends ConsumerWidget {
             : utils.formFieldDecoration(label: label),
         onChanged: (value) {
           if (value == null || value.trim().isEmpty) return;
-          if (dataType == FieldDataTypes.int) {
-            try {
-              onChangedFn(int.parse(value));
-              return;
-            } catch (e) {
-              return;
-            }
-          }
-          if (dataType == FieldDataTypes.double) {
+          if (dataType == FieldDataTypes.num) {
             try {
               onChangedFn(double.parse(value));
               return;
@@ -74,16 +66,12 @@ class FormInputField extends ConsumerWidget {
         validator: isRequired
             ? (value) {
                 if (dataType == FieldDataTypes.string) {
-                  return validation.validateStringField(
-                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_strings);
+                  return validation.validateTextField(
+                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_text);
                 }
-                if (dataType == FieldDataTypes.int) {
-                  return validation.validateIntField(
-                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_integers);
-                }
-                if (dataType == FieldDataTypes.double) {
-                  return validation.validateDoubleField(
-                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_doubles);
+                if (dataType == FieldDataTypes.num) {
+                  return validation.validateNumberField(
+                      fieldValue: value, errorMessage: S.of(context).input_validation_error_message_for_numbers);
                 }
                 return null;
               }

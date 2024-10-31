@@ -1,4 +1,4 @@
-String? validateDoubleField({
+String? validateNumberField({
   required String? fieldValue,
   required String errorMessage,
 }) {
@@ -8,18 +8,8 @@ String? validateDoubleField({
   return null;
 }
 
-String? validateIntField({
-  required String? fieldValue,
-  required String errorMessage,
-}) {
-  if (fieldValue == null || int.tryParse(fieldValue) == null) {
-    return errorMessage;
-  }
-  return null;
-}
-
 /// used in form validation to check if entered name is valid
-String? validateStringField({
+String? validateTextField({
   required String? fieldValue,
   required String errorMessage,
 }) {

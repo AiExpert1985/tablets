@@ -18,9 +18,7 @@ Map<String, Map<String, dynamic>> updateFilters({
     filters.remove(key);
     return filters;
   }
-  if (dataType == DataTypes.int.name) {
-    value = int.parse(value);
-  }
+
   if (dataType == DataTypes.double.name) {
     value = double.parse(value);
   }

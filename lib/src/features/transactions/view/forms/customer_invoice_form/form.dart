@@ -75,7 +75,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             FormInputField(
               initialValue: formDataNotifier.getProperty(property: 'discount'),
               name: 'discount',
-              dataType: constants.FieldDataTypes.double,
+              dataType: constants.FieldDataTypes.num,
               label: S.of(context).transaction_discount,
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'discount': value});
@@ -87,7 +87,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
         Row(
           children: [
             FormInputField(
-              dataType: constants.FieldDataTypes.int,
+              dataType: constants.FieldDataTypes.num,
               name: 'number',
               label: S.of(context).transaction_number,
               initialValue: formDataNotifier.getProperty(property: 'number'),
@@ -166,7 +166,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
               FormInputField(
                 controller: textEditingControllers['totalAmount'],
                 isReadOnly: true,
-                dataType: constants.FieldDataTypes.double,
+                dataType: constants.FieldDataTypes.num,
                 label: S.of(context).invoice_total_price,
                 name: 'totalAmount',
                 initialValue: formDataNotifier.getProperty(property: 'totalAmount'),
@@ -178,7 +178,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
               FormInputField(
                 controller: textEditingControllers['totalWeight'],
                 isReadOnly: true,
-                dataType: constants.FieldDataTypes.double,
+                dataType: constants.FieldDataTypes.num,
                 label: S.of(context).invoice_total_weight,
                 name: 'totalWeight',
                 initialValue: formDataNotifier.getProperty(property: 'totalWeight'),
