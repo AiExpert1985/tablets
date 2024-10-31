@@ -25,7 +25,7 @@ class ProductFormFields extends ConsumerWidget {
               label: S.of(context).product_code,
               initialValue: formDataNotifier.getProperty(property: 'code'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'code': int.parse(value)});
+                formDataNotifier.updateProperties({'code': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
@@ -58,7 +58,7 @@ class ProductFormFields extends ConsumerWidget {
               label: S.of(context).product_sell_retail_price,
               initialValue: formDataNotifier.getProperty(property: 'sellRetailPrice'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'sellRetailPrice': double.parse(value)});
+                formDataNotifier.updateProperties({'sellRetailPrice': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
@@ -68,7 +68,7 @@ class ProductFormFields extends ConsumerWidget {
               label: S.of(context).product_sell_whole_price,
               initialValue: formDataNotifier.getProperty(property: 'sellWholePrice'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'sellWholePrice': double.parse(value)});
+                formDataNotifier.updateProperties({'sellWholePrice': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
@@ -78,7 +78,7 @@ class ProductFormFields extends ConsumerWidget {
               label: S.of(context).product_salesman_comission,
               initialValue: formDataNotifier.getProperty(property: 'salesmanComission'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'salesmanComission': double.parse(value)});
+                formDataNotifier.updateProperties({'salesmanComission': value});
               },
             ),
           ],
@@ -92,7 +92,7 @@ class ProductFormFields extends ConsumerWidget {
               label: S.of(context).product_initial_quantitiy,
               initialValue: formDataNotifier.getProperty(property: 'initialQuantity'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'initialQuantity': int.parse(value)});
+                formDataNotifier.updateProperties({'initialQuantity': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
@@ -102,7 +102,7 @@ class ProductFormFields extends ConsumerWidget {
               label: S.of(context).product_altert_when_less_than,
               initialValue: formDataNotifier.getProperty(property: 'altertWhenLessThan'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'altertWhenLessThan': int.parse(value)});
+                formDataNotifier.updateProperties({'altertWhenLessThan': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
@@ -112,7 +112,7 @@ class ProductFormFields extends ConsumerWidget {
               label: S.of(context).product_alert_when_exceeds,
               initialValue: formDataNotifier.getProperty(property: 'alertWhenExceeds'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'alertWhenExceeds': int.parse(value)});
+                formDataNotifier.updateProperties({'alertWhenExceeds': value});
               },
             ),
           ],
@@ -136,7 +136,7 @@ class ProductFormFields extends ConsumerWidget {
               label: S.of(context).product_package_weight,
               initialValue: formDataNotifier.getProperty(property: 'packageWeight'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'packageWeight': double.parse(value)});
+                formDataNotifier.updateProperties({'packageWeight': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
@@ -146,7 +146,7 @@ class ProductFormFields extends ConsumerWidget {
               label: S.of(context).product_num_items_inside_package,
               initialValue: formDataNotifier.getProperty(property: 'numItemsInsidePackage'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'numItemsInsidePackage': int.parse(value)});
+                formDataNotifier.updateProperties({'numItemsInsidePackage': value});
               },
             ),
           ],

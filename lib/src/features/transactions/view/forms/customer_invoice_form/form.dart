@@ -78,7 +78,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
               dataType: constants.FieldDataTypes.double,
               label: S.of(context).transaction_discount,
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'discount': double.parse(value)});
+                formDataNotifier.updateProperties({'discount': value});
               },
             ),
           ],
@@ -92,7 +92,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
               label: S.of(context).transaction_number,
               initialValue: formDataNotifier.getProperty(property: 'number'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'number': int.parse(value)});
+                formDataNotifier.updateProperties({'number': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
@@ -171,7 +171,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
                 name: 'totalAmount',
                 initialValue: formDataNotifier.getProperty(property: 'totalAmount'),
                 onChangedFn: (value) {
-                  formDataNotifier.updateProperties({'totalAmount': double.parse(value)});
+                  formDataNotifier.updateProperties({'totalAmount': value});
                 },
               ),
               gaps.HorizontalGap.formFieldToField,
@@ -183,7 +183,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
                 name: 'totalWeight',
                 initialValue: formDataNotifier.getProperty(property: 'totalWeight'),
                 onChangedFn: (value) {
-                  formDataNotifier.updateProperties({'totalWeight': double.parse(value)});
+                  formDataNotifier.updateProperties({'totalWeight': value});
                 },
               ),
             ],
