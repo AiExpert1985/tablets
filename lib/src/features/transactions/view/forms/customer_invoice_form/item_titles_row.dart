@@ -1,64 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/common/values/form_dimenssions.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
-import 'package:tablets/src/features/transactions/view/common_widgets/item_cell.dart';
+import 'package:tablets/src/features/transactions/view/common/customer_invoice_widths.dart';
+import 'package:tablets/src/features/transactions/view/common/item_cell.dart';
 
 class CustomerInvoiceItemTitles extends ConsumerWidget {
   const CustomerInvoiceItemTitles({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        ItemDataCell(
-          isTitle: true,
-          isFirst: true,
-          width: customerInvoiceSequenceWidth,
-          cell: IconButton(
-            // alignment: Alignment.topCenter,
-            onPressed: () {
-              // add controller to the price text field
-              textEditingNotifier.addControllerToList('items');
-              // add new empty Map to the list of items property in formData, which will be
-              // used to generate a row of fields, these fields will add data to the empty Map
-              formDataNotifier.updateSubProperties(property: 'items', subProperties: {});
-            },
-            icon: const Icon(Icons.add, color: Colors.green),
-          ),
-        ),
-        ItemDataCell(
-            isTitle: true, width: customerInvoiceNameWidth, cell: Text(S.of(context).item_name)),
-        ItemDataCell(
-            isTitle: true, width: customerInvoicePriceWidth, cell: Text(S.of(context).item_price)),
-        ItemDataCell(
-            isTitle: true,
-            width: customerInvoiceSoldQuantityWidth,
-            cell: Text(S.of(context).item_sold_quantity)),
-        ItemDataCell(
-            isTitle: true,
-            width: customerInvoiceGiftQantityWidth,
-            cell: Text(S.of(context).item_gifts_quantity)),
-        ItemDataCell(
-            isTitle: true,
-            isLast: true,
-            width: customerInvoiceSoldTotalAmountWidth,
-            cell: Text(S.of(context).item_total_price)),
+        ..._buildItemDataCells(context),
       ],
     );
   }
-}
 
-// I made a design decision to make the width variable based on the size of the container
-const double customerInvoiceSequenceWidth = customerInvoiceFormWidth * 0.055;
-const double customerInvoiceNameWidth = customerInvoiceFormWidth * 0.345;
-const double customerInvoicePriceWidth = customerInvoiceFormWidth * 0.16;
-const double customerInvoiceSoldQuantityWidth = customerInvoiceFormWidth * 0.1;
-const double customerInvoiceGiftQantityWidth = customerInvoiceFormWidth * 0.1;
-const double customerInvoiceSoldTotalAmountWidth = customerInvoiceFormWidth * 0.17;
+  List<Widget> _buildItemDataCells(BuildContext context) {
+    final titles = [
+      '',
+      S.of(context).item_name,
+      S.of(context).item_price,
+      S.of(context).item_sold_quantity,
+      S.of(context).item_gifts_quantity,
+      S.of(context).item_total_price,
+    ];
+
+    final widths = [
+      CustomerInvoiceWidths.sequence,
+      CustomerInvoiceWidths.name,
+      CustomerInvoiceWidths.price,
+      CustomerInvoiceWidths.soldQuantity,
+      CustomerInvoiceWidths.giftQuantity,
+      CustomerInvoiceWidths.soldTotalAmount,
+    ];
+
+    return List.generate(titles.length, (index) {
+      return ItemDataCell(
+        isTitle: true,
+        isFirst: index == 0,
+        isLast: index == titles.length - 1,
+        width: widths[index],
+        cell: Text(titles[index]),
+      );
+    });
+  }
+}

@@ -10,33 +10,30 @@ import 'package:tablets/src/features/transactions/view/forms/customer_invoice_fo
 class CustomerInvoiceItemList extends ConsumerWidget {
   const CustomerInvoiceItemList({super.key});
 
-  List<Widget> _getItemRowWidgets(
+  static const String itemsKey = 'items';
+
+  List<Widget> _buildItemRows(
       ItemFormData formDataNotifier, Map<String, dynamic> textEditingControllers) {
-    List<Widget> rows = [];
-    if (!formDataNotifier.data.containsKey('items') || formDataNotifier.data['items'] is! List) {
-      return [
-        const Center(
-          child: Text('No items added yet'),
-        )
-      ];
+    if (!formDataNotifier.data.containsKey(itemsKey) || formDataNotifier.data[itemsKey] is! List) {
+      return const [Center(child: Text('No items added yet'))];
     }
-    final items = formDataNotifier.data['items'] as List<Map<String, dynamic>>;
-    for (var i = 0; i < items.length; i++) {
-      if (!textEditingControllers.containsKey('items') ||
-          textEditingControllers['items']!.length <= i) {
-        errorPrint('Warning: Missing TextEditingController for item index: $i');
-        continue;
+    final items = formDataNotifier.data[itemsKey] as List<Map<String, dynamic>>;
+    return List.generate(items.length, (index) {
+      if (!textEditingControllers.containsKey(itemsKey) ||
+          textEditingControllers[itemsKey]!.length <= index) {
+        errorPrint('Warning: Missing TextEditingController for item index: $index');
+        return const SizedBox.shrink(); // Return an empty widget if the controller is missing
       }
-      rows.add(CustomerInvoiceItemDataRow(index: i));
-    }
-    return rows;
+      return CustomerInvoiceItemDataRow(index);
+    });
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(transactionFormDataProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final textFieldsControllers = ref.read(textFieldsControllerProvider);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+
     return Container(
       height: 350,
       decoration: BoxDecoration(
@@ -46,8 +43,21 @@ class CustomerInvoiceItemList extends ConsumerWidget {
       padding: const EdgeInsets.all(12),
       child: Column(
         children: [
-          const CustomerInvoiceItemTitles(),
-          ..._getItemRowWidgets(formDataNotifier, textFieldsControllers),
+          Stack(children: [
+            const CustomerInvoiceItemTitles(),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: IconButton(
+                onPressed: () {
+                  textEditingNotifier.addControllerToList(itemsKey);
+                  formDataNotifier.updateSubProperties(itemsKey, {});
+                },
+                icon: const Icon(Icons.add, color: Colors.green),
+              ),
+            ),
+          ]),
+          ..._buildItemRows(formDataNotifier, textEditingNotifier.data),
         ],
       ),
     );

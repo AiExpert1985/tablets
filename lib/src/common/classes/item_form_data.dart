@@ -16,8 +16,7 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
 
   /// if no index is passed, subProperties will be appended to the list
   /// if an index is provided, the data will be updated at the given index
-  void updateSubProperties(
-      {required String property, int? index, required Map<String, dynamic> subProperties}) {
+  void updateSubProperties(String property, Map<String, dynamic> subProperties, {int? index}) {
     final newState = {...state};
     if (!newState.containsKey(property)) {
       newState[property] = [subProperties];
