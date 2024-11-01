@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
@@ -65,7 +66,7 @@ class FormInputField extends ConsumerWidget {
         onChangedFn(value);
       }
     } catch (e) {
-      debugPrint('Error parsing value: $value, Error: $e');
+      errorPrint(message: 'Error parsing value: $value, Error: $e');
     }
   }
 

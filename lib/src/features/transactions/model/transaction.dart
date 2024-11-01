@@ -13,7 +13,7 @@ import 'package:tablets/src/common/interfaces/base_item.dart';
 
 // Note that I named it Transactions because Transaction is a class name used by firebase cloud
 //! note when updating the class, and regenerate data class, then inside Transaction.fromMap function, the date must be
-//! map['date'].runtimeType == Timestamp ? map['date'].toDate() : map['date'],,
+//! map['date'] is Timestamp ? map['date'].toDate() : map['date'],,
 class Transaction implements BaseItem {
   @override
   String dbKey;
@@ -84,7 +84,7 @@ class Transaction implements BaseItem {
       name: map['name'],
       imageUrls: List<String>.from(map['imageUrls']),
       number: map['number'].toInt(),
-      date: map['date'].runtimeType == Timestamp ? map['date'].toDate() : map['date'],
+      date: map['date'] is Timestamp ? map['date'].toDate() : map['date'],
       currency: map['currency'],
       notes: map['notes'],
       counterParty: map['counterParty'],

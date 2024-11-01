@@ -1,49 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
-import 'package:tablets/src/features/transactions/view/transaction_form.dart';
+import 'package:tablets/src/features/transactions/view/transaction_show_form_utils.dart';
 
 class TransactionsFloatingButtons extends ConsumerWidget {
   const TransactionsFloatingButtons({super.key});
 
-  void showAddInvoiceForm(BuildContext context, WidgetRef ref, {String? formType}) {
-    final imagePicker = ref.read(imagePickerProvider.notifier);
-    imagePicker.initialize();
-    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    formDataNotifier.initialize();
-    // give defaults values for drop down lists based on codition represents the transaction type
-    if (formType != null && formType == TransactionTypes.customerInvoice.name) {
-      formDataNotifier.updateProperties({
-        'currency': S.of(context).transaction_payment_Dinar,
-        'paymentType': S.of(context).transaction_payment_credit,
-        'discount': 0.0,
-        'name': formType,
-        'date': DateTime.now(),
-      });
-    }
-    // for below text field we need to add  controllers because the are updated by other fields
-    // for example total price it updated by the item prices
-    final textFieldController = ref.read(textFieldsControllerProvider.notifier);
-    textFieldController.addController(fieldName: 'totalAmount');
-    textFieldController.addController(fieldName: 'totalWeight');
-    showDialog(
-      context: context,
-      builder: (BuildContext ctx) => const TransactionForm(),
-    ).whenComplete(() {
-      imagePicker.close();
-      // it is important to call disposeControllers here, because it doesn't dispose automatically
-      textFieldController.disposeControllers();
-    });
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final textFieldNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final drawerController = ref.watch(productsDrawerControllerProvider);
     const iconsColor = Color.fromARGB(255, 126, 106, 211);
     return SpeedDial(
@@ -68,7 +40,9 @@ class TransactionsFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () => showAddInvoiceForm(context, ref, formType: TransactionTypes.customerInvoice.name),
+          onTap: () => TransactionShowFormUtils.showForm(
+              context, imagePickerNotifier, formDataNotifier, textFieldNotifier,
+              formType: constants.TransactionTypes.customerInvoice.name),
         ),
       ],
     );

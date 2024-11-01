@@ -34,10 +34,7 @@ class DropDownListFormField extends StatelessWidget {
                     errorMessage: S.of(context).input_validation_error_message_for_text,
                   )
               : null,
-          onChanged: (value) {
-            if (value == null) return;
-            onChangedFn(value);
-          },
+          onChanged: onChangedFn,
           name: name,
           items: itemList
               .map((item) => DropdownMenuItem(

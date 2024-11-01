@@ -31,10 +31,7 @@ class FormDatePickerField extends StatelessWidget {
         initialValue: initialValue,
         fieldHintText: S.of(context).date_picker_hint,
         inputType: InputType.date,
-        onChanged: (value) {
-          if (value == null) return; // since we update on change, we must ensure value isn't null
-          onChangedFn(value);
-        },
+        onChanged: onChangedFn,
         validator: (value) => _validateDate(value, context),
       ),
     );

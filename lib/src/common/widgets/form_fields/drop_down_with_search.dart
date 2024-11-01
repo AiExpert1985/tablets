@@ -26,7 +26,6 @@ class DropDownWithSearchFormField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Map<String, dynamic>? initalItem = initialValue != null ? {'name': initialValue} : null;
     return Expanded(
       child: DropdownSearch<Map<String, dynamic>>(
         mode: Mode.form,
@@ -34,7 +33,7 @@ class DropDownWithSearchFormField extends ConsumerWidget {
           textAlign: TextAlign.center,
           decoration: utils.formFieldDecoration(label: label, hideBorders: hideBorders),
         ),
-        selectedItem: initalItem,
+        selectedItem: initialValue != null ? {'name': initialValue} : null,
         items: (filter, t) =>
             dbRepository.fetchItemListAsMaps(filterKey: 'name', filterValue: filter),
         compareFn: (i, s) => i == s,

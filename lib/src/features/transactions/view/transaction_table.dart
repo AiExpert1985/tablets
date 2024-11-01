@@ -14,28 +14,18 @@ import 'package:tablets/src/features/transactions/controllers/transaction_filter
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
-import 'package:tablets/src/features/transactions/view/transaction_form.dart';
+import 'package:tablets/src/features/transactions/view/transaction_show_form_utils.dart';
 
 class TransactionsTable extends ConsumerWidget {
   const TransactionsTable({super.key});
 
-  void showEditReceiptForm(BuildContext context, WidgetRef ref, Transaction tansaction) {
-    ref.read(transactionFormDataProvider.notifier).initialize(initialData: tansaction.toMap());
-    final imagePicker = ref.read(imagePickerProvider.notifier);
-    imagePicker.initialize(urls: tansaction.imageUrls);
-    // for below text field we need to add  controllers because the are updated by other fields
-    // for example total price it updated by the item prices
-    final textFieldController = ref.read(textFieldsControllerProvider.notifier);
-    textFieldController.addController(fieldName: 'totalAmount');
-    textFieldController.addController(fieldName: 'totalWeight');
-    showDialog(
-      context: context,
-      builder: (BuildContext ctx) => const TransactionForm(isEditMode: true),
-    ).whenComplete(imagePicker.close);
-  }
+  String formatDate(DateTime date) => DateFormat('yyyy/MM/dd').format(date);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final textFieldNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final transactionStream = ref.watch(transactionStreamProvider);
     final filterIsOn = ref.watch(transactionFilterSwitchProvider);
     final transactionsListValue = filterIsOn
@@ -58,13 +48,15 @@ class TransactionsTable extends ConsumerWidget {
                         radius: 15,
                         foregroundImage: CachedNetworkImageProvider(constants.defaultImageUrl),
                       ),
-                      onTap: () => showEditReceiptForm(context, ref, transaction),
+                      onTap: () => TransactionShowFormUtils.showForm(
+                          context, imagePickerNotifier, formDataNotifier, textFieldNotifier,
+                          transaction: transaction, formType: 'customerInvoice'),
                     ),
                     const SizedBox(width: 20),
                     Text(screenName),
                   ],
                 )),
-                DataCell(Text(DateFormat('yyyy/MM/dd').format(transaction.date).toString())),
+                DataCell(Text(formatDate(transaction.date))),
                 DataCell(Text(transaction.number.toString())),
                 DataCell(Text(transaction.totalAmount.toString())),
               ],

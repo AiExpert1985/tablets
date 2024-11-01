@@ -15,7 +15,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
   const CustomerInvoiceItemDataRow({required this.index, super.key});
   final int index;
 
-  void updateTotalWeight(ItemFormData formDataNotifier) {
+  void _updateTotalWeight(ItemFormData formDataNotifier) {
     double totalWeight = 0;
     if (!formDataNotifier.data.containsKey('items') ||
         formDataNotifier.data['items'] is! List<Map<String, dynamic>>) {
@@ -39,7 +39,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
     formDataNotifier.updateProperties({'totalWeight': totalWeight});
   }
 
-  void updateTotalAmount(ItemFormData formDataNotifier) {
+  void _updateTotalAmount(ItemFormData formDataNotifier) {
     double totalAmount = 0;
     if (!formDataNotifier.data.containsKey('items') ||
         formDataNotifier.data['items'] is! List<Map<String, dynamic>>) {
@@ -96,7 +96,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
                     fieldName: 'items', subControllerIndex: index)) return;
                 textEditingController.data['items'][index].text =
                     formDataNotifier.data['items'][index]['price'].toString();
-                updateTotalWeight(formDataNotifier);
+                _updateTotalWeight(formDataNotifier);
                 if (!formDataNotifier.isValidProperty(property: 'totalWeight')) {
                   errorPrint(message: 'formData[totalWeight] is not valid');
                   return;
@@ -120,7 +120,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
               // and the second is automatic when user selects and item through adjacent product selection dropdown
               formDataNotifier.updateSubProperties(
                   property: 'items', index: index, subProperties: {'price': value});
-              updateTotalAmount(formDataNotifier);
+              _updateTotalAmount(formDataNotifier);
               if (!formDataNotifier.isValidProperty(property: 'totalAmount')) {
                 errorPrint(message: 'formData[totalAmount] is not valid');
                 return;
