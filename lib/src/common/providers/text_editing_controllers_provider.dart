@@ -5,16 +5,18 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   TextControllerNotifier() : super({});
 
   // Method to add a TextEditingController
-  void addController({required String fieldName}) {
+  void addController(fieldName, {dynamic value}) {
+    String? text = value != null && value is! String ? value.toString() : value;
     state = {
       ...state,
-      fieldName: TextEditingController(),
+      fieldName: TextEditingController(text: text),
     };
   }
 
   // Method to add a TextEditingController to a list by key and index
-  void addControllerToList({required String fieldName}) {
-    final controller = TextEditingController();
+  void addControllerToList(fieldName, {dynamic value}) {
+    String? text = value != null && value is! String ? value.toString() : value;
+    final controller = TextEditingController(text: text);
     final List<TextEditingController> list;
     if (state.containsKey(fieldName) && state[fieldName] is List<TextEditingController>) {
       list = state[fieldName];
@@ -29,7 +31,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   }
 
   // Method to remove a TextEditingController from a list by key and index
-  void removeControllerFromList({required String fieldName, required int index}) {
+  void removeControllerFromList(String fieldName, int index) {
     if (state.containsKey(fieldName) && state[fieldName] is List<TextEditingController>) {
       final list = state[fieldName] as List<TextEditingController>;
       if (index >= 0 && index < list.length) {
@@ -43,7 +45,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   }
 
   // Method to get a controller or a list of controllers
-  dynamic getControllerFromList({required String fieldName, required int index}) {
+  dynamic getControllerFromList(String fieldName, int index) {
     if (state.containsKey(fieldName) && state[fieldName] is List<TextEditingController>) {
       final list = state[fieldName] as List<TextEditingController>;
       if (index >= 0 && index < list.length) {
@@ -54,15 +56,15 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   }
 
   // Method to get a controller or a list of controllers
-  dynamic getController({required String fieldName}) {
+  dynamic getController(String fieldName) {
     return state[fieldName];
   }
 
-  bool isValidController({required String fieldName}) {
+  bool isValidController(String fieldName) {
     return state.containsKey(fieldName);
   }
 
-  bool isValidSubController({required String fieldName, required int subControllerIndex}) {
+  bool isValidSubController(String fieldName, int subControllerIndex) {
     if (!state.containsKey(fieldName)) return false;
     if (state[fieldName] is! List<TextEditingController>) return false;
     if (state[fieldName][subControllerIndex] is! TextEditingController) return false;

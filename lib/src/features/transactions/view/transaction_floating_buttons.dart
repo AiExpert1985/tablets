@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/common/values/constants.dart' as constants;
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
-import 'package:tablets/src/features/transactions/view/transaction_show_form_utils.dart';
+import 'package:tablets/src/features/transactions/view/common_widgets/transaction_show_form_utils.dart';
 
 class TransactionsFloatingButtons extends ConsumerWidget {
   const TransactionsFloatingButtons({super.key});
@@ -42,7 +42,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
           backgroundColor: iconsColor,
           onTap: () => TransactionShowFormUtils.showForm(
               context, imagePickerNotifier, formDataNotifier, textFieldNotifier,
-              formType: constants.TransactionTypes.customerInvoice.name),
+              formType: TransactionType.customerInvoice.name),
         ),
       ],
     );

@@ -23,7 +23,7 @@ class FormInputField extends ConsumerWidget {
 
   final dynamic initialValue;
   final String? label; // label displayed in the fiedl
-  final FieldDataTypes dataType; // used mainly for validation (based on datatype) purpose
+  final FieldDataType dataType; // used mainly for validation (based on datatype) purpose
   final void Function(dynamic) onChangedFn;
   // isReadOnly used for fields that I don't want to be edited by user, for example
   // totalprice of an invoice which is the sum of item prices in the invoice
@@ -60,25 +60,25 @@ class FormInputField extends ConsumerWidget {
   void _onChanged(String? value) {
     if (value == null || value.trim().isEmpty) return;
     try {
-      if (dataType == FieldDataTypes.num) {
+      if (dataType == FieldDataType.num) {
         onChangedFn(double.parse(value));
       } else {
         onChangedFn(value);
       }
     } catch (e) {
-      errorPrint(message: 'Error parsing value: $value, Error: $e');
+      errorPrint('Error parsing value: $value, Error: $e');
     }
   }
 
   FormFieldValidator<String>? _validator(BuildContext context) {
     return (value) {
-      if (dataType == FieldDataTypes.string) {
+      if (dataType == FieldDataType.string) {
         return validation.validateTextField(
           fieldValue: value,
           errorMessage: S.of(context).input_validation_error_message_for_text,
         );
       }
-      if (dataType == FieldDataTypes.num) {
+      if (dataType == FieldDataType.num) {
         return validation.validateNumberField(
           fieldValue: value,
           errorMessage: S.of(context).input_validation_error_message_for_numbers,

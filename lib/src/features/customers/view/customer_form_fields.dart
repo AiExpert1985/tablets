@@ -22,14 +22,14 @@ class CustomerFormFields extends ConsumerWidget {
             onChangedFn: (value) {
               formDataNotifier.updateProperties({'name': value});
             },
-            initialValue: formDataNotifier.getProperty(property: 'name'),
-            dataType: FieldDataTypes.string,
+            initialValue: formDataNotifier.getProperty('name'),
+            dataType: FieldDataType.string,
             name: 'name',
             label: S.of(context).salesman_name,
           ),
           VerticalGap.formFieldToField,
           DropDownWithSearchFormField(
-            initialValue: formDataNotifier.getProperty(property: 'salesman'),
+            initialValue: formDataNotifier.getProperty('salesman'),
             dbRepository: repository,
             onChangedFn: (item) {
               formDataNotifier.updateProperties({'salesman': item['name']});

@@ -4,6 +4,7 @@ import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -13,8 +14,14 @@ import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/form.dart';
 
 class TransactionForm extends ConsumerWidget {
-  const TransactionForm(this.isEditMode, {super.key});
+  const TransactionForm(this.isEditMode, this.transactionType, {super.key});
   final bool isEditMode; // used by formController to decide whether to save or update in db
+  final String transactionType;
+
+  Widget _getFormWidget(String transactionType) {
+    if (transactionType == TransactionType.customerInvoice.name) return const CustomerInvoiceForm();
+    return const Text('Error happend while loading transaction form');
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,26 +31,15 @@ class TransactionForm extends ConsumerWidget {
     ref.watch(imagePickerProvider);
     return FormFrame(
       formKey: formController.formKey,
-      fields: const Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CustomerInvoiceForm(),
-        ],
-      ),
-      buttons:
-          _buildActionButtons(context, ref, formController, formDataNotifier, formImagesNotifier),
+      fields: _getFormWidget(transactionType),
+      buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier),
       width: customerInvoiceFormWidth,
       height: customerInvoiceFormHeight,
     );
   }
 
-  List<Widget> _buildActionButtons(
-      BuildContext context,
-      WidgetRef ref,
-      ItemFormController formController,
-      ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier) {
+  List<Widget> _actionButtons(BuildContext context, ItemFormController formController,
+      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier) {
     return [
       IconButton(
         onPressed: () =>

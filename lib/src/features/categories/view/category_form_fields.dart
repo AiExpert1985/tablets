@@ -14,10 +14,10 @@ class CategoryFormFields extends ConsumerWidget {
       onChangedFn: (value) {
         formDataNotifier.updateProperties({'name': value});
       },
-      dataType: FieldDataTypes.string,
+      dataType: FieldDataType.string,
       name: 'name',
       label: S.of(context).category_name,
-      initialValue: formDataNotifier.getProperty(property: 'name'),
+      initialValue: formDataNotifier.getProperty('name'),
     );
   }
 }

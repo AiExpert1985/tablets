@@ -16,7 +16,7 @@ class AuthRepository {
       );
       return true;
     } catch (error) {
-      debug.errorPrint(message: error, stackTrace: StackTrace.current);
+      debug.errorPrint(error, stackTrace: StackTrace.current);
       return false;
     }
   }

@@ -8,7 +8,7 @@ import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dar
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
-import 'package:tablets/src/features/transactions/view/forms/item_cell.dart';
+import 'package:tablets/src/features/transactions/view/common_widgets/item_cell.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 
 class CustomerInvoiceItemDataRow extends ConsumerWidget {
@@ -20,18 +20,17 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
     if (!formDataNotifier.data.containsKey('items') ||
         formDataNotifier.data['items'] is! List<Map<String, dynamic>>) {
       errorPrint(
-          message:
-              'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
+          'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
       return;
     }
     for (var item in formDataNotifier.data['items']) {
       if (!item.containsKey('weight')) {
-        errorPrint(message: 'form[items] does not contain (weight) key');
+        errorPrint('form[items] does not contain (weight) key');
         continue;
       }
       final weight = item['weight'];
       if (weight is! double) {
-        errorPrint(message: 'formData[items][i][weight] is not of type double');
+        errorPrint('formData[items][i][weight] is not of type double');
         continue;
       }
       totalWeight += weight;
@@ -44,18 +43,17 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
     if (!formDataNotifier.data.containsKey('items') ||
         formDataNotifier.data['items'] is! List<Map<String, dynamic>>) {
       errorPrint(
-          message:
-              'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
+          'formData does not contains the key (items) or items is not a List<Map<String, dynamic>>');
       return;
     }
     for (var item in formDataNotifier.data['items']) {
       if (!item.containsKey('price')) {
-        errorPrint(message: 'form[items] does not contain (price) key');
+        errorPrint('form[items] does not contain (price) key');
         continue;
       }
       final price = item['price'];
       if (price is! double) {
-        errorPrint(message: 'formData[items][i][price] is not of type double');
+        errorPrint('formData[items][i][price] is not of type double');
         continue;
       }
       totalAmount += price;
@@ -92,13 +90,12 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
                   'price': item['sellWholePrice'],
                   'weight': item['packageWeight'],
                 });
-                if (!textEditingController.isValidSubController(
-                    fieldName: 'items', subControllerIndex: index)) return;
+                if (!textEditingController.isValidSubController('items', index)) return;
                 textEditingController.data['items'][index].text =
                     formDataNotifier.data['items'][index]['price'].toString();
                 _updateTotalWeight(formDataNotifier);
                 if (!formDataNotifier.isValidProperty(property: 'totalWeight')) {
-                  errorPrint(message: 'formData[totalWeight] is not valid');
+                  errorPrint('formData[totalWeight] is not valid');
                   return;
                 }
                 textEditingController.data['totalWeight'].text =
@@ -113,7 +110,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
             controller: textEditingController.data['items'][index],
             isRequired: false,
             hideBorders: true,
-            dataType: constants.FieldDataTypes.num,
+            dataType: constants.FieldDataType.num,
             name: 'price',
             onChangedFn: (value) {
               // this method is executed throught two ways, first when the field is updated by the user
@@ -122,7 +119,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
                   property: 'items', index: index, subProperties: {'price': value});
               _updateTotalAmount(formDataNotifier);
               if (!formDataNotifier.isValidProperty(property: 'totalAmount')) {
-                errorPrint(message: 'formData[totalAmount] is not valid');
+                errorPrint('formData[totalAmount] is not valid');
                 return;
               }
               textEditingController.data['totalAmount'].text =

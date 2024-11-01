@@ -57,25 +57,25 @@ List<Map<String, dynamic>> convertAsyncValueListToList(
   return asyncProductList.when(
       data: (products) => products,
       error: (e, st) {
-        debug.errorPrint(message: e, stackTrace: st);
+        debug.errorPrint(e, stackTrace: st);
         return [];
       },
       loading: () {
-        debug.errorPrint(message: 'product list is loading');
+        debug.errorPrint('product list is loading');
         return [];
       });
 }
 
 String transactionTypeDbNameToScreenName({required BuildContext context, required String dbName}) {
   final Map<String, String> trasactionTypeLookup = {
-    TransactionTypes.expenditures.name: S.of(context).transaction_type_expenditures,
-    TransactionTypes.gifts.name: S.of(context).transaction_type_gifts,
-    TransactionTypes.customerReceipt.name: S.of(context).transaction_type_customer_receipt,
-    TransactionTypes.vendorReceipt.name: S.of(context).transaction_type_vendor_receipt,
-    TransactionTypes.venderReturn.name: S.of(context).transaction_type_vender_return,
-    TransactionTypes.customerReturn.name: S.of(context).transaction_type_customer_return,
-    TransactionTypes.venderInvoice.name: S.of(context).transaction_type_vender_invoice,
-    TransactionTypes.customerInvoice.name: S.of(context).transaction_type_customer_invoice
+    TransactionType.expenditures.name: S.of(context).transaction_type_expenditures,
+    TransactionType.gifts.name: S.of(context).transaction_type_gifts,
+    TransactionType.customerReceipt.name: S.of(context).transaction_type_customer_receipt,
+    TransactionType.vendorReceipt.name: S.of(context).transaction_type_vendor_receipt,
+    TransactionType.venderReturn.name: S.of(context).transaction_type_vender_return,
+    TransactionType.customerReturn.name: S.of(context).transaction_type_customer_return,
+    TransactionType.venderInvoice.name: S.of(context).transaction_type_vender_invoice,
+    TransactionType.customerInvoice.name: S.of(context).transaction_type_customer_invoice
   };
   return trasactionTypeLookup[dbName] ?? dbName;
 }
@@ -83,14 +83,14 @@ String transactionTypeDbNameToScreenName({required BuildContext context, require
 String transactionTypeScreenNameToDbName(
     {required BuildContext context, required String screenName}) {
   final Map<String, String> trasactionTypeLookup = {
-    S.of(context).transaction_type_expenditures: TransactionTypes.expenditures.name,
-    S.of(context).transaction_type_gifts: TransactionTypes.gifts.name,
-    S.of(context).transaction_type_customer_receipt: TransactionTypes.customerReceipt.name,
-    S.of(context).transaction_type_vendor_receipt: TransactionTypes.vendorReceipt.name,
-    S.of(context).transaction_type_vender_return: TransactionTypes.venderReturn.name,
-    S.of(context).transaction_type_customer_return: TransactionTypes.customerReturn.name,
-    S.of(context).transaction_type_vender_invoice: TransactionTypes.venderInvoice.name,
-    S.of(context).transaction_type_customer_invoice: TransactionTypes.customerInvoice.name
+    S.of(context).transaction_type_expenditures: TransactionType.expenditures.name,
+    S.of(context).transaction_type_gifts: TransactionType.gifts.name,
+    S.of(context).transaction_type_customer_receipt: TransactionType.customerReceipt.name,
+    S.of(context).transaction_type_vendor_receipt: TransactionType.vendorReceipt.name,
+    S.of(context).transaction_type_vender_return: TransactionType.venderReturn.name,
+    S.of(context).transaction_type_customer_return: TransactionType.customerReturn.name,
+    S.of(context).transaction_type_vender_invoice: TransactionType.venderInvoice.name,
+    S.of(context).transaction_type_customer_invoice: TransactionType.customerInvoice.name
   };
   return trasactionTypeLookup[screenName] ?? screenName;
 }

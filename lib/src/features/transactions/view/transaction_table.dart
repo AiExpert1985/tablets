@@ -6,15 +6,15 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:data_table_2/data_table_2.dart';
-import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/features/transactions/controllers/transaction_filter_controller_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_filtered_list_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
-import 'package:tablets/src/features/transactions/view/transaction_show_form_utils.dart';
+import 'package:tablets/src/features/transactions/view/common_widgets/transaction_show_form_utils.dart';
 
 class TransactionsTable extends ConsumerWidget {
   const TransactionsTable({super.key});
@@ -46,11 +46,16 @@ class TransactionsTable extends ConsumerWidget {
                     InkWell(
                       child: const CircleAvatar(
                         radius: 15,
-                        foregroundImage: CachedNetworkImageProvider(constants.defaultImageUrl),
+                        foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
                       ),
                       onTap: () => TransactionShowFormUtils.showForm(
-                          context, imagePickerNotifier, formDataNotifier, textFieldNotifier,
-                          transaction: transaction, formType: 'customerInvoice'),
+                        context,
+                        imagePickerNotifier,
+                        formDataNotifier,
+                        textFieldNotifier,
+                        formType: TransactionType.customerInvoice.name,
+                        transaction: transaction,
+                      ),
                     ),
                     const SizedBox(width: 20),
                     Text(screenName),

@@ -5,8 +5,10 @@ import 'package:tablets/src/common/functions/utils.dart';
 class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   ItemFormData(super.state);
 
-  void initialize({Map<String, dynamic>? initialData}) =>
-      state = state = initialData ?? {'dbKey': generateRandomString(len: 8)};
+  void initialize({Map<String, dynamic>? initialData}) {
+    state = state = initialData ?? {'dbKey': generateRandomString(len: 8)};
+    tempPrint(state);
+  }
 
   void updateProperties(Map<String, dynamic> properties) {
     state = {...state, ...properties};
@@ -14,7 +16,8 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
 
   /// if no index is passed, subProperties will be appended to the list
   /// if an index is provided, the data will be updated at the given index
-  void updateSubProperties({required String property, int? index, required Map<String, dynamic> subProperties}) {
+  void updateSubProperties(
+      {required String property, int? index, required Map<String, dynamic> subProperties}) {
     final newState = {...state};
     if (!newState.containsKey(property)) {
       newState[property] = [subProperties];
@@ -23,7 +26,7 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
     }
     final existingList = newState[property];
     if (existingList is! List<Map<String, dynamic>>) {
-      errorPrint(message: 'Property "$property" is not of type List<Map<String, dynamic>>');
+      errorPrint('Property "$property" is not of type List<Map<String, dynamic>>');
       return;
     }
     if (index == null) {
@@ -35,7 +38,7 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
       existingList[index] = {...existingList[index], ...subProperties};
       return;
     }
-    errorPrint(message: 'subproperty $subProperties were not added to property "$property" at index $index');
+    errorPrint('subproperty $subProperties were not added to property "$property" at index $index');
   }
 
   /// checks whether state contains the mentioned property
@@ -44,7 +47,8 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   }
 
   /// checks whether state contains the mentioned subProperty
-  bool isValidSubProperty({required String property, required int index, required String subProperty}) {
+  bool isValidSubProperty(
+      {required String property, required int index, required String subProperty}) {
     if (!state.containsKey(property)) return false;
     if (state[property] is! List<Map<String, dynamic>>) return false;
     if (index < 0 && index > state[property].length) return false;
@@ -53,13 +57,14 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   }
 
   // usually this is used for initialValue for form fields, which takes either a value or null
-  dynamic getProperty({required String property}) {
+  dynamic getProperty(property) {
     if (!state.containsKey(property)) return;
     return state[property];
   }
 
   // usually this is used for initialValue for form fields, which takes either a value or null
-  dynamic getSubProperty({required String property, required int index, required String subProperty}) {
+  dynamic getSubProperty(
+      {required String property, required int index, required String subProperty}) {
     if (!isValidSubProperty(property: property, index: index, subProperty: subProperty)) return;
     return state[property][index][subProperty];
   }

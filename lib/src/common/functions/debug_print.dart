@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void errorPrint({message, stackTrace}) {
+void errorPrint(dynamic message, {stackTrace}) {
   // Sometime the stack trace is shorter than 225, so I need to have protection against that
   String stackText = stackTrace.toString();
   int trimEnd = stackText.length < 225 ? stackText.length : 225;

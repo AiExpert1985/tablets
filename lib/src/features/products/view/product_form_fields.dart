@@ -20,20 +20,20 @@ class ProductFormFields extends ConsumerWidget {
         Row(
           children: [
             FormInputField(
-              dataType: FieldDataTypes.num,
+              dataType: FieldDataType.num,
               name: 'code',
               label: S.of(context).product_code,
-              initialValue: formDataNotifier.getProperty(property: 'code'),
+              initialValue: formDataNotifier.getProperty('code'),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'code': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
             FormInputField(
-              dataType: FieldDataTypes.string,
+              dataType: FieldDataType.string,
               name: 'name',
               label: S.of(context).product_name,
-              initialValue: formDataNotifier.getProperty(property: 'name'),
+              initialValue: formDataNotifier.getProperty('name'),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'name': value});
               },
@@ -41,7 +41,7 @@ class ProductFormFields extends ConsumerWidget {
             gaps.HorizontalGap.formFieldToField,
             DropDownWithSearchFormField(
               label: S.of(context).category_selection,
-              initialValue: formDataNotifier.getProperty(property: 'category'),
+              initialValue: formDataNotifier.getProperty('category'),
               dbRepository: repository,
               onChangedFn: (item) {
                 formDataNotifier.updateProperties({'salesman': item['name']});
@@ -53,30 +53,30 @@ class ProductFormFields extends ConsumerWidget {
         Row(
           children: [
             FormInputField(
-              dataType: FieldDataTypes.num,
+              dataType: FieldDataType.num,
               name: 'sellRetailPrice',
               label: S.of(context).product_sell_retail_price,
-              initialValue: formDataNotifier.getProperty(property: 'sellRetailPrice'),
+              initialValue: formDataNotifier.getProperty('sellRetailPrice'),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'sellRetailPrice': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
             FormInputField(
-              dataType: FieldDataTypes.num,
+              dataType: FieldDataType.num,
               name: 'sellWholePrice',
               label: S.of(context).product_sell_whole_price,
-              initialValue: formDataNotifier.getProperty(property: 'sellWholePrice'),
+              initialValue: formDataNotifier.getProperty('sellWholePrice'),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'sellWholePrice': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
             FormInputField(
-              dataType: FieldDataTypes.num,
+              dataType: FieldDataType.num,
               name: 'salesmanComission',
               label: S.of(context).product_salesman_comission,
-              initialValue: formDataNotifier.getProperty(property: 'salesmanComission'),
+              initialValue: formDataNotifier.getProperty('salesmanComission'),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'salesmanComission': value});
               },
@@ -87,30 +87,30 @@ class ProductFormFields extends ConsumerWidget {
         Row(
           children: [
             FormInputField(
-              dataType: FieldDataTypes.num,
+              dataType: FieldDataType.num,
               name: 'initialQuantity',
               label: S.of(context).product_initial_quantitiy,
-              initialValue: formDataNotifier.getProperty(property: 'initialQuantity'),
+              initialValue: formDataNotifier.getProperty('initialQuantity'),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'initialQuantity': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
             FormInputField(
-              dataType: FieldDataTypes.num,
+              dataType: FieldDataType.num,
               name: 'altertWhenLessThan',
               label: S.of(context).product_altert_when_less_than,
-              initialValue: formDataNotifier.getProperty(property: 'altertWhenLessThan'),
+              initialValue: formDataNotifier.getProperty('altertWhenLessThan'),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'altertWhenLessThan': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
             FormInputField(
-              dataType: FieldDataTypes.num,
+              dataType: FieldDataType.num,
               name: 'alertWhenExceeds',
               label: S.of(context).product_alert_when_exceeds,
-              initialValue: formDataNotifier.getProperty(property: 'alertWhenExceeds'),
+              initialValue: formDataNotifier.getProperty('alertWhenExceeds'),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'alertWhenExceeds': value});
               },
@@ -121,30 +121,30 @@ class ProductFormFields extends ConsumerWidget {
         Row(
           children: [
             FormInputField(
-              dataType: FieldDataTypes.string,
+              dataType: FieldDataType.string,
               name: 'packageType',
               label: S.of(context).product_package_type,
-              initialValue: formDataNotifier.getProperty(property: 'packageType'),
+              initialValue: formDataNotifier.getProperty('packageType'),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'packageType': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
             FormInputField(
-              dataType: FieldDataTypes.num,
+              dataType: FieldDataType.num,
               name: 'packageWeight',
               label: S.of(context).product_package_weight,
-              initialValue: formDataNotifier.getProperty(property: 'packageWeight'),
+              initialValue: formDataNotifier.getProperty('packageWeight'),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'packageWeight': value});
               },
             ),
             gaps.HorizontalGap.formFieldToField,
             FormInputField(
-              dataType: FieldDataTypes.num,
+              dataType: FieldDataType.num,
               name: 'numItemsInsidePackage',
               label: S.of(context).product_num_items_inside_package,
-              initialValue: formDataNotifier.getProperty(property: 'numItemsInsidePackage'),
+              initialValue: formDataNotifier.getProperty('numItemsInsidePackage'),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({'numItemsInsidePackage': value});
               },

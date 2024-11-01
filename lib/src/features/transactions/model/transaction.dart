@@ -25,7 +25,7 @@ class Transaction implements BaseItem {
   DateTime date;
   String currency; // $ or ID
   String? notes;
-  String? counterParty; // name of customer
+  String? transactionType; // name of customer
   String? paymentType; // cash, debt
   String? salesman; // dbKey of salesman
   List<Map<String, dynamic>>? items;
@@ -43,7 +43,7 @@ class Transaction implements BaseItem {
     required this.date,
     required this.currency,
     this.notes,
-    required this.counterParty,
+    required this.transactionType,
     // optional based on type of transaction
     this.paymentType, // CustomerInvoice
     this.salesman,
@@ -67,7 +67,7 @@ class Transaction implements BaseItem {
       'date': date,
       'currency': currency,
       'notes': notes,
-      'counterParty': counterParty,
+      'transactionType': transactionType,
       'paymentType': paymentType,
       'salesman': salesman,
       'items': items,
@@ -87,7 +87,7 @@ class Transaction implements BaseItem {
       date: map['date'] is Timestamp ? map['date'].toDate() : map['date'],
       currency: map['currency'],
       notes: map['notes'],
-      counterParty: map['counterParty'],
+      transactionType: map['transactionType'],
       paymentType: map['paymentType'],
       salesman: map['salesman'],
       items: (map['items'] as List<dynamic>?)?.map((item) => item as Map<String, dynamic>).toList(),
@@ -100,6 +100,6 @@ class Transaction implements BaseItem {
 
   @override
   String toString() {
-    return 'Transaction(name: $name, date: $date, amount: $totalAmount, counterParty: $counterParty)';
+    return 'Transaction(name: $name, date: $date, amount: $totalAmount, transactionType: $transactionType)';
   }
 }

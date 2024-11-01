@@ -4,7 +4,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
-import 'package:tablets/src/features/transactions/view/forms/item_cell.dart';
+import 'package:tablets/src/features/transactions/view/common_widgets/item_cell.dart';
 
 class CustomerInvoiceItemTitles extends ConsumerWidget {
   const CustomerInvoiceItemTitles({super.key});
@@ -25,7 +25,7 @@ class CustomerInvoiceItemTitles extends ConsumerWidget {
             // alignment: Alignment.topCenter,
             onPressed: () {
               // add controller to the price text field
-              textEditingNotifier.addControllerToList(fieldName: 'items');
+              textEditingNotifier.addControllerToList('items');
               // add new empty Map to the list of items property in formData, which will be
               // used to generate a row of fields, these fields will add data to the empty Map
               formDataNotifier.updateSubProperties(property: 'items', subProperties: {});

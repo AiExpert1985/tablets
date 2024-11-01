@@ -158,7 +158,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_amount":
             MessageLookupByLibrary.simpleMessage("مبلغ القائمة"),
         "transaction_currency": MessageLookupByLibrary.simpleMessage("العملة"),
-        "transaction_customer_invoice_counterParty":
+        "transaction_customer_invoice_name":
             MessageLookupByLibrary.simpleMessage("اسم الزبون"),
         "transaction_date":
             MessageLookupByLibrary.simpleMessage("تاريخ القائمة"),

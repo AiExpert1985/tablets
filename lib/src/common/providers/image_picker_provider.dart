@@ -16,7 +16,7 @@ class CustomImagePicker {
         return utils.compressImage(image);
       }
     } catch (e) {
-      debug.errorPrint(message: e, stackTrace: StackTrace.current);
+      debug.errorPrint(e, stackTrace: StackTrace.current);
       return null;
     }
     return null;

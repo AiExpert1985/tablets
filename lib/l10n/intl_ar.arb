@@ -78,7 +78,7 @@
     "transaction_amount": "مبلغ القائمة",
     "transaction_currency": "العملة",
     "transaction_notes": "الملاحظات",
-    "transaction_customer_invoice_counterParty": "اسم الزبون",
+    "transaction_customer_invoice_name": "اسم الزبون",
     "transaction_payment_type": "طريقة الدفع",
     "transaction_salesman": "المندوب",
     "transaction_discount": "الخصم",

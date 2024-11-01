@@ -15,7 +15,7 @@ class DbRepository {
       await docRef.set(item.toMap());
       return true;
     } catch (e) {
-      errorPrint(message: e, stackTrace: StackTrace.current);
+      errorPrint(e, stackTrace: StackTrace.current);
       return false;
     }
   }
@@ -32,7 +32,7 @@ class DbRepository {
       }
       return true;
     } catch (error) {
-      errorPrint(message: error, stackTrace: StackTrace.current);
+      errorPrint(error, stackTrace: StackTrace.current);
       return false;
     }
   }
@@ -49,7 +49,7 @@ class DbRepository {
       }
       return true;
     } catch (error) {
-      errorPrint(message: error, stackTrace: StackTrace.current);
+      errorPrint(error, stackTrace: StackTrace.current);
       return false;
     }
   }
