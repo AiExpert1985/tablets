@@ -9,8 +9,8 @@ import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
 class TransactionShowFormUtils {
   static void initializeFormData(BuildContext context, ItemFormData formDataNotifier,
-      {String? formType, Transaction? tansaction}) {
-    formDataNotifier.initialize(initialData: tansaction?.toMap());
+      {String? formType, Transaction? transaction}) {
+    formDataNotifier.initialize(initialData: transaction?.toMap());
     // give defaults values for drop down lists based on codition represents the transaction type
     if (formType == constants.TransactionTypes.customerInvoice.name) {
       formDataNotifier.updateProperties({
@@ -40,7 +40,7 @@ class TransactionShowFormUtils {
     bool isEditMode = false,
   }) {
     imagePickerNotifier.initialize();
-    initializeFormData(context, formDataNotifier, formType: formType);
+    initializeFormData(context, formDataNotifier, formType: formType, transaction: transaction);
     initializeTextFieldControllers(textFieldNotifier);
     showDialog(
       context: context,
