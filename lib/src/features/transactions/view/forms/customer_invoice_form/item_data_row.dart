@@ -71,7 +71,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
     return buildDataCell(
       CustomerInvoiceWidths.name,
       DropDownWithSearchFormField(
-        initialValue: formDataNotifier.getSubProperty(itemsKey, index, 'name'),
+        initialValue: formDataNotifier.getSubProperty(itemsKey, index, nameKey),
         hideBorders: true,
         dbRepository: repository,
         onChangedFn: (item) {
@@ -82,7 +82,12 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
           // note: totalPrice isn't updated here because it is updated by the price field
           //       which is triggered by the change of field.
           formDataNotifier.updateSubProperties(
-              itemsKey, {priceKey: item['sellWholePrice'], weightKey: item['packageWeight']},
+              itemsKey,
+              {
+                nameKey: item['name'],
+                priceKey: item['sellWholePrice'],
+                weightKey: item['packageWeight']
+              },
               index: index);
           if (!textEditingController.isValidSubController(itemsKey, index)) return;
           textEditingController.data[itemsKey][index].text =

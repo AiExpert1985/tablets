@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
+import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
@@ -57,6 +58,9 @@ class CustomerInvoiceForm extends ConsumerWidget {
           _buildFifthRow(context, formDataNotifier),
           gaps.VerticalGap.formFieldToField,
           const CustomerInvoiceItemList(),
+          gaps.VerticalGap.formFieldToField,
+          gaps.VerticalGap.formFieldToField,
+          gaps.VerticalGap.formFieldToField,
           gaps.VerticalGap.formFieldToField,
           _buildTotalsRow(context, formDataNotifier, textEditingControllers),
         ],
@@ -200,32 +204,34 @@ class CustomerInvoiceForm extends ConsumerWidget {
 
   Widget _buildTotalsRow(
       BuildContext context, ItemFormData formDataNotifier, var textEditingControllers) {
-    return Row(
-      children: [
-        FormInputField(
-          controller: textEditingControllers[totalAmountKey],
-          isReadOnly: true,
-          dataType: constants.FieldDataType.num,
-          label: S.of(context).invoice_total_price,
-          name: totalAmountKey,
-          initialValue: formDataNotifier.getProperty(totalAmountKey),
-          onChangedFn: (value) {
-            formDataNotifier.updateProperties({totalAmountKey: value});
-          },
-        ),
-        gaps.HorizontalGap.formFieldToField,
-        FormInputField(
-          controller: textEditingControllers[totalWeightKey],
-          isReadOnly: true,
-          dataType: constants.FieldDataType.num,
-          label: S.of(context).invoice_total_weight,
-          name: totalWeightKey,
-          initialValue: formDataNotifier.getProperty(totalWeightKey),
-          onChangedFn: (value) {
-            formDataNotifier.updateProperties({totalWeightKey: value});
-          },
-        ),
-      ],
-    );
+    return SizedBox(
+        width: customerInvoiceFormWidth * 0.6,
+        child: Row(
+          children: [
+            FormInputField(
+              controller: textEditingControllers[totalAmountKey],
+              isReadOnly: true,
+              dataType: constants.FieldDataType.num,
+              label: S.of(context).invoice_total_price,
+              name: totalAmountKey,
+              initialValue: formDataNotifier.getProperty(totalAmountKey),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({totalAmountKey: value});
+              },
+            ),
+            gaps.HorizontalGap.formFieldToField,
+            FormInputField(
+              controller: textEditingControllers[totalWeightKey],
+              isReadOnly: true,
+              dataType: constants.FieldDataType.num,
+              label: S.of(context).invoice_total_weight,
+              name: totalWeightKey,
+              initialValue: formDataNotifier.getProperty(totalWeightKey),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({totalWeightKey: value});
+              },
+            ),
+          ],
+        ));
   }
 }
