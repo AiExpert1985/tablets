@@ -26,9 +26,9 @@ class CustomerInvoiceForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
-    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final productRepository = ref.read(productRepositoryProvider);
     ref.watch(transactionFormDataProvider);
 

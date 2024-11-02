@@ -81,7 +81,8 @@ List<Widget> _buildRows(ItemFormData formDataNotifier, TextControllerNotifier te
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        buildDataCell(sequenceColumnWidth, Text((index + 1).toString()), isFirst: true),
+        // buildDataCell(sequenceColumnWidth, Text((index + 1).toString()), isFirst: true),
+        _buildDeleteItemButton(formDataNotifier, textEditingNotifier, index),
         _buildDropDownWithSearch(formDataNotifier, textEditingNotifier, productRepository, index),
         _buildFormInputField(formDataNotifier, textEditingNotifier, index),
         buildDataCell(soldQuantityColumnWidth, const Text('TempText')),
@@ -90,6 +91,23 @@ List<Widget> _buildRows(ItemFormData formDataNotifier, TextControllerNotifier te
       ],
     );
   });
+}
+
+Widget _buildDeleteItemButton(
+    ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier, int index) {
+  return IconButton(
+    onPressed: () {
+      formDataNotifier.removeSubProperties(itemsKey, index);
+      textEditingNotifier.removeControllerFromList(itemsKey, index);
+      _updateTotal(formDataNotifier, totalAmountKey, priceKey);
+      _updateTotal(formDataNotifier, totalWeightKey, weightKey);
+      textEditingNotifier.data[totalAmountKey].text =
+          formDataNotifier.data[totalAmountKey].toString();
+      textEditingNotifier.data[totalWeightKey].text =
+          formDataNotifier.data[totalWeightKey].toString();
+    },
+    icon: const Icon(Icons.cancel, color: Colors.red),
+  );
 }
 
 Widget _buildColumnTitles(BuildContext context) {
@@ -129,7 +147,7 @@ Widget _buildColumnTitles(BuildContext context) {
 
 void _updateTotal(ItemFormData formDataNotifier, String key, String valueKey) {
   double total = 0;
-  if (!formDataNotifier.data.containsKey(itemsKey) ||
+  if (!formDataNotifier.data.containsKey(key) ||
       formDataNotifier.data[itemsKey] is! List<Map<String, dynamic>>) {
     errorPrint(
         'formData does not contain the key ($itemsKey) or items is not a List<Map<String, dynamic>>');

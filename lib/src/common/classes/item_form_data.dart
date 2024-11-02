@@ -7,7 +7,6 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
 
   void initialize({Map<String, dynamic>? initialData}) {
     state = state = initialData ?? {'dbKey': generateRandomString(len: 8)};
-    tempPrint(state);
   }
 
   void updateProperties(Map<String, dynamic> properties) {
@@ -64,6 +63,20 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   dynamic getSubProperty(String property, int index, String subProperty) {
     if (!isValidSubProperty(property, index, subProperty)) return;
     return state[property][index][subProperty];
+  }
+
+// delete item form the list of a property
+  void removeSubProperties(String property, int index) {
+    if (!isValidProperty(property) ||
+        state[property] is! List<Map<String, dynamic>> ||
+        index < 0 ||
+        index >= state[property].length) {
+      errorPrint('error while accessing property $property');
+      return;
+    }
+    Map<String, dynamic> newState = Map.from(state);
+    newState[property].removeAt(index);
+    state = newState;
   }
 
   /// using notifier to get current state, used to get state instead of using the provider
