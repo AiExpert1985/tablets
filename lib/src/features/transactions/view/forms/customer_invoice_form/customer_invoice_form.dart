@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
@@ -13,6 +14,7 @@ import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
@@ -26,7 +28,8 @@ class CustomerInvoiceForm extends ConsumerWidget {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
-    final textEditingControllers = ref.read(textFieldsControllerProvider);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final productRepository = ref.read(productRepositoryProvider);
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
@@ -45,19 +48,19 @@ class CustomerInvoiceForm extends ConsumerWidget {
           gaps.VerticalGap.formFieldToField,
           _buildFifthRow(context, formDataNotifier),
           gaps.VerticalGap.formFieldToField,
-          buildItemList(context, ref),
+          buildItemList(context, formDataNotifier, textEditingNotifier, productRepository),
           gaps.VerticalGap.formFieldToField,
           gaps.VerticalGap.formFieldToField,
           gaps.VerticalGap.formFieldToField,
           gaps.VerticalGap.formFieldToField,
-          _buildTotalsRow(context, formDataNotifier, textEditingControllers),
+          _buildTotalsRow(context, formDataNotifier, textEditingNotifier),
         ],
       ),
     );
   }
 
-  Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier, var customerRepository,
-      var salesmanRepository) {
+  Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier,
+      DbRepository customerRepository, DbRepository salesmanRepository) {
     return Row(
       children: [
         DropDownWithSearchFormField(
@@ -190,14 +193,14 @@ class CustomerInvoiceForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildTotalsRow(
-      BuildContext context, ItemFormData formDataNotifier, var textEditingControllers) {
+  Widget _buildTotalsRow(BuildContext context, ItemFormData formDataNotifier,
+      TextControllerNotifier textEditingNotifier) {
     return SizedBox(
         width: customerInvoiceFormWidth * 0.6,
         child: Row(
           children: [
             FormInputField(
-              controller: textEditingControllers[totalAmountKey],
+              controller: textEditingNotifier.data[totalAmountKey],
               isReadOnly: true,
               dataType: constants.FieldDataType.num,
               label: S.of(context).invoice_total_price,
@@ -209,7 +212,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             ),
             gaps.HorizontalGap.formFieldToField,
             FormInputField(
-              controller: textEditingControllers[totalWeightKey],
+              controller: textEditingNotifier.data[totalWeightKey],
               isReadOnly: true,
               dataType: constants.FieldDataType.num,
               label: S.of(context).invoice_total_weight,

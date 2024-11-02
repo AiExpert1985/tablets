@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
@@ -9,9 +8,7 @@ import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
-import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
-import 'package:tablets/src/features/transactions/view/common/item_cell.dart';
+import 'package:tablets/src/features/transactions/view/forms/common_utils/item_cell.dart';
 
 const String nameKey = 'name';
 const String salesmanKey = 'salesman';
@@ -35,12 +32,8 @@ const double soldQuantityColumnWidth = customerInvoiceFormWidth * 0.1;
 const double giftQuantityColumnWidth = customerInvoiceFormWidth * 0.1;
 const double soldTotalAmountColumnWidth = customerInvoiceFormWidth * 0.17;
 
-Widget buildItemList(BuildContext context, WidgetRef ref) {
-  ref.watch(transactionFormDataProvider);
-  final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-  final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-  final productRepository = ref.read(productRepositoryProvider);
-
+Widget buildItemList(BuildContext context, ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier, DbRepository productRepository) {
   return Container(
     height: 350,
     decoration: BoxDecoration(
@@ -75,7 +68,7 @@ Widget buildItemList(BuildContext context, WidgetRef ref) {
 List<Widget> _buildRows(ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier,
     DbRepository productRepository) {
   if (!formDataNotifier.data.containsKey(itemsKey) || formDataNotifier.data[itemsKey] is! List) {
-    return const [Center(child: Text('No items added yet'))];
+    return const [];
   }
   final items = formDataNotifier.data[itemsKey] as List<Map<String, dynamic>>;
   return List.generate(items.length, (index) {

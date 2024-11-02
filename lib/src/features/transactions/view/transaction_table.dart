@@ -14,7 +14,7 @@ import 'package:tablets/src/features/transactions/controllers/transaction_filter
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
-import 'package:tablets/src/features/transactions/view/common/transaction_show_form_utils.dart';
+import 'package:tablets/src/features/transactions/view/forms/common_utils/transaction_show_form_utils.dart';
 
 class TransactionsList extends ConsumerWidget {
   const TransactionsList({super.key});
