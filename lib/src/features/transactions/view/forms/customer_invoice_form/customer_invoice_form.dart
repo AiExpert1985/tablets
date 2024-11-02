@@ -19,6 +19,7 @@ import 'package:tablets/src/features/salesmen/repository/salesman_repository_pro
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/item_list.dart';
+import 'package:tablets/src/features/transactions/model/transaction_properties.dart';
 
 class CustomerInvoiceForm extends ConsumerWidget {
   const CustomerInvoiceForm({super.key});
@@ -200,14 +201,14 @@ class CustomerInvoiceForm extends ConsumerWidget {
         child: Row(
           children: [
             FormInputField(
-              controller: textEditingNotifier.getController(transactionTotalAmountKey),
+              controller: textEditingNotifier.getController(totalAmountKey),
               isReadOnly: true,
               dataType: constants.FieldDataType.num,
               label: S.of(context).invoice_total_price,
-              name: transactionTotalAmountKey,
-              initialValue: formDataNotifier.getProperty(transactionTotalAmountKey),
+              name: totalAmountKey,
+              initialValue: formDataNotifier.getProperty(totalAmountKey),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({transactionTotalAmountKey: value});
+                formDataNotifier.updateProperties({totalAmountKey: value});
               },
             ),
             HorizontalGap.l,

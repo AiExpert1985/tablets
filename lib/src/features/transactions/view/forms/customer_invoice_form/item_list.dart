@@ -9,24 +9,7 @@ import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/transactions/view/forms/common_utils/item_cell.dart';
-
-const String nameKey = 'name';
-const String salesmanKey = 'salesman';
-const String currencyKey = 'currency';
-const String discountKey = 'discount';
-const String numberKey = 'number';
-const String paymentTypeKey = 'paymentType';
-const String dateKey = 'date';
-const String notesKey = 'notes';
-const String totalAsTextKey = 'totalAsText';
-const String transactionTotalAmountKey = 'totalAmount';
-const String totalWeightKey = 'totalWeight';
-const String itemsKey = 'items';
-const String weightKey = 'weight';
-const String priceKey = 'price';
-const String soldQuantityKey = 'soldQuantity';
-const String giftQuantityKey = 'giftQuantity';
-const String itemTotalAmountKey = 'itemTotalAmount';
+import 'package:tablets/src/features/transactions/model/transaction_properties.dart';
 
 const double sequenceColumnWidth = customerInvoiceFormWidth * 0.055;
 const double nameColumnWidth = customerInvoiceFormWidth * 0.345;
@@ -77,11 +60,11 @@ List<Widget> _buildDataRows(ItemFormData formDataNotifier,
         _buildDropDownWithSearch(
             formDataNotifier, textEditingNotifier, productRepository, index, nameColumnWidth),
         _buildFormInputField(
-            formDataNotifier, index, priceColumnWidth, itemsKey, priceKey, textEditingNotifier),
+            formDataNotifier, index, priceColumnWidth, itemsKey, itemPriceKey, textEditingNotifier),
         _buildFormInputField(formDataNotifier, index, soldQuantityColumnWidth, itemsKey,
-            soldQuantityKey, textEditingNotifier),
+            itemSoldQuantityKey, textEditingNotifier),
         _buildFormInputField(formDataNotifier, index, giftQuantityColumnWidth, itemsKey,
-            giftQuantityKey, textEditingNotifier),
+            itemGiftQuantityKey, textEditingNotifier),
         _buildFormInputField(formDataNotifier, index, soldTotalAmountColumnWidth, itemsKey,
             itemTotalAmountKey, textEditingNotifier,
             // textEditingNotifier: textEditingNotifier,
@@ -96,14 +79,16 @@ Widget _buildAddItemButton(
     ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
   return IconButton(
     onPressed: () {
-      textEditingNotifier.addSubControllers(itemsKey, {
-        priceKey: 0,
-        soldQuantityKey: 0,
-        giftQuantityKey: 0,
-        itemTotalAmountKey: 0,
+      formDataNotifier.updateSubProperties(itemsKey, {
+        nameKey: '',
+        itemPriceKey: 0,
+        itemWeightKey: 0,
+        itemSoldQuantityKey: 0,
+        itemGiftQuantityKey: 0,
+        itemTotalAmountKey: 0
       });
-      formDataNotifier.updateSubProperties(itemsKey, {});
-      tempPrint(textEditingNotifier.data);
+      textEditingNotifier.addSubControllers(itemsKey,
+          {itemPriceKey: 0, itemSoldQuantityKey: 0, itemGiftQuantityKey: 0, itemTotalAmountKey: 0});
     },
     icon: const Icon(Icons.add, color: Colors.green),
   );
@@ -117,13 +102,11 @@ Widget _buildDeleteItemButton(ItemFormData formDataNotifier,
       IconButton(
         onPressed: () {
           formDataNotifier.removeSubProperties(itemsKey, index);
-          textEditingNotifier.removeSubController(itemsKey, index, priceKey);
-          _updateTotal(formDataNotifier, itemsKey, priceKey, transactionTotalAmountKey);
-          _updateTotal(formDataNotifier, itemsKey, weightKey, totalWeightKey);
-          textEditingNotifier.updateControllerText(
-              transactionTotalAmountKey, formDataNotifier.data[transactionTotalAmountKey]);
-          textEditingNotifier.updateControllerText(
-              totalWeightKey, formDataNotifier.data[totalWeightKey]);
+          textEditingNotifier.removeSubController(itemsKey, index, itemPriceKey);
+          final totalAmount = _getTotal(formDataNotifier, itemsKey, itemPriceKey);
+          final totalWeight = _getTotal(formDataNotifier, itemsKey, itemWeightKey);
+          textEditingNotifier.updateControllerText(totalAmountKey, totalAmount);
+          textEditingNotifier.updateControllerText(totalWeightKey, totalWeight);
         },
         icon: const Icon(Icons.remove, color: Colors.red),
       ),
@@ -166,14 +149,13 @@ Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
       ]);
 }
 
-void _updateTotal(
-    ItemFormData formDataNotifier, String property, String subProperty, String targetProperty) {
+double _getTotal(ItemFormData formDataNotifier, String property, String subProperty) {
   double total = 0;
   if (!formDataNotifier.data.containsKey(property) ||
       formDataNotifier.data[property] is! List<Map<String, dynamic>>) {
     errorPrint(
         'formData does not contain the key ($property) or items is not a List<Map<String, dynamic>>');
-    return;
+    return total;
   }
   for (var item in formDataNotifier.data[property]) {
     if (!item.containsKey(subProperty)) {
@@ -187,7 +169,7 @@ void _updateTotal(
     }
     total += value;
   }
-  formDataNotifier.updateProperties({targetProperty: total});
+  return total;
 }
 
 Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
@@ -209,17 +191,15 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
             itemsKey,
             {
               nameKey: item['name'],
-              priceKey: item['sellWholePrice'],
-              weightKey: item['packageWeight']
+              itemPriceKey: item['sellWholePrice'],
+              itemWeightKey: item['packageWeight']
             },
             index: index);
-        tempPrint(1);
-        final price = formDataNotifier.getSubProperty(itemsKey, index, priceKey);
-        textEditingNotifier.updateSubControllerText(itemsKey, index, priceKey, price);
-        _updateTotal(formDataNotifier, itemsKey, weightKey, totalWeightKey);
-        final totalWeight = formDataNotifier.getProperty(totalWeightKey);
+        final price = formDataNotifier.getSubProperty(itemsKey, index, itemPriceKey);
+        textEditingNotifier.updateSubControllerText(itemsKey, index, itemPriceKey, price);
+        final totalWeight = _getTotal(formDataNotifier, itemsKey, itemWeightKey);
+        formDataNotifier.updateProperties({totalAmountKey: totalWeight});
         textEditingNotifier.updateControllerText(totalWeightKey, totalWeight);
-        tempPrint(textEditingNotifier.data);
       },
     ),
   );
@@ -241,23 +221,24 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
         // this method is executed throught two ways, first when the field is updated by the user
         // and the second is automatic when user selects and item through adjacent product selection dropdown
         formDataNotifier.updateSubProperties(property, {subProperty: value}, index: index);
-        // update the item total price if both price & sold quantity has been entered
-        final itemPrice = formDataNotifier.getSubProperty(property, index, priceKey);
-        final itemQuantity = formDataNotifier.getSubProperty(property, index, soldQuantityKey);
+        // if the price is updated, then we need to updated related fields
+        // which are item total amount, and transaction total amount
+        if (subProperty != itemPriceKey) return;
+        // update total amount of the transaction
+        final totalAmount = _getTotal(formDataNotifier, property, subProperty);
+        formDataNotifier.updateProperties({totalAmountKey: totalAmount});
+        textEditingNotifier.updateControllerText(totalAmountKey, totalAmount);
+        // update the total mount of the item
+        // note that both price & sold quantity should have been entered
+        final itemPrice = formDataNotifier.getSubProperty(property, index, itemPriceKey);
+        final itemQuantity = formDataNotifier.getSubProperty(property, index, itemSoldQuantityKey);
         if (itemPrice != null && itemQuantity != null) {
           final itemTotalAmount = itemQuantity * itemPrice;
           formDataNotifier.updateSubProperties(property, {itemTotalAmountKey: itemTotalAmount},
               index: index);
+          textEditingNotifier.updateSubControllerText(
+              property, index, itemTotalAmountKey, itemTotalAmount);
         }
-
-        if (subProperty != priceKey) return;
-        _updateTotal(formDataNotifier, property, subProperty, transactionTotalAmountKey);
-        if (!formDataNotifier.isValidProperty(transactionTotalAmountKey)) {
-          errorPrint('formData[$transactionTotalAmountKey] is not valid');
-          return;
-        }
-        textEditingNotifier.updateControllerText(
-            transactionTotalAmountKey, formDataNotifier.data[transactionTotalAmountKey]);
       },
     ),
     isLast: isLast,

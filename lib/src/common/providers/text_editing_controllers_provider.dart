@@ -22,8 +22,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
 
     final List<Map<String, TextEditingController>> list;
 
-    if (state.containsKey(property) &&
-        state[property] is List<Map<String, TextEditingController>>) {
+    if (state.containsKey(property) && state[property] is List) {
       list = state[property];
       list.add(newSubControllers);
     } else {
