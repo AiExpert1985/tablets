@@ -44,13 +44,7 @@ Widget buildItemList(BuildContext context, ItemFormData formDataNotifier,
     child: SingleChildScrollView(
       child: Column(
         children: [
-          Stack(children: [
-            _buildColumnTitles(context),
-            Positioned(
-                top: 0,
-                right: 0,
-                child: _buildAddItemButton(formDataNotifier, textEditingNotifier)),
-          ]),
+          _buildColumnTitles(context, formDataNotifier, textEditingNotifier),
           ..._buildRows(formDataNotifier, textEditingNotifier, productRepository),
         ],
       ),
@@ -99,29 +93,33 @@ Widget _buildAddItemButton(
 
 Widget _buildDeleteItemButton(
     ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier, int index) {
-  return IconButton(
-    onPressed: () {
-      formDataNotifier.removeSubProperties(itemsKey, index);
-      textEditingNotifier.removeControllerFromList(itemsKey, index);
-      _updateTotal(formDataNotifier, totalAmountKey, priceKey);
-      _updateTotal(formDataNotifier, totalWeightKey, weightKey);
-      textEditingNotifier.data[totalAmountKey].text =
-          formDataNotifier.data[totalAmountKey].toString();
-      textEditingNotifier.data[totalWeightKey].text =
-          formDataNotifier.data[totalWeightKey].toString();
-    },
-    icon: const Icon(Icons.cancel, color: Colors.red),
-  );
+  return buildDataCell(
+      sequenceColumnWidth,
+      IconButton(
+        onPressed: () {
+          formDataNotifier.removeSubProperties(itemsKey, index);
+          textEditingNotifier.removeControllerFromList(itemsKey, index);
+          _updateTotal(formDataNotifier, totalAmountKey, priceKey);
+          _updateTotal(formDataNotifier, totalWeightKey, weightKey);
+          textEditingNotifier.data[totalAmountKey].text =
+              formDataNotifier.data[totalAmountKey].toString();
+          textEditingNotifier.data[totalWeightKey].text =
+              formDataNotifier.data[totalWeightKey].toString();
+        },
+        icon: const Icon(Icons.remove, color: Colors.red),
+      ),
+      isFirst: true);
 }
 
-Widget _buildColumnTitles(BuildContext context) {
+Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier) {
   final titles = [
-    '',
-    S.of(context).item_name,
-    S.of(context).item_price,
-    S.of(context).item_sold_quantity,
-    S.of(context).item_gifts_quantity,
-    S.of(context).item_total_price,
+    _buildAddItemButton(formDataNotifier, textEditingNotifier),
+    Text(S.of(context).item_name),
+    Text(S.of(context).item_price),
+    Text(S.of(context).item_sold_quantity),
+    Text(S.of(context).item_gifts_quantity),
+    Text(S.of(context).item_total_price),
   ];
 
   final widths = [
@@ -140,7 +138,7 @@ Widget _buildColumnTitles(BuildContext context) {
         ...List.generate(titles.length, (index) {
           return buildDataCell(
             widths[index],
-            Text(titles[index]),
+            titles[index],
             isTitle: true,
             isFirst: index == 0,
             isLast: index == titles.length - 1,
