@@ -56,26 +56,21 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _buildItemDataCell((index + 1).toString(), true, CustomerInvoiceWidths.sequence),
+        buildDataCell(CustomerInvoiceWidths.sequence, Text((index + 1).toString()), isFirst: true),
         _buildDropDownWithSearch(formDataNotifier, textEditingController, repository),
         _buildFormInputField(formDataNotifier, textEditingController),
-        const ItemDataCell(width: CustomerInvoiceWidths.soldQuantity, cell: Text('TempText')),
-        const ItemDataCell(width: CustomerInvoiceWidths.giftQuantity, cell: Text('tempText')),
-        const ItemDataCell(
-            isLast: true, width: CustomerInvoiceWidths.soldTotalAmount, cell: Text('tempText')),
+        buildDataCell(CustomerInvoiceWidths.soldQuantity, const Text('TempText')),
+        buildDataCell(CustomerInvoiceWidths.giftQuantity, const Text('tempText')),
+        buildDataCell(CustomerInvoiceWidths.soldTotalAmount, const Text('tempText'), isLast: true),
       ],
     );
   }
 
-  ItemDataCell _buildItemDataCell(String text, bool isFirst, double width) {
-    return ItemDataCell(isFirst: isFirst, width: width, cell: Text(text));
-  }
-
   Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
       TextControllerNotifier textEditingController, dynamic repository) {
-    return ItemDataCell(
-      width: CustomerInvoiceWidths.name,
-      cell: DropDownWithSearchFormField(
+    return buildDataCell(
+      CustomerInvoiceWidths.name,
+      DropDownWithSearchFormField(
         initialValue: formDataNotifier.getSubProperty(itemsKey, index, 'name'),
         hideBorders: true,
         dbRepository: repository,
@@ -106,9 +101,9 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
 
   Widget _buildFormInputField(
       ItemFormData formDataNotifier, TextControllerNotifier textEditingController) {
-    return ItemDataCell(
-      width: CustomerInvoiceWidths.price,
-      cell: FormInputField(
+    return buildDataCell(
+      CustomerInvoiceWidths.price,
+      FormInputField(
         initialValue: formDataNotifier.getSubProperty(itemsKey, index, priceKey),
         controller: textEditingController.data[itemsKey][index],
         isRequired: false,

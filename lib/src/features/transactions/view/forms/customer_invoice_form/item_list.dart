@@ -47,7 +47,7 @@ class CustomerInvoiceItemList extends ConsumerWidget {
             const CustomerInvoiceItemTitles(),
             Positioned(
               top: 0,
-              right: 0,
+              right: 30,
               child: IconButton(
                 onPressed: () {
                   textEditingNotifier.addControllerToList(itemsKey);

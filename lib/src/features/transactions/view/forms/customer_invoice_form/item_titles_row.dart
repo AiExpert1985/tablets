@@ -38,12 +38,12 @@ class CustomerInvoiceItemTitles extends ConsumerWidget {
     ];
 
     return List.generate(titles.length, (index) {
-      return ItemDataCell(
+      return buildDataCell(
+        widths[index],
+        Text(titles[index]),
         isTitle: true,
         isFirst: index == 0,
         isLast: index == titles.length - 1,
-        width: widths[index],
-        cell: Text(titles[index]),
       );
     });
   }

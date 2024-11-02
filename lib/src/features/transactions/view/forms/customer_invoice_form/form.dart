@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
@@ -39,167 +39,192 @@ class CustomerInvoiceForm extends ConsumerWidget {
     final customerRepository = ref.read(customerRepositoryProvider);
     final textEditingControllers = ref.read(textFieldsControllerProvider);
     ref.watch(transactionFormDataProvider);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          buildFormTitle(S.of(context).transaction_type_customer_invoice),
+          gaps.VerticalGap.formFieldToField,
+          _buildFirstRow(context, formDataNotifier, customerRepository, salesmanRepository),
+          gaps.VerticalGap.formFieldToField,
+          _buildSecondRow(context, formDataNotifier),
+          gaps.VerticalGap.formFieldToField,
+          _buildThirdRow(context, formDataNotifier),
+          gaps.VerticalGap.formFieldToField,
+          _buildForthRow(context, formDataNotifier),
+          gaps.VerticalGap.formFieldToField,
+          _buildFifthRow(context, formDataNotifier),
+          gaps.VerticalGap.formFieldToField,
+          const CustomerInvoiceItemList(),
+          gaps.VerticalGap.formFieldToField,
+          _buildTotalsRow(context, formDataNotifier, textEditingControllers),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier, var customerRepository,
+      var salesmanRepository) {
+    return Row(
       children: [
-        FormTitle(S.of(context).transaction_type_customer_invoice),
-        gaps.VerticalGap.formFieldToField,
-        gaps.VerticalGap.formFieldToField,
-        Row(
-          children: [
-            DropDownWithSearchFormField(
-              label: S.of(context).customer,
-              initialValue: formDataNotifier.getProperty(nameKey),
-              dbRepository: customerRepository,
-              onChangedFn: (item) {
-                formDataNotifier.updateProperties({nameKey: item[nameKey]});
-                // update related property
-                formDataNotifier.updateProperties({salesmanKey: item[salesmanKey]});
-              },
-            ),
-            gaps.HorizontalGap.formFieldToField,
-            DropDownWithSearchFormField(
-              label: S.of(context).transaction_salesman,
-              initialValue: formDataNotifier.getProperty(salesmanKey),
-              dbRepository: salesmanRepository,
-              onChangedFn: (item) {
-                formDataNotifier.updateProperties({salesmanKey: item[nameKey]});
-              },
-            ),
-          ],
+        DropDownWithSearchFormField(
+          label: S.of(context).customer,
+          initialValue: formDataNotifier.getProperty(nameKey),
+          dbRepository: customerRepository,
+          onChangedFn: (item) {
+            formDataNotifier.updateProperties({
+              nameKey: item[nameKey],
+              salesmanKey: item[salesmanKey],
+            });
+          },
         ),
-        gaps.VerticalGap.formFieldToField,
-        Row(
-          children: [
-            DropDownListFormField(
-              initialValue: formDataNotifier.getProperty(currencyKey),
-              itemList: [
-                S.of(context).transaction_payment_Dinar,
-                S.of(context).transaction_payment_Dollar,
-              ],
-              label: S.of(context).transaction_currency,
-              name: currencyKey,
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({currencyKey: value});
-              },
-            ),
-            gaps.HorizontalGap.formFieldToField,
-            FormInputField(
-              initialValue: formDataNotifier.getProperty(discountKey),
-              name: discountKey,
-              dataType: constants.FieldDataType.num,
-              label: S.of(context).transaction_discount,
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({discountKey: value});
-              },
-            ),
-          ],
+        gaps.HorizontalGap.formFieldToField,
+        DropDownWithSearchFormField(
+          label: S.of(context).transaction_salesman,
+          initialValue: formDataNotifier.getProperty(salesmanKey),
+          dbRepository: salesmanRepository,
+          onChangedFn: (item) {
+            formDataNotifier.updateProperties({salesmanKey: item[nameKey]});
+          },
         ),
-        gaps.VerticalGap.formFieldToField,
-        Row(
-          children: [
-            FormInputField(
-              dataType: constants.FieldDataType.num,
-              name: numberKey,
-              label: S.of(context).transaction_number,
-              initialValue: formDataNotifier.getProperty(numberKey),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({numberKey: value});
-              },
-            ),
-            gaps.HorizontalGap.formFieldToField,
-            DropDownListFormField(
-              initialValue: formDataNotifier.getProperty(paymentTypeKey),
-              itemList: [
-                S.of(context).transaction_payment_cash,
-                S.of(context).transaction_payment_credit,
-              ],
-              label: S.of(context).transaction_payment_type,
-              name: paymentTypeKey,
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({paymentTypeKey: value});
-              },
-            ),
-            gaps.HorizontalGap.formFieldToField,
-            FormDatePickerField(
-              initialValue: formDataNotifier.getProperty(dateKey) is Timestamp
-                  ? formDataNotifier.getProperty(dateKey).toDate()
-                  : formDataNotifier.getProperty(dateKey),
-              name: dateKey,
-              label: S.of(context).transaction_date,
-              onChangedFn: (date) {
-                formDataNotifier.updateProperties({dateKey: Timestamp.fromDate(date!)});
-              },
-            ),
+      ],
+    );
+  }
+
+  Widget _buildSecondRow(BuildContext context, ItemFormData formDataNotifier) {
+    return Row(
+      children: [
+        DropDownListFormField(
+          initialValue: formDataNotifier.getProperty(currencyKey),
+          itemList: [
+            S.of(context).transaction_payment_Dinar,
+            S.of(context).transaction_payment_Dollar,
           ],
+          label: S.of(context).transaction_currency,
+          name: currencyKey,
+          onChangedFn: (value) {
+            formDataNotifier.updateProperties({currencyKey: value});
+          },
         ),
-        gaps.VerticalGap.formFieldToField,
-        Row(
-          children: [
-            FormInputField(
-              isRequired: false,
-              dataType: constants.FieldDataType.string,
-              name: notesKey,
-              label: S.of(context).transaction_notes,
-              initialValue: formDataNotifier.getProperty(notesKey),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({notesKey: value});
-              },
-            ),
+        gaps.HorizontalGap.formFieldToField,
+        FormInputField(
+          initialValue: formDataNotifier.getProperty(discountKey),
+          name: discountKey,
+          dataType: constants.FieldDataType.num,
+          label: S.of(context).transaction_discount,
+          onChangedFn: (value) {
+            formDataNotifier.updateProperties({discountKey: value});
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildThirdRow(BuildContext context, ItemFormData formDataNotifier) {
+    return Row(
+      children: [
+        FormInputField(
+          dataType: constants.FieldDataType.num,
+          name: numberKey,
+          label: S.of(context).transaction_number,
+          initialValue: formDataNotifier.getProperty(numberKey),
+          onChangedFn: (value) {
+            formDataNotifier.updateProperties({numberKey: value});
+          },
+        ),
+        gaps.HorizontalGap.formFieldToField,
+        DropDownListFormField(
+          initialValue: formDataNotifier.getProperty(paymentTypeKey),
+          itemList: [
+            S.of(context).transaction_payment_cash,
+            S.of(context).transaction_payment_credit,
           ],
+          label: S.of(context).transaction_payment_type,
+          name: paymentTypeKey,
+          onChangedFn: (value) {
+            formDataNotifier.updateProperties({paymentTypeKey: value});
+          },
         ),
-        gaps.VerticalGap.formFieldToField,
-        Row(
-          children: [
-            Visibility(
-              visible: settings.writeTotalAmountAsText,
-              child: FormInputField(
-                isRequired: false,
-                dataType: constants.FieldDataType.string,
-                name: totalAsTextKey,
-                label: S.of(context).transaction_total_amount_as_text,
-                initialValue: formDataNotifier.getProperty(totalAsTextKey),
-                onChangedFn: (value) {
-                  formDataNotifier.updateProperties({totalAsTextKey: value});
-                },
-              ),
-            ),
-          ],
+        gaps.HorizontalGap.formFieldToField,
+        FormDatePickerField(
+          initialValue: formDataNotifier.getProperty(dateKey) is Timestamp
+              ? formDataNotifier.getProperty(dateKey).toDate()
+              : formDataNotifier.getProperty(dateKey),
+          name: dateKey,
+          label: S.of(context).transaction_date,
+          onChangedFn: (date) {
+            formDataNotifier.updateProperties({dateKey: Timestamp.fromDate(date!)});
+          },
         ),
-        gaps.VerticalGap.formFieldToField,
-        const CustomerInvoiceItemList(),
-        gaps.VerticalGap.formFieldToField,
-        gaps.VerticalGap.formFieldToField,
-        SizedBox(
-          width: customerInvoiceFormWidth * 0.6,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FormInputField(
-                controller: textEditingControllers[totalAmountKey],
-                isReadOnly: true,
-                dataType: constants.FieldDataType.num,
-                label: S.of(context).invoice_total_price,
-                name: totalAmountKey,
-                initialValue: formDataNotifier.getProperty(totalAmountKey),
-                onChangedFn: (value) {
-                  formDataNotifier.updateProperties({totalAmountKey: value});
-                },
-              ),
-              gaps.HorizontalGap.formFieldToField,
-              FormInputField(
-                controller: textEditingControllers[totalWeightKey],
-                isReadOnly: true,
-                dataType: constants.FieldDataType.num,
-                label: S.of(context).invoice_total_weight,
-                name: totalWeightKey,
-                initialValue: formDataNotifier.getProperty(totalWeightKey),
-                onChangedFn: (value) {
-                  formDataNotifier.updateProperties({totalWeightKey: value});
-                },
-              ),
-            ],
+      ],
+    );
+  }
+
+  Widget _buildForthRow(BuildContext context, ItemFormData formDataNotifier) {
+    return Row(
+      children: [
+        FormInputField(
+          isRequired: false,
+          dataType: constants.FieldDataType.string,
+          name: notesKey,
+          label: S.of(context).transaction_notes,
+          initialValue: formDataNotifier.getProperty(notesKey),
+          onChangedFn: (value) {
+            formDataNotifier.updateProperties({notesKey: value});
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFifthRow(BuildContext context, ItemFormData formDataNotifier) {
+    return Visibility(
+      visible: settings.writeTotalAmountAsText,
+      child: Row(
+        children: [
+          FormInputField(
+            isRequired: false,
+            dataType: constants.FieldDataType.string,
+            name: totalAsTextKey,
+            label: S.of(context).transaction_total_amount_as_text,
+            initialValue: formDataNotifier.getProperty(totalAsTextKey),
+            onChangedFn: (value) {
+              formDataNotifier.updateProperties({totalAsTextKey: value});
+            },
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTotalsRow(
+      BuildContext context, ItemFormData formDataNotifier, var textEditingControllers) {
+    return Row(
+      children: [
+        FormInputField(
+          controller: textEditingControllers[totalAmountKey],
+          isReadOnly: true,
+          dataType: constants.FieldDataType.num,
+          label: S.of(context).invoice_total_price,
+          name: totalAmountKey,
+          initialValue: formDataNotifier.getProperty(totalAmountKey),
+          onChangedFn: (value) {
+            formDataNotifier.updateProperties({totalAmountKey: value});
+          },
+        ),
+        gaps.HorizontalGap.formFieldToField,
+        FormInputField(
+          controller: textEditingControllers[totalWeightKey],
+          isReadOnly: true,
+          dataType: constants.FieldDataType.num,
+          label: S.of(context).invoice_total_weight,
+          name: totalWeightKey,
+          initialValue: formDataNotifier.getProperty(totalWeightKey),
+          onChangedFn: (value) {
+            formDataNotifier.updateProperties({totalWeightKey: value});
+          },
         ),
       ],
     );
