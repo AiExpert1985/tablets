@@ -27,8 +27,8 @@ class FormInputField extends ConsumerWidget {
   final void Function(dynamic) onChangedFn;
   // isReadOnly used for fields that I don't want to be edited by user, for example
   // totalprice of an invoice which is the sum of item prices in the invoice
-  final bool isReadOnly;
-  final bool isRequired; // some field are optional to fill
+  final bool isReadOnly; // can't be edited by user
+  final bool isRequired; // if !isRequired, it will not be validated (optional field)
   final bool hideBorders; // usually used for fields inside the item list
   // I mainly use controller to reflect changes caused by other fields
   // for example when an adjacent dropdown is select, this field is changed

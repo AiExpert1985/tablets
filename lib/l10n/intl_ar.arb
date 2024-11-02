@@ -112,7 +112,7 @@
     "item_name": "اسم المادة",
     "item_price": "سعر المادة",
     "item_sold_quantity": "العدد",
-    "item_total_price": "السعر الكلي",
+    "item_total_price": "السعر الكلي للمادة",
     "item_gifts_quantity": "عدد الهدايا",
     "invoice_total_price": "المبلغ الكلي للقائمة",
     "invoice_total_weight": "الوزن الكلي للقائمة",

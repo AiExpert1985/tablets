@@ -19,11 +19,14 @@ const String paymentTypeKey = 'paymentType';
 const String dateKey = 'date';
 const String notesKey = 'notes';
 const String totalAsTextKey = 'totalAsText';
-const String totalAmountKey = 'totalAmount';
+const String transactionTotalAmountKey = 'totalAmount';
 const String totalWeightKey = 'totalWeight';
 const String itemsKey = 'items';
 const String weightKey = 'weight';
 const String priceKey = 'price';
+const String soldQuantityKey = 'soldQuantity';
+const String giftQuantityKey = 'giftQuantity';
+const String itemTotalAmountKey = 'itemTotalAmount';
 
 const double sequenceColumnWidth = customerInvoiceFormWidth * 0.055;
 const double nameColumnWidth = customerInvoiceFormWidth * 0.345;
@@ -45,15 +48,15 @@ Widget buildItemList(BuildContext context, ItemFormData formDataNotifier,
       child: Column(
         children: [
           _buildColumnTitles(context, formDataNotifier, textEditingNotifier),
-          ..._buildRows(formDataNotifier, textEditingNotifier, productRepository),
+          ..._buildDataRows(formDataNotifier, textEditingNotifier, productRepository),
         ],
       ),
     ),
   );
 }
 
-List<Widget> _buildRows(ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier,
-    DbRepository productRepository) {
+List<Widget> _buildDataRows(ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier, DbRepository productRepository) {
   if (!formDataNotifier.data.containsKey(itemsKey) || formDataNotifier.data[itemsKey] is! List) {
     return const [];
   }
@@ -69,12 +72,21 @@ List<Widget> _buildRows(ItemFormData formDataNotifier, TextControllerNotifier te
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // buildDataCell(sequenceColumnWidth, Text((index + 1).toString()), isFirst: true),
-        _buildDeleteItemButton(formDataNotifier, textEditingNotifier, index),
-        _buildDropDownWithSearch(formDataNotifier, textEditingNotifier, productRepository, index),
-        _buildFormInputField(formDataNotifier, textEditingNotifier, index),
-        buildDataCell(soldQuantityColumnWidth, const Text('TempText')),
-        buildDataCell(giftQuantityColumnWidth, const Text('tempText')),
-        buildDataCell(soldTotalAmountColumnWidth, const Text('tempText'), isLast: true),
+        _buildDeleteItemButton(formDataNotifier, textEditingNotifier, index, sequenceColumnWidth,
+            isFirst: true),
+        _buildDropDownWithSearch(
+            formDataNotifier, textEditingNotifier, productRepository, index, nameColumnWidth),
+        _buildFormInputField(formDataNotifier, index, priceColumnWidth, itemsKey, priceKey,
+            textEditingNotifier: textEditingNotifier),
+        _buildFormInputField(
+            formDataNotifier, index, soldQuantityColumnWidth, itemsKey, soldQuantityKey),
+        _buildFormInputField(
+            formDataNotifier, index, giftQuantityColumnWidth, itemsKey, giftQuantityKey),
+        _buildFormInputField(
+            formDataNotifier, index, soldTotalAmountColumnWidth, itemsKey, itemTotalAmountKey,
+            // textEditingNotifier: textEditingNotifier,
+            isLast: true,
+            isReadOnly: true),
       ],
     );
   });
@@ -91,18 +103,19 @@ Widget _buildAddItemButton(
   );
 }
 
-Widget _buildDeleteItemButton(
-    ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier, int index) {
+Widget _buildDeleteItemButton(ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier, int index, double width,
+    {bool isFirst = false}) {
   return buildDataCell(
-      sequenceColumnWidth,
+      width,
       IconButton(
         onPressed: () {
           formDataNotifier.removeSubProperties(itemsKey, index);
           textEditingNotifier.removeControllerFromList(itemsKey, index);
-          _updateTotal(formDataNotifier, itemsKey, priceKey, totalAmountKey);
+          _updateTotal(formDataNotifier, itemsKey, priceKey, transactionTotalAmountKey);
           _updateTotal(formDataNotifier, itemsKey, weightKey, totalWeightKey);
-          textEditingNotifier.data[totalAmountKey].text =
-              formDataNotifier.data[totalAmountKey].toString();
+          textEditingNotifier.data[transactionTotalAmountKey].text =
+              formDataNotifier.data[transactionTotalAmountKey].toString();
           textEditingNotifier.data[totalWeightKey].text =
               formDataNotifier.data[totalWeightKey].toString();
         },
@@ -172,9 +185,9 @@ void _updateTotal(
 }
 
 Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingController, dynamic repository, index) {
+    TextControllerNotifier textEditingController, dynamic repository, int index, double width) {
   return buildDataCell(
-    nameColumnWidth,
+    width,
     DropDownWithSearchFormField(
       initialValue: formDataNotifier.getSubProperty(itemsKey, index, nameKey),
       hideBorders: true,
@@ -210,28 +223,41 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
 }
 
 Widget _buildFormInputField(
-    ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier, int index) {
+    ItemFormData formDataNotifier, int index, double width, String property, String subProperty,
+    {TextControllerNotifier? textEditingNotifier, bool isLast = false, isReadOnly = false}) {
   return buildDataCell(
-    priceColumnWidth,
+    width,
     FormInputField(
-      initialValue: formDataNotifier.getSubProperty(itemsKey, index, priceKey),
-      controller: textEditingNotifier.data[itemsKey][index],
-      isRequired: false,
+      initialValue: formDataNotifier.getSubProperty(property, index, subProperty),
+      controller: textEditingNotifier?.data[property][index],
       hideBorders: true,
+      isReadOnly: isReadOnly,
       dataType: constants.FieldDataType.num,
-      name: priceKey,
+      name: subProperty,
       onChangedFn: (value) {
         // this method is executed throught two ways, first when the field is updated by the user
         // and the second is automatic when user selects and item through adjacent product selection dropdown
-        formDataNotifier.updateSubProperties(itemsKey, {priceKey: value}, index: index);
-        _updateTotal(formDataNotifier, itemsKey, priceKey, totalAmountKey);
-        if (!formDataNotifier.isValidProperty(totalAmountKey)) {
-          errorPrint('formData[$totalAmountKey] is not valid');
+        formDataNotifier.updateSubProperties(property, {subProperty: value}, index: index);
+        tempPrint(formDataNotifier.data);
+        // update the item total price if both price & sold quantity has been entered
+        final itemPrice = formDataNotifier.getSubProperty(property, index, priceKey);
+        final itemQuantity = formDataNotifier.getSubProperty(property, index, soldQuantityKey);
+        if (itemPrice != null && itemQuantity != null) {
+          final itemTotalAmount = itemQuantity * itemPrice;
+          formDataNotifier.updateSubProperties(property, {itemTotalAmountKey: itemTotalAmount},
+              index: index);
+        }
+
+        if (subProperty != priceKey) return;
+        _updateTotal(formDataNotifier, property, subProperty, transactionTotalAmountKey);
+        if (!formDataNotifier.isValidProperty(transactionTotalAmountKey)) {
+          errorPrint('formData[$transactionTotalAmountKey] is not valid');
           return;
         }
-        textEditingNotifier.data[totalAmountKey].text =
-            formDataNotifier.data[totalAmountKey].toString();
+        textEditingNotifier?.data[transactionTotalAmountKey].text =
+            formDataNotifier.data[transactionTotalAmountKey].toString();
       },
     ),
+    isLast: isLast,
   );
 }

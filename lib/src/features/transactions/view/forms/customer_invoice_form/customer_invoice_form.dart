@@ -200,14 +200,14 @@ class CustomerInvoiceForm extends ConsumerWidget {
         child: Row(
           children: [
             FormInputField(
-              controller: textEditingNotifier.data[totalAmountKey],
+              controller: textEditingNotifier.data[transactionTotalAmountKey],
               isReadOnly: true,
               dataType: constants.FieldDataType.num,
               label: S.of(context).invoice_total_price,
-              name: totalAmountKey,
-              initialValue: formDataNotifier.getProperty(totalAmountKey),
+              name: transactionTotalAmountKey,
+              initialValue: formDataNotifier.getProperty(transactionTotalAmountKey),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({totalAmountKey: value});
+                formDataNotifier.updateProperties({transactionTotalAmountKey: value});
               },
             ),
             HorizontalGap.l,
