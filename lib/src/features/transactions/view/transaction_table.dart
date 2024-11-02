@@ -21,7 +21,7 @@ class TransactionsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textFieldNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final transactionStream = ref.watch(transactionStreamProvider);
@@ -46,7 +46,7 @@ class TransactionsList extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final transaction = Transaction.fromMap(transactions[index]);
                     return _buildTransactionRow(transaction, context, imagePickerNotifier,
-                        formDataNotifier, textFieldNotifier);
+                        formDataNotifier, textEditingNotifier);
                   },
                 ),
               ),
@@ -75,7 +75,7 @@ class TransactionsList extends ConsumerWidget {
       BuildContext context,
       ImageSliderNotifier imagePickerNotifier,
       ItemFormData formDataNotifier,
-      TextControllerNotifier textFieldNotifier) {
+      TextControllerNotifier textEditingNotifier) {
     final transactionTypeScreenName =
         transactionTypeDbNameToScreenName(context, transaction.transactionType);
 
@@ -101,7 +101,7 @@ class TransactionsList extends ConsumerWidget {
                   context,
                   imagePickerNotifier,
                   formDataNotifier,
-                  textFieldNotifier,
+                  textEditingNotifier,
                   formType: TransactionType.customerInvoice.name,
                   transaction: transaction,
                 ),

@@ -55,13 +55,20 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
 
   // usually this is used for initialValue for form fields, which takes either a value or null
   dynamic getProperty(String property) {
-    if (!state.containsKey(property)) return;
+    if (!state.containsKey(property)) {
+      errorPrint('formData property $property been accessed is invalied');
+      return;
+    }
     return state[property];
   }
 
   // usually this is used for initialValue for form fields, which takes either a value or null
   dynamic getSubProperty(String property, int index, String subProperty) {
-    if (!isValidSubProperty(property, index, subProperty)) return;
+    if (!isValidSubProperty(property, index, subProperty)) {
+      errorPrint(
+          'formData subProperty ($property => $index => $subProperty) been accessed is invalied');
+      return;
+    }
     return state[property][index][subProperty];
   }
 

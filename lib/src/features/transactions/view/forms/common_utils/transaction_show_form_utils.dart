@@ -13,6 +13,9 @@ class TransactionShowFormUtils {
   static const String priceKey = 'price';
   static const String totalWeightKey = 'totalWeight';
   static const String totalAmountKey = 'totalAmount';
+  static const String soldQuantityKey = 'soldQuantity';
+  static const String giftQuantityKey = 'giftQuantity';
+  static const String itemTotalAmountKey = 'itemTotalAmount';
 
   static void initializeFormData(
       BuildContext context, ItemFormData formDataNotifier, String transactionType,
@@ -30,31 +33,38 @@ class TransactionShowFormUtils {
     }
   }
 
-  static void initializeTextFieldControllers(TextControllerNotifier textFieldNotifier,
+  static void initializeTextFieldControllers(TextControllerNotifier textEditingNotifier,
       ItemFormData formDataNotifier, Transaction? transaction) {
     // for below text field we need to add  controllers because the are updated by other fields
     // for example total price it updated by the item prices
     if (transaction != null) {
-      textFieldNotifier.addController(totalAmountKey,
+      textEditingNotifier.addController(totalAmountKey,
           value: formDataNotifier.getProperty(totalAmountKey));
-      textFieldNotifier.addController(totalWeightKey,
+      textEditingNotifier.addController(totalWeightKey,
           value: formDataNotifier.getProperty(totalWeightKey));
       List items = formDataNotifier.data[itemsKey];
       for (var i = 0; i < items.length; i++) {
-        textFieldNotifier.addControllerToList(itemsKey,
-            value: formDataNotifier.getSubProperty(itemsKey, i, priceKey));
+        final price = formDataNotifier.getSubProperty(itemsKey, i, priceKey);
+        final soldQuantity = formDataNotifier.getSubProperty(itemsKey, i, soldQuantityKey);
+        final giftQuantity = formDataNotifier.getSubProperty(itemsKey, i, giftQuantityKey);
+        textEditingNotifier.addSubControllers(itemsKey, {
+          priceKey: price,
+          soldQuantityKey: soldQuantity,
+          giftQuantityKey: giftQuantity,
+          itemTotalAmountKey: price * soldQuantity,
+        });
       }
       return;
     }
-    textFieldNotifier.addController(totalAmountKey);
-    textFieldNotifier.addController(totalWeightKey);
+    textEditingNotifier.addController(totalAmountKey);
+    textEditingNotifier.addController(totalWeightKey);
   }
 
   static void showForm(
     BuildContext context,
     ImageSliderNotifier imagePickerNotifier,
     ItemFormData formDataNotifier,
-    TextControllerNotifier textFieldNotifier, {
+    TextControllerNotifier textEditingNotifier, {
     String? formType,
     Transaction? transaction,
   }) {
@@ -66,7 +76,7 @@ class TransactionShowFormUtils {
     String transactionType = formType ?? transaction?.transactionType as String;
     imagePickerNotifier.initialize();
     initializeFormData(context, formDataNotifier, transactionType, transaction: transaction);
-    initializeTextFieldControllers(textFieldNotifier, formDataNotifier, transaction);
+    initializeTextFieldControllers(textEditingNotifier, formDataNotifier, transaction);
     bool isEditMode = transaction != null;
 
     showDialog(
@@ -74,7 +84,7 @@ class TransactionShowFormUtils {
       builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType),
     ).whenComplete(() {
       imagePickerNotifier.close();
-      textFieldNotifier.disposeControllers();
+      textEditingNotifier.disposeControllers();
     });
   }
 }

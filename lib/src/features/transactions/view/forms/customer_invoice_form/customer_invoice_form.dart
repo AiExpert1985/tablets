@@ -200,7 +200,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
         child: Row(
           children: [
             FormInputField(
-              controller: textEditingNotifier.data[transactionTotalAmountKey],
+              controller: textEditingNotifier.getController(transactionTotalAmountKey),
               isReadOnly: true,
               dataType: constants.FieldDataType.num,
               label: S.of(context).invoice_total_price,
@@ -212,7 +212,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             ),
             HorizontalGap.l,
             FormInputField(
-              controller: textEditingNotifier.data[totalWeightKey],
+              controller: textEditingNotifier.getController(totalWeightKey),
               isReadOnly: true,
               dataType: constants.FieldDataType.num,
               label: S.of(context).invoice_total_weight,

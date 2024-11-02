@@ -13,7 +13,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textFieldNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final drawerController = ref.watch(productsDrawerControllerProvider);
@@ -41,7 +41,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
           onTap: () => TransactionShowFormUtils.showForm(
-              context, imagePickerNotifier, formDataNotifier, textFieldNotifier,
+              context, imagePickerNotifier, formDataNotifier, textEditingNotifier,
               formType: TransactionType.customerInvoice.name),
         ),
       ],

@@ -76,14 +76,14 @@ List<Widget> _buildDataRows(ItemFormData formDataNotifier,
             isFirst: true),
         _buildDropDownWithSearch(
             formDataNotifier, textEditingNotifier, productRepository, index, nameColumnWidth),
-        _buildFormInputField(formDataNotifier, index, priceColumnWidth, itemsKey, priceKey,
-            textEditingNotifier: textEditingNotifier),
         _buildFormInputField(
-            formDataNotifier, index, soldQuantityColumnWidth, itemsKey, soldQuantityKey),
-        _buildFormInputField(
-            formDataNotifier, index, giftQuantityColumnWidth, itemsKey, giftQuantityKey),
-        _buildFormInputField(
-            formDataNotifier, index, soldTotalAmountColumnWidth, itemsKey, itemTotalAmountKey,
+            formDataNotifier, index, priceColumnWidth, itemsKey, priceKey, textEditingNotifier),
+        _buildFormInputField(formDataNotifier, index, soldQuantityColumnWidth, itemsKey,
+            soldQuantityKey, textEditingNotifier),
+        _buildFormInputField(formDataNotifier, index, giftQuantityColumnWidth, itemsKey,
+            giftQuantityKey, textEditingNotifier),
+        _buildFormInputField(formDataNotifier, index, soldTotalAmountColumnWidth, itemsKey,
+            itemTotalAmountKey, textEditingNotifier,
             // textEditingNotifier: textEditingNotifier,
             isLast: true,
             isReadOnly: true),
@@ -96,8 +96,14 @@ Widget _buildAddItemButton(
     ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
   return IconButton(
     onPressed: () {
-      textEditingNotifier.addControllerToList(itemsKey);
+      textEditingNotifier.addSubControllers(itemsKey, {
+        priceKey: 0,
+        soldQuantityKey: 0,
+        giftQuantityKey: 0,
+        itemTotalAmountKey: 0,
+      });
       formDataNotifier.updateSubProperties(itemsKey, {});
+      tempPrint(textEditingNotifier.data);
     },
     icon: const Icon(Icons.add, color: Colors.green),
   );
@@ -111,13 +117,13 @@ Widget _buildDeleteItemButton(ItemFormData formDataNotifier,
       IconButton(
         onPressed: () {
           formDataNotifier.removeSubProperties(itemsKey, index);
-          textEditingNotifier.removeControllerFromList(itemsKey, index);
+          textEditingNotifier.removeSubController(itemsKey, index, priceKey);
           _updateTotal(formDataNotifier, itemsKey, priceKey, transactionTotalAmountKey);
           _updateTotal(formDataNotifier, itemsKey, weightKey, totalWeightKey);
-          textEditingNotifier.data[transactionTotalAmountKey].text =
-              formDataNotifier.data[transactionTotalAmountKey].toString();
-          textEditingNotifier.data[totalWeightKey].text =
-              formDataNotifier.data[totalWeightKey].toString();
+          textEditingNotifier.updateControllerText(
+              transactionTotalAmountKey, formDataNotifier.data[transactionTotalAmountKey]);
+          textEditingNotifier.updateControllerText(
+              totalWeightKey, formDataNotifier.data[totalWeightKey]);
         },
         icon: const Icon(Icons.remove, color: Colors.red),
       ),
@@ -185,7 +191,7 @@ void _updateTotal(
 }
 
 Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingController, dynamic repository, int index, double width) {
+    TextControllerNotifier textEditingNotifier, dynamic repository, int index, double width) {
   return buildDataCell(
     width,
     DropDownWithSearchFormField(
@@ -207,29 +213,26 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
               weightKey: item['packageWeight']
             },
             index: index);
-        if (!textEditingController.isValidSubController(itemsKey, index)) return;
-        textEditingController.data[itemsKey][index].text =
-            formDataNotifier.data[itemsKey][index][priceKey].toString();
+        tempPrint(1);
+        final price = formDataNotifier.getSubProperty(itemsKey, index, priceKey);
+        textEditingNotifier.updateSubControllerText(itemsKey, index, priceKey, price);
         _updateTotal(formDataNotifier, itemsKey, weightKey, totalWeightKey);
-        if (!formDataNotifier.isValidProperty(totalWeightKey)) {
-          errorPrint('formData[$totalWeightKey] is not valid');
-          return;
-        }
-        textEditingController.data[totalWeightKey].text =
-            formDataNotifier.data[totalWeightKey].toString();
+        final totalWeight = formDataNotifier.getProperty(totalWeightKey);
+        textEditingNotifier.updateControllerText(totalWeightKey, totalWeight);
+        tempPrint(textEditingNotifier.data);
       },
     ),
   );
 }
 
-Widget _buildFormInputField(
-    ItemFormData formDataNotifier, int index, double width, String property, String subProperty,
-    {TextControllerNotifier? textEditingNotifier, bool isLast = false, isReadOnly = false}) {
+Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double width, String property,
+    String subProperty, TextControllerNotifier textEditingNotifier,
+    {bool isLast = false, isReadOnly = false}) {
   return buildDataCell(
     width,
     FormInputField(
       initialValue: formDataNotifier.getSubProperty(property, index, subProperty),
-      controller: textEditingNotifier?.data[property][index],
+      controller: textEditingNotifier.getSubController(property, index, subProperty),
       hideBorders: true,
       isReadOnly: isReadOnly,
       dataType: constants.FieldDataType.num,
@@ -238,7 +241,6 @@ Widget _buildFormInputField(
         // this method is executed throught two ways, first when the field is updated by the user
         // and the second is automatic when user selects and item through adjacent product selection dropdown
         formDataNotifier.updateSubProperties(property, {subProperty: value}, index: index);
-        tempPrint(formDataNotifier.data);
         // update the item total price if both price & sold quantity has been entered
         final itemPrice = formDataNotifier.getSubProperty(property, index, priceKey);
         final itemQuantity = formDataNotifier.getSubProperty(property, index, soldQuantityKey);
@@ -254,8 +256,8 @@ Widget _buildFormInputField(
           errorPrint('formData[$transactionTotalAmountKey] is not valid');
           return;
         }
-        textEditingNotifier?.data[transactionTotalAmountKey].text =
-            formDataNotifier.data[transactionTotalAmountKey].toString();
+        textEditingNotifier.updateControllerText(
+            transactionTotalAmountKey, formDataNotifier.data[transactionTotalAmountKey]);
       },
     ),
     isLast: isLast,
