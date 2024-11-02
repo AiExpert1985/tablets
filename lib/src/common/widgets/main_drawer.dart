@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/values/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -21,27 +21,27 @@ class MainDrawer extends StatelessWidget {
                         iconName: 'products',
                         title: S.of(context).products,
                         routeName: AppRoute.products.name),
-                    gaps.VerticalGap.mainDrawerIconToIcon,
+                    VerticalGap.s,
                     MainDrawerButton(
                         iconName: 'categories',
                         title: S.of(context).categories,
                         routeName: AppRoute.categories.name),
-                    gaps.VerticalGap.mainDrawerIconToIcon,
+                    VerticalGap.s,
                     MainDrawerButton(
                         iconName: 'transactions',
                         title: S.of(context).transactions,
                         routeName: AppRoute.transactions.name),
-                    gaps.VerticalGap.mainDrawerIconToIcon,
+                    VerticalGap.s,
                     MainDrawerButton(
                         iconName: 'salesman',
                         title: S.of(context).salesmen,
                         routeName: AppRoute.salesman.name),
-                    gaps.VerticalGap.mainDrawerIconToIcon,
+                    VerticalGap.s,
                     MainDrawerButton(
                         iconName: 'customers',
                         title: S.of(context).customers,
                         routeName: AppRoute.customers.name),
-                    gaps.PushWidgets.toEnd,
+                    PushWidgets.toEnd,
                     MainDrawerButton(
                         iconName: 'pending_transactions',
                         title: S.of(context).pending_transactions,

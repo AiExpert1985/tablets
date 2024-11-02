@@ -99,8 +99,8 @@ Widget _buildDeleteItemButton(
         onPressed: () {
           formDataNotifier.removeSubProperties(itemsKey, index);
           textEditingNotifier.removeControllerFromList(itemsKey, index);
-          _updateTotal(formDataNotifier, totalAmountKey, priceKey);
-          _updateTotal(formDataNotifier, totalWeightKey, weightKey);
+          _updateTotal(formDataNotifier, itemsKey, priceKey, totalAmountKey);
+          _updateTotal(formDataNotifier, itemsKey, weightKey, totalWeightKey);
           textEditingNotifier.data[totalAmountKey].text =
               formDataNotifier.data[totalAmountKey].toString();
           textEditingNotifier.data[totalWeightKey].text =
@@ -147,27 +147,28 @@ Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
       ]);
 }
 
-void _updateTotal(ItemFormData formDataNotifier, String key, String valueKey) {
+void _updateTotal(
+    ItemFormData formDataNotifier, String property, String subProperty, String targetProperty) {
   double total = 0;
-  if (!formDataNotifier.data.containsKey(key) ||
-      formDataNotifier.data[itemsKey] is! List<Map<String, dynamic>>) {
+  if (!formDataNotifier.data.containsKey(property) ||
+      formDataNotifier.data[property] is! List<Map<String, dynamic>>) {
     errorPrint(
-        'formData does not contain the key ($itemsKey) or items is not a List<Map<String, dynamic>>');
+        'formData does not contain the key ($property) or items is not a List<Map<String, dynamic>>');
     return;
   }
-  for (var item in formDataNotifier.data[itemsKey]) {
-    if (!item.containsKey(valueKey)) {
-      errorPrint('form[$itemsKey] does not contain ($valueKey) key');
+  for (var item in formDataNotifier.data[property]) {
+    if (!item.containsKey(subProperty)) {
+      errorPrint('form[$property] does not contain ($subProperty) key');
       continue;
     }
-    final value = item[valueKey];
+    final value = item[subProperty];
     if (value is! double) {
-      errorPrint('formData[$itemsKey][i][$valueKey] is not of type double');
+      errorPrint('$subProperty[$subProperty] is not of type double');
       continue;
     }
     total += value;
   }
-  formDataNotifier.updateProperties({key: total});
+  formDataNotifier.updateProperties({targetProperty: total});
 }
 
 Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
@@ -196,7 +197,7 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
         if (!textEditingController.isValidSubController(itemsKey, index)) return;
         textEditingController.data[itemsKey][index].text =
             formDataNotifier.data[itemsKey][index][priceKey].toString();
-        _updateTotal(formDataNotifier, totalWeightKey, weightKey);
+        _updateTotal(formDataNotifier, itemsKey, weightKey, totalWeightKey);
         if (!formDataNotifier.isValidProperty(totalWeightKey)) {
           errorPrint('formData[$totalWeightKey] is not valid');
           return;
@@ -223,7 +224,7 @@ Widget _buildFormInputField(
         // this method is executed throught two ways, first when the field is updated by the user
         // and the second is automatic when user selects and item through adjacent product selection dropdown
         formDataNotifier.updateSubProperties(itemsKey, {priceKey: value}, index: index);
-        _updateTotal(formDataNotifier, totalAmountKey, priceKey);
+        _updateTotal(formDataNotifier, itemsKey, priceKey, totalAmountKey);
         if (!formDataNotifier.isValidProperty(totalAmountKey)) {
           errorPrint('formData[$totalAmountKey] is not valid');
           return;

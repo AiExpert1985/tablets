@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/values/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/gaps.dart';
 
 class ApproveIcon extends StatelessWidget {
   const ApproveIcon({super.key});
@@ -9,7 +9,7 @@ class ApproveIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       const Icon(Icons.check, color: Colors.green),
-      gaps.VerticalGap.iconToText,
+      VerticalGap.s,
       Text(S.of(context).approve)
     ]);
   }
@@ -22,7 +22,7 @@ class SaveIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       const Icon(Icons.check, color: Colors.green),
-      gaps.VerticalGap.iconToText,
+      VerticalGap.s,
       Text(S.of(context).save)
     ]);
   }
@@ -38,7 +38,7 @@ class CancelIcon extends StatelessWidget {
         Icons.close,
         color: Colors.red,
       ),
-      gaps.VerticalGap.iconToText,
+      VerticalGap.s,
       Text(S.of(context).cancel),
     ]);
   }
@@ -52,7 +52,7 @@ class DeleteIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.delete, color: Colors.blueAccent),
-        gaps.VerticalGap.iconToText,
+        VerticalGap.s,
         Text(S.of(context).delete),
       ],
     );
@@ -67,7 +67,7 @@ class AddIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.add, color: Colors.white),
-        gaps.VerticalGap.iconToText,
+        VerticalGap.s,
         Text(S.of(context).add),
       ],
     );
@@ -82,7 +82,7 @@ class SearchIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.search, color: Colors.red),
-        gaps.VerticalGap.iconToText,
+        VerticalGap.s,
         Text(S.of(context).search),
       ],
     );
@@ -97,7 +97,7 @@ class ReportsIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.report, color: Colors.red),
-        gaps.VerticalGap.iconToText,
+        VerticalGap.s,
         Text(S.of(context).reports),
       ],
     );
@@ -112,7 +112,7 @@ class AddImageIcon extends StatelessWidget {
     return Column(
       children: [
         const Icon(Icons.image),
-        gaps.VerticalGap.iconToText,
+        VerticalGap.s,
         Text(S.of(context).add),
       ],
     );

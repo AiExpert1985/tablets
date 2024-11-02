@@ -5,7 +5,7 @@ import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
-import 'package:tablets/src/common/values/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
@@ -28,7 +28,7 @@ class CustomerForm extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ImageSlider(imageUrls: formDataNotifier.data['imageUrls']),
-          gaps.VerticalGap.formImageToFields,
+          VerticalGap.l,
           const CustomerFormFields(),
         ],
       ),
@@ -52,8 +52,8 @@ class CustomerForm extends ConsumerWidget {
           visible: isEditMode,
           child: IconButton(
               onPressed: () async {
-                bool? confiramtion =
-                    await showDeleteConfirmationDialog(context: context, message: formDataNotifier.data['name']);
+                bool? confiramtion = await showDeleteConfirmationDialog(
+                    context: context, message: formDataNotifier.data['name']);
                 if (confiramtion != null) {
                   final updateFormData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();

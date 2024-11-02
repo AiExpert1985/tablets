@@ -35,7 +35,9 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     if (state.containsKey(fieldName) && state[fieldName] is List<TextEditingController>) {
       final list = state[fieldName] as List<TextEditingController>;
       if (index >= 0 && index < list.length) {
+        TextEditingController controller = list[index];
         list.removeAt(index);
+        controller.dispose();
         state = {
           ...state,
           fieldName: list,

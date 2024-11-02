@@ -5,7 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/features/products/controllers/product_filter_data_provider.dart';
-import 'package:tablets/src/common/values/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/list_filters.dart' as filters;
 import 'package:tablets/src/features/products/controllers/product_filter_controller_provider.dart';
@@ -28,21 +28,21 @@ class ProductSearchForm extends ConsumerWidget {
             name: 'code',
             displayedTitle: S.of(context).product_code,
           ),
-          gaps.VerticalGap.formFieldToField,
+          VerticalGap.m,
           GeneralSearchField(
             filterCriteria: filters.FilterCriteria.contains.name,
             dataType: filters.DataTypes.string.name,
             name: 'name',
             displayedTitle: S.of(context).product_name,
           ),
-          gaps.VerticalGap.formFieldToField,
+          VerticalGap.m,
           GeneralSearchField(
             filterCriteria: filters.FilterCriteria.contains.name,
             dataType: filters.DataTypes.string.name,
             name: 'category',
             displayedTitle: S.of(context).product_category,
           ),
-          gaps.VerticalGap.sideDrawerfieldsToButtons,
+          VerticalGap.l,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

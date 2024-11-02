@@ -9,7 +9,7 @@ import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
-import 'package:tablets/src/common/values/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
@@ -33,28 +33,28 @@ class CustomerInvoiceForm extends ConsumerWidget {
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          buildFormTitle(S.of(context).transaction_type_customer_invoice),
-          gaps.VerticalGap.formFieldToField,
-          _buildFirstRow(context, formDataNotifier, customerRepository, salesmanRepository),
-          gaps.VerticalGap.formFieldToField,
-          _buildSecondRow(context, formDataNotifier),
-          gaps.VerticalGap.formFieldToField,
-          _buildThirdRow(context, formDataNotifier),
-          gaps.VerticalGap.formFieldToField,
-          _buildForthRow(context, formDataNotifier),
-          gaps.VerticalGap.formFieldToField,
-          _buildFifthRow(context, formDataNotifier),
-          gaps.VerticalGap.formFieldToField,
-          buildItemList(context, formDataNotifier, textEditingNotifier, productRepository),
-          gaps.VerticalGap.formFieldToField,
-          gaps.VerticalGap.formFieldToField,
-          gaps.VerticalGap.formFieldToField,
-          gaps.VerticalGap.formFieldToField,
-          _buildTotalsRow(context, formDataNotifier, textEditingNotifier),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 18),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            buildFormTitle(S.of(context).transaction_type_customer_invoice),
+            VerticalGap.xl,
+            _buildFirstRow(context, formDataNotifier, customerRepository, salesmanRepository),
+            VerticalGap.m,
+            _buildSecondRow(context, formDataNotifier),
+            VerticalGap.m,
+            _buildThirdRow(context, formDataNotifier),
+            VerticalGap.m,
+            _buildForthRow(context, formDataNotifier),
+            VerticalGap.m,
+            _buildFifthRow(context, formDataNotifier),
+            VerticalGap.m,
+            buildItemList(context, formDataNotifier, textEditingNotifier, productRepository),
+            VerticalGap.xxl,
+            _buildTotalsRow(context, formDataNotifier, textEditingNotifier),
+          ],
+        ),
       ),
     );
   }
@@ -74,7 +74,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             });
           },
         ),
-        gaps.HorizontalGap.formFieldToField,
+        HorizontalGap.l,
         DropDownWithSearchFormField(
           label: S.of(context).transaction_salesman,
           initialValue: formDataNotifier.getProperty(salesmanKey),
@@ -102,7 +102,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             formDataNotifier.updateProperties({currencyKey: value});
           },
         ),
-        gaps.HorizontalGap.formFieldToField,
+        HorizontalGap.l,
         FormInputField(
           initialValue: formDataNotifier.getProperty(discountKey),
           name: discountKey,
@@ -128,7 +128,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             formDataNotifier.updateProperties({numberKey: value});
           },
         ),
-        gaps.HorizontalGap.formFieldToField,
+        HorizontalGap.l,
         DropDownListFormField(
           initialValue: formDataNotifier.getProperty(paymentTypeKey),
           itemList: [
@@ -141,7 +141,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             formDataNotifier.updateProperties({paymentTypeKey: value});
           },
         ),
-        gaps.HorizontalGap.formFieldToField,
+        HorizontalGap.l,
         FormDatePickerField(
           initialValue: formDataNotifier.getProperty(dateKey) is Timestamp
               ? formDataNotifier.getProperty(dateKey).toDate()
@@ -210,7 +210,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
                 formDataNotifier.updateProperties({totalAmountKey: value});
               },
             ),
-            gaps.HorizontalGap.formFieldToField,
+            HorizontalGap.l,
             FormInputField(
               controller: textEditingNotifier.data[totalWeightKey],
               isReadOnly: true,

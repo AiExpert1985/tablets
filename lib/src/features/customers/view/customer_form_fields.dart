@@ -27,7 +27,7 @@ class CustomerFormFields extends ConsumerWidget {
             name: 'name',
             label: S.of(context).salesman_name,
           ),
-          VerticalGap.formFieldToField,
+          VerticalGap.m,
           DropDownWithSearchFormField(
             initialValue: formDataNotifier.getProperty('salesman'),
             dbRepository: repository,

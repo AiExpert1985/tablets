@@ -5,7 +5,7 @@ import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dar
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/common/values/gaps.dart' as gaps;
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 
 class ProductFormFields extends ConsumerWidget {
@@ -28,7 +28,7 @@ class ProductFormFields extends ConsumerWidget {
                 formDataNotifier.updateProperties({'code': value});
               },
             ),
-            gaps.HorizontalGap.formFieldToField,
+            HorizontalGap.l,
             FormInputField(
               dataType: FieldDataType.string,
               name: 'name',
@@ -38,7 +38,7 @@ class ProductFormFields extends ConsumerWidget {
                 formDataNotifier.updateProperties({'name': value});
               },
             ),
-            gaps.HorizontalGap.formFieldToField,
+            HorizontalGap.l,
             DropDownWithSearchFormField(
               label: S.of(context).category_selection,
               initialValue: formDataNotifier.getProperty('category'),
@@ -49,7 +49,7 @@ class ProductFormFields extends ConsumerWidget {
             ),
           ],
         ),
-        gaps.VerticalGap.formFieldToField,
+        VerticalGap.m,
         Row(
           children: [
             FormInputField(
@@ -61,7 +61,7 @@ class ProductFormFields extends ConsumerWidget {
                 formDataNotifier.updateProperties({'sellRetailPrice': value});
               },
             ),
-            gaps.HorizontalGap.formFieldToField,
+            HorizontalGap.l,
             FormInputField(
               dataType: FieldDataType.num,
               name: 'sellWholePrice',
@@ -71,7 +71,7 @@ class ProductFormFields extends ConsumerWidget {
                 formDataNotifier.updateProperties({'sellWholePrice': value});
               },
             ),
-            gaps.HorizontalGap.formFieldToField,
+            HorizontalGap.l,
             FormInputField(
               dataType: FieldDataType.num,
               name: 'salesmanComission',
@@ -83,7 +83,7 @@ class ProductFormFields extends ConsumerWidget {
             ),
           ],
         ),
-        gaps.VerticalGap.formFieldToField,
+        VerticalGap.m,
         Row(
           children: [
             FormInputField(
@@ -95,7 +95,7 @@ class ProductFormFields extends ConsumerWidget {
                 formDataNotifier.updateProperties({'initialQuantity': value});
               },
             ),
-            gaps.HorizontalGap.formFieldToField,
+            HorizontalGap.l,
             FormInputField(
               dataType: FieldDataType.num,
               name: 'altertWhenLessThan',
@@ -105,7 +105,7 @@ class ProductFormFields extends ConsumerWidget {
                 formDataNotifier.updateProperties({'altertWhenLessThan': value});
               },
             ),
-            gaps.HorizontalGap.formFieldToField,
+            HorizontalGap.l,
             FormInputField(
               dataType: FieldDataType.num,
               name: 'alertWhenExceeds',
@@ -117,7 +117,7 @@ class ProductFormFields extends ConsumerWidget {
             ),
           ],
         ),
-        gaps.VerticalGap.formFieldToField,
+        VerticalGap.m,
         Row(
           children: [
             FormInputField(
@@ -129,7 +129,7 @@ class ProductFormFields extends ConsumerWidget {
                 formDataNotifier.updateProperties({'packageType': value});
               },
             ),
-            gaps.HorizontalGap.formFieldToField,
+            HorizontalGap.l,
             FormInputField(
               dataType: FieldDataType.num,
               name: 'packageWeight',
@@ -139,7 +139,7 @@ class ProductFormFields extends ConsumerWidget {
                 formDataNotifier.updateProperties({'packageWeight': value});
               },
             ),
-            gaps.HorizontalGap.formFieldToField,
+            HorizontalGap.l,
             FormInputField(
               dataType: FieldDataType.num,
               name: 'numItemsInsidePackage',
