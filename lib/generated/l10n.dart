@@ -781,9 +781,19 @@ class S {
   }
 
   /// `Transaction type`
-  String get transaction_name {
+  String get transaction_type {
     return Intl.message(
       'Transaction type',
+      name: 'transaction_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get transaction_name {
+    return Intl.message(
+      'Name',
       name: 'transaction_name',
       desc: '',
       args: [],
@@ -1225,6 +1235,26 @@ class S {
     return Intl.message(
       'Yes',
       name: 'approve',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amount`
+  String get amount {
+    return Intl.message(
+      'Amount',
+      name: 'amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Number`
+  String get number {
+    return Intl.message(
+      'Number',
+      name: 'number',
       desc: '',
       args: [],
     );

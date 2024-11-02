@@ -30,6 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("اضافة مستخدم جديد"),
         "alert_before_delete":
             MessageLookupByLibrary.simpleMessage("هل ترغب بحذف"),
+        "amount": MessageLookupByLibrary.simpleMessage("المبلغ"),
         "approve": MessageLookupByLibrary.simpleMessage("موافق"),
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),
@@ -107,6 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
+        "number": MessageLookupByLibrary.simpleMessage("الرقم"),
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
@@ -172,7 +174,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("العدد"),
         "transaction_item_total_price":
             MessageLookupByLibrary.simpleMessage("السعر الكلي"),
-        "transaction_name": MessageLookupByLibrary.simpleMessage("نوع القائمة"),
+        "transaction_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "transaction_notes": MessageLookupByLibrary.simpleMessage("الملاحظات"),
         "transaction_number":
             MessageLookupByLibrary.simpleMessage("رقم القائمة"),
@@ -189,6 +191,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_salesman": MessageLookupByLibrary.simpleMessage("المندوب"),
         "transaction_total_amount_as_text":
             MessageLookupByLibrary.simpleMessage("المبلغ كتابة"),
+        "transaction_type": MessageLookupByLibrary.simpleMessage("نوع التعامل"),
         "transaction_type_customer_invoice":
             MessageLookupByLibrary.simpleMessage("قائمة زبون"),
         "transaction_type_customer_receipt":

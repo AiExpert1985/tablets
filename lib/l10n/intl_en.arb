@@ -72,7 +72,8 @@
     "db_error_deleting_doc": "An error happened while deleting from db",
     "db_error_downloading_files": "An error happened while downloading files from database",
     "alert_before_delete": "Do you want to delete",
-    "transaction_name": "Transaction type",
+    "transaction_type": "Transaction type",
+    "transaction_name": "Name",
     "transaction_date": "Date",
     "transaction_number": "Number",
     "transaction_amount": "Amount",
@@ -116,5 +117,7 @@
     "invoice_total_price": "Total price",
     "invoice_total_weight": "Total weight",
     "transaction_total_amount_as_text": "Total as text",
-    "approve": "Yes"
+    "approve": "Yes",
+    "amount": "Amount",
+    "number": "Number"
 }

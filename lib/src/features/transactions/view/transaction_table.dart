@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
-import 'package:data_table_2/data_table_2.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_filter_controller_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_filtered_list_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
@@ -16,8 +16,8 @@ import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/view/common/transaction_show_form_utils.dart';
 
-class TransactionsTable extends ConsumerWidget {
-  const TransactionsTable({super.key});
+class TransactionsList extends ConsumerWidget {
+  const TransactionsList({super.key});
 
   String formatDate(DateTime date) => DateFormat('yyyy/MM/dd').format(date);
 
@@ -31,90 +31,120 @@ class TransactionsTable extends ConsumerWidget {
     final transactionsListValue = filterIsOn
         ? ref.read(transactionFilteredListProvider).getFilteredList()
         : transactionStream;
+
     return AsyncValueWidget<List<Map<String, dynamic>>>(
-        value: transactionsListValue,
-        data: (transactions) {
-          List<DataRow2> rows = transactions.map((map) {
-            Transaction transaction = Transaction.fromMap(map);
-            // item contains the name used in database, but I want to show to the user a different name
-            final screenName =
-                transactionTypeDbNameToScreenName(context: context, dbName: transaction.name);
-            return DataRow2(
-              cells: [
-                DataCell(Row(
-                  children: [
-                    InkWell(
-                      child: const CircleAvatar(
-                        radius: 15,
-                        foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
-                      ),
-                      onTap: () => TransactionShowFormUtils.showForm(
-                        context,
-                        imagePickerNotifier,
-                        formDataNotifier,
-                        textFieldNotifier,
-                        formType: TransactionType.customerInvoice.name,
-                        transaction: transaction,
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    Text(screenName),
-                  ],
-                )),
-                DataCell(Text(formatDate(transaction.date))),
-                DataCell(Text(transaction.number.toString())),
-                DataCell(Text(transaction.totalAmount.toString())),
-              ],
-            );
-          }).toList();
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: DataTable2(
-              columnSpacing: 12,
-              horizontalMargin: 12,
-              minWidth: 400,
-              columns: [
-                DataColumn2(
-                  label: Row(
-                    children: [
-                      const SizedBox(width: 50),
-                      ColumnTitleText(S.of(context).transaction_name),
-                    ],
-                  ),
-                  size: ColumnSize.S,
+      value: transactionsListValue,
+      data: (transactions) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _buildHeaderRow(context),
+              const SizedBox(height: 19),
+              _buildHorizontalLine(), // Add some space between header and data
+              Expanded(
+                child: ListView.builder(
+                  itemCount: transactions.length,
+                  itemBuilder: (context, index) {
+                    final transaction = Transaction.fromMap(transactions[index]);
+                    return _buildTransactionRow(transaction, context, imagePickerNotifier,
+                        formDataNotifier, textFieldNotifier);
+                  },
                 ),
-                DataColumn2(
-                  label: ColumnTitleText(S.of(context).transaction_date),
-                  size: ColumnSize.S,
-                ),
-                DataColumn2(
-                  label: ColumnTitleText(S.of(context).transaction_number),
-                  size: ColumnSize.S,
-                ),
-                DataColumn2(
-                  label: ColumnTitleText(S.of(context).transaction_amount),
-                  size: ColumnSize.S,
-                ),
-              ],
-              rows: rows,
-            ),
-          );
-        });
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
-}
 
-class ColumnTitleText extends StatelessWidget {
-  const ColumnTitleText(this.title, {super.key});
-  final String title;
+  Widget _buildHeaderRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(child: _buildHeader(S.of(context).transaction_type)),
+        Expanded(child: _buildHeader(S.of(context).transaction_date)),
+        Expanded(child: _buildHeader(S.of(context).transaction_name)),
+        Expanded(child: _buildHeader(S.of(context).transaction_number)),
+        Expanded(child: _buildHeader(S.of(context).transaction_amount)),
+      ],
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildTransactionRow(
+      Transaction transaction,
+      BuildContext context,
+      ImageSliderNotifier imagePickerNotifier,
+      ItemFormData formDataNotifier,
+      TextControllerNotifier textFieldNotifier) {
+    final transactionTypeScreenName =
+        transactionTypeDbNameToScreenName(context: context, dbName: transaction.transactionType);
+
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: InkWell(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const CircleAvatar(
+                      radius: 15,
+                      foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(transactionTypeScreenName),
+                  ],
+                ),
+                onTap: () => TransactionShowFormUtils.showForm(
+                  context,
+                  imagePickerNotifier,
+                  formDataNotifier,
+                  textFieldNotifier,
+                  formType: TransactionType.customerInvoice.name,
+                  transaction: transaction,
+                ),
+              ),
+            ),
+            Expanded(child: _buildDataCell(formatDate(transaction.date))),
+            Expanded(child: _buildDataCell(transaction.name)),
+            Expanded(child: _buildDataCell(transaction.number.toString())),
+            Expanded(child: _buildDataCell(transaction.totalAmount.toString())),
+          ],
+        ),
+        const SizedBox(height: 4), // Space between row and divider
+        _buildHorizontalLine()
+      ],
+    );
+  }
+
+  Widget _buildDataCell(String text) {
     return Text(
-      title,
+      text,
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontSize: 16),
+    );
+  }
+
+  Widget _buildHeader(String text) {
+    return Text(
+      text,
+      textAlign: TextAlign.center,
       style: const TextStyle(
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: FontWeight.bold,
       ),
+    );
+  }
+
+  Widget _buildHorizontalLine() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      height: 1, // Height of the divider
+      color: Colors.grey[300], // Light gray color
     );
   }
 }

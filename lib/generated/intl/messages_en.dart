@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_new_user": MessageLookupByLibrary.simpleMessage("Add a new user"),
         "alert_before_delete":
             MessageLookupByLibrary.simpleMessage("Do you want to delete"),
+        "amount": MessageLookupByLibrary.simpleMessage("Amount"),
         "approve": MessageLookupByLibrary.simpleMessage("Yes"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "categories": MessageLookupByLibrary.simpleMessage("Categories"),
@@ -109,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "number": MessageLookupByLibrary.simpleMessage("Number"),
         "page_not_found":
             MessageLookupByLibrary.simpleMessage("Page is not found"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
@@ -175,8 +177,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Quantity"),
         "transaction_item_total_price":
             MessageLookupByLibrary.simpleMessage("Total price"),
-        "transaction_name":
-            MessageLookupByLibrary.simpleMessage("Transaction type"),
+        "transaction_name": MessageLookupByLibrary.simpleMessage("Name"),
         "transaction_notes": MessageLookupByLibrary.simpleMessage("Notes"),
         "transaction_number": MessageLookupByLibrary.simpleMessage("Number"),
         "transaction_payment_Dinar":
@@ -193,6 +194,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Salesman"),
         "transaction_total_amount_as_text":
             MessageLookupByLibrary.simpleMessage("Total as text"),
+        "transaction_type":
+            MessageLookupByLibrary.simpleMessage("Transaction type"),
         "transaction_type_customer_invoice":
             MessageLookupByLibrary.simpleMessage("CustomerInvoice"),
         "transaction_type_customer_receipt":

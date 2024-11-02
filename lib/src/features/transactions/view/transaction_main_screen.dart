@@ -11,7 +11,7 @@ class TransactionsScreen extends ConsumerWidget {
     return const AppScreenFrame(
       screenBody: Stack(
         children: [
-          TransactionsTable(),
+          TransactionsList(),
           Positioned(
             bottom: 0,
             left: 0,

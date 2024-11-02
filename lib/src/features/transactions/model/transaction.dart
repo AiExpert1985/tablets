@@ -25,7 +25,7 @@ class Transaction implements BaseItem {
   DateTime date;
   String currency; // $ or ID
   String? notes;
-  String? transactionType; // name of customer
+  String transactionType; // name of customer
   String? paymentType; // cash, debt
   String? salesman; // dbKey of salesman
   List<Map<String, dynamic>>? items;
