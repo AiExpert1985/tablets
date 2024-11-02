@@ -20,8 +20,8 @@ class ItemFormController {
         isEditMode ? await _repository.updateItem(item) : await _repository.addItem(item);
     if (!context.mounted) return; // just for protection in async functions
     success
-        ? toast.success(context: context, message: S.of(context).db_success_saving_doc)
-        : toast.failure(context: context, message: S.of(context).db_error_saving_doc);
+        ? toast.success(context, S.of(context).db_success_saving_doc)
+        : toast.failure(context, S.of(context).db_error_saving_doc);
     _closeForm(context);
   }
 
@@ -29,8 +29,8 @@ class ItemFormController {
     final successful = await _repository.deleteItem(item);
     if (!context.mounted) return;
     successful
-        ? toast.success(context: context, message: S.of(context).db_success_deleting_doc)
-        : toast.failure(context: context, message: S.of(context).db_error_deleting_doc);
+        ? toast.success(context, S.of(context).db_success_deleting_doc)
+        : toast.failure(context, S.of(context).db_error_deleting_doc);
     _closeForm(context);
   }
 

@@ -19,8 +19,6 @@ import 'package:tablets/src/features/transactions/view/common/transaction_show_f
 class TransactionsList extends ConsumerWidget {
   const TransactionsList({super.key});
 
-  String formatDate(DateTime date) => DateFormat('yyyy/MM/dd').format(date);
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textFieldNotifier = ref.read(textFieldsControllerProvider.notifier);
@@ -79,7 +77,7 @@ class TransactionsList extends ConsumerWidget {
       ItemFormData formDataNotifier,
       TextControllerNotifier textFieldNotifier) {
     final transactionTypeScreenName =
-        transactionTypeDbNameToScreenName(context: context, dbName: transaction.transactionType);
+        transactionTypeDbNameToScreenName(context, transaction.transactionType);
 
     return Column(
       children: [
@@ -147,4 +145,6 @@ class TransactionsList extends ConsumerWidget {
       color: Colors.grey[300], // Light gray color
     );
   }
+
+  String formatDate(DateTime date) => DateFormat('yyyy/MM/dd').format(date);
 }

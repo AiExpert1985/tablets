@@ -9,6 +9,11 @@ import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
 class TransactionShowFormUtils {
+  static const String itemsKey = 'items';
+  static const String priceKey = 'price';
+  static const String totalWeightKey = 'totalWeight';
+  static const String totalAmountKey = 'totalAmount';
+
   static void initializeFormData(
       BuildContext context, ItemFormData formDataNotifier, String transactionType,
       {Transaction? transaction}) {
@@ -30,16 +35,19 @@ class TransactionShowFormUtils {
     // for below text field we need to add  controllers because the are updated by other fields
     // for example total price it updated by the item prices
     if (transaction != null) {
-      textFieldNotifier.addController('totalAmount',
-          value: formDataNotifier.getProperty('totalAmount'));
-      textFieldNotifier.addController('totalWeight',
-          value: formDataNotifier.getProperty('totalWeight'));
-      List items = formDataNotifier.data['items'];
-      for (var i = 0; i < items.length; i++) {}
+      textFieldNotifier.addController(totalAmountKey,
+          value: formDataNotifier.getProperty(totalAmountKey));
+      textFieldNotifier.addController(totalWeightKey,
+          value: formDataNotifier.getProperty(totalWeightKey));
+      List items = formDataNotifier.data[itemsKey];
+      for (var i = 0; i < items.length; i++) {
+        textFieldNotifier.addControllerToList(itemsKey,
+            value: formDataNotifier.getSubProperty(itemsKey, i, priceKey));
+      }
       return;
     }
-    textFieldNotifier.addController('totalAmount');
-    textFieldNotifier.addController('totalWeight');
+    textFieldNotifier.addController(totalAmountKey);
+    textFieldNotifier.addController(totalWeightKey);
   }
 
   static void showForm(

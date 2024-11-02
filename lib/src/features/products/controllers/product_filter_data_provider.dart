@@ -9,13 +9,7 @@ class ProductFiltersNotifier extends StateNotifier<Map<String, Map<String, dynam
     required dynamic value,
     required String filterCriteria,
   }) {
-    state = filter_fn.updateFilters(
-      filters: state,
-      dataType: dataType,
-      key: key,
-      value: value,
-      filterCriteria: filterCriteria,
-    );
+    state = filter_fn.updateFilters(state, dataType, key, value, filterCriteria);
   }
 
   void reset() => state = {};

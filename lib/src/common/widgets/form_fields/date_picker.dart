@@ -39,10 +39,7 @@ class FormDatePickerField extends StatelessWidget {
 
   String? _validateDate(DateTime? value, BuildContext context) {
     return isRequired
-        ? validateDatePicker(
-            fieldValue: value,
-            errorMessage: S.of(context).input_validation_error_message_for_date,
-          )
+        ? validateDatePicker(value, S.of(context).input_validation_error_message_for_date)
         : null;
   }
 }

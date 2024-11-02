@@ -41,13 +41,12 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   }
 
   /// checks whether state contains the mentioned property
-  bool isValidProperty({required String property}) {
+  bool isValidProperty(String property) {
     return state.containsKey(property);
   }
 
   /// checks whether state contains the mentioned subProperty
-  bool isValidSubProperty(
-      {required String property, required int index, required String subProperty}) {
+  bool isValidSubProperty(String property, int index, String subProperty) {
     if (!state.containsKey(property)) return false;
     if (state[property] is! List<Map<String, dynamic>>) return false;
     if (index < 0 && index > state[property].length) return false;
@@ -56,15 +55,14 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   }
 
   // usually this is used for initialValue for form fields, which takes either a value or null
-  dynamic getProperty(property) {
+  dynamic getProperty(String property) {
     if (!state.containsKey(property)) return;
     return state[property];
   }
 
   // usually this is used for initialValue for form fields, which takes either a value or null
-  dynamic getSubProperty(
-      {required String property, required int index, required String subProperty}) {
-    if (!isValidSubProperty(property: property, index: index, subProperty: subProperty)) return;
+  dynamic getSubProperty(String property, int index, String subProperty) {
+    if (!isValidSubProperty(property, index, subProperty)) return;
     return state[property][index][subProperty];
   }
 

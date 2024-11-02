@@ -10,7 +10,7 @@ class CustomerFilteredList {
   AsyncValue<List<Map<String, dynamic>>> getFilteredList() {
     final filters = _ref.read(customerFiltersProvider);
     final listValue = _ref.read(customerStreamProvider);
-    final filteredList = filter_fn.applyListFilter(filters: filters, listValue: listValue);
+    final filteredList = filter_fn.applyListFilter(listValue, filters);
     return filteredList;
   }
 }
@@ -27,13 +27,7 @@ class CustomerFiltersNotifier extends StateNotifier<Map<String, Map<String, dyna
     required dynamic value,
     required String filterCriteria,
   }) {
-    state = filter_fn.updateFilters(
-      filters: state,
-      dataType: dataType,
-      key: key,
-      value: value,
-      filterCriteria: filterCriteria,
-    );
+    state = filter_fn.updateFilters(state, dataType, key, value, filterCriteria);
   }
 
   void reset() => state = {};

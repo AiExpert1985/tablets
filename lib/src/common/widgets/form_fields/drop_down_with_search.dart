@@ -62,9 +62,7 @@ class DropDownWithSearchFormField extends ConsumerWidget {
         ),
         validator: (item) => isRequired
             ? validation.validateTextField(
-                fieldValue: item?['name'],
-                errorMessage: S.of(context).input_validation_error_message_for_text,
-              )
+                item?['name'], S.of(context).input_validation_error_message_for_text)
             : null,
         itemAsString: (item) {
           return item['name'];

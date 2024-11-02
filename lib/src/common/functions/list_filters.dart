@@ -7,13 +7,13 @@ enum DataTypes { int, double, string }
 
 /// add filter to filtersMap
 /// if value is empty, then the filter is removed from filtersMap
-Map<String, Map<String, dynamic>> updateFilters({
-  required Map<String, Map<String, dynamic>> filters,
-  required String dataType,
-  required String key,
-  required dynamic value,
-  required String filterCriteria,
-}) {
+Map<String, Map<String, dynamic>> updateFilters(
+  Map<String, Map<String, dynamic>> filters,
+  String dataType,
+  String key,
+  dynamic value,
+  String filterCriteria,
+) {
   if (value == null || value.isEmpty) {
     filters.remove(key);
     return filters;
@@ -30,10 +30,10 @@ Map<String, Map<String, dynamic>> updateFilters({
 }
 
 /// filters should have these keys {'xxx':{'criteria': xxx, 'value': xxx}}
-AsyncValue<List<Map<String, dynamic>>> applyListFilter({
-  required AsyncValue<List<Map<String, dynamic>>> listValue,
-  required Map<String, Map<String, dynamic>> filters,
-}) {
+AsyncValue<List<Map<String, dynamic>>> applyListFilter(
+  AsyncValue<List<Map<String, dynamic>>> listValue,
+  Map<String, Map<String, dynamic>> filters,
+) {
   List<Map<String, dynamic>> filteredList = utils.convertAsyncValueListToList(listValue);
   filters.forEach((key, filter) {
     String criteria = filter['criteria'];

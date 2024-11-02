@@ -10,7 +10,7 @@ class SalesmanFilteredList {
   AsyncValue<List<Map<String, dynamic>>> getFilteredList() {
     final filters = _ref.read(salesmanFiltersProvider);
     final listValue = _ref.read(salesmanStreamProvider);
-    final filteredList = filter_fn.applyListFilter(filters: filters, listValue: listValue);
+    final filteredList = filter_fn.applyListFilter(listValue, filters);
     return filteredList;
   }
 }
@@ -28,11 +28,11 @@ class SalesmanFiltersNotifier extends StateNotifier<Map<String, Map<String, dyna
     required String filterCriteria,
   }) {
     state = filter_fn.updateFilters(
-      filters: state,
-      dataType: dataType,
-      key: key,
-      value: value,
-      filterCriteria: filterCriteria,
+      state,
+      dataType,
+      key,
+      value,
+      filterCriteria,
     );
   }
 

@@ -66,7 +66,7 @@ List<Map<String, dynamic>> convertAsyncValueListToList(
       });
 }
 
-String transactionTypeDbNameToScreenName({required BuildContext context, required String dbName}) {
+String transactionTypeDbNameToScreenName(BuildContext context, String dbName) {
   final Map<String, String> trasactionTypeLookup = {
     TransactionType.expenditures.name: S.of(context).transaction_type_expenditures,
     TransactionType.gifts.name: S.of(context).transaction_type_gifts,
@@ -80,8 +80,7 @@ String transactionTypeDbNameToScreenName({required BuildContext context, require
   return trasactionTypeLookup[dbName] ?? dbName;
 }
 
-String transactionTypeScreenNameToDbName(
-    {required BuildContext context, required String screenName}) {
+String transactionTypeScreenNameToDbName(BuildContext context, String screenName) {
   final Map<String, String> trasactionTypeLookup = {
     S.of(context).transaction_type_expenditures: TransactionType.expenditures.name,
     S.of(context).transaction_type_gifts: TransactionType.gifts.name,

@@ -74,15 +74,11 @@ class FormInputField extends ConsumerWidget {
     return (value) {
       if (dataType == FieldDataType.string) {
         return validation.validateTextField(
-          fieldValue: value,
-          errorMessage: S.of(context).input_validation_error_message_for_text,
-        );
+            value, S.of(context).input_validation_error_message_for_text);
       }
       if (dataType == FieldDataType.num) {
         return validation.validateNumberField(
-          fieldValue: value,
-          errorMessage: S.of(context).input_validation_error_message_for_numbers,
-        );
+            value, S.of(context).input_validation_error_message_for_numbers);
       }
       return null;
     };

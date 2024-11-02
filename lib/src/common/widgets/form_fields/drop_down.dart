@@ -30,9 +30,7 @@ class DropDownListFormField extends StatelessWidget {
           decoration: utils.formFieldDecoration(label: label, hideBorders: hideBorders),
           validator: isRequired
               ? (value) => validateTextField(
-                    fieldValue: value.toString(),
-                    errorMessage: S.of(context).input_validation_error_message_for_text,
-                  )
+                  value.toString(), S.of(context).input_validation_error_message_for_text)
               : null,
           onChanged: onChangedFn,
           name: name,

@@ -10,11 +10,11 @@ class TransactionFiltersNotifier extends StateNotifier<Map<String, Map<String, d
     required String filterCriteria,
   }) {
     state = filter_fn.updateFilters(
-      filters: state,
-      dataType: dataType,
-      key: key,
-      value: value,
-      filterCriteria: filterCriteria,
+      state,
+      dataType,
+      key,
+      value,
+      filterCriteria,
     );
   }
 

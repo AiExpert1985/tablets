@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 
-void success({required BuildContext context, required String message}) =>
-    _message(context: context, message: message, type: ToastificationType.success);
+void success(BuildContext context, String message) =>
+    _message(context, message, ToastificationType.success);
 
-void failure({required BuildContext context, required String message}) =>
-    _message(context: context, message: message, type: ToastificationType.error);
+void failure(BuildContext context, String message) =>
+    _message(context, message, ToastificationType.error);
 
-void info({required BuildContext context, required String message}) =>
-    _message(context: context, message: message, type: ToastificationType.info);
+void info(BuildContext context, String message) =>
+    _message(context, message, ToastificationType.info);
 
-void _message({required BuildContext context, required String message, required type}) {
+void _message(BuildContext context, String message, type) {
   toastification.show(
     context: context, // optional if you use ToastificationWrapper
     title: Text(message),

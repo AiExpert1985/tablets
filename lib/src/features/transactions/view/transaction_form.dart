@@ -71,10 +71,7 @@ class TransactionForm extends ConsumerWidget {
 
   Future<void> _onDeletePressed(BuildContext context, ItemFormData formDataNotifier,
       ImageSliderNotifier formImagesNotifier, ItemFormController formController) async {
-    final message = utils.transactionTypeDbNameToScreenName(
-      context: context,
-      dbName: formDataNotifier.data['name'],
-    );
+    final message = utils.transactionTypeDbNameToScreenName(context, formDataNotifier.data['name']);
     final confirmation = await showDeleteConfirmationDialog(context: context, message: message);
     if (confirmation != null) {
       final imageUrls = formImagesNotifier.saveChanges();

@@ -16,6 +16,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
 
   final int index;
 
+  static const String nameKey = 'name';
   static const String itemsKey = 'items';
   static const String weightKey = 'weight';
   static const String priceKey = 'price';
@@ -75,8 +76,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
     return ItemDataCell(
       width: CustomerInvoiceWidths.name,
       cell: DropDownWithSearchFormField(
-        initialValue:
-            formDataNotifier.getSubProperty(property: itemsKey, index: index, subProperty: 'name'),
+        initialValue: formDataNotifier.getSubProperty(itemsKey, index, 'name'),
         hideBorders: true,
         dbRepository: repository,
         onChangedFn: (item) {
@@ -93,7 +93,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
           textEditingController.data[itemsKey][index].text =
               formDataNotifier.data[itemsKey][index][priceKey].toString();
           _updateTotal(formDataNotifier, totalWeightKey, weightKey);
-          if (!formDataNotifier.isValidProperty(property: totalWeightKey)) {
+          if (!formDataNotifier.isValidProperty(totalWeightKey)) {
             errorPrint('formData[$totalWeightKey] is not valid');
             return;
           }
@@ -109,8 +109,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
     return ItemDataCell(
       width: CustomerInvoiceWidths.price,
       cell: FormInputField(
-        initialValue: formDataNotifier.getSubProperty(
-            property: itemsKey, index: index, subProperty: priceKey),
+        initialValue: formDataNotifier.getSubProperty(itemsKey, index, priceKey),
         controller: textEditingController.data[itemsKey][index],
         isRequired: false,
         hideBorders: true,
@@ -121,7 +120,7 @@ class CustomerInvoiceItemDataRow extends ConsumerWidget {
           // and the second is automatic when user selects and item through adjacent product selection dropdown
           formDataNotifier.updateSubProperties(itemsKey, {priceKey: value}, index: index);
           _updateTotal(formDataNotifier, totalAmountKey, priceKey);
-          if (!formDataNotifier.isValidProperty(property: totalAmountKey)) {
+          if (!formDataNotifier.isValidProperty(totalAmountKey)) {
             errorPrint('formData[$totalAmountKey] is not valid');
             return;
           }
