@@ -47,16 +47,9 @@ Widget buildItemList(BuildContext context, ItemFormData formDataNotifier,
           Stack(children: [
             _buildColumnTitles(context),
             Positioned(
-              top: 0,
-              right: 0,
-              child: IconButton(
-                onPressed: () {
-                  textEditingNotifier.addControllerToList(itemsKey);
-                  formDataNotifier.updateSubProperties(itemsKey, {});
-                },
-                icon: const Icon(Icons.add, color: Colors.green),
-              ),
-            ),
+                top: 0,
+                right: 0,
+                child: _buildAddItemButton(formDataNotifier, textEditingNotifier)),
           ]),
           ..._buildRows(formDataNotifier, textEditingNotifier, productRepository),
         ],
@@ -91,6 +84,17 @@ List<Widget> _buildRows(ItemFormData formDataNotifier, TextControllerNotifier te
       ],
     );
   });
+}
+
+Widget _buildAddItemButton(
+    ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
+  return IconButton(
+    onPressed: () {
+      textEditingNotifier.addControllerToList(itemsKey);
+      formDataNotifier.updateSubProperties(itemsKey, {});
+    },
+    icon: const Icon(Icons.add, color: Colors.green),
+  );
 }
 
 Widget _buildDeleteItemButton(
