@@ -41,24 +41,26 @@ class CustomerInvoiceItemList extends ConsumerWidget {
         borderRadius: BorderRadius.circular(8.0),
       ),
       padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          Stack(children: [
-            const CustomerInvoiceItemTitles(),
-            Positioned(
-              top: 0,
-              right: 30,
-              child: IconButton(
-                onPressed: () {
-                  textEditingNotifier.addControllerToList(itemsKey);
-                  formDataNotifier.updateSubProperties(itemsKey, {});
-                },
-                icon: const Icon(Icons.add, color: Colors.green),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(children: [
+              const CustomerInvoiceItemTitles(),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: IconButton(
+                  onPressed: () {
+                    textEditingNotifier.addControllerToList(itemsKey);
+                    formDataNotifier.updateSubProperties(itemsKey, {});
+                  },
+                  icon: const Icon(Icons.add, color: Colors.green),
+                ),
               ),
-            ),
-          ]),
-          ..._buildItemRows(formDataNotifier, textEditingNotifier.data),
-        ],
+            ]),
+            ..._buildItemRows(formDataNotifier, textEditingNotifier.data),
+          ],
+        ),
       ),
     );
   }

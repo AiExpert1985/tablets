@@ -40,8 +40,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
     final textEditingControllers = ref.read(textFieldsControllerProvider);
     ref.watch(transactionFormDataProvider);
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
