@@ -178,7 +178,7 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
   return buildDataCell(
     width,
     DropDownWithSearchFormField(
-      initialValue: formDataNotifier.getSubProperty(itemsKey, index, nameKey),
+      initialValue: formDataNotifier.getSubProperty(itemsKey, index, itemNameKey),
       hideBorders: true,
       dbRepository: repository,
       isRequired: false,
@@ -186,7 +186,7 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
         // updates related fields using the item selected (of type Map<String, dynamic>)
         // and triger the on changed function in price field using its controller
         final subProperties = {
-          nameKey: item['name'],
+          itemNameKey: item['name'],
           itemPriceKey: item['sellWholePrice'],
           itemWeightKey: item['packageWeight']
         };
@@ -215,12 +215,6 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
         // this method is executed throught two ways, first when the field is updated by the user
         // and the second is automatic when user selects and item through adjacent product selection dropdown
         formDataNotifier.updateSubProperties(property, {subProperty: value}, index: index);
-        // only updated related fields if one of these fields is updated
-        if (subProperty != itemPriceKey &&
-            subProperty != itemSoldQuantityKey &&
-            subProperty != nameKey) {
-          return;
-        }
         final price = formDataNotifier.getSubProperty(property, index, itemPriceKey);
         final weight = formDataNotifier.getSubProperty(property, index, itemWeightKey);
         final soldQuantity = formDataNotifier.getSubProperty(property, index, itemSoldQuantityKey);
