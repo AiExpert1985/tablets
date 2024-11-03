@@ -59,7 +59,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
 
   bool isValidController(String property) {
     if (!state.containsKey(property)) {
-      tempPrint('Invalid controller: state[$property] does not exist');
+      errorPrint('Invalid controller: state[$property] does not exist');
       return false;
     }
     return true;
@@ -67,20 +67,19 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
 
   bool isValidSubController(String property, int index, String subProperty) {
     if (!state.containsKey(property)) {
-      tempPrint('Invalid subController: state[$property] does not exist');
+      errorPrint('Invalid subController: state[$property] does not exist');
       return false;
     }
     if (state[property] is! List) {
-      tempPrint(state[property].runtimeType);
-      tempPrint('Invalid subController: state[$property] is not a list');
+      errorPrint('Invalid subController: state[$property] is not a list');
       return false;
     }
     if (index < 0 || index >= state[property].length) {
-      tempPrint('Invalid subController: state[$property][$index] is invalid');
+      errorPrint('Invalid subController: state[$property][$index] is invalid');
       return false;
     }
     if (state[property][index][subProperty] is! TextEditingController) {
-      tempPrint('Invalid subController: state[$property][$index][$subProperty] is not a TextEditingController');
+      errorPrint('Invalid subController: state[$property][$index][$subProperty] is not a TextEditingController');
       return false;
     }
     return true;

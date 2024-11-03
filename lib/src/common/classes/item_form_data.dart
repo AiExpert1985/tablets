@@ -45,7 +45,7 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   /// checks whether state contains the mentioned property
   bool isValidProperty(String property) {
     if (!state.containsKey(property)) {
-      tempPrint('Invalid formData: state[$property] does not exist');
+      errorPrint('Invalid formData: state[$property] does not exist');
       return false;
     }
     return true;
@@ -54,15 +54,15 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   /// checks whether state contains the mentioned subProperty
   bool isValidSubProperty(String property, int index, String subProperty) {
     if (!state.containsKey(property)) {
-      tempPrint('Invalid formData: state[$property] does not exist');
+      errorPrint('Invalid formData: state[$property] does not exist');
       return false;
     }
     if (state[property] is! List<Map<String, dynamic>>) {
-      tempPrint('Invalid formData: state[$property] is not a List<Map<String, dynamic>>');
+      errorPrint('Invalid formData: state[$property] is not a List<Map<String, dynamic>>');
       return false;
     }
     if (index < 0 || index >= state[property].length) {
-      tempPrint('Invalid formData: state[$property][$index] is invalid');
+      errorPrint('Invalid formData: state[$property][$index] is invalid');
       return false;
     }
     return true;

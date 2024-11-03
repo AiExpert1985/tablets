@@ -142,15 +142,12 @@ Widget _buildColumnTitles(
 }
 
 dynamic _getTotal(ItemFormData formDataNotifier, String property, String subProperty) {
-  tempPrint(2.1);
-  tempPrint('$property=>$subProperty');
   dynamic total = 0;
   if (!formDataNotifier.isValidProperty(property) ||
       formDataNotifier.getProperty(property) is! List<Map<String, dynamic>>) {
     errorPrint('form property provided is invalid');
     return total;
   }
-  tempPrint(2.2);
   final items = formDataNotifier.getProperty(property);
   for (var i = 0; i < items.length; i++) {
     if (!items[i].containsKey(subProperty)) {
@@ -164,7 +161,6 @@ dynamic _getTotal(ItemFormData formDataNotifier, String property, String subProp
     }
     total += value;
   }
-  tempPrint(2.4);
   return total;
 }
 
@@ -209,7 +205,6 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
       dataType: constants.FieldDataType.num,
       name: subProperty,
       onChangedFn: (value) {
-        tempPrint(subProperty);
         // this method is executed throught two ways, first when the field is updated by the user
         // and the second is automatic when user selects and item through adjacent product selection dropdown
         formDataNotifier.updateSubProperties(property, {subProperty: value}, index: index);
@@ -224,20 +219,9 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
         formDataNotifier.updateSubProperties(property, {itemTotalAmountKey: itemTotalAmount}, index: index);
         textEditingNotifier.updateSubControllerText(property, index, itemTotalAmountKey, itemTotalAmount);
         // update total amount of the transaction
-        tempPrint(121212);
-        tempPrint(formDataNotifier.getFormDataTypes());
-        tempPrint('');
-        tempPrint(formDataNotifier.data);
-        tempPrint('');
-        tempPrint(textEditingNotifier.data);
-        tempPrint('');
         final totalAmount = _getTotal(formDataNotifier, property, itemTotalAmountKey);
-        tempPrint(3);
         formDataNotifier.updateProperties({totalAmountKey: totalAmount});
-        tempPrint(4);
         textEditingNotifier.updateControllerText(totalAmountKey, totalAmount);
-        tempPrint(5);
-        tempPrint(textEditingNotifier.data);
       },
     ),
     isLast: isLast,
