@@ -163,7 +163,7 @@ dynamic _getTotal(ItemFormData formDataNotifier, String property, String subProp
     }
     final value = items[i][subProperty];
     if (value is! double && value is! int) {
-      errorPrint('$subProperty[$subProperty] is not a muber');
+      errorPrint('$subProperty[$subProperty] is not a nummber');
       continue;
     }
     total += value;
@@ -179,6 +179,7 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
       initialValue: formDataNotifier.getSubProperty(itemsKey, index, nameKey),
       hideBorders: true,
       dbRepository: repository,
+      isRequired: false,
       onChangedFn: (item) {
         // updates related fields using the item selected (of type Map<String, dynamic>)
         // note: totalPrice isn't updated here because it is updated by the price field
@@ -206,6 +207,7 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
       initialValue: formDataNotifier.getSubProperty(property, index, subProperty),
       controller: textEditingNotifier.getSubController(property, index, subProperty),
       hideBorders: true,
+      isRequired: false,
       isReadOnly: isReadOnly,
       dataType: constants.FieldDataType.num,
       name: subProperty,
