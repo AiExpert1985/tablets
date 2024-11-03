@@ -191,7 +191,7 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier, TextControllerNot
         formDataNotifier.updateSubProperties(itemsKey, subProperties, index: index);
         // (2) update the totalWeight of the form due to change in item weight
         final totalWeight = _getTotal(formDataNotifier, itemsKey, itemWeightKey);
-        formDataNotifier.updateProperties({totalAmountKey: totalWeight});
+        formDataNotifier.updateProperties({totalWeightKey: totalWeight});
         textEditingNotifier.updateControllerText(totalWeightKey, totalWeight);
         // (3) triger the update of price field using its controller
         final price = formDataNotifier.getSubProperty(itemsKey, index, itemPriceKey);
@@ -229,6 +229,7 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
         textEditingNotifier.updateSubControllerText(property, index, itemTotalAmountKey, itemTotalAmount);
         // update total amount of the transaction
         final totalAmount = _getTotal(formDataNotifier, property, itemTotalAmountKey);
+
         formDataNotifier.updateProperties({totalAmountKey: totalAmount});
         textEditingNotifier.updateControllerText(totalAmountKey, totalAmount);
       },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -38,12 +39,11 @@ class TransactionForm extends ConsumerWidget {
     );
   }
 
-  List<Widget> _actionButtons(BuildContext context, ItemFormController formController,
-      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier) {
+  List<Widget> _actionButtons(BuildContext context, ItemFormController formController, ItemFormData formDataNotifier,
+      ImageSliderNotifier formImagesNotifier) {
     return [
       IconButton(
-        onPressed: () =>
-            _onSavePressed(context, formController, formDataNotifier, formImagesNotifier),
+        onPressed: () => _onSavePressed(context, formController, formDataNotifier, formImagesNotifier),
         icon: const SaveIcon(),
       ),
       IconButton(
@@ -52,15 +52,14 @@ class TransactionForm extends ConsumerWidget {
       ),
       if (isEditMode)
         IconButton(
-          onPressed: () =>
-              _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController),
+          onPressed: () => _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController),
           icon: const DeleteIcon(),
         ),
     ];
   }
 
-  void _onSavePressed(BuildContext context, ItemFormController formController,
-      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier) {
+  void _onSavePressed(BuildContext context, ItemFormController formController, ItemFormData formDataNotifier,
+      ImageSliderNotifier formImagesNotifier) {
     if (!formController.validateData()) return;
     formController.submitData();
     final updateFormData = formDataNotifier.data;
