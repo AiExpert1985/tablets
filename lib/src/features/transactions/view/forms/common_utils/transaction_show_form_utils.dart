@@ -46,7 +46,7 @@ class TransactionShowFormUtils {
         itemPriceKey: price,
         itemSoldQuantityKey: soldQuantity,
         itemGiftQuantityKey: giftQuantity,
-        itemTotalAmountKey: price * soldQuantity,
+        itemTotalAmountKey: price != null && soldQuantity != null ? price * soldQuantity : null,
       });
       final totalAmount = formDataNotifier.getProperty(totalAmountKey);
       final totalWeight = formDataNotifier.getProperty(totalWeightKey);
