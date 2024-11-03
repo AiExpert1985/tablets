@@ -212,6 +212,7 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
       dataType: constants.FieldDataType.num,
       name: subProperty,
       onChangedFn: (value) {
+        tempPrint('I am triggered');
         // this method is executed throught two ways, first when the field is updated by the user
         // and the second is automatic when user selects and item through adjacent product selection dropdown
         formDataNotifier.updateSubProperties(property, {subProperty: value}, index: index);
@@ -221,6 +222,7 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
         if (soldQuantity == null || price == null) {
           return;
         }
+        tempPrint('update totals');
         final updatedSubProperties = {
           itemTotalAmountKey: soldQuantity * price,
           itemTotalWeightKey: soldQuantity * weight

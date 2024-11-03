@@ -9,7 +9,11 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     final newState = {...state};
     properties.forEach((key, value) {
       String? text = value != null && value is! String ? value.toString() : value;
-      newState[key] = TextEditingController(text: text);
+      if (newState[key] != null) {
+        newState[key].text = text;
+      } else {
+        newState[key] = TextEditingController(text: text);
+      }
     });
     state = {...newState};
   }
