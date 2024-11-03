@@ -16,4 +16,4 @@ const String itemWeightKey = 'weight';
 const String itemPriceKey = 'price';
 const String itemSoldQuantityKey = 'soldQuantity';
 const String itemGiftQuantityKey = 'giftQuantity';
-const String itemTotalAmountKey = 'itemTotalPrice';
+const String itemTotalAmountKey = 'itemTotalAmount';

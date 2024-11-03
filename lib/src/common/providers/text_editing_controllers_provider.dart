@@ -23,7 +23,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     final List<Map<String, TextEditingController>> list;
 
     if (state.containsKey(property) && state[property] is List) {
-      list = state[property];
+      list = List.from(state[property]);
       list.add(newSubControllers);
     } else {
       list = [newSubControllers];
@@ -36,10 +36,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   }
 
   void removeSubController(String property, int index, String subProperty) {
-    if (!isValidSubController(property, index, subProperty)) {
-      errorPrint('There is no controller in index $index named $subProperty');
-      return;
-    }
+    if (!isValidSubController(property, index, subProperty)) return;
     final list = state[property] as List<Map<String, TextEditingController>>;
     TextEditingController controller = list[index][subProperty]!;
     list.removeAt(index);
@@ -51,45 +48,46 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   }
 
   dynamic getSubController(String property, int index, String subProperty) {
-    if (!isValidSubController(property, index, subProperty)) {
-      errorPrint('The subController ($property=>$index=>$subProperty) been requested is invalid ');
-      return;
-    }
-    if (state.containsKey(property) &&
-        state[property] is List<Map<String, TextEditingController>>) {
-      final list = state[property] as List<Map<String, TextEditingController>>;
-      if (index >= 0 && index < list.length) {
-        return list[index][subProperty];
-      }
-      return null;
-    }
-    return null;
+    if (!isValidSubController(property, index, subProperty)) return;
+    return state[property][index][subProperty];
   }
 
   dynamic getController(String property) {
-    if (!isValidController(property)) {
-      errorPrint('The controller ($property) been requested is invalid ');
-    }
+    if (!isValidController(property)) return;
     return state[property];
   }
 
   bool isValidController(String property) {
-    return state.containsKey(property);
+    if (!state.containsKey(property)) {
+      tempPrint('Invalid controller: state[$property] does not exist');
+      return false;
+    }
+    return true;
   }
 
   bool isValidSubController(String property, int index, String subProperty) {
-    if (!state.containsKey(property)) return false;
-    if (state[property] is! List<Map<String, TextEditingController>>) return false;
-    if (index < 0 || index >= state[property].length) return false;
-    if (state[property][index][subProperty] is! TextEditingController) return false;
+    if (!state.containsKey(property)) {
+      tempPrint('Invalid subController: state[$property] does not exist');
+      return false;
+    }
+    if (state[property] is! List) {
+      tempPrint(state[property].runtimeType);
+      tempPrint('Invalid subController: state[$property] is not a list');
+      return false;
+    }
+    if (index < 0 || index >= state[property].length) {
+      tempPrint('Invalid subController: state[$property][$index] is invalid');
+      return false;
+    }
+    if (state[property][index][subProperty] is! TextEditingController) {
+      tempPrint('Invalid subController: state[$property][$index][$subProperty] is not a TextEditingController');
+      return false;
+    }
     return true;
   }
 
   void updateControllerText(String property, dynamic value) {
-    if (!isValidController(property) || value == null) {
-      errorPrint('Controller provided (with key $property) is invalid or value provided is null');
-      return;
-    }
+    if (!isValidController(property)) return;
     String text = value is! String ? value.toString() : value;
     state = {
       ...state,
@@ -98,11 +96,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   }
 
   void updateSubControllerText(String property, int index, String subProperty, dynamic value) {
-    if (!isValidSubController(property, index, subProperty) || value == null) {
-      errorPrint(
-          'subController provided (with key $property, index $index, subKey $subProperty) is invalid or value provided is null');
-      return;
-    }
+    if (!isValidSubController(property, index, subProperty)) return;
     String text = value is! String ? value.toString() : value;
     final list = List.from(state[property]);
     final controller = list[index][subProperty];
@@ -138,7 +132,6 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   Map<String, dynamic> get data => state;
 }
 
-final textFieldsControllerProvider =
-    StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
+final textFieldsControllerProvider = StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
   return TextControllerNotifier();
 });

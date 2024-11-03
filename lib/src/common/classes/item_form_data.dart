@@ -19,21 +19,24 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
     final newState = {...state};
     if (!newState.containsKey(property)) {
       newState[property] = [subProperties];
-      state = newState;
+      state = {...newState};
       return;
     }
-    final existingList = newState[property];
-    if (existingList is! List<Map<String, dynamic>>) {
+    final list = newState[property];
+    if (list is! List<Map<String, dynamic>>) {
       errorPrint('Property "$property" is not of type List<Map<String, dynamic>>');
       return;
     }
     if (index == null) {
-      newState[property].add(subProperties);
-      state = newState;
+      list.add(subProperties);
+      newState[property] = list;
+      state = {...newState};
       return;
     }
-    if (index >= 0 && index < newState[property].length) {
-      existingList[index] = {...existingList[index], ...subProperties};
+    if (index >= 0 && index < list.length) {
+      list[index] = {...list[index], ...subProperties};
+      newState[property] = list;
+      state = {...newState};
       return;
     }
     errorPrint('subproperty $subProperties were not added to property "$property" at index $index');
@@ -41,49 +44,55 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
 
   /// checks whether state contains the mentioned property
   bool isValidProperty(String property) {
-    return state.containsKey(property);
+    if (!state.containsKey(property)) {
+      tempPrint('Invalid formData: state[$property] does not exist');
+      return false;
+    }
+    return true;
   }
 
   /// checks whether state contains the mentioned subProperty
   bool isValidSubProperty(String property, int index, String subProperty) {
-    if (!state.containsKey(property)) return false;
-    if (state[property] is! List<Map<String, dynamic>>) return false;
-    if (index < 0 && index > state[property].length) return false;
-    if (!state[property][index].containsKey(subProperty)) return false;
+    if (!state.containsKey(property)) {
+      tempPrint('Invalid formData: state[$property] does not exist');
+      return false;
+    }
+    if (state[property] is! List<Map<String, dynamic>>) {
+      tempPrint('Invalid formData: state[$property] is not a List<Map<String, dynamic>>');
+      return false;
+    }
+    if (index < 0 || index >= state[property].length) {
+      tempPrint('Invalid formData: state[$property][$index] is invalid');
+      return false;
+    }
     return true;
   }
 
   // usually this is used for initialValue for form fields, which takes either a value or null
   dynamic getProperty(String property) {
-    if (!state.containsKey(property)) {
-      errorPrint('formData property $property been accessed is invalied');
-      return;
-    }
+    if (!state.containsKey(property)) return;
     return state[property];
   }
 
   // usually this is used for initialValue for form fields, which takes either a value or null
   dynamic getSubProperty(String property, int index, String subProperty) {
-    if (!isValidSubProperty(property, index, subProperty)) {
-      errorPrint(
-          'formData subProperty ($property => $index => $subProperty) been accessed is invalied');
-      return;
-    }
+    if (!isValidSubProperty(property, index, subProperty)) return;
     return state[property][index][subProperty];
   }
 
-// delete item form the list of a property
   void removeSubProperties(String property, int index) {
-    if (!isValidProperty(property) ||
-        state[property] is! List<Map<String, dynamic>> ||
-        index < 0 ||
-        index >= state[property].length) {
-      errorPrint('error while accessing property $property');
+    if (!isValidProperty(property)) return;
+    if (state[property] is! List<Map<String, dynamic>>) {
+      errorPrint('Invalid formData state[$property] is not a list');
+      return;
+    }
+    if (index < 0 || index >= state[property].length) {
+      errorPrint('Invalid formData state[$property][$index] is invalid');
       return;
     }
     Map<String, dynamic> newState = Map.from(state);
     newState[property].removeAt(index);
-    state = newState;
+    state = {...newState};
   }
 
   /// using notifier to get current state, used to get state instead of using the provider
@@ -93,19 +102,15 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
 // used for debuggin purpose
   String getFormDataTypes() {
     final StringBuffer dataTypesBuffer = StringBuffer('{');
-
     state.forEach((key, value) {
-      if (value is! List) {
+      if (value is! List<Map<String, dynamic>>) {
         dataTypesBuffer.write("'$key': ${value.runtimeType}, ");
       } else {
         dataTypesBuffer.write('$key: [');
         dataTypesBuffer.write(value.map((item) {
-          if (item is Map) {
-            return '{${item.entries.map((entry) {
-              return "'${entry.key}': ${entry.value.runtimeType}";
-            }).join(', ')}}';
-          }
-          return item.runtimeType.toString();
+          return '{${item.entries.map((entry) {
+            return "'${entry.key}': ${entry.value.runtimeType}";
+          }).join(', ')}}';
         }).join(', '));
         dataTypesBuffer.write('], ');
       }

@@ -58,27 +58,24 @@ class FormInputField extends ConsumerWidget {
   }
 
   void _onChanged(String? value) {
-    if (value == null || value.trim().isEmpty) return;
-    try {
-      if (dataType == FieldDataType.num) {
-        onChangedFn(double.parse(value));
-      } else {
-        onChangedFn(value);
-      }
-    } catch (e) {
-      errorPrint('Error parsing value: $value, Error: $e');
+    if (value == null) return;
+    if (dataType == FieldDataType.num) {
+      if (value.toString().trim().isEmpty) return;
+      final parsedValue = double.parse(value);
+      onChangedFn(parsedValue);
+      return;
     }
+    if (value.toString().isEmpty) return;
+    onChangedFn(value);
   }
 
   FormFieldValidator<String>? _validator(BuildContext context) {
     return (value) {
       if (dataType == FieldDataType.string) {
-        return validation.validateTextField(
-            value, S.of(context).input_validation_error_message_for_text);
+        return validation.validateTextField(value, S.of(context).input_validation_error_message_for_text);
       }
       if (dataType == FieldDataType.num) {
-        return validation.validateNumberField(
-            value, S.of(context).input_validation_error_message_for_numbers);
+        return validation.validateNumberField(value, S.of(context).input_validation_error_message_for_numbers);
       }
       return null;
     };
