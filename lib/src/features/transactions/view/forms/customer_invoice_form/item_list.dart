@@ -9,7 +9,7 @@ import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/transactions/view/forms/common_utils/item_cell.dart';
-import 'package:tablets/src/features/transactions/view/forms/common_utils/transaction_properties.dart';
+import 'package:tablets/src/features/transactions/view/forms/common_utils/common_values.dart';
 
 const double sequenceColumnWidth = customerInvoiceFormWidth * 0.055;
 const double nameColumnWidth = customerInvoiceFormWidth * 0.345;

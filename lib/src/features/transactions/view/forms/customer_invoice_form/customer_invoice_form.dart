@@ -19,7 +19,7 @@ import 'package:tablets/src/features/salesmen/repository/salesman_repository_pro
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/item_list.dart';
-import 'package:tablets/src/features/transactions/view/forms/common_utils/transaction_properties.dart';
+import 'package:tablets/src/features/transactions/view/forms/common_utils/common_values.dart';
 
 class CustomerInvoiceForm extends ConsumerWidget {
   const CustomerInvoiceForm({super.key});

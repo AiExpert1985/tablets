@@ -6,7 +6,7 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/features/transactions/view/forms/common_utils/transaction_properties.dart';
+import 'package:tablets/src/features/transactions/view/forms/common_utils/common_values.dart';
 import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
 class TransactionShowFormUtils {
@@ -23,11 +23,11 @@ class TransactionShowFormUtils {
         dateKey: DateTime.now(),
         totalAmountKey: 0,
         totalWeightKey: 0,
-        nameKey: '',
-        salesmanKey: '',
-        numberKey: 0,
-        totalAsTextKey: '',
-        notesKey: '',
+        nameKey: null,
+        salesmanKey: null,
+        numberKey: null,
+        totalAsTextKey: null,
+        notesKey: null,
       });
       formDataNotifier.updateSubProperties(itemsKey, emptyCustomerInvoiceItem);
     }
