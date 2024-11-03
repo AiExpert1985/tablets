@@ -8,7 +8,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   void updateControllers(Map<String, dynamic> properties) {
     final newState = {...state};
     properties.forEach((key, value) {
-      String? text = value != null && value is! String ? value.toString() : value;
+      String? text = value is! String ? value?.toString() : value;
       if (newState[key] != null) {
         newState[key].text = text;
       } else {
@@ -74,7 +74,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     final newState = {...state};
     Map<String, TextEditingController> subControllers = {};
     subProperties.forEach((key, value) {
-      String text = value is! String ? value.toString() : value;
+      String? text = value is! String ? value?.toString() : value;
       subControllers[key] = TextEditingController(text: text);
     });
     if (!newState.containsKey(property)) {
@@ -95,8 +95,13 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     }
     if (index >= 0 && index < list.length) {
       subProperties.forEach((key, value) {
-        String text = value is! String ? value.toString() : value;
+        tempPrint('a');
+        String? text = value is! String ? value?.toString() : value;
+        tempPrint(text);
+        tempPrint(text.runtimeType);
+        tempPrint('b');
         list[index][key].text = text;
+        tempPrint('c');
       });
       newState[property] = list;
       state = {...newState};

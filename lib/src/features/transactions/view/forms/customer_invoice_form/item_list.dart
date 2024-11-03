@@ -80,8 +80,13 @@ Widget _buildAddItemButton(
   return IconButton(
     onPressed: () {
       formDataNotifier.updateSubProperties(itemsKey, emptyCustomerInvoiceItem);
-      textEditingNotifier.updateSubControllers(itemsKey,
-          {itemPriceKey: 0, itemSoldQuantityKey: 0, itemGiftQuantityKey: 0, itemTotalAmountKey: 0});
+      textEditingNotifier.updateSubControllers(itemsKey, {
+        itemPriceKey: 0,
+        itemSoldQuantityKey: 0,
+        itemGiftQuantityKey: 0,
+        itemTotalAmountKey: 0,
+        itemTotalWeightKey: 0
+      });
     },
     icon: const Icon(Icons.add, color: Colors.green),
   );
@@ -227,6 +232,7 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
           itemTotalAmountKey: soldQuantity * price,
           itemTotalWeightKey: soldQuantity * weight
         };
+        tempPrint('$index => $subProperty');
         formDataNotifier.updateSubProperties(property, updatedSubProperties, index: index);
         textEditingNotifier.updateSubControllers(property, updatedSubProperties, index: index);
         final totalAmount = _getTotal(formDataNotifier, property, itemTotalAmountKey);
