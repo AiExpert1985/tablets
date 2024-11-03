@@ -17,12 +17,14 @@ const String itemPriceKey = 'price';
 const String itemSoldQuantityKey = 'soldQuantity';
 const String itemGiftQuantityKey = 'giftQuantity';
 const String itemTotalAmountKey = 'itemTotalAmount';
+const String itemTotalWeightKey = 'itemTotalWeight';
 
 Map<String, dynamic> emptyCustomerInvoiceItem = {
   nameKey: null,
   itemPriceKey: null,
   itemWeightKey: null,
   itemSoldQuantityKey: null,
-  itemGiftQuantityKey: null,
-  itemTotalAmountKey: null,
+  itemGiftQuantityKey: 0,
+  itemTotalAmountKey: 0,
+  itemTotalWeightKey: 0,
 };

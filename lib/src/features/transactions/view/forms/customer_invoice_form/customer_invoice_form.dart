@@ -52,7 +52,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             _buildFifthRow(context, formDataNotifier),
             VerticalGap.m,
             buildItemList(context, formDataNotifier, textEditingNotifier, productRepository),
-            VerticalGap.xxl,
+            VerticalGap.xl,
             _buildTotalsRow(context, formDataNotifier, textEditingNotifier),
           ],
         ),
@@ -60,8 +60,8 @@ class CustomerInvoiceForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier, DbRepository customerRepository,
-      DbRepository salesmanRepository) {
+  Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier,
+      DbRepository customerRepository, DbRepository salesmanRepository) {
     return Row(
       children: [
         DropDownWithSearchFormField(
@@ -194,8 +194,8 @@ class CustomerInvoiceForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildTotalsRow(
-      BuildContext context, ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
+  Widget _buildTotalsRow(BuildContext context, ItemFormData formDataNotifier,
+      TextControllerNotifier textEditingNotifier) {
     return SizedBox(
         width: customerInvoiceFormWidth * 0.6,
         child: Row(

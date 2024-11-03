@@ -10,7 +10,8 @@ import 'package:tablets/src/features/transactions/view/forms/common_utils/common
 import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
 class TransactionShowFormUtils {
-  static void initializeFormData(BuildContext context, ItemFormData formDataNotifier, String transactionType,
+  static void initializeFormData(
+      BuildContext context, ItemFormData formDataNotifier, String transactionType,
       {Transaction? transaction}) {
     formDataNotifier.initialize(initialData: transaction?.toMap());
     if (transaction != null) return; // if we are in edit, we don't need further initialization
@@ -40,13 +41,15 @@ class TransactionShowFormUtils {
     List items = formDataNotifier.getProperty(itemsKey);
     for (var i = 0; i < items.length; i++) {
       final price = formDataNotifier.getSubProperty(itemsKey, i, itemPriceKey);
+      final weight = formDataNotifier.getSubProperty(itemsKey, i, itemWeightKey);
       final soldQuantity = formDataNotifier.getSubProperty(itemsKey, i, itemSoldQuantityKey);
       final giftQuantity = formDataNotifier.getSubProperty(itemsKey, i, itemGiftQuantityKey);
       textEditingNotifier.addSubControllers(itemsKey, {
         itemPriceKey: price,
         itemSoldQuantityKey: soldQuantity,
         itemGiftQuantityKey: giftQuantity,
-        itemTotalAmountKey: price != null && soldQuantity != null ? price * soldQuantity : null,
+        itemTotalAmountKey: soldQuantity == null || price == null ? 0 : soldQuantity * price,
+        itemTotalWeightKey: soldQuantity == null || weight == null ? 0 : soldQuantity * weight,
       });
       final totalAmount = formDataNotifier.getProperty(totalAmountKey);
       final totalWeight = formDataNotifier.getProperty(totalWeightKey);
@@ -64,7 +67,8 @@ class TransactionShowFormUtils {
     Transaction? transaction,
   }) {
     if (formType == null && transaction?.transactionType == null) {
-      errorPrint('both formType and transaction can not be null, one of them is needed for transactionType');
+      errorPrint(
+          'both formType and transaction can not be null, one of them is needed for transactionType');
       return;
     }
     String transactionType = formType ?? transaction?.transactionType as String;
