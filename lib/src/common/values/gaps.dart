@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class HorizontalGap {
+  static const xs = SizedBox(width: 3);
   static const s = SizedBox(width: 5);
-  static const m = SizedBox(width: 15);
-  static const l = SizedBox(width: 30);
-  static const xl = SizedBox(width: 45);
-  static const formFieldToField = SizedBox(width: 25);
+  static const m = SizedBox(width: 10);
+  static const l = SizedBox(width: 15);
+  static const xl = SizedBox(width: 30);
+  static const xxl = SizedBox(width: 45);
+  static const xxxl = SizedBox(width: 60);
 }
 
 class VerticalGap {
@@ -19,8 +21,7 @@ class VerticalGap {
 }
 
 /// this must be used inside Column (or Row)
+/// Empty container is used to push widget to the end
 class PushWidgets {
-  static Widget toEnd = Expanded(
-    child: Container(), // Empty container to push the last button to the bottom
-  );
+  static Widget toEnd = Expanded(child: Container());
 }
