@@ -5,31 +5,13 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   TextControllerNotifier() : super({});
 
-  void addController(String property, {dynamic value}) {
-    String? text = value != null && value is! String ? value.toString() : value;
-    state = {
-      ...state,
-      property: TextEditingController(text: text),
-    };
-  }
-
-  void addSubControllers(String property, Map<String, dynamic> subProperties) {
-    Map<String, TextEditingController> newSubControllers = {};
-    subProperties.forEach((key, value) {
+  void updateControllers(Map<String, dynamic> properties) {
+    final newState = {...state};
+    properties.forEach((key, value) {
       String? text = value != null && value is! String ? value.toString() : value;
-      newSubControllers[key] = TextEditingController(text: text);
+      newState[key] = TextEditingController(text: text);
     });
-    List<Map<String, TextEditingController>> list;
-    if (state.containsKey(property) && state[property] is List) {
-      list = List.from(state[property]);
-      list.add(newSubControllers);
-    } else {
-      list = [newSubControllers];
-    }
-    state = {
-      ...state,
-      property: list,
-    };
+    state = {...newState};
   }
 
   void removeSubController(String property, int index, String subProperty) {
@@ -76,31 +58,46 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
       return false;
     }
     if (state[property][index][subProperty] is! TextEditingController) {
-      errorPrint('Invalid subController: state[$property][$index][$subProperty] is not a TextEditingController');
+      errorPrint(
+          'Invalid subController: state[$property][$index][$subProperty] is not a TextEditingController');
       return false;
     }
     return true;
   }
 
-  void updateControllerText(String property, dynamic value) {
-    if (!isValidController(property)) return;
-    String text = value is! String ? value.toString() : value;
-    state = {
-      ...state,
-      property: TextEditingController(text: text),
-    };
-  }
-
-  void updateSubControllerText(String property, int index, String subProperty, dynamic value) {
-    if (!isValidSubController(property, index, subProperty)) return;
-    String text = value is! String ? value.toString() : value;
-    final list = List.from(state[property]);
-    final controller = list[index][subProperty];
-    controller.text = text;
-    state = {
-      ...state,
-      property: list,
-    };
+  // if no index is provided, Map of controllers will created or appended to the end of the list
+  void updateSubControllers(String property, Map<String, dynamic> subProperties, {int? index}) {
+    final newState = {...state};
+    Map<String, TextEditingController> subControllers = {};
+    subProperties.forEach((key, value) {
+      String text = value is! String ? value.toString() : value;
+      subControllers[key] = TextEditingController(text: text);
+    });
+    if (!newState.containsKey(property)) {
+      newState[property] = [subControllers];
+      state = {...newState};
+      return;
+    }
+    final list = newState[property];
+    if (list is! List) {
+      errorPrint('Property "$property" is not of type List');
+      return;
+    }
+    if (index == null) {
+      list.add(subControllers);
+      newState[property] = list;
+      state = {...newState};
+      return;
+    }
+    if (index >= 0 && index < list.length) {
+      subControllers.forEach((key, value) {
+        list[index][key] = value;
+      });
+      newState[property] = list;
+      state = {...newState};
+      return;
+    }
+    errorPrint('subproperty $subProperties were not added to property "$property" at index $index');
   }
 
   // this method is very important, and should be called when every you finish
@@ -128,6 +125,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   Map<String, dynamic> get data => state;
 }
 
-final textFieldsControllerProvider = StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
+final textFieldsControllerProvider =
+    StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
   return TextControllerNotifier();
 });

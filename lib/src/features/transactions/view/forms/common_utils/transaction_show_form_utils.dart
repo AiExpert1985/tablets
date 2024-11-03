@@ -44,7 +44,7 @@ class TransactionShowFormUtils {
       final weight = formDataNotifier.getSubProperty(itemsKey, i, itemWeightKey);
       final soldQuantity = formDataNotifier.getSubProperty(itemsKey, i, itemSoldQuantityKey);
       final giftQuantity = formDataNotifier.getSubProperty(itemsKey, i, itemGiftQuantityKey);
-      textEditingNotifier.addSubControllers(itemsKey, {
+      textEditingNotifier.updateSubControllers(itemsKey, {
         itemPriceKey: price,
         itemSoldQuantityKey: soldQuantity,
         itemGiftQuantityKey: giftQuantity,
@@ -53,8 +53,8 @@ class TransactionShowFormUtils {
       });
       final totalAmount = formDataNotifier.getProperty(totalAmountKey);
       final totalWeight = formDataNotifier.getProperty(totalWeightKey);
-      textEditingNotifier.addController(totalAmountKey, value: totalAmount);
-      textEditingNotifier.addController(totalWeightKey, value: totalWeight);
+      textEditingNotifier
+          .updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
     }
   }
 

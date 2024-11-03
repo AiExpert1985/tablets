@@ -80,7 +80,7 @@ Widget _buildAddItemButton(
   return IconButton(
     onPressed: () {
       formDataNotifier.updateSubProperties(itemsKey, emptyCustomerInvoiceItem);
-      textEditingNotifier.addSubControllers(itemsKey,
+      textEditingNotifier.updateSubControllers(itemsKey,
           {itemPriceKey: 0, itemSoldQuantityKey: 0, itemGiftQuantityKey: 0, itemTotalAmountKey: 0});
     },
     icon: const Icon(Icons.add, color: Colors.green),
@@ -102,10 +102,12 @@ Widget _buildDeleteItemButton(ItemFormData formDataNotifier,
             formDataNotifier.removeSubProperties(itemsKey, index);
             textEditingNotifier.removeSubController(itemsKey, index, itemPriceKey);
           }
-          final totalAmount = _getTotal(formDataNotifier, itemsKey, itemPriceKey);
-          final totalWeight = _getTotal(formDataNotifier, itemsKey, itemWeightKey);
-          textEditingNotifier.updateControllerText(totalAmountKey, totalAmount);
-          textEditingNotifier.updateControllerText(totalWeightKey, totalWeight);
+          final totalAmount = _getTotal(formDataNotifier, itemsKey, itemTotalAmountKey);
+          final totalWeight = _getTotal(formDataNotifier, itemsKey, itemTotalWeightKey);
+          formDataNotifier
+              .updateProperties({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
+          textEditingNotifier
+              .updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
         },
         icon: const Icon(Icons.remove, color: Colors.red),
       ),
@@ -182,17 +184,15 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
       isRequired: false,
       onChangedFn: (item) {
         // updates related fields using the item selected (of type Map<String, dynamic>)
-        // note: totalPrice isn't updated here because it is updated by the price field
-        //       which is triggered by the change of field.
+        // and triger the on changed function in price field using its controller
         final subProperties = {
           nameKey: item['name'],
           itemPriceKey: item['sellWholePrice'],
           itemWeightKey: item['packageWeight']
         };
         formDataNotifier.updateSubProperties(itemsKey, subProperties, index: index);
-        // triger the update of price field using its controller
         final price = formDataNotifier.getSubProperty(itemsKey, index, itemPriceKey);
-        textEditingNotifier.updateSubControllerText(itemsKey, index, itemPriceKey, price);
+        textEditingNotifier.updateSubControllers(itemsKey, {itemPriceKey: price}, index: index);
       },
     ),
   );
@@ -215,32 +215,29 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
         // this method is executed throught two ways, first when the field is updated by the user
         // and the second is automatic when user selects and item through adjacent product selection dropdown
         formDataNotifier.updateSubProperties(property, {subProperty: value}, index: index);
-        // if the price is updated, then we need to updated related fields
-        // which are item total amount, and transaction total amount
-        if (subProperty != itemPriceKey && subProperty != itemSoldQuantityKey) return;
-        // update the total mount of the item
-        // note that both price & sold quantity should have been entered
+        // only updated related fields if one of these fields is updated
+        if (subProperty != itemPriceKey &&
+            subProperty != itemSoldQuantityKey &&
+            subProperty != nameKey) {
+          return;
+        }
         final price = formDataNotifier.getSubProperty(property, index, itemPriceKey);
         final weight = formDataNotifier.getSubProperty(property, index, itemWeightKey);
         final soldQuantity = formDataNotifier.getSubProperty(property, index, itemSoldQuantityKey);
-        final itemTotalAmount = soldQuantity == null || price == null ? 0 : soldQuantity * price;
-        final itemTotalWeight = soldQuantity == null || weight == null ? 0 : soldQuantity * weight;
-        formDataNotifier.updateSubProperties(property, {itemTotalAmountKey: itemTotalAmount},
-            index: index);
-        formDataNotifier.updateSubProperties(property, {itemTotalWeightKey: itemTotalWeight},
-            index: index);
-        textEditingNotifier.updateSubControllerText(
-            property, index, itemTotalAmountKey, itemTotalAmount);
-        textEditingNotifier.updateSubControllerText(
-            property, index, itemTotalWeightKey, itemTotalWeight);
-        // update total amount of the transaction
+        if (soldQuantity == null || price == null) {
+          return;
+        }
+        final updatedSubProperties = {
+          itemTotalAmountKey: soldQuantity * price,
+          itemTotalWeightKey: soldQuantity * weight
+        };
+        formDataNotifier.updateSubProperties(property, updatedSubProperties, index: index);
+        textEditingNotifier.updateSubControllers(property, updatedSubProperties, index: index);
         final totalAmount = _getTotal(formDataNotifier, property, itemTotalAmountKey);
-        formDataNotifier.updateProperties({totalAmountKey: totalAmount});
-        textEditingNotifier.updateControllerText(totalAmountKey, totalAmount);
-        // update the totalWeight of the form due to change in item weight
-        final totalWeight = _getTotal(formDataNotifier, itemsKey, itemTotalWeightKey);
-        formDataNotifier.updateProperties({totalWeightKey: totalWeight});
-        textEditingNotifier.updateControllerText(totalWeightKey, totalWeight);
+        final totalWeight = _getTotal(formDataNotifier, property, itemTotalWeightKey);
+        final updatedProperties = {totalAmountKey: totalAmount, totalWeightKey: totalWeight};
+        formDataNotifier.updateProperties(updatedProperties);
+        textEditingNotifier.updateControllers(updatedProperties);
       },
     ),
     isLast: isLast,
