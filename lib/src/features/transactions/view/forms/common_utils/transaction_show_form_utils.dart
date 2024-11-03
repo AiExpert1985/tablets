@@ -6,12 +6,11 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/features/transactions/model/transaction_properties.dart';
+import 'package:tablets/src/features/transactions/view/forms/common_utils/transaction_properties.dart';
 import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
 class TransactionShowFormUtils {
-  static void initializeFormData(
-      BuildContext context, ItemFormData formDataNotifier, String transactionType,
+  static void initializeFormData(BuildContext context, ItemFormData formDataNotifier, String transactionType,
       {Transaction? transaction}) {
     formDataNotifier.initialize(initialData: transaction?.toMap());
     if (transaction != null) return; // if we are in edit, we don't need further initialization
@@ -30,14 +29,7 @@ class TransactionShowFormUtils {
         totalAsTextKey: '',
         notesKey: '',
       });
-      formDataNotifier.updateSubProperties(itemsKey, {
-        nameKey: '',
-        itemPriceKey: 0,
-        itemWeightKey: 0,
-        itemSoldQuantityKey: 0,
-        itemGiftQuantityKey: 0,
-        itemTotalAmountKey: 0,
-      });
+      formDataNotifier.updateSubProperties(itemsKey, emptyCustomerInvoiceItem);
     }
   }
 
@@ -72,8 +64,7 @@ class TransactionShowFormUtils {
     Transaction? transaction,
   }) {
     if (formType == null && transaction?.transactionType == null) {
-      errorPrint(
-          'both formType and transaction can not be null, one of them is needed for transactionType');
+      errorPrint('both formType and transaction can not be null, one of them is needed for transactionType');
       return;
     }
     String transactionType = formType ?? transaction?.transactionType as String;

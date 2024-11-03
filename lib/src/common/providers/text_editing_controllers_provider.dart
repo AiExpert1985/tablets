@@ -19,16 +19,13 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
       String? text = value != null && value is! String ? value.toString() : value;
       newSubControllers[key] = TextEditingController(text: text);
     });
-
-    final List<Map<String, TextEditingController>> list;
-
+    List<Map<String, TextEditingController>> list;
     if (state.containsKey(property) && state[property] is List) {
       list = List.from(state[property]);
       list.add(newSubControllers);
     } else {
       list = [newSubControllers];
     }
-
     state = {
       ...state,
       property: list,
@@ -37,7 +34,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
 
   void removeSubController(String property, int index, String subProperty) {
     if (!isValidSubController(property, index, subProperty)) return;
-    final list = state[property] as List<Map<String, TextEditingController>>;
+    final list = state[property];
     TextEditingController controller = list[index][subProperty]!;
     list.removeAt(index);
     controller.dispose();
@@ -71,7 +68,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
       return false;
     }
     if (state[property] is! List) {
-      errorPrint('Invalid subController: state[$property] is not a list');
+      errorPrint('Invalid subController: state[$property] is not a List');
       return false;
     }
     if (index < 0 || index >= state[property].length) {

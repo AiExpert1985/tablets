@@ -9,7 +9,7 @@ import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/transactions/view/forms/common_utils/item_cell.dart';
-import 'package:tablets/src/features/transactions/model/transaction_properties.dart';
+import 'package:tablets/src/features/transactions/view/forms/common_utils/transaction_properties.dart';
 
 const double sequenceColumnWidth = customerInvoiceFormWidth * 0.055;
 const double nameColumnWidth = customerInvoiceFormWidth * 0.345;
@@ -96,8 +96,14 @@ Widget _buildDeleteItemButton(
       width,
       IconButton(
         onPressed: () {
-          formDataNotifier.removeSubProperties(itemsKey, index);
-          textEditingNotifier.removeSubController(itemsKey, index, itemPriceKey);
+          final items = formDataNotifier.getProperty(itemsKey);
+          // if there is only one item, it is not deleted, but formData & textEditingData is reseted
+          if (items is List && items.length <= 1) {
+            formDataNotifier.updateSubProperties(itemsKey, emptyCustomerInvoiceItem, index: 0);
+          } else {
+            formDataNotifier.removeSubProperties(itemsKey, index);
+            textEditingNotifier.removeSubController(itemsKey, index, itemPriceKey);
+          }
           final totalAmount = _getTotal(formDataNotifier, itemsKey, itemPriceKey);
           final totalWeight = _getTotal(formDataNotifier, itemsKey, itemWeightKey);
           textEditingNotifier.updateControllerText(totalAmountKey, totalAmount);
@@ -177,9 +183,12 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier, TextControllerNot
         // note: totalPrice isn't updated here because it is updated by the price field
         //       which is triggered by the change of field.
         // (1) update fields in formData
-        formDataNotifier.updateSubProperties(itemsKey,
-            {nameKey: item['name'], itemPriceKey: item['sellWholePrice'], itemWeightKey: item['packageWeight']},
-            index: index);
+        final subProperties = {
+          nameKey: item['name'],
+          itemPriceKey: item['sellWholePrice'],
+          itemWeightKey: item['packageWeight']
+        };
+        formDataNotifier.updateSubProperties(itemsKey, subProperties, index: index);
         // (2) update the totalWeight of the form due to change in item weight
         final totalWeight = _getTotal(formDataNotifier, itemsKey, itemWeightKey);
         formDataNotifier.updateProperties({totalAmountKey: totalWeight});

@@ -17,24 +17,33 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   /// if an index is provided, the data will be updated at the given index
   void updateSubProperties(String property, Map<String, dynamic> subProperties, {int? index}) {
     final newState = {...state};
+    // I did below map creation to solve issue I faced with LinkedMap<String, dynamic>
+    //or Map<dynamic, dynamic> types
+    // I wanted to ensure I always have Map<String, dynamic> type
+    Map<String, dynamic> typeAdjustedSubProperties = {};
+    subProperties.forEach((key, value) {
+      typeAdjustedSubProperties[key] = value;
+    });
     if (!newState.containsKey(property)) {
-      newState[property] = [subProperties];
+      newState[property] = [typeAdjustedSubProperties];
       state = {...newState};
       return;
     }
     final list = newState[property];
     if (list is! List<Map<String, dynamic>>) {
-      errorPrint('Property "$property" is not of type List<Map<String, dynamic>>');
+      errorPrint('Property "$property" is not of type List');
       return;
     }
     if (index == null) {
-      list.add(subProperties);
+      list.add(typeAdjustedSubProperties);
       newState[property] = list;
       state = {...newState};
       return;
     }
     if (index >= 0 && index < list.length) {
-      list[index] = {...list[index], ...subProperties};
+      subProperties.forEach((key, value) {
+        list[index][key] = value;
+      });
       newState[property] = list;
       state = {...newState};
       return;
@@ -58,7 +67,7 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
       return false;
     }
     if (state[property] is! List<Map<String, dynamic>>) {
-      errorPrint('Invalid formData: state[$property] is not a List<Map<String, dynamic>>');
+      errorPrint('Invalid formData: state[$property] is not a List');
       return false;
     }
     if (index < 0 || index >= state[property].length) {
