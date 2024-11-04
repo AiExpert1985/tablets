@@ -13,7 +13,7 @@ class TransactionTypeSelection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Define the form types and corresponding names
-    final List<String> items = [
+    final List<String> names = [
       S.of(context).transaction_type_customer_invoice,
       S.of(context).transaction_type_vender_invoice,
       S.of(context).transaction_type_customer_receipt,
@@ -51,7 +51,7 @@ class TransactionTypeSelection extends ConsumerWidget {
             crossAxisCount: 2, // Number of columns
             childAspectRatio: 2, // Aspect ratio of each card
           ),
-          itemCount: items.length,
+          itemCount: names.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
@@ -71,7 +71,7 @@ class TransactionTypeSelection extends ConsumerWidget {
                   height: 40, // Reduced height for the card
                   child: Center(
                     child: Text(
-                      items[index], // Use the corresponding name
+                      names[index], // Use the corresponding name
                       style: const TextStyle(fontSize: 18),
                     ),
                   ),
