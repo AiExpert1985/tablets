@@ -62,8 +62,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
       return false;
     }
     if (state[property][index][subProperty] is! TextEditingController) {
-      errorPrint(
-          'Invalid subController: state[$property][$index][$subProperty] is not a TextEditingController');
+      errorPrint('Invalid subController: state[$property][$index][$subProperty] is not a TextEditingController');
       return false;
     }
     return true;
@@ -95,13 +94,8 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     }
     if (index >= 0 && index < list.length) {
       subProperties.forEach((key, value) {
-        tempPrint('a');
         String? text = value is! String ? value?.toString() : value;
-        tempPrint(text);
-        tempPrint(text.runtimeType);
-        tempPrint('b');
         list[index][key].text = text;
-        tempPrint('c');
       });
       newState[property] = list;
       state = {...newState};
@@ -135,7 +129,6 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   Map<String, dynamic> get data => state;
 }
 
-final textFieldsControllerProvider =
-    StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
+final textFieldsControllerProvider = StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
   return TextControllerNotifier();
 });

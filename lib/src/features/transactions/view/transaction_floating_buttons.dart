@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
-import 'package:tablets/src/features/transactions/view/forms/common_utils/transaction_show_form_utils.dart';
+import 'package:tablets/src/features/transactions/view/transaction_type_selection.dart';
 
 class TransactionsFloatingButtons extends ConsumerWidget {
   const TransactionsFloatingButtons({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
-    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final drawerController = ref.watch(productsDrawerControllerProvider);
     const iconsColor = Color.fromARGB(255, 126, 106, 211);
     return SpeedDial(
@@ -40,9 +33,12 @@ class TransactionsFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () => TransactionShowFormUtils.showForm(
-              context, imagePickerNotifier, formDataNotifier, textEditingNotifier,
-              formType: TransactionType.customerInvoice.name),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext ctx) => const TransactionTypeSelection(),
+            ).whenComplete(() {});
+          },
         ),
       ],
     );
