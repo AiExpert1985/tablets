@@ -40,8 +40,9 @@ class FormInputField extends ConsumerWidget {
       child: FormBuilderTextField(
         // if controller is used, initialValue should be neglected
         initialValue: _getInitialValue(),
+        readOnly: isReadOnly,
         controller: controller,
-        enabled: !isReadOnly,
+        // enabled: !isReadOnly,
         textAlign: TextAlign.center,
         name: name,
         decoration: utils.formFieldDecoration(label: label, hideBorders: hideBorders),

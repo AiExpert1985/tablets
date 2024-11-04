@@ -1,3 +1,5 @@
+import 'package:tablets/src/common/values/constants.dart';
+
 const double categoryFormWidth = 350;
 const double categoryFormHeight = 400;
 
@@ -12,3 +14,8 @@ const double salesmanFormHeight = 400;
 
 const double customerFormWidth = 350;
 const double customerFormHeight = 400;
+
+final Map<String, dynamic> transactionFormDimenssions = {
+  TransactionType.customerInvoice.name: {'height': 750, 'width': 800},
+  TransactionType.venderInvoice.name: {'height': 700, 'width': 720},
+};

@@ -18,8 +18,8 @@ const double soldQuantityColumnWidth = customerInvoiceFormWidth * 0.1;
 const double giftQuantityColumnWidth = customerInvoiceFormWidth * 0.1;
 const double soldTotalAmountColumnWidth = customerInvoiceFormWidth * 0.17;
 
-Widget buildItemList(BuildContext context, ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier,
-    DbRepository productRepository) {
+Widget buildItemList(BuildContext context, ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier, DbRepository productRepository) {
   return Container(
     height: 350,
     decoration: BoxDecoration(
@@ -38,14 +38,15 @@ Widget buildItemList(BuildContext context, ItemFormData formDataNotifier, TextCo
   );
 }
 
-List<Widget> _buildDataRows(
-    ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier, DbRepository productRepository) {
+List<Widget> _buildDataRows(ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier, DbRepository productRepository) {
   if (!formDataNotifier.data.containsKey(itemsKey) || formDataNotifier.data[itemsKey] is! List) {
     return const [];
   }
   final items = formDataNotifier.data[itemsKey] as List<Map<String, dynamic>>;
   return List.generate(items.length, (index) {
-    if (!textEditingNotifier.data.containsKey(itemsKey) || textEditingNotifier.data[itemsKey]!.length <= index) {
+    if (!textEditingNotifier.data.containsKey(itemsKey) ||
+        textEditingNotifier.data[itemsKey]!.length <= index) {
       errorPrint('Warning: Missing TextEditingController for item index: $index');
       return const SizedBox.shrink(); // Return an empty widget if the controller is missing
     }
@@ -54,15 +55,16 @@ List<Widget> _buildDataRows(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // buildDataCell(sequenceColumnWidth, Text((index + 1).toString()), isFirst: true),
-        _buildDeleteItemButton(formDataNotifier, textEditingNotifier, index, sequenceColumnWidth, isFirst: true),
-        _buildDropDownWithSearch(formDataNotifier, textEditingNotifier, productRepository, index, nameColumnWidth),
-        _buildFormInputField(formDataNotifier, index, priceColumnWidth, itemsKey, itemPriceKey, textEditingNotifier),
+        _buildDeleteItemButton(formDataNotifier, textEditingNotifier, index, sequenceColumnWidth,
+            isFirst: true),
+        _buildDropDownWithSearch(
+            formDataNotifier, textEditingNotifier, productRepository, index, nameColumnWidth),
         _buildFormInputField(
-            formDataNotifier, index, soldQuantityColumnWidth, itemsKey, itemSoldQuantityKey, textEditingNotifier),
-        _buildFormInputField(
-            formDataNotifier, index, giftQuantityColumnWidth, itemsKey, itemGiftQuantityKey, textEditingNotifier),
-        _buildFormInputField(
-            formDataNotifier, index, soldTotalAmountColumnWidth, itemsKey, itemTotalAmountKey, textEditingNotifier,
+            formDataNotifier, index, priceColumnWidth, itemsKey, itemPriceKey, textEditingNotifier),
+        _buildFormInputField(formDataNotifier, index, soldQuantityColumnWidth, itemsKey,
+            itemSoldQuantityKey, textEditingNotifier),
+        _buildFormInputField(formDataNotifier, index, soldTotalAmountColumnWidth, itemsKey,
+            itemTotalAmountKey, textEditingNotifier,
             // textEditingNotifier: textEditingNotifier,
             isLast: true,
             isReadOnly: true),
@@ -71,24 +73,20 @@ List<Widget> _buildDataRows(
   });
 }
 
-Widget _buildAddItemButton(ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
+Widget _buildAddItemButton(
+    ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
   return IconButton(
     onPressed: () {
       formDataNotifier.updateSubProperties(itemsKey, emptyCustomerInvoiceItem);
-      textEditingNotifier.updateSubControllers(itemsKey, {
-        itemPriceKey: 0,
-        itemSoldQuantityKey: 0,
-        itemGiftQuantityKey: 0,
-        itemTotalAmountKey: 0,
-        itemTotalWeightKey: 0
-      });
+      textEditingNotifier.updateSubControllers(itemsKey,
+          {itemPriceKey: 0, itemSoldQuantityKey: 0, itemTotalAmountKey: 0, itemTotalWeightKey: 0});
     },
     icon: const Icon(Icons.add, color: Colors.green),
   );
 }
 
-Widget _buildDeleteItemButton(
-    ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier, int index, double width,
+Widget _buildDeleteItemButton(ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier, int index, double width,
     {bool isFirst = false}) {
   return buildDataCell(
       width,
@@ -104,22 +102,23 @@ Widget _buildDeleteItemButton(
           }
           final totalAmount = _getTotal(formDataNotifier, itemsKey, itemTotalAmountKey);
           final totalWeight = _getTotal(formDataNotifier, itemsKey, itemTotalWeightKey);
-          formDataNotifier.updateProperties({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
-          textEditingNotifier.updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
+          formDataNotifier
+              .updateProperties({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
+          textEditingNotifier
+              .updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
         },
         icon: const Icon(Icons.remove, color: Colors.red),
       ),
       isFirst: true);
 }
 
-Widget _buildColumnTitles(
-    BuildContext context, ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
+Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier) {
   final titles = [
     _buildAddItemButton(formDataNotifier, textEditingNotifier),
     Text(S.of(context).item_name),
     Text(S.of(context).item_price),
     Text(S.of(context).item_sold_quantity),
-    Text(S.of(context).item_gifts_quantity),
     Text(S.of(context).item_total_price),
   ];
 
@@ -128,21 +127,23 @@ Widget _buildColumnTitles(
     nameColumnWidth,
     priceColumnWidth,
     soldQuantityColumnWidth,
-    giftQuantityColumnWidth,
     soldTotalAmountColumnWidth,
   ];
 
-  return Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
-    ...List.generate(titles.length, (index) {
-      return buildDataCell(
-        widths[index],
-        titles[index],
-        isTitle: true,
-        isFirst: index == 0,
-        isLast: index == titles.length - 1,
-      );
-    })
-  ]);
+  return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ...List.generate(titles.length, (index) {
+          return buildDataCell(
+            widths[index],
+            titles[index],
+            isTitle: true,
+            isFirst: index == 0,
+            isLast: index == titles.length - 1,
+          );
+        })
+      ]);
 }
 
 dynamic _getTotal(ItemFormData formDataNotifier, String property, String subProperty) {
@@ -168,8 +169,8 @@ dynamic _getTotal(ItemFormData formDataNotifier, String property, String subProp
   return total;
 }
 
-Widget _buildDropDownWithSearch(ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier,
-    dynamic repository, int index, double width) {
+Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier, dynamic repository, int index, double width) {
   return buildDataCell(
     width,
     DropDownWithSearchFormField(
@@ -193,8 +194,8 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier, TextControllerNot
   );
 }
 
-Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double width, String property, String subProperty,
-    TextControllerNotifier textEditingNotifier,
+Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double width, String property,
+    String subProperty, TextControllerNotifier textEditingNotifier,
     {bool isLast = false, isReadOnly = false}) {
   return buildDataCell(
     width,

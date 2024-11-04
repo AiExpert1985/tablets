@@ -35,8 +35,8 @@ class TransactionForm extends ConsumerWidget {
       formKey: formController.formKey,
       fields: _getFormWidget(transactionType),
       buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier),
-      width: customerInvoiceFormWidth,
-      height: customerInvoiceFormHeight,
+      width: transactionFormDimenssions[transactionType]['width'],
+      height: transactionFormDimenssions[transactionType]['height'],
     );
   }
 

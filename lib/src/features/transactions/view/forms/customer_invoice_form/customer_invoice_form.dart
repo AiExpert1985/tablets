@@ -18,7 +18,7 @@ import 'package:tablets/src/features/products/repository/product_repository_prov
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
-import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/item_list.dart';
+import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/customer_invoice_item_list.dart';
 import 'package:tablets/src/features/transactions/view/forms/common_utils/common_values.dart';
 
 class CustomerInvoiceForm extends ConsumerWidget {
@@ -52,7 +52,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
             _buildFifthRow(context, formDataNotifier),
             VerticalGap.m,
             buildItemList(context, formDataNotifier, textEditingNotifier, productRepository),
-            VerticalGap.xl,
+            VerticalGap.xxl,
             _buildTotalsRow(context, formDataNotifier, textEditingNotifier),
           ],
         ),
@@ -211,7 +211,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
                 formDataNotifier.updateProperties({totalAmountKey: value});
               },
             ),
-            HorizontalGap.l,
+            HorizontalGap.xxl,
             FormInputField(
               controller: textEditingNotifier.getController(totalWeightKey),
               isReadOnly: true,

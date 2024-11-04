@@ -102,7 +102,7 @@ class TransactionsList extends ConsumerWidget {
                   imagePickerNotifier,
                   formDataNotifier,
                   textEditingNotifier,
-                  formType: TransactionType.customerInvoice.name,
+                  formType: transaction.transactionType,
                   transaction: transaction,
                 ),
               ),
