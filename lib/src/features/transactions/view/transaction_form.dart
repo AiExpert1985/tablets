@@ -12,6 +12,7 @@ import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/customer_invoice_form.dart';
+import 'package:tablets/src/features/transactions/view/forms/vendor_invoice_form/vendor_invoice_form.dart';
 
 class TransactionForm extends ConsumerWidget {
   const TransactionForm(this.isEditMode, this.transactionType, {super.key});
@@ -20,6 +21,7 @@ class TransactionForm extends ConsumerWidget {
 
   Widget _getFormWidget(String transactionType) {
     if (transactionType == TransactionType.customerInvoice.name) return const CustomerInvoiceForm();
+    if (transactionType == TransactionType.venderInvoice.name) return const VendorInvoiceForm();
     return const Text('Error happend while loading transaction form');
   }
 
@@ -38,11 +40,12 @@ class TransactionForm extends ConsumerWidget {
     );
   }
 
-  List<Widget> _actionButtons(BuildContext context, ItemFormController formController, ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier) {
+  List<Widget> _actionButtons(BuildContext context, ItemFormController formController,
+      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier) {
     return [
       IconButton(
-        onPressed: () => _onSavePressed(context, formController, formDataNotifier, formImagesNotifier),
+        onPressed: () =>
+            _onSavePressed(context, formController, formDataNotifier, formImagesNotifier),
         icon: const SaveIcon(),
       ),
       IconButton(
@@ -51,14 +54,15 @@ class TransactionForm extends ConsumerWidget {
       ),
       if (isEditMode)
         IconButton(
-          onPressed: () => _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController),
+          onPressed: () =>
+              _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController),
           icon: const DeleteIcon(),
         ),
     ];
   }
 
-  void _onSavePressed(BuildContext context, ItemFormController formController, ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier) {
+  void _onSavePressed(BuildContext context, ItemFormController formController,
+      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier) {
     if (!formController.validateData()) return;
     formController.submitData();
     final updateFormData = formDataNotifier.data;

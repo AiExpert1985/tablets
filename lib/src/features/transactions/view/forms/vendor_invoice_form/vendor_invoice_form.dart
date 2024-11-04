@@ -21,8 +21,8 @@ import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/transactions/view/forms/customer_invoice_form/item_list.dart';
 import 'package:tablets/src/features/transactions/view/forms/common_utils/common_values.dart';
 
-class CustomerInvoiceForm extends ConsumerWidget {
-  const CustomerInvoiceForm({super.key});
+class VendorInvoiceForm extends ConsumerWidget {
+  const VendorInvoiceForm({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,7 +39,7 @@ class CustomerInvoiceForm extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildFormTitle(S.of(context).transaction_type_customer_invoice),
+            buildFormTitle(S.of(context).transaction_type_vender_invoice),
             VerticalGap.xl,
             _buildFirstRow(context, formDataNotifier, customerRepository, salesmanRepository),
             VerticalGap.m,

@@ -29,17 +29,17 @@ Map<String, dynamic> emptyCustomerInvoiceItem = {
   itemTotalWeightKey: 0,
 };
 
-final customerInvoiceProperties = [
-  currencyKey,
-  paymentTypeKey,
-  discountKey,
-  transactionTypeKey,
-  dateKey,
-  totalAmountKey,
-  totalWeightKey,
-  nameKey,
-  salesmanKey,
-  numberKey,
-  totalAsTextKey,
-  notesKey
-];
+// final customerInvoiceProperties = [
+//   currencyKey,
+//   paymentTypeKey,
+//   discountKey,
+//   transactionTypeKey,
+//   dateKey,
+//   totalAmountKey,
+//   totalWeightKey,
+//   nameKey,
+//   salesmanKey,
+//   numberKey,
+//   totalAsTextKey,
+//   notesKey
+// ];
