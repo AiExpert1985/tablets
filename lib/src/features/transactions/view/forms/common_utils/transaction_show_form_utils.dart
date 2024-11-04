@@ -16,20 +16,9 @@ class TransactionShowFormUtils {
     formDataNotifier.initialize(initialData: transaction?.toMap());
     if (transaction != null) return; // if we are in edit, we don't need further initialization
     if (transactionType == TransactionType.customerInvoice.name) {
-      formDataNotifier.updateProperties({
-        currencyKey: S.of(context).transaction_payment_Dinar,
-        paymentTypeKey: S.of(context).transaction_payment_credit,
-        discountKey: 0.0,
-        transactionTypeKey: transactionType,
-        dateKey: DateTime.now(),
-        totalAmountKey: 0,
-        totalWeightKey: 0,
-        nameKey: null,
-        salesmanKey: null,
-        numberKey: null,
-        totalAsTextKey: null,
-        notesKey: null,
-      });
+      Map<String, dynamic> initialFormData =
+          getFormInitialData(context, customerInvoiceProperties, transactionType);
+      formDataNotifier.updateProperties(initialFormData);
       formDataNotifier.updateSubProperties(itemsKey, emptyCustomerInvoiceItem);
     }
   }
@@ -84,5 +73,28 @@ class TransactionShowFormUtils {
       imagePickerNotifier.close();
       textEditingNotifier.disposeControllers();
     });
+  }
+
+  static Map<String, dynamic> getFormInitialData(
+      BuildContext context, List<String> properties, String type) {
+    Map<String, dynamic> transactionFormData = {};
+    final initialFormData = {
+      currencyKey: S.of(context).transaction_payment_Dinar,
+      paymentTypeKey: S.of(context).transaction_payment_credit,
+      discountKey: 0.0,
+      transactionTypeKey: type,
+      dateKey: DateTime.now(),
+      totalAmountKey: 0,
+      totalWeightKey: 0,
+      nameKey: null,
+      salesmanKey: null,
+      numberKey: null,
+      totalAsTextKey: null,
+      notesKey: null,
+    };
+    for (var property in properties) {
+      transactionFormData[property] = initialFormData[property];
+    }
+    return transactionFormData;
   }
 }

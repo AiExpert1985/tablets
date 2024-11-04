@@ -44,8 +44,8 @@ class TransactionTypeSelection extends ConsumerWidget {
       scrollable: true,
       content: Container(
         padding: const EdgeInsets.all(25),
-        width: 750,
-        height: 750,
+        width: 600,
+        height: 600,
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2, // Number of columns
@@ -55,7 +55,7 @@ class TransactionTypeSelection extends ConsumerWidget {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                Navigator.pop(context);
+                // Navigator.pop(context);
                 TransactionShowFormUtils.showForm(
                   context,
                   imagePickerNotifier,
