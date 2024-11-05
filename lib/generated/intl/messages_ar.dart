@@ -97,9 +97,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "input_validation_error_message_for_user_privilage":
             MessageLookupByLibrary.simpleMessage("يجب تحديد صلاحيات المستخدم"),
         "invoice_total_price":
-            MessageLookupByLibrary.simpleMessage("المبلغ الكلي للقائمة"),
+            MessageLookupByLibrary.simpleMessage("المبلغ النهائي"),
         "invoice_total_weight":
-            MessageLookupByLibrary.simpleMessage("الوزن الكلي للقائمة"),
+            MessageLookupByLibrary.simpleMessage("الوزن النهائي "),
         "item_gifts_quantity":
             MessageLookupByLibrary.simpleMessage("عدد الهدايا"),
         "item_name": MessageLookupByLibrary.simpleMessage("اسم المادة"),
@@ -169,6 +169,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_date":
             MessageLookupByLibrary.simpleMessage("تاريخ القائمة"),
         "transaction_discount": MessageLookupByLibrary.simpleMessage("الخصم"),
+        "transaction_expenditure_bills":
+            MessageLookupByLibrary.simpleMessage("قوائم حكومية"),
+        "transaction_expenditure_others":
+            MessageLookupByLibrary.simpleMessage("مصاريف اخرى"),
+        "transaction_expenditure_rent":
+            MessageLookupByLibrary.simpleMessage("ايجار"),
+        "transaction_expenditure_salary":
+            MessageLookupByLibrary.simpleMessage("رواتب"),
+        "transaction_expenditure_type":
+            MessageLookupByLibrary.simpleMessage("نوع المصاريف"),
         "transaction_item_gift": MessageLookupByLibrary.simpleMessage("هدية"),
         "transaction_item_name":
             MessageLookupByLibrary.simpleMessage("اسم المادة"),
@@ -193,6 +203,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_payment_type":
             MessageLookupByLibrary.simpleMessage("طريقة الدفع"),
         "transaction_salesman": MessageLookupByLibrary.simpleMessage("المندوب"),
+        "transaction_subTotal_amount":
+            MessageLookupByLibrary.simpleMessage("المبلغ المسدد"),
         "transaction_total_amount_as_text":
             MessageLookupByLibrary.simpleMessage("المبلغ كتابة"),
         "transaction_type": MessageLookupByLibrary.simpleMessage("نوع التعامل"),

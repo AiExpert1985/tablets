@@ -2,42 +2,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
-import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
-import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
-import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
 import 'package:tablets/src/features/transactions/view/forms/common_values.dart';
-import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
 
-class InvoiceForm extends ConsumerWidget {
-  const InvoiceForm(this.title, {this.isVendor = false, this.hideGifts = true, super.key});
+class ExpenditureForm extends ConsumerWidget {
+  const ExpenditureForm(this.title, {super.key});
 
   final String title;
-  final bool hideGifts;
-  final bool isVendor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-    final salesmanRepository = ref.read(salesmanRepositoryProvider);
-    final customerRepository = ref.read(customerRepositoryProvider);
-    final vendorRepository = ref.read(vendorRepositoryProvider);
-    final productRepository = ref.read(productRepositoryProvider);
-    final counterPartyRepository = isVendor ? vendorRepository : customerRepository;
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
@@ -48,52 +33,38 @@ class InvoiceForm extends ConsumerWidget {
           children: [
             buildFormTitle(title),
             VerticalGap.xl,
-            _buildFirstRow(
-                context, formDataNotifier, counterPartyRepository, salesmanRepository, isVendor),
-            VerticalGap.m,
+            _buildFirstRow(context, formDataNotifier),
+            VerticalGap.l,
             _buildSecondRow(context, formDataNotifier, textEditingNotifier),
-            VerticalGap.m,
+            VerticalGap.l,
             _buildThirdRow(context, formDataNotifier),
-            VerticalGap.m,
+            VerticalGap.l,
             _buildForthRow(context, formDataNotifier),
-            VerticalGap.m,
+            VerticalGap.l,
             _buildFifthRow(context, formDataNotifier),
-            VerticalGap.m,
-            buildItemList(context, formDataNotifier, textEditingNotifier, productRepository,
-                hideGifts, false),
-            VerticalGap.xxl,
-            _buildTotalsRow(context, formDataNotifier, textEditingNotifier),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier,
-      DbRepository repository, DbRepository salesmanRepository, bool isVendor) {
+  Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier) {
     return Row(
       children: [
-        DropDownWithSearchFormField(
-          label: isVendor ? S.of(context).vendor : S.of(context).customer,
+        DropDownListFormField(
           initialValue: formDataNotifier.getProperty(nameKey),
-          dbRepository: repository,
-          onChangedFn: (item) {
-            formDataNotifier.updateProperties({
-              nameKey: item[nameKey],
-              salesmanKey: item[salesmanKey],
-            });
+          itemList: [
+            S.of(context).transaction_expenditure_salary,
+            S.of(context).transaction_expenditure_rent,
+            S.of(context).transaction_expenditure_bills,
+            S.of(context).transaction_expenditure_others,
+          ],
+          label: S.of(context).transaction_expenditure_type,
+          name: nameKey,
+          onChangedFn: (value) {
+            formDataNotifier.updateProperties({nameKey: value});
           },
         ),
-        if (!isVendor) HorizontalGap.l,
-        if (!isVendor)
-          DropDownWithSearchFormField(
-            label: S.of(context).transaction_salesman,
-            initialValue: formDataNotifier.getProperty(salesmanKey),
-            dbRepository: salesmanRepository,
-            onChangedFn: (item) {
-              formDataNotifier.updateProperties({salesmanKey: item[nameKey]});
-            },
-          ),
       ],
     );
   }
@@ -116,14 +87,14 @@ class InvoiceForm extends ConsumerWidget {
         ),
         HorizontalGap.l,
         FormInputField(
-          initialValue: formDataNotifier.getProperty(discountKey),
-          name: discountKey,
+          initialValue: formDataNotifier.getProperty(subTotalAmountKey),
+          name: subTotalAmountKey,
           dataType: constants.FieldDataType.num,
-          label: S.of(context).transaction_discount,
+          label: S.of(context).transaction_subTotal_amount,
           onChangedFn: (value) {
-            formDataNotifier.updateProperties({discountKey: value});
-            final subTotalAmount = formDataNotifier.getProperty(subTotalAmountKey);
-            final totalAmount = subTotalAmount - value;
+            formDataNotifier.updateProperties({subTotalAmountKey: value});
+            final discount = formDataNotifier.getProperty(discountKey);
+            final totalAmount = value - discount;
             final updatedProperties = {totalAmountKey: totalAmount};
             formDataNotifier.updateProperties(updatedProperties);
             textEditingNotifier.updateControllers(updatedProperties);
@@ -143,19 +114,6 @@ class InvoiceForm extends ConsumerWidget {
           initialValue: formDataNotifier.getProperty(numberKey),
           onChangedFn: (value) {
             formDataNotifier.updateProperties({numberKey: value});
-          },
-        ),
-        HorizontalGap.l,
-        DropDownListFormField(
-          initialValue: formDataNotifier.getProperty(paymentTypeKey),
-          itemList: [
-            S.of(context).transaction_payment_cash,
-            S.of(context).transaction_payment_credit,
-          ],
-          label: S.of(context).transaction_payment_type,
-          name: paymentTypeKey,
-          onChangedFn: (value) {
-            formDataNotifier.updateProperties({paymentTypeKey: value});
           },
         ),
         HorizontalGap.l,
@@ -208,38 +166,5 @@ class InvoiceForm extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  Widget _buildTotalsRow(BuildContext context, ItemFormData formDataNotifier,
-      TextControllerNotifier textEditingNotifier) {
-    return SizedBox(
-        width: customerInvoiceFormWidth * 0.6,
-        child: Row(
-          children: [
-            FormInputField(
-              controller: textEditingNotifier.getController(totalAmountKey),
-              isReadOnly: true,
-              dataType: constants.FieldDataType.num,
-              label: S.of(context).invoice_total_price,
-              name: totalAmountKey,
-              initialValue: formDataNotifier.getProperty(totalAmountKey),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({totalAmountKey: value});
-              },
-            ),
-            HorizontalGap.xxl,
-            FormInputField(
-              controller: textEditingNotifier.getController(totalWeightKey),
-              isReadOnly: true,
-              dataType: constants.FieldDataType.num,
-              label: S.of(context).invoice_total_weight,
-              name: totalWeightKey,
-              initialValue: formDataNotifier.getProperty(totalWeightKey),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({totalWeightKey: value});
-              },
-            ),
-          ],
-        ));
   }
 }

@@ -93,6 +93,11 @@
     "transaction_payment_credit": "Credit",
     "transaction_payment_Dinar": "IQ Dinar",
     "transaction_payment_Dollar": "US Dollar",
+    "transaction_expenditure_salary": "Salaries",
+    "transaction_expenditure_rent": "Rent",
+    "transaction_expenditure_others": "Others",
+    "transaction_expenditure_bills": "Bills",
+    "transaction_expenditure_type": "Expendure type",
     "transaction_type_expenditures": "Expenditures",
     "transaction_type_gifts": "Gifts",
     "transaction_type_customer_receipt": "Customer Receipt",
@@ -125,5 +130,6 @@
     "yes": "yes",
     "no": "No",
     "vendors": "Vendors",
-    "vendor": "Vendor"
+    "vendor": "Vendor",
+    "transaction_subTotal_amount": "Subtotal"
 }

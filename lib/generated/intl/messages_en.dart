@@ -173,6 +173,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_date": MessageLookupByLibrary.simpleMessage("Date"),
         "transaction_discount":
             MessageLookupByLibrary.simpleMessage("Discount"),
+        "transaction_expenditure_bills":
+            MessageLookupByLibrary.simpleMessage("Bills"),
+        "transaction_expenditure_others":
+            MessageLookupByLibrary.simpleMessage("Others"),
+        "transaction_expenditure_rent":
+            MessageLookupByLibrary.simpleMessage("Rent"),
+        "transaction_expenditure_salary":
+            MessageLookupByLibrary.simpleMessage("Salaries"),
+        "transaction_expenditure_type":
+            MessageLookupByLibrary.simpleMessage("Expendure type"),
         "transaction_item_gift": MessageLookupByLibrary.simpleMessage("Gift"),
         "transaction_item_name": MessageLookupByLibrary.simpleMessage("Item"),
         "transaction_item_price": MessageLookupByLibrary.simpleMessage("Price"),
@@ -195,6 +205,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Payment type"),
         "transaction_salesman":
             MessageLookupByLibrary.simpleMessage("Salesman"),
+        "transaction_subTotal_amount":
+            MessageLookupByLibrary.simpleMessage("Subtotal"),
         "transaction_total_amount_as_text":
             MessageLookupByLibrary.simpleMessage("Total as text"),
         "transaction_type":

@@ -93,6 +93,11 @@
     "transaction_payment_credit": "اجل",
     "transaction_payment_Dinar": "دينار",
     "transaction_payment_Dollar": "دولار",
+    "transaction_expenditure_salary": "رواتب",
+    "transaction_expenditure_rent": "ايجار",
+    "transaction_expenditure_others": "مصاريف اخرى",
+    "transaction_expenditure_bills": "قوائم حكومية",
+    "transaction_expenditure_type": "نوع المصاريف",
     "transaction_type_expenditures": "مصاريف",
     "transaction_type_gifts": "هدية",
     "transaction_type_customer_receipt": "وصل قبض",
@@ -115,8 +120,8 @@
     "item_sold_quantity": "العدد",
     "item_total_price": "السعر الكلي للمادة",
     "item_gifts_quantity": "عدد الهدايا",
-    "invoice_total_price": "المبلغ الكلي للقائمة",
-    "invoice_total_weight": "الوزن الكلي للقائمة",
+    "invoice_total_price": "المبلغ النهائي",
+    "invoice_total_weight": "الوزن النهائي ",
     "transaction_total_amount_as_text": "المبلغ كتابة",
     "approve": "موافق",
     "amount": "المبلغ",
@@ -125,5 +130,6 @@
     "yes": "نعم",
     "no": "لا",
     "vendors": "المجهزين",
-    "vendor": "المجهز"
+    "vendor": "المجهز",
+    "transaction_subTotal_amount": "المبلغ المسدد"
 }

@@ -990,6 +990,56 @@ class S {
     );
   }
 
+  /// `Salaries`
+  String get transaction_expenditure_salary {
+    return Intl.message(
+      'Salaries',
+      name: 'transaction_expenditure_salary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rent`
+  String get transaction_expenditure_rent {
+    return Intl.message(
+      'Rent',
+      name: 'transaction_expenditure_rent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Others`
+  String get transaction_expenditure_others {
+    return Intl.message(
+      'Others',
+      name: 'transaction_expenditure_others',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bills`
+  String get transaction_expenditure_bills {
+    return Intl.message(
+      'Bills',
+      name: 'transaction_expenditure_bills',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expendure type`
+  String get transaction_expenditure_type {
+    return Intl.message(
+      'Expendure type',
+      name: 'transaction_expenditure_type',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Expenditures`
   String get transaction_type_expenditures {
     return Intl.message(
@@ -1315,6 +1365,16 @@ class S {
     return Intl.message(
       'Vendor',
       name: 'vendor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subtotal`
+  String get transaction_subTotal_amount {
+    return Intl.message(
+      'Subtotal',
+      name: 'transaction_subTotal_amount',
       desc: '',
       args: [],
     );

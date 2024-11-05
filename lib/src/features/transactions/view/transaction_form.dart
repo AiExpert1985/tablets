@@ -12,7 +12,10 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
+import 'package:tablets/src/features/transactions/view/forms/expenditure_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/invoice_form.dart';
+import 'package:tablets/src/features/transactions/view/forms/receipt_form.dart';
+import 'package:tablets/src/features/transactions/view/forms/statement_form.dart';
 
 class TransactionForm extends ConsumerWidget {
   const TransactionForm(this.isEditMode, this.transactionType, {super.key});
@@ -32,7 +35,7 @@ class TransactionForm extends ConsumerWidget {
       TransactionType.damagedItems.name: S.of(context).transaction_type_damaged_items,
     };
     if (transactionType == TransactionType.customerInvoice.name) {
-      return InvoiceForm(titles[transactionType]!, includeGifts: true);
+      return InvoiceForm(titles[transactionType]!, hideGifts: false);
     }
     if (transactionType == TransactionType.vendorInvoice.name) {
       return InvoiceForm(titles[transactionType]!, isVendor: true);
@@ -42,6 +45,21 @@ class TransactionForm extends ConsumerWidget {
     }
     if (transactionType == TransactionType.vendorReturn.name) {
       return InvoiceForm(titles[transactionType]!, isVendor: true);
+    }
+    if (transactionType == TransactionType.customerReceipt.name) {
+      return ReceiptForm(titles[transactionType]!);
+    }
+    if (transactionType == TransactionType.vendorReceipt.name) {
+      return ReceiptForm(titles[transactionType]!, isVendor: true);
+    }
+    if (transactionType == TransactionType.gifts.name) {
+      return StatementForm(titles[transactionType]!, isGift: true);
+    }
+    if (transactionType == TransactionType.damagedItems.name) {
+      return StatementForm(titles[transactionType]!);
+    }
+    if (transactionType == TransactionType.expenditures.name) {
+      return ExpenditureForm(titles[transactionType]!);
     }
     return const Center(child: Text('Error happend while loading transaction form'));
   }

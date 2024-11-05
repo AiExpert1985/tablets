@@ -20,7 +20,12 @@ const double vendorFormHeight = 400;
 
 final Map<String, dynamic> transactionFormDimenssions = {
   TransactionType.customerInvoice.name: {'height': 750, 'width': 800},
-  TransactionType.vendorInvoice.name: {'height': 750, 'width': 720},
-  TransactionType.customerReturn.name: {'height': 750, 'width': 720},
-  TransactionType.vendorReturn.name: {'height': 750, 'width': 720},
+  TransactionType.vendorInvoice.name: {'height': 750, 'width': 800},
+  TransactionType.customerReturn.name: {'height': 750, 'width': 800},
+  TransactionType.vendorReturn.name: {'height': 750, 'width': 800},
+  TransactionType.customerReceipt.name: {'height': 500, 'width': 800},
+  TransactionType.vendorReceipt.name: {'height': 500, 'width': 800},
+  TransactionType.gifts.name: {'height': 630, 'width': 500},
+  TransactionType.damagedItems.name: {'height': 630, 'width': 500},
+  TransactionType.expenditures.name: {'height': 500, 'width': 500},
 };
