@@ -14,15 +14,13 @@ import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
-import 'package:tablets/src/features/transactions/view/forms/invoice_item_list.dart';
 import 'package:tablets/src/features/transactions/view/forms/common_values.dart';
 
-class InvoiceForm extends ConsumerWidget {
-  const InvoiceForm(this.title,
+class ReceiptForm extends ConsumerWidget {
+  const ReceiptForm(this.title,
       {this.includeSalesman = false, this.includeGifts = false, super.key});
 
   final String title;
@@ -35,7 +33,6 @@ class InvoiceForm extends ConsumerWidget {
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
-    final productRepository = ref.read(productRepositoryProvider);
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
@@ -56,9 +53,6 @@ class InvoiceForm extends ConsumerWidget {
             _buildForthRow(context, formDataNotifier),
             VerticalGap.m,
             _buildFifthRow(context, formDataNotifier),
-            VerticalGap.m,
-            buildItemList(
-                context, formDataNotifier, textEditingNotifier, productRepository, includeGifts),
             VerticalGap.xxl,
             _buildTotalsRow(context, formDataNotifier, textEditingNotifier),
           ],

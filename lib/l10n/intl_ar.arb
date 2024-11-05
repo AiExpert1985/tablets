@@ -101,6 +101,7 @@
     "transaction_type_customer_return": "ارجاع زبون",
     "transaction_type_vender_invoice": "قائمة مجهز",
     "transaction_type_customer_invoice": "قائمة زبون",
+    "transaction_type_damaged_items": "قائمة اتلاف مواد",
     "salesman_name": "الأسم",
     "category_name": "الأسم",
     "salesmen": "المندوبين",
@@ -120,5 +121,8 @@
     "approve": "موافق",
     "amount": "المبلغ",
     "number": "الرقم",
-    "include_total_as_text": "ادراج مبلغ القائمة كتابة"
+    "include_total_as_text": "ادراج مبلغ القائمة كتابة",
+    "yes": "نعم",
+    "no": "لا",
+    "vendors": "المجهزين"
 }

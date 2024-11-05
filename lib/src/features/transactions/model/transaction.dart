@@ -10,6 +10,7 @@ import 'package:tablets/src/common/interfaces/base_item.dart';
 // (6) CustomerReturn: Items returned from Customers.
 // (7) VenderInvoice: a bill of items bought from Venders.
 // (8) CustomerInvoice: bill of items sold to Customers.
+// (9) DamagedItems: item thrown away from the stock
 
 // Note that I named it Transactions because Transaction is a class name used by firebase cloud
 //! note when updating the class, and regenerate data class, then inside Transaction.fromMap function, the date must be
@@ -32,7 +33,7 @@ class Transaction implements BaseItem {
   double? discount;
   String? totalAsText;
   double? totalWeight;
-  double? itemsTotalAmount;
+  double? subTotalAmount;
 
   double totalAmount;
   Transaction({
@@ -53,8 +54,8 @@ class Transaction implements BaseItem {
     this.discount,
     this.totalAsText,
     this.totalWeight,
-    this.itemsTotalAmount,
-    required this.totalAmount,
+    this.subTotalAmount, // before the discount
+    required this.totalAmount, // after discount
   });
 
   @override
@@ -78,7 +79,7 @@ class Transaction implements BaseItem {
       'totalAsText': totalAsText,
       'totalWeight': totalWeight,
       'totalAmount': totalAmount,
-      'itemsTotalAmount': itemsTotalAmount,
+      'subTotalAmount': subTotalAmount,
     };
   }
 
@@ -99,7 +100,7 @@ class Transaction implements BaseItem {
       totalAsText: map['totalAsText'],
       totalWeight: map['totalWeight'],
       totalAmount: map['totalAmount'],
-      itemsTotalAmount: map['itemsTotalAmount'],
+      subTotalAmount: map['subTotalAmount'],
     );
   }
 

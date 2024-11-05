@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
-import 'package:tablets/src/common/functions/translate.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
@@ -29,11 +29,14 @@ class TransactionForm extends ConsumerWidget {
       TransactionType.vendorReceipt.name: S.of(context).transaction_type_vendor_receipt,
       TransactionType.gifts.name: S.of(context).transaction_type_gifts,
       TransactionType.expenditures.name: S.of(context).transaction_type_expenditures,
+      TransactionType.damagedItems.name: S.of(context).transaction_type_damaged_items,
     };
     if (transactionType == TransactionType.customerInvoice.name) {
       return InvoiceForm(titles[transactionType]!, includeSalesman: true, includeGifts: true);
     }
-    if (transactionType == TransactionType.vendorInvoice.name) return InvoiceForm(titles[transactionType]!);
+    if (transactionType == TransactionType.vendorInvoice.name) {
+      return InvoiceForm(titles[transactionType]!);
+    }
     if (transactionType == TransactionType.customerReturn.name) {
       return InvoiceForm(titles[transactionType]!, includeSalesman: true);
     }
@@ -58,11 +61,12 @@ class TransactionForm extends ConsumerWidget {
     );
   }
 
-  List<Widget> _actionButtons(BuildContext context, ItemFormController formController, ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier) {
+  List<Widget> _actionButtons(BuildContext context, ItemFormController formController,
+      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier) {
     return [
       IconButton(
-        onPressed: () => _onSavePressed(context, formController, formDataNotifier, formImagesNotifier),
+        onPressed: () =>
+            _onSavePressed(context, formController, formDataNotifier, formImagesNotifier),
         icon: const SaveIcon(),
       ),
       IconButton(
@@ -71,14 +75,15 @@ class TransactionForm extends ConsumerWidget {
       ),
       if (isEditMode)
         IconButton(
-          onPressed: () => _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController),
+          onPressed: () =>
+              _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController),
           icon: const DeleteIcon(),
         ),
     ];
   }
 
-  void _onSavePressed(BuildContext context, ItemFormController formController, ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier) {
+  void _onSavePressed(BuildContext context, ItemFormController formController,
+      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier) {
     if (!formController.validateData()) return;
     formController.submitData();
     final updateFormData = formDataNotifier.data;
@@ -89,7 +94,7 @@ class TransactionForm extends ConsumerWidget {
 
   Future<void> _onDeletePressed(BuildContext context, ItemFormData formDataNotifier,
       ImageSliderNotifier formImagesNotifier, ItemFormController formController) async {
-    final message = translateCurrency(context, formDataNotifier.data['name']);
+    final message = translateDbString(context, formDataNotifier.data['name']);
     final confirmation = await showDeleteConfirmationDialog(context: context, message: message);
     if (confirmation != null) {
       final imageUrls = formImagesNotifier.saveChanges();

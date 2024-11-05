@@ -22,6 +22,7 @@ class TransactionTypeSelection extends ConsumerWidget {
       S.of(context).transaction_type_gifts,
       S.of(context).transaction_type_customer_return,
       S.of(context).transaction_type_vender_return,
+      S.of(context).transaction_type_damaged_items,
     ];
 
     final List<String> formTypes = [
@@ -33,6 +34,7 @@ class TransactionTypeSelection extends ConsumerWidget {
       TransactionType.gifts.name,
       TransactionType.customerReturn.name,
       TransactionType.vendorReturn.name,
+      TransactionType.damagedItems.name,
     ];
 
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
@@ -44,12 +46,12 @@ class TransactionTypeSelection extends ConsumerWidget {
       scrollable: true,
       content: Container(
         padding: const EdgeInsets.all(25),
-        width: 600,
-        height: 600,
+        width: 800,
+        height: 560,
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // Number of columns
-            childAspectRatio: 2, // Aspect ratio of each card
+            crossAxisCount: 3, // Number of columns
+            childAspectRatio: 1.5, // Aspect ratio of each card
           ),
           itemCount: names.length,
           itemBuilder: (context, index) {

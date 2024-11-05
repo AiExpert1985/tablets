@@ -111,6 +111,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
+        "no": MessageLookupByLibrary.simpleMessage("لا"),
         "number": MessageLookupByLibrary.simpleMessage("الرقم"),
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
@@ -201,6 +202,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("وصل قبض"),
         "transaction_type_customer_return":
             MessageLookupByLibrary.simpleMessage("ارجاع زبون"),
+        "transaction_type_damaged_items":
+            MessageLookupByLibrary.simpleMessage("قائمة اتلاف مواد"),
         "transaction_type_expenditures":
             MessageLookupByLibrary.simpleMessage("مصاريف"),
         "transaction_type_gifts": MessageLookupByLibrary.simpleMessage("هدية"),
@@ -214,6 +217,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_category":
             MessageLookupByLibrary.simpleMessage("تعديل معلومات الصنف"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("الصلاحيات"),
-        "warning": MessageLookupByLibrary.simpleMessage("تحذير")
+        "vendors": MessageLookupByLibrary.simpleMessage("المجهزين"),
+        "warning": MessageLookupByLibrary.simpleMessage("تحذير"),
+        "yes": MessageLookupByLibrary.simpleMessage("نعم")
       };
 }

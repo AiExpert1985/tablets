@@ -1010,61 +1010,71 @@ class S {
     );
   }
 
-  /// `CustomerReceipt`
+  /// `Customer Receipt`
   String get transaction_type_customer_receipt {
     return Intl.message(
-      'CustomerReceipt',
+      'Customer Receipt',
       name: 'transaction_type_customer_receipt',
       desc: '',
       args: [],
     );
   }
 
-  /// `VendorReceipt`
+  /// `Vendor Receipt`
   String get transaction_type_vendor_receipt {
     return Intl.message(
-      'VendorReceipt',
+      'Vendor Receipt',
       name: 'transaction_type_vendor_receipt',
       desc: '',
       args: [],
     );
   }
 
-  /// `VenderReturn`
+  /// `Vender Return`
   String get transaction_type_vender_return {
     return Intl.message(
-      'VenderReturn',
+      'Vender Return',
       name: 'transaction_type_vender_return',
       desc: '',
       args: [],
     );
   }
 
-  /// `CustomerReturn`
+  /// `Customer Return`
   String get transaction_type_customer_return {
     return Intl.message(
-      'CustomerReturn',
+      'Customer Return',
       name: 'transaction_type_customer_return',
       desc: '',
       args: [],
     );
   }
 
-  /// `VenderInvoice`
+  /// `Vender Invoice`
   String get transaction_type_vender_invoice {
     return Intl.message(
-      'VenderInvoice',
+      'Vender Invoice',
       name: 'transaction_type_vender_invoice',
       desc: '',
       args: [],
     );
   }
 
-  /// `CustomerInvoice`
+  /// `Customer Invoice`
   String get transaction_type_customer_invoice {
     return Intl.message(
-      'CustomerInvoice',
+      'Customer Invoice',
       name: 'transaction_type_customer_invoice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Damaged Items`
+  String get transaction_type_damaged_items {
+    return Intl.message(
+      'Damaged Items',
+      name: 'transaction_type_damaged_items',
       desc: '',
       args: [],
     );
@@ -1265,6 +1275,36 @@ class S {
     return Intl.message(
       'Include payment as text',
       name: 'include_total_as_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `yes`
+  String get yes {
+    return Intl.message(
+      'yes',
+      name: 'yes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get no {
+    return Intl.message(
+      'No',
+      name: 'no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vendors`
+  String get vendors {
+    return Intl.message(
+      'Vendors',
+      name: 'vendors',
       desc: '',
       args: [],
     );

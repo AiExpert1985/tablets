@@ -18,10 +18,14 @@ class MainDrawer extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   child: Column(children: [
                     MainDrawerButton(
-                        iconName: 'products', title: S.of(context).products, routeName: AppRoute.products.name),
+                        iconName: 'products',
+                        title: S.of(context).products,
+                        routeName: AppRoute.products.name),
                     VerticalGap.s,
                     MainDrawerButton(
-                        iconName: 'categories', title: S.of(context).categories, routeName: AppRoute.categories.name),
+                        iconName: 'categories',
+                        title: S.of(context).categories,
+                        routeName: AppRoute.categories.name),
                     VerticalGap.s,
                     MainDrawerButton(
                         iconName: 'transactions',
@@ -29,13 +33,24 @@ class MainDrawer extends StatelessWidget {
                         routeName: AppRoute.transactions.name),
                     VerticalGap.s,
                     MainDrawerButton(
-                        iconName: 'salesman', title: S.of(context).salesmen, routeName: AppRoute.salesman.name),
+                        iconName: 'salesman',
+                        title: S.of(context).salesmen,
+                        routeName: AppRoute.salesman.name),
                     VerticalGap.s,
                     MainDrawerButton(
-                        iconName: 'customers', title: S.of(context).customers, routeName: AppRoute.customers.name),
+                        iconName: 'customers',
+                        title: S.of(context).customers,
+                        routeName: AppRoute.customers.name),
                     VerticalGap.s,
                     MainDrawerButton(
-                        iconName: 'settings', title: S.of(context).settings, routeName: AppRoute.settings.name),
+                        iconName: 'vendors',
+                        title: S.of(context).vendors,
+                        routeName: AppRoute.vendors.name),
+                    VerticalGap.s,
+                    MainDrawerButton(
+                        iconName: 'settings',
+                        title: S.of(context).settings,
+                        routeName: AppRoute.settings.name),
                     PushWidgets.toEnd,
                     MainDrawerButton(
                         iconName: 'pending_transactions',
@@ -81,7 +96,8 @@ class MainDrawerHeader extends StatelessWidget {
 }
 
 class MainDrawerButton extends StatelessWidget {
-  const MainDrawerButton({required this.iconName, required this.title, required this.routeName, super.key});
+  const MainDrawerButton(
+      {required this.iconName, required this.title, required this.routeName, super.key});
 
   final String iconName;
   final String title;

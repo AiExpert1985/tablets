@@ -11,5 +11,6 @@ enum TransactionType {
   vendorReturn,
   customerReturn,
   vendorInvoice,
-  customerInvoice
+  customerInvoice,
+  damagedItems
 }

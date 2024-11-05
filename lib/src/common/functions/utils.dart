@@ -4,6 +4,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/functions/debug_print.dart' as debug;
 import 'package:image/image.dart' as img;
+import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/features/settings/model/settings.dart';
+import 'package:tablets/src/common/values/constants.dart';
+
+String translateDbString(BuildContext context, String dbName) {
+  final Map<String, String> lookup = {
+    TransactionType.expenditures.name: S.of(context).transaction_type_expenditures,
+    TransactionType.gifts.name: S.of(context).transaction_type_gifts,
+    TransactionType.customerReceipt.name: S.of(context).transaction_type_customer_receipt,
+    TransactionType.vendorReceipt.name: S.of(context).transaction_type_vendor_receipt,
+    TransactionType.vendorReturn.name: S.of(context).transaction_type_vender_return,
+    TransactionType.customerReturn.name: S.of(context).transaction_type_customer_return,
+    TransactionType.vendorInvoice.name: S.of(context).transaction_type_vender_invoice,
+    TransactionType.customerInvoice.name: S.of(context).transaction_type_customer_invoice,
+    Currency.dinar.name: S.of(context).transaction_payment_Dinar,
+    Currency.dollar.name: S.of(context).transaction_payment_Dollar,
+    PaymentType.credit.name: S.of(context).transaction_payment_credit,
+    PaymentType.cash.name: S.of(context).transaction_payment_cash,
+    'true': S.of(context).yes,
+    'false': S.of(context).no,
+  };
+  return lookup[dbName] ?? dbName;
+}
 
 String generateRandomString({int len = 5}) {
   var r = Random();
@@ -50,7 +73,8 @@ InputDecoration formFieldDecoration({String? label, bool hideBorders = false}) {
   );
 }
 
-List<Map<String, dynamic>> convertAsyncValueListToList(AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
+List<Map<String, dynamic>> convertAsyncValueListToList(
+    AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
   return asyncProductList.when(
       data: (products) => products,
       error: (e, st) {

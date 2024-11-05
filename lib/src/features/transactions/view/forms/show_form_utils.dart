@@ -18,7 +18,8 @@ class TransactionShowFormUtils {
     Transaction? transaction,
   }) {
     if (formType == null && transaction?.transactionType == null) {
-      errorPrint('both formType and transaction can not be null, one of them is needed for transactionType');
+      errorPrint(
+          'both formType and transaction can not be null, one of them is needed for transactionType');
       return;
     }
     String transactionType = formType ?? transaction?.transactionType as String;
@@ -36,7 +37,8 @@ class TransactionShowFormUtils {
     });
   }
 
-  static void initializeFormData(BuildContext context, ItemFormData formDataNotifier, String transactionType,
+  static void initializeFormData(
+      BuildContext context, ItemFormData formDataNotifier, String transactionType,
       {Transaction? transaction}) {
     formDataNotifier.initialize(initialData: transaction?.toMap());
     if (transaction != null) return; // if we are in edit, we don't need further initialization
@@ -49,7 +51,7 @@ class TransactionShowFormUtils {
       dateKey: DateTime.now(),
       totalAmountKey: 0,
       totalWeightKey: 0,
-      itemsTotalAmountKey: 0,
+      subTotalAmountKey: 0,
       nameKey: null,
       salesmanKey: null,
       numberKey: null,
@@ -81,7 +83,8 @@ class TransactionShowFormUtils {
       // formData like itemWeight & totalItemAmounts doesn't comply to these two condistions
       final totalAmount = formDataNotifier.getProperty(totalAmountKey);
       final totalWeight = formDataNotifier.getProperty(totalWeightKey);
-      textEditingNotifier.updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
+      textEditingNotifier
+          .updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
     }
   }
 }

@@ -1,14 +1,11 @@
-Daily Tasks:
-    ☐ Use controllers for items
-    ☐ decoration of total price
-    ☐ adding total weight
-
 Tasks:
-    ☐ make list orderable by clicking on any title (especially in transactions)
-    ☐ in category, S.of(context).product_name is used instead category, transaction might be also same protection agains the case where:
-        ☐ a docuement is deleted while its reference is used in another place, example: delete a category used in an item
-            one solution is to create a default category used in any case where original category isn't found
-    ☐ make Exapanded inside the field widget not the Form
+    ☐ جعل ارقام قوائم الزبائن اوتوماتيكية
+    ☐ اب اب اب
+
+Improvements:
+    ☐ امكانية ترتيب القوائم بضغطة زر حسب العمور الذي تم اختياره
+
+After Finish:
     ☐ read about the reaons for using the global error capture and print in main.dart
 
 Instructions:
@@ -19,12 +16,6 @@ CMD:
     flutter run -d chrome --web-port 57372
     https://tablets-519a0.web.app/home
 
-Study:
-    8:15 = 1
-    9:15 = 2
-    10:00 = 3
-    11:00 = 3
-    12:45 = 2
     
 
   

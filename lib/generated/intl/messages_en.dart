@@ -112,6 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "no": MessageLookupByLibrary.simpleMessage("No"),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
         "page_not_found":
             MessageLookupByLibrary.simpleMessage("Page is not found"),
@@ -199,24 +200,28 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_type":
             MessageLookupByLibrary.simpleMessage("Transaction type"),
         "transaction_type_customer_invoice":
-            MessageLookupByLibrary.simpleMessage("CustomerInvoice"),
+            MessageLookupByLibrary.simpleMessage("Customer Invoice"),
         "transaction_type_customer_receipt":
-            MessageLookupByLibrary.simpleMessage("CustomerReceipt"),
+            MessageLookupByLibrary.simpleMessage("Customer Receipt"),
         "transaction_type_customer_return":
-            MessageLookupByLibrary.simpleMessage("CustomerReturn"),
+            MessageLookupByLibrary.simpleMessage("Customer Return"),
+        "transaction_type_damaged_items":
+            MessageLookupByLibrary.simpleMessage("Damaged Items"),
         "transaction_type_expenditures":
             MessageLookupByLibrary.simpleMessage("Expenditures"),
         "transaction_type_gifts": MessageLookupByLibrary.simpleMessage("Gifts"),
         "transaction_type_vender_invoice":
-            MessageLookupByLibrary.simpleMessage("VenderInvoice"),
+            MessageLookupByLibrary.simpleMessage("Vender Invoice"),
         "transaction_type_vender_return":
-            MessageLookupByLibrary.simpleMessage("VenderReturn"),
+            MessageLookupByLibrary.simpleMessage("Vender Return"),
         "transaction_type_vendor_receipt":
-            MessageLookupByLibrary.simpleMessage("VendorReceipt"),
+            MessageLookupByLibrary.simpleMessage("Vendor Receipt"),
         "transactions": MessageLookupByLibrary.simpleMessage("Transactions"),
         "update_category":
             MessageLookupByLibrary.simpleMessage("Update category"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("Privilage"),
-        "warning": MessageLookupByLibrary.simpleMessage("Warning")
+        "vendors": MessageLookupByLibrary.simpleMessage("Vendors"),
+        "warning": MessageLookupByLibrary.simpleMessage("Warning"),
+        "yes": MessageLookupByLibrary.simpleMessage("yes")
       };
 }
