@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
@@ -18,12 +19,27 @@ class TransactionForm extends ConsumerWidget {
   final bool isEditMode; // used by formController to decide whether to save or update in db
   final String transactionType;
 
-  Widget _getFormWidget(String transactionType) {
+  Widget _getFormWidget(BuildContext context, String transactionType) {
+    final titles = {
+      TransactionType.customerInvoice.name: S.of(context).transaction_type_customer_invoice,
+      TransactionType.vendorInvoice.name: S.of(context).transaction_type_vender_invoice,
+      TransactionType.customerReturn.name: S.of(context).transaction_type_customer_return,
+      TransactionType.vendorReturn.name: S.of(context).transaction_type_vender_return,
+      TransactionType.customerReceipt.name: S.of(context).transaction_type_customer_receipt,
+      TransactionType.vendorReceipt.name: S.of(context).transaction_type_vendor_receipt,
+      TransactionType.gifts.name: S.of(context).transaction_type_gifts,
+      TransactionType.expenditures.name: S.of(context).transaction_type_expenditures,
+    };
     if (transactionType == TransactionType.customerInvoice.name) {
-      return const InvoiceForm(includeSalesman: true, includeGifts: true);
+      return InvoiceForm(titles[transactionType]!, includeSalesman: true, includeGifts: true);
     }
-    if (transactionType == TransactionType.venderInvoice.name) return const InvoiceForm();
-    if (transactionType == TransactionType.customerReturn.name) return const InvoiceForm(includeSalesman: true);
+    if (transactionType == TransactionType.vendorInvoice.name) return InvoiceForm(titles[transactionType]!);
+    if (transactionType == TransactionType.customerReturn.name) {
+      return InvoiceForm(titles[transactionType]!, includeSalesman: true);
+    }
+    if (transactionType == TransactionType.vendorReturn.name) {
+      return InvoiceForm(titles[transactionType]!);
+    }
     return const Center(child: Text('Error happend while loading transaction form'));
   }
 
@@ -35,7 +51,7 @@ class TransactionForm extends ConsumerWidget {
     ref.watch(imagePickerProvider);
     return FormFrame(
       formKey: formController.formKey,
-      fields: _getFormWidget(transactionType),
+      fields: _getFormWidget(context, transactionType),
       buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier),
       width: transactionFormDimenssions[transactionType]['width'],
       height: transactionFormDimenssions[transactionType]['height'],

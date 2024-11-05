@@ -8,8 +8,7 @@ import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
-import 'package:tablets/src/features/transactions/view/common_utils/item_cell.dart';
-import 'package:tablets/src/features/transactions/view/common_utils/common_values.dart';
+import 'package:tablets/src/features/transactions/view/forms/common_values.dart';
 
 const double sequenceColumnWidth = customerInvoiceFormWidth * 0.055;
 const double nameColumnWidth = customerInvoiceFormWidth * 0.345;
@@ -265,4 +264,23 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
     ),
     isLast: isLast,
   );
+}
+
+Widget buildDataCell(width, cell, {height = 45, isTitle = false, isFirst = false, isLast = false}) {
+  return Container(
+      decoration: BoxDecoration(
+        border: Border(
+            left: !isLast ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0) : BorderSide.none,
+            right: !isFirst ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0) : BorderSide.none,
+            bottom: const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0)),
+      ),
+      width: width,
+      height: height,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          cell,
+        ],
+      ));
 }

@@ -52,8 +52,7 @@ InputDecoration formFieldDecoration({String? label, bool hideBorders = false}) {
   );
 }
 
-List<Map<String, dynamic>> convertAsyncValueListToList(
-    AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
+List<Map<String, dynamic>> convertAsyncValueListToList(AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
   return asyncProductList.when(
       data: (products) => products,
       error: (e, st) {
@@ -72,9 +71,9 @@ String transactionTypeDbNameToScreenName(BuildContext context, String dbName) {
     TransactionType.gifts.name: S.of(context).transaction_type_gifts,
     TransactionType.customerReceipt.name: S.of(context).transaction_type_customer_receipt,
     TransactionType.vendorReceipt.name: S.of(context).transaction_type_vendor_receipt,
-    TransactionType.venderReturn.name: S.of(context).transaction_type_vender_return,
+    TransactionType.vendorReturn.name: S.of(context).transaction_type_vender_return,
     TransactionType.customerReturn.name: S.of(context).transaction_type_customer_return,
-    TransactionType.venderInvoice.name: S.of(context).transaction_type_vender_invoice,
+    TransactionType.vendorInvoice.name: S.of(context).transaction_type_vender_invoice,
     TransactionType.customerInvoice.name: S.of(context).transaction_type_customer_invoice
   };
   return trasactionTypeLookup[dbName] ?? dbName;
@@ -86,9 +85,9 @@ String transactionTypeScreenNameToDbName(BuildContext context, String screenName
     S.of(context).transaction_type_gifts: TransactionType.gifts.name,
     S.of(context).transaction_type_customer_receipt: TransactionType.customerReceipt.name,
     S.of(context).transaction_type_vendor_receipt: TransactionType.vendorReceipt.name,
-    S.of(context).transaction_type_vender_return: TransactionType.venderReturn.name,
+    S.of(context).transaction_type_vender_return: TransactionType.vendorReturn.name,
     S.of(context).transaction_type_customer_return: TransactionType.customerReturn.name,
-    S.of(context).transaction_type_vender_invoice: TransactionType.venderInvoice.name,
+    S.of(context).transaction_type_vender_invoice: TransactionType.vendorInvoice.name,
     S.of(context).transaction_type_customer_invoice: TransactionType.customerInvoice.name
   };
   return trasactionTypeLookup[screenName] ?? screenName;

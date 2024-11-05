@@ -18,12 +18,13 @@ import 'package:tablets/src/features/products/repository/product_repository_prov
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
-import 'package:tablets/src/features/transactions/view/common_utils/item_list.dart';
-import 'package:tablets/src/features/transactions/view/common_utils/common_values.dart';
+import 'package:tablets/src/features/transactions/view/forms/invoice_item_list.dart';
+import 'package:tablets/src/features/transactions/view/forms/common_values.dart';
 
 class InvoiceForm extends ConsumerWidget {
-  const InvoiceForm({this.includeSalesman = false, this.includeGifts = false, super.key});
+  const InvoiceForm(this.title, {this.includeSalesman = false, this.includeGifts = false, super.key});
 
+  final String title;
   final bool includeSalesman;
   final bool includeGifts;
 
@@ -42,7 +43,7 @@ class InvoiceForm extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildFormTitle(S.of(context).transaction_type_customer_invoice),
+            buildFormTitle(title),
             VerticalGap.xl,
             _buildFirstRow(context, formDataNotifier, customerRepository, salesmanRepository, includeSalesman),
             VerticalGap.m,

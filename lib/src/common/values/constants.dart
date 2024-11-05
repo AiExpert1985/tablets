@@ -8,8 +8,8 @@ enum TransactionType {
   gifts,
   customerReceipt,
   vendorReceipt,
-  venderReturn,
+  vendorReturn,
   customerReturn,
-  venderInvoice,
+  vendorInvoice,
   customerInvoice
 }
