@@ -49,13 +49,14 @@ class TransactionShowFormUtils {
       dateKey: DateTime.now(),
       totalAmountKey: 0,
       totalWeightKey: 0,
+      itemsTotalAmountKey: 0,
       nameKey: null,
       salesmanKey: null,
       numberKey: null,
       totalAsTextKey: null,
       notesKey: null,
     });
-    formDataNotifier.updateSubProperties(itemsKey, emptyCustomerInvoiceItem);
+    formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem);
   }
 
   // for below text field we need to add  controllers because the are updated by other fields
@@ -75,6 +76,9 @@ class TransactionShowFormUtils {
         itemTotalAmountKey: soldQuantity == null || price == null ? 0 : soldQuantity * price,
         itemTotalWeightKey: soldQuantity == null || weight == null ? 0 : soldQuantity * weight,
       });
+      // I create textEditingControllers for fields that:
+      // (1) changed by other fields (2) displayed in UI
+      // formData like itemWeight & totalItemAmounts doesn't comply to these two condistions
       final totalAmount = formDataNotifier.getProperty(totalAmountKey);
       final totalWeight = formDataNotifier.getProperty(totalWeightKey);
       textEditingNotifier.updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});

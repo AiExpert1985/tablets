@@ -18,8 +18,9 @@ const String itemSoldQuantityKey = 'soldQuantity';
 const String itemGiftQuantityKey = 'giftQuantity';
 const String itemTotalAmountKey = 'itemTotalAmount';
 const String itemTotalWeightKey = 'itemTotalWeight';
+const String itemsTotalAmountKey = 'itemsTotalAmount';
 
-Map<String, dynamic> emptyCustomerInvoiceItem = {
+Map<String, dynamic> emptyInvoiceItem = {
   nameKey: '',
   itemPriceKey: 0,
   itemWeightKey: 0,
@@ -28,18 +29,3 @@ Map<String, dynamic> emptyCustomerInvoiceItem = {
   itemTotalAmountKey: 0,
   itemTotalWeightKey: 0,
 };
-
-// final customerInvoiceProperties = [
-//   currencyKey,
-//   paymentTypeKey,
-//   discountKey,
-//   transactionTypeKey,
-//   dateKey,
-//   totalAmountKey,
-//   totalWeightKey,
-//   nameKey,
-//   salesmanKey,
-//   numberKey,
-//   totalAsTextKey,
-//   notesKey
-// ];

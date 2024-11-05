@@ -91,7 +91,7 @@ List<Widget> _buildDataRows(ItemFormData formDataNotifier, TextControllerNotifie
 Widget _buildAddItemButton(ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
   return IconButton(
     onPressed: () {
-      formDataNotifier.updateSubProperties(itemsKey, emptyCustomerInvoiceItem);
+      formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem);
       textEditingNotifier.updateSubControllers(itemsKey, {
         itemPriceKey: 0,
         itemSoldQuantityKey: 0,
@@ -114,7 +114,7 @@ Widget _buildDeleteItemButton(
           final items = formDataNotifier.getProperty(itemsKey);
           // if there is only one item, it is not deleted, but formData & textEditingData is reseted
           if (items is List && items.length <= 1) {
-            formDataNotifier.updateSubProperties(itemsKey, emptyCustomerInvoiceItem, index: 0);
+            formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem, index: 0);
           } else {
             formDataNotifier.removeSubProperties(itemsKey, index);
             textEditingNotifier.removeSubController(itemsKey, index, itemPriceKey);
@@ -255,9 +255,12 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
         };
         formDataNotifier.updateSubProperties(property, updatedSubProperties, index: index);
         textEditingNotifier.updateSubControllers(property, updatedSubProperties, index: index);
-        final totalAmount = _getTotal(formDataNotifier, property, itemTotalAmountKey);
-        final totalWeight = _getTotal(formDataNotifier, property, itemTotalWeightKey);
-        final updatedProperties = {totalAmountKey: totalAmount, totalWeightKey: totalWeight};
+        final itemsTotalAmount = _getTotal(formDataNotifier, property, itemTotalAmountKey);
+        formDataNotifier.updateProperties({itemsTotalAmountKey: itemsTotalAmount});
+        final itemsTotalWeight = _getTotal(formDataNotifier, property, itemTotalWeightKey);
+        final discount = formDataNotifier.getProperty(discountKey);
+        final totalAmount = itemsTotalAmount - discount;
+        final updatedProperties = {totalAmountKey: totalAmount, totalWeightKey: itemsTotalWeight};
         formDataNotifier.updateProperties(updatedProperties);
         textEditingNotifier.updateControllers(updatedProperties);
       },

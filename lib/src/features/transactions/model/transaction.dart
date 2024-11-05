@@ -32,6 +32,8 @@ class Transaction implements BaseItem {
   double? discount;
   String? totalAsText;
   double? totalWeight;
+  double? itemsTotalAmount;
+
   double totalAmount;
   Transaction({
     //required for all classes (BaseItem implementation)
@@ -51,6 +53,7 @@ class Transaction implements BaseItem {
     this.discount,
     this.totalAsText,
     this.totalWeight,
+    this.itemsTotalAmount,
     required this.totalAmount,
   });
 
@@ -75,6 +78,7 @@ class Transaction implements BaseItem {
       'totalAsText': totalAsText,
       'totalWeight': totalWeight,
       'totalAmount': totalAmount,
+      'itemsTotalAmount': itemsTotalAmount,
     };
   }
 
@@ -95,6 +99,7 @@ class Transaction implements BaseItem {
       totalAsText: map['totalAsText'],
       totalWeight: map['totalWeight'],
       totalAmount: map['totalAmount'],
+      itemsTotalAmount: map['itemsTotalAmount'],
     );
   }
 

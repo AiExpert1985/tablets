@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/values/settings.dart' as settings;
@@ -47,7 +48,7 @@ class InvoiceForm extends ConsumerWidget {
             VerticalGap.xl,
             _buildFirstRow(context, formDataNotifier, customerRepository, salesmanRepository, includeSalesman),
             VerticalGap.m,
-            _buildSecondRow(context, formDataNotifier),
+            _buildSecondRow(context, formDataNotifier, textEditingNotifier),
             VerticalGap.m,
             _buildThirdRow(context, formDataNotifier),
             VerticalGap.m,
@@ -106,7 +107,8 @@ class InvoiceForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildSecondRow(BuildContext context, ItemFormData formDataNotifier) {
+  Widget _buildSecondRow(
+      BuildContext context, ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
     return Row(
       children: [
         DropDownListFormField(
@@ -129,6 +131,11 @@ class InvoiceForm extends ConsumerWidget {
           label: S.of(context).transaction_discount,
           onChangedFn: (value) {
             formDataNotifier.updateProperties({discountKey: value});
+            final itemsTotalAmount = formDataNotifier.getProperty(itemsTotalAmountKey);
+            final totalAmount = itemsTotalAmount - value;
+            final updatedProperties = {totalAmountKey: totalAmount};
+            formDataNotifier.updateProperties(updatedProperties);
+            textEditingNotifier.updateControllers(updatedProperties);
           },
         ),
       ],
