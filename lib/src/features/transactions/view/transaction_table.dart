@@ -14,7 +14,7 @@ import 'package:tablets/src/features/transactions/controllers/transaction_filter
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
-import 'package:tablets/src/features/transactions/view/forms/common_utils/transaction_show_form_utils.dart';
+import 'package:tablets/src/features/transactions/view/common_utils/transaction_show_form_utils.dart';
 
 class TransactionsList extends ConsumerWidget {
   const TransactionsList({super.key});
@@ -26,9 +26,8 @@ class TransactionsList extends ConsumerWidget {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final transactionStream = ref.watch(transactionStreamProvider);
     final filterIsOn = ref.watch(transactionFilterSwitchProvider);
-    final transactionsListValue = filterIsOn
-        ? ref.read(transactionFilteredListProvider).getFilteredList()
-        : transactionStream;
+    final transactionsListValue =
+        filterIsOn ? ref.read(transactionFilteredListProvider).getFilteredList() : transactionStream;
 
     return AsyncValueWidget<List<Map<String, dynamic>>>(
       value: transactionsListValue,
@@ -45,8 +44,8 @@ class TransactionsList extends ConsumerWidget {
                   itemCount: transactions.length,
                   itemBuilder: (context, index) {
                     final transaction = Transaction.fromMap(transactions[index]);
-                    return _buildTransactionRow(transaction, context, imagePickerNotifier,
-                        formDataNotifier, textEditingNotifier);
+                    return _buildTransactionRow(
+                        transaction, context, imagePickerNotifier, formDataNotifier, textEditingNotifier);
                   },
                 ),
               ),
@@ -70,14 +69,9 @@ class TransactionsList extends ConsumerWidget {
     );
   }
 
-  Widget _buildTransactionRow(
-      Transaction transaction,
-      BuildContext context,
-      ImageSliderNotifier imagePickerNotifier,
-      ItemFormData formDataNotifier,
-      TextControllerNotifier textEditingNotifier) {
-    final transactionTypeScreenName =
-        transactionTypeDbNameToScreenName(context, transaction.transactionType);
+  Widget _buildTransactionRow(Transaction transaction, BuildContext context, ImageSliderNotifier imagePickerNotifier,
+      ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
+    final transactionTypeScreenName = transactionTypeDbNameToScreenName(context, transaction.transactionType);
 
     return Column(
       children: [

@@ -5,12 +5,38 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/features/transactions/view/forms/common_utils/common_values.dart';
+import 'package:tablets/src/features/transactions/view/common_utils/common_values.dart';
 import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
 class TransactionShowFormUtils {
-  static void initializeFormData(
-      BuildContext context, ItemFormData formDataNotifier, String transactionType,
+  static void showForm(
+    BuildContext context,
+    ImageSliderNotifier imagePickerNotifier,
+    ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier, {
+    String? formType,
+    Transaction? transaction,
+  }) {
+    if (formType == null && transaction?.transactionType == null) {
+      errorPrint('both formType and transaction can not be null, one of them is needed for transactionType');
+      return;
+    }
+    String transactionType = formType ?? transaction?.transactionType as String;
+    imagePickerNotifier.initialize();
+    initializeFormData(context, formDataNotifier, transactionType, transaction: transaction);
+    initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
+    bool isEditMode = transaction != null;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType),
+    ).whenComplete(() {
+      imagePickerNotifier.close();
+      textEditingNotifier.disposeControllers();
+    });
+  }
+
+  static void initializeFormData(BuildContext context, ItemFormData formDataNotifier, String transactionType,
       {Transaction? transaction}) {
     formDataNotifier.initialize(initialData: transaction?.toMap());
     if (transaction != null) return; // if we are in edit, we don't need further initialization
@@ -51,36 +77,7 @@ class TransactionShowFormUtils {
       });
       final totalAmount = formDataNotifier.getProperty(totalAmountKey);
       final totalWeight = formDataNotifier.getProperty(totalWeightKey);
-      textEditingNotifier
-          .updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
+      textEditingNotifier.updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
     }
-  }
-
-  static void showForm(
-    BuildContext context,
-    ImageSliderNotifier imagePickerNotifier,
-    ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingNotifier, {
-    String? formType,
-    Transaction? transaction,
-  }) {
-    if (formType == null && transaction?.transactionType == null) {
-      errorPrint(
-          'both formType and transaction can not be null, one of them is needed for transactionType');
-      return;
-    }
-    String transactionType = formType ?? transaction?.transactionType as String;
-    imagePickerNotifier.initialize();
-    initializeFormData(context, formDataNotifier, transactionType, transaction: transaction);
-    initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
-    bool isEditMode = transaction != null;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType),
-    ).whenComplete(() {
-      imagePickerNotifier.close();
-      textEditingNotifier.disposeControllers();
-    });
   }
 }

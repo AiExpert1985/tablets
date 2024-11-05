@@ -8,8 +8,8 @@ import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
-import 'package:tablets/src/features/transactions/view/forms/common_utils/item_cell.dart';
-import 'package:tablets/src/features/transactions/view/forms/common_utils/common_values.dart';
+import 'package:tablets/src/features/transactions/view/common_utils/item_cell.dart';
+import 'package:tablets/src/features/transactions/view/common_utils/common_values.dart';
 
 const double sequenceColumnWidth = customerInvoiceFormWidth * 0.055;
 const double nameColumnWidth = customerInvoiceFormWidth * 0.345;
@@ -18,8 +18,8 @@ const double soldQuantityColumnWidth = customerInvoiceFormWidth * 0.1;
 const double giftQuantityColumnWidth = customerInvoiceFormWidth * 0.1;
 const double soldTotalAmountColumnWidth = customerInvoiceFormWidth * 0.17;
 
-Widget buildItemList(BuildContext context, ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingNotifier, DbRepository productRepository) {
+Widget buildItemList(BuildContext context, ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier,
+    DbRepository productRepository, bool includeGift) {
   return Container(
     height: 350,
     decoration: BoxDecoration(
@@ -30,63 +30,83 @@ Widget buildItemList(BuildContext context, ItemFormData formDataNotifier,
     child: SingleChildScrollView(
       child: Column(
         children: [
-          _buildColumnTitles(context, formDataNotifier, textEditingNotifier),
-          ..._buildDataRows(formDataNotifier, textEditingNotifier, productRepository),
+          _buildColumnTitles(context, formDataNotifier, textEditingNotifier, includeGift),
+          ..._buildDataRows(formDataNotifier, textEditingNotifier, productRepository, includeGift),
         ],
       ),
     ),
   );
 }
 
-List<Widget> _buildDataRows(ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingNotifier, DbRepository productRepository) {
+List<Widget> _buildDataRows(ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier,
+    DbRepository productRepository, bool includeGift) {
   if (!formDataNotifier.data.containsKey(itemsKey) || formDataNotifier.data[itemsKey] is! List) {
     return const [];
   }
   final items = formDataNotifier.data[itemsKey] as List<Map<String, dynamic>>;
   return List.generate(items.length, (index) {
-    if (!textEditingNotifier.data.containsKey(itemsKey) ||
-        textEditingNotifier.data[itemsKey]!.length <= index) {
+    if (!textEditingNotifier.data.containsKey(itemsKey) || textEditingNotifier.data[itemsKey]!.length <= index) {
       errorPrint('Warning: Missing TextEditingController for item index: $index');
       return const SizedBox.shrink(); // Return an empty widget if the controller is missing
     }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        // buildDataCell(sequenceColumnWidth, Text((index + 1).toString()), isFirst: true),
-        _buildDeleteItemButton(formDataNotifier, textEditingNotifier, index, sequenceColumnWidth,
-            isFirst: true),
-        _buildDropDownWithSearch(
-            formDataNotifier, textEditingNotifier, productRepository, index, nameColumnWidth),
-        _buildFormInputField(
-            formDataNotifier, index, priceColumnWidth, itemsKey, itemPriceKey, textEditingNotifier),
-        _buildFormInputField(formDataNotifier, index, soldQuantityColumnWidth, itemsKey,
-            itemSoldQuantityKey, textEditingNotifier),
-        _buildFormInputField(formDataNotifier, index, soldTotalAmountColumnWidth, itemsKey,
-            itemTotalAmountKey, textEditingNotifier,
-            // textEditingNotifier: textEditingNotifier,
-            isLast: true,
-            isReadOnly: true),
-      ],
+      children: includeGift
+          ? [
+              // buildDataCell(sequenceColumnWidth, Text((index + 1).toString()), isFirst: true),
+              _buildDeleteItemButton(formDataNotifier, textEditingNotifier, index, sequenceColumnWidth, isFirst: true),
+              _buildDropDownWithSearch(
+                  formDataNotifier, textEditingNotifier, productRepository, index, nameColumnWidth),
+              _buildFormInputField(
+                  formDataNotifier, index, priceColumnWidth, itemsKey, itemPriceKey, textEditingNotifier),
+              _buildFormInputField(
+                  formDataNotifier, index, soldQuantityColumnWidth, itemsKey, itemSoldQuantityKey, textEditingNotifier),
+              _buildFormInputField(
+                  formDataNotifier, index, giftQuantityColumnWidth, itemsKey, itemGiftQuantityKey, textEditingNotifier),
+              _buildFormInputField(formDataNotifier, index, soldTotalAmountColumnWidth, itemsKey, itemTotalAmountKey,
+                  textEditingNotifier,
+                  // textEditingNotifier: textEditingNotifier,
+                  isLast: true,
+                  isReadOnly: true),
+            ]
+          : [
+              // buildDataCell(sequenceColumnWidth, Text((index + 1).toString()), isFirst: true),
+              _buildDeleteItemButton(formDataNotifier, textEditingNotifier, index, sequenceColumnWidth, isFirst: true),
+              _buildDropDownWithSearch(
+                  formDataNotifier, textEditingNotifier, productRepository, index, nameColumnWidth),
+              _buildFormInputField(
+                  formDataNotifier, index, priceColumnWidth, itemsKey, itemPriceKey, textEditingNotifier),
+              _buildFormInputField(
+                  formDataNotifier, index, soldQuantityColumnWidth, itemsKey, itemSoldQuantityKey, textEditingNotifier),
+              _buildFormInputField(formDataNotifier, index, soldTotalAmountColumnWidth, itemsKey, itemTotalAmountKey,
+                  textEditingNotifier,
+                  // textEditingNotifier: textEditingNotifier,
+                  isLast: true,
+                  isReadOnly: true),
+            ],
     );
   });
 }
 
-Widget _buildAddItemButton(
-    ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
+Widget _buildAddItemButton(ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
   return IconButton(
     onPressed: () {
       formDataNotifier.updateSubProperties(itemsKey, emptyCustomerInvoiceItem);
-      textEditingNotifier.updateSubControllers(itemsKey,
-          {itemPriceKey: 0, itemSoldQuantityKey: 0, itemTotalAmountKey: 0, itemTotalWeightKey: 0});
+      textEditingNotifier.updateSubControllers(itemsKey, {
+        itemPriceKey: 0,
+        itemSoldQuantityKey: 0,
+        itemGiftQuantityKey: 0,
+        itemTotalAmountKey: 0,
+        itemTotalWeightKey: 0
+      });
     },
     icon: const Icon(Icons.add, color: Colors.green),
   );
 }
 
-Widget _buildDeleteItemButton(ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingNotifier, int index, double width,
+Widget _buildDeleteItemButton(
+    ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier, int index, double width,
     {bool isFirst = false}) {
   return buildDataCell(
       width,
@@ -102,48 +122,61 @@ Widget _buildDeleteItemButton(ItemFormData formDataNotifier,
           }
           final totalAmount = _getTotal(formDataNotifier, itemsKey, itemTotalAmountKey);
           final totalWeight = _getTotal(formDataNotifier, itemsKey, itemTotalWeightKey);
-          formDataNotifier
-              .updateProperties({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
-          textEditingNotifier
-              .updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
+          formDataNotifier.updateProperties({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
+          textEditingNotifier.updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
         },
         icon: const Icon(Icons.remove, color: Colors.red),
       ),
       isFirst: true);
 }
 
-Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingNotifier) {
-  final titles = [
-    _buildAddItemButton(formDataNotifier, textEditingNotifier),
-    Text(S.of(context).item_name),
-    Text(S.of(context).item_price),
-    Text(S.of(context).item_sold_quantity),
-    Text(S.of(context).item_total_price),
-  ];
+Widget _buildColumnTitles(
+    BuildContext context, ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier, bool includeGift) {
+  final titles = includeGift
+      ? [
+          _buildAddItemButton(formDataNotifier, textEditingNotifier),
+          Text(S.of(context).item_name),
+          Text(S.of(context).item_price),
+          Text(S.of(context).item_sold_quantity),
+          Text(S.of(context).item_gifts_quantity),
+          Text(S.of(context).item_total_price),
+        ]
+      : [
+          _buildAddItemButton(formDataNotifier, textEditingNotifier),
+          Text(S.of(context).item_name),
+          Text(S.of(context).item_price),
+          Text(S.of(context).item_sold_quantity),
+          Text(S.of(context).item_total_price),
+        ];
 
-  final widths = [
-    sequenceColumnWidth,
-    nameColumnWidth,
-    priceColumnWidth,
-    soldQuantityColumnWidth,
-    soldTotalAmountColumnWidth,
-  ];
+  final widths = includeGift
+      ? [
+          sequenceColumnWidth,
+          nameColumnWidth,
+          priceColumnWidth,
+          soldQuantityColumnWidth,
+          giftQuantityColumnWidth,
+          soldTotalAmountColumnWidth,
+        ]
+      : [
+          sequenceColumnWidth,
+          nameColumnWidth,
+          priceColumnWidth,
+          soldQuantityColumnWidth,
+          soldTotalAmountColumnWidth,
+        ];
 
-  return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        ...List.generate(titles.length, (index) {
-          return buildDataCell(
-            widths[index],
-            titles[index],
-            isTitle: true,
-            isFirst: index == 0,
-            isLast: index == titles.length - 1,
-          );
-        })
-      ]);
+  return Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+    ...List.generate(titles.length, (index) {
+      return buildDataCell(
+        widths[index],
+        titles[index],
+        isTitle: true,
+        isFirst: index == 0,
+        isLast: index == titles.length - 1,
+      );
+    })
+  ]);
 }
 
 dynamic _getTotal(ItemFormData formDataNotifier, String property, String subProperty) {
@@ -169,8 +202,8 @@ dynamic _getTotal(ItemFormData formDataNotifier, String property, String subProp
   return total;
 }
 
-Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingNotifier, dynamic repository, int index, double width) {
+Widget _buildDropDownWithSearch(ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier,
+    dynamic repository, int index, double width) {
   return buildDataCell(
     width,
     DropDownWithSearchFormField(
@@ -194,8 +227,8 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
   );
 }
 
-Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double width, String property,
-    String subProperty, TextControllerNotifier textEditingNotifier,
+Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double width, String property, String subProperty,
+    TextControllerNotifier textEditingNotifier,
     {bool isLast = false, isReadOnly = false}) {
   return buildDataCell(
     width,
