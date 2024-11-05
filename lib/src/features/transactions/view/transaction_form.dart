@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
-import 'package:tablets/src/common/functions/utils.dart' as utils;
+import 'package:tablets/src/common/functions/translate.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
@@ -89,7 +89,7 @@ class TransactionForm extends ConsumerWidget {
 
   Future<void> _onDeletePressed(BuildContext context, ItemFormData formDataNotifier,
       ImageSliderNotifier formImagesNotifier, ItemFormController formController) async {
-    final message = utils.transactionTypeDbNameToScreenName(context, formDataNotifier.data['name']);
+    final message = translateCurrency(context, formDataNotifier.data['name']);
     final confirmation = await showDeleteConfirmationDialog(context: context, message: message);
     if (confirmation != null) {
       final imageUrls = formImagesNotifier.saveChanges();

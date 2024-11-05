@@ -2,8 +2,6 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/functions/debug_print.dart' as debug;
 import 'package:image/image.dart' as img;
 
@@ -63,34 +61,6 @@ List<Map<String, dynamic>> convertAsyncValueListToList(AsyncValue<List<Map<Strin
         debug.errorPrint('product list is loading');
         return [];
       });
-}
-
-String transactionTypeDbNameToScreenName(BuildContext context, String dbName) {
-  final Map<String, String> trasactionTypeLookup = {
-    TransactionType.expenditures.name: S.of(context).transaction_type_expenditures,
-    TransactionType.gifts.name: S.of(context).transaction_type_gifts,
-    TransactionType.customerReceipt.name: S.of(context).transaction_type_customer_receipt,
-    TransactionType.vendorReceipt.name: S.of(context).transaction_type_vendor_receipt,
-    TransactionType.vendorReturn.name: S.of(context).transaction_type_vender_return,
-    TransactionType.customerReturn.name: S.of(context).transaction_type_customer_return,
-    TransactionType.vendorInvoice.name: S.of(context).transaction_type_vender_invoice,
-    TransactionType.customerInvoice.name: S.of(context).transaction_type_customer_invoice
-  };
-  return trasactionTypeLookup[dbName] ?? dbName;
-}
-
-String transactionTypeScreenNameToDbName(BuildContext context, String screenName) {
-  final Map<String, String> trasactionTypeLookup = {
-    S.of(context).transaction_type_expenditures: TransactionType.expenditures.name,
-    S.of(context).transaction_type_gifts: TransactionType.gifts.name,
-    S.of(context).transaction_type_customer_receipt: TransactionType.customerReceipt.name,
-    S.of(context).transaction_type_vendor_receipt: TransactionType.vendorReceipt.name,
-    S.of(context).transaction_type_vender_return: TransactionType.vendorReturn.name,
-    S.of(context).transaction_type_customer_return: TransactionType.customerReturn.name,
-    S.of(context).transaction_type_vender_invoice: TransactionType.vendorInvoice.name,
-    S.of(context).transaction_type_customer_invoice: TransactionType.customerInvoice.name
-  };
-  return trasactionTypeLookup[screenName] ?? screenName;
 }
 
 /// if the number ends with .0 (example 55.0), it will remove .0 and convert to String
