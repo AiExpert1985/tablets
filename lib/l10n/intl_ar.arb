@@ -119,5 +119,6 @@
     "transaction_total_amount_as_text": "المبلغ كتابة",
     "approve": "موافق",
     "amount": "المبلغ",
-    "number": "الرقم"
+    "number": "الرقم",
+    "include_total_as_text": "ادراج مبلغ القائمة كتابة"
 }

@@ -1259,6 +1259,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Include payment as text`
+  String get include_total_as_text {
+    return Intl.message(
+      'Include payment as text',
+      name: 'include_total_as_text',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -119,5 +119,6 @@
     "transaction_total_amount_as_text": "Total as text",
     "approve": "Yes",
     "amount": "Amount",
-    "number": "Number"
+    "number": "Number",
+    "include_total_as_text": "Include payment as text"
 }
