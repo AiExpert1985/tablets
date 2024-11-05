@@ -32,16 +32,16 @@ class TransactionForm extends ConsumerWidget {
       TransactionType.damagedItems.name: S.of(context).transaction_type_damaged_items,
     };
     if (transactionType == TransactionType.customerInvoice.name) {
-      return InvoiceForm(titles[transactionType]!, includeSalesman: true, includeGifts: true);
+      return InvoiceForm(titles[transactionType]!, includeGifts: true);
     }
     if (transactionType == TransactionType.vendorInvoice.name) {
-      return InvoiceForm(titles[transactionType]!);
+      return InvoiceForm(titles[transactionType]!, isVendor: true);
     }
     if (transactionType == TransactionType.customerReturn.name) {
-      return InvoiceForm(titles[transactionType]!, includeSalesman: true);
+      return InvoiceForm(titles[transactionType]!);
     }
     if (transactionType == TransactionType.vendorReturn.name) {
-      return InvoiceForm(titles[transactionType]!);
+      return InvoiceForm(titles[transactionType]!, isVendor: true);
     }
     return const Center(child: Text('Error happend while loading transaction form'));
   }

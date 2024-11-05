@@ -217,6 +217,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_category":
             MessageLookupByLibrary.simpleMessage("تعديل معلومات الصنف"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("الصلاحيات"),
+        "vendor": MessageLookupByLibrary.simpleMessage("المجهز"),
         "vendors": MessageLookupByLibrary.simpleMessage("المجهزين"),
         "warning": MessageLookupByLibrary.simpleMessage("تحذير"),
         "yes": MessageLookupByLibrary.simpleMessage("نعم")

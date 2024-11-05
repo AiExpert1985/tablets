@@ -124,5 +124,6 @@
     "include_total_as_text": "Include payment as text",
     "yes": "yes",
     "no": "No",
-    "vendors": "Vendors"
+    "vendors": "Vendors",
+    "vendor": "Vendor"
 }

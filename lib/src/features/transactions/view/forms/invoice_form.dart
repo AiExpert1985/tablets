@@ -20,14 +20,14 @@ import 'package:tablets/src/features/transactions/controllers/transaction_form_c
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/transactions/view/forms/invoice_item_list.dart';
 import 'package:tablets/src/features/transactions/view/forms/common_values.dart';
+import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
 
 class InvoiceForm extends ConsumerWidget {
-  const InvoiceForm(this.title,
-      {this.includeSalesman = false, this.includeGifts = false, super.key});
+  const InvoiceForm(this.title, {this.isVendor = false, this.includeGifts = false, super.key});
 
   final String title;
-  final bool includeSalesman;
   final bool includeGifts;
+  final bool isVendor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,7 +35,9 @@ class InvoiceForm extends ConsumerWidget {
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
+    final vendorRepository = ref.read(vendorRepositoryProvider);
     final productRepository = ref.read(productRepositoryProvider);
+    final counterPartyRepository = isVendor ? vendorRepository : customerRepository;
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
@@ -47,7 +49,7 @@ class InvoiceForm extends ConsumerWidget {
             buildFormTitle(title),
             VerticalGap.xl,
             _buildFirstRow(
-                context, formDataNotifier, customerRepository, salesmanRepository, includeSalesman),
+                context, formDataNotifier, counterPartyRepository, salesmanRepository, isVendor),
             VerticalGap.m,
             _buildSecondRow(context, formDataNotifier, textEditingNotifier),
             VerticalGap.m,
@@ -68,14 +70,27 @@ class InvoiceForm extends ConsumerWidget {
   }
 
   Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier,
-      DbRepository customerRepository, DbRepository salesmanRepository, bool includeSalesman) {
+      DbRepository repository, DbRepository salesmanRepository, bool isVendor) {
     return Row(
-      children: includeSalesman
+      children: isVendor
           ? [
+              DropDownWithSearchFormField(
+                label: S.of(context).vendor,
+                initialValue: formDataNotifier.getProperty(nameKey),
+                dbRepository: repository,
+                onChangedFn: (item) {
+                  formDataNotifier.updateProperties({
+                    nameKey: item[nameKey],
+                    salesmanKey: item[salesmanKey],
+                  });
+                },
+              ),
+            ]
+          : [
               DropDownWithSearchFormField(
                 label: S.of(context).customer,
                 initialValue: formDataNotifier.getProperty(nameKey),
-                dbRepository: customerRepository,
+                dbRepository: repository,
                 onChangedFn: (item) {
                   formDataNotifier.updateProperties({
                     nameKey: item[nameKey],
@@ -90,19 +105,6 @@ class InvoiceForm extends ConsumerWidget {
                 dbRepository: salesmanRepository,
                 onChangedFn: (item) {
                   formDataNotifier.updateProperties({salesmanKey: item[nameKey]});
-                },
-              ),
-            ]
-          : [
-              DropDownWithSearchFormField(
-                label: S.of(context).customer,
-                initialValue: formDataNotifier.getProperty(nameKey),
-                dbRepository: customerRepository,
-                onChangedFn: (item) {
-                  formDataNotifier.updateProperties({
-                    nameKey: item[nameKey],
-                    salesmanKey: item[salesmanKey],
-                  });
                 },
               ),
             ],

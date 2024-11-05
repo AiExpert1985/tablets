@@ -220,6 +220,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_category":
             MessageLookupByLibrary.simpleMessage("Update category"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("Privilage"),
+        "vendor": MessageLookupByLibrary.simpleMessage("Vendor"),
         "vendors": MessageLookupByLibrary.simpleMessage("Vendors"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "yes": MessageLookupByLibrary.simpleMessage("yes")
