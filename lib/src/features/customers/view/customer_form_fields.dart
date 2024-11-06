@@ -20,32 +20,48 @@ class CustomerFormFields extends ConsumerWidget {
     return Expanded(
       child: Column(
         children: [
-          FormInputField(
-            onChangedFn: (value) {
-              formDataNotifier.updateProperties({'name': value});
-            },
-            initialValue: formDataNotifier.getProperty('name'),
-            dataType: FieldDataType.string,
-            name: 'name',
-            label: S.of(context).salesman_name,
-          ),
+          Row(children: [
+            FormInputField(
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({'name': value});
+              },
+              initialValue: formDataNotifier.getProperty('name'),
+              dataType: FieldDataType.string,
+              name: 'name',
+              label: S.of(context).salesman_name,
+            ),
+            HorizontalGap.m,
+            DropDownWithSearchFormField(
+              label: S.of(context).salesman_name,
+              initialValue: formDataNotifier.getProperty('salesman'),
+              dbRepository: salesmanRepository,
+              onChangedFn: (item) {
+                formDataNotifier.updateProperties({'salesman': item['name'], 'salesmanDbRef': item['dbRef']});
+              },
+            ),
+          ]),
           VerticalGap.m,
-          DropDownWithSearchFormField(
-            label: S.of(context).salesman_name,
-            initialValue: formDataNotifier.getProperty('salesman'),
-            dbRepository: salesmanRepository,
-            onChangedFn: (item) {
-              formDataNotifier.updateProperties({'salesman': item['name'], 'salesmanDbRef': item['dbRef']});
-            },
-          ),
-          VerticalGap.m,
-          DropDownWithSearchFormField(
-            label: S.of(context).region_name,
-            initialValue: formDataNotifier.getProperty('region'),
-            dbRepository: regionRepository,
-            onChangedFn: (item) {
-              formDataNotifier.updateProperties({'region': item['name'], 'regionDbRef': item['dbRef']});
-            },
+          Row(
+            children: [
+              DropDownWithSearchFormField(
+                label: S.of(context).region_name,
+                initialValue: formDataNotifier.getProperty('region'),
+                dbRepository: regionRepository,
+                onChangedFn: (item) {
+                  formDataNotifier.updateProperties({'region': item['name'], 'regionDbRef': item['dbRef']});
+                },
+              ),
+              HorizontalGap.m,
+              FormInputField(
+                onChangedFn: (value) {
+                  formDataNotifier.updateProperties({'phone': value});
+                },
+                initialValue: formDataNotifier.getProperty('phone'),
+                dataType: FieldDataType.string,
+                name: 'phone',
+                label: S.of(context).phone,
+              ),
+            ],
           ),
         ],
       ),

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/interfaces/base_item.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 
@@ -39,8 +38,6 @@ class Vendor implements BaseItem {
   }
 
   factory Vendor.fromMap(Map<String, dynamic> map) {
-    tempPrint(map['initialDate']);
-    tempPrint(map['initialDate'].runtimeType);
     return Vendor(
       dbRef: map['dbRef'] ?? '',
       name: map['name'] ?? '',

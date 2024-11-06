@@ -12,6 +12,14 @@ class Customer implements BaseItem {
   String salesmanDbRef;
   String region;
   String regionDbRef;
+  double? x; // gps longitude
+  double? y; // gps latitude
+  DateTime initialDate;
+  double initialCredit; // initial debt on customer
+  String? address;
+  String sellingPriceType; // wholesale or retail
+  double creditLimit; // maximum allowed credit
+  double paymentDurationLimit; // maximum days to close a transaction (pay its amount)
 
   Customer({
     required this.dbRef,
@@ -21,6 +29,14 @@ class Customer implements BaseItem {
     required this.salesmanDbRef,
     required this.region,
     required this.regionDbRef,
+    this.x,
+    this.y,
+    required this.initialDate,
+    required this.initialCredit,
+    this.address,
+    required this.sellingPriceType,
+    required this.creditLimit,
+    required this.paymentDurationLimit,
   });
 
   @override

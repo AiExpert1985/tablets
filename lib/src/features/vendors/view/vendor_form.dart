@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -40,7 +39,6 @@ class VendorForm extends ConsumerWidget {
             formController.submitData();
             final updateFormData = formDataNotifier.data;
             final imageUrls = formImagesNotifier.saveChanges();
-            tempPrint(updateFormData);
             final vendor = Vendor.fromMap({...updateFormData, 'imageUrls': imageUrls});
             formController.saveItemToDb(context, vendor, isEditMode);
           },

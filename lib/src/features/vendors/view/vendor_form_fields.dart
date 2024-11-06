@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
@@ -58,7 +57,6 @@ class VendorFormFields extends ConsumerWidget {
                 label: S.of(context).initialDate,
                 onChangedFn: (date) {
                   formDataNotifier.updateProperties({'initialDate': Timestamp.fromDate(date!)});
-                  tempPrint(formDataNotifier.getProperty('initialDate'));
                 },
               ),
             ]),
