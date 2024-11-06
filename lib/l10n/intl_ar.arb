@@ -134,5 +134,7 @@
     "transaction_subTotal_amount": "المبلغ المسدد",
     "phone": "رقم الهاتف",
     "region_name": "اسم المنطقة",
-    "regions": "المناطق"
+    "regions": "المناطق",
+    "initialAmount": "الرصيد الاولي",
+    "initialDate": "تاريخ الرصيد الاولي"
 }

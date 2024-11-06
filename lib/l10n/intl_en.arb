@@ -134,5 +134,7 @@
     "transaction_subTotal_amount": "Subtotal",
     "phone": "Phone number",
     "region_name": "Region name",
-    "regions": "Regions"
+    "regions": "Regions",
+    "initialAmount": "Initial amount",
+    "initialDate": "Initial amount date"
 }

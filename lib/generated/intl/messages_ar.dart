@@ -80,6 +80,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "include_total_as_text":
             MessageLookupByLibrary.simpleMessage("ادراج مبلغ القائمة كتابة"),
         "info": MessageLookupByLibrary.simpleMessage("معلومات"),
+        "initialAmount": MessageLookupByLibrary.simpleMessage("الرصيد الاولي"),
+        "initialDate":
+            MessageLookupByLibrary.simpleMessage("تاريخ الرصيد الاولي"),
         "input_validation_error_message_for_date":
             MessageLookupByLibrary.simpleMessage("قم بأختيار التاريخ"),
         "input_validation_error_message_for_email":

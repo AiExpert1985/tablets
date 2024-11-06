@@ -1409,6 +1409,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Initial amount`
+  String get initialAmount {
+    return Intl.message(
+      'Initial amount',
+      name: 'initialAmount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Initial amount date`
+  String get initialDate {
+    return Intl.message(
+      'Initial amount date',
+      name: 'initialDate',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

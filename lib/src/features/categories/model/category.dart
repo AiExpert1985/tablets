@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/interfaces/base_item.dart';
 

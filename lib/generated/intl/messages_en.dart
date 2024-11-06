@@ -79,6 +79,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "include_total_as_text":
             MessageLookupByLibrary.simpleMessage("Include payment as text"),
         "info": MessageLookupByLibrary.simpleMessage("info"),
+        "initialAmount": MessageLookupByLibrary.simpleMessage("Initial amount"),
+        "initialDate":
+            MessageLookupByLibrary.simpleMessage("Initial amount date"),
         "input_validation_error_message_for_date":
             MessageLookupByLibrary.simpleMessage("Select a date"),
         "input_validation_error_message_for_email":
