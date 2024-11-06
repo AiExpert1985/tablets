@@ -28,6 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("أضافة صنف جديد"),
         "add_new_user":
             MessageLookupByLibrary.simpleMessage("اضافة مستخدم جديد"),
+        "address": MessageLookupByLibrary.simpleMessage("اقرب نقطة دالة"),
         "alert_before_delete":
             MessageLookupByLibrary.simpleMessage("هل ترغب بحذف"),
         "amount": MessageLookupByLibrary.simpleMessage("المبلغ"),
@@ -41,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "choose_image": MessageLookupByLibrary.simpleMessage("اختر صورة"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
+        "credit_limit": MessageLookupByLibrary.simpleMessage("اقصى حد للدين"),
         "customer": MessageLookupByLibrary.simpleMessage("الزبون"),
         "customer_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "customers": MessageLookupByLibrary.simpleMessage("الزبائن"),
@@ -74,6 +76,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "failure": MessageLookupByLibrary.simpleMessage("فشل"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("العودة الى الصفحة الرئيسية"),
+        "gps_x": MessageLookupByLibrary.simpleMessage("احداثيات الطول"),
+        "gps_y": MessageLookupByLibrary.simpleMessage("احداثيات العرض"),
         "greeting": MessageLookupByLibrary.simpleMessage("مرحباً"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("لدي حساب في البرنامج"),
@@ -119,6 +123,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
+        "payment_duration_limit":
+            MessageLookupByLibrary.simpleMessage("اقصى مدة للسداد"),
         "pending_transactions":
             MessageLookupByLibrary.simpleMessage("غير مثبت"),
         "phone": MessageLookupByLibrary.simpleMessage("رقم الهاتف"),
@@ -162,6 +168,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("بحث"),
         "search_not_found_in_db": MessageLookupByLibrary.simpleMessage(
             "لم يتم ايجاد المستند في قاعةد البيانات"),
+        "selling_price_type":
+            MessageLookupByLibrary.simpleMessage("نوع سعر البيع"),
         "settings": MessageLookupByLibrary.simpleMessage("الاعدادات"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
         "slogan":

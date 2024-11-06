@@ -1429,6 +1429,66 @@ class S {
       args: [],
     );
   }
+
+  /// `X coordinate`
+  String get gps_x {
+    return Intl.message(
+      'X coordinate',
+      name: 'gps_x',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Y coordinate`
+  String get gps_y {
+    return Intl.message(
+      'Y coordinate',
+      name: 'gps_y',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address`
+  String get address {
+    return Intl.message(
+      'Address',
+      name: 'address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selling price type`
+  String get selling_price_type {
+    return Intl.message(
+      'Selling price type',
+      name: 'selling_price_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Credit limit`
+  String get credit_limit {
+    return Intl.message(
+      'Credit limit',
+      name: 'credit_limit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment duration limit`
+  String get payment_duration_limit {
+    return Intl.message(
+      'Payment duration limit',
+      name: 'payment_duration_limit',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

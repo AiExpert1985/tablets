@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
@@ -20,48 +22,151 @@ class CustomerFormFields extends ConsumerWidget {
     return Expanded(
       child: Column(
         children: [
-          Row(children: [
-            FormInputField(
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'name': value});
-              },
-              initialValue: formDataNotifier.getProperty('name'),
-              dataType: FieldDataType.string,
-              name: 'name',
-              label: S.of(context).salesman_name,
-            ),
-            HorizontalGap.m,
-            DropDownWithSearchFormField(
-              label: S.of(context).salesman_name,
-              initialValue: formDataNotifier.getProperty('salesman'),
-              dbRepository: salesmanRepository,
-              onChangedFn: (item) {
-                formDataNotifier.updateProperties({'salesman': item['name'], 'salesmanDbRef': item['dbRef']});
-              },
-            ),
-          ]),
-          VerticalGap.m,
-          Row(
-            children: [
-              DropDownWithSearchFormField(
-                label: S.of(context).region_name,
-                initialValue: formDataNotifier.getProperty('region'),
-                dbRepository: regionRepository,
-                onChangedFn: (item) {
-                  formDataNotifier.updateProperties({'region': item['name'], 'regionDbRef': item['dbRef']});
-                },
-              ),
-              HorizontalGap.m,
+          Expanded(
+            child: Row(children: [
               FormInputField(
                 onChangedFn: (value) {
-                  formDataNotifier.updateProperties({'phone': value});
+                  formDataNotifier.updateProperties({'name': value});
                 },
-                initialValue: formDataNotifier.getProperty('phone'),
+                initialValue: formDataNotifier.getProperty('name'),
                 dataType: FieldDataType.string,
-                name: 'phone',
-                label: S.of(context).phone,
+                name: 'name',
+                label: S.of(context).salesman_name,
               ),
-            ],
+              HorizontalGap.m,
+              DropDownWithSearchFormField(
+                label: S.of(context).salesman_name,
+                initialValue: formDataNotifier.getProperty('salesman'),
+                dbRepository: salesmanRepository,
+                onChangedFn: (item) {
+                  formDataNotifier.updateProperties({'salesman': item['name'], 'salesmanDbRef': item['dbRef']});
+                },
+              ),
+            ]),
+          ),
+          VerticalGap.m,
+          Expanded(
+            child: Row(
+              children: [
+                DropDownWithSearchFormField(
+                  label: S.of(context).region_name,
+                  initialValue: formDataNotifier.getProperty('region'),
+                  dbRepository: regionRepository,
+                  onChangedFn: (item) {
+                    formDataNotifier.updateProperties({'region': item['name'], 'regionDbRef': item['dbRef']});
+                  },
+                ),
+                HorizontalGap.m,
+                FormInputField(
+                  onChangedFn: (value) {
+                    formDataNotifier.updateProperties({'phone': value});
+                  },
+                  initialValue: formDataNotifier.getProperty('phone'),
+                  dataType: FieldDataType.string,
+                  name: 'phone',
+                  label: S.of(context).phone,
+                ),
+              ],
+            ),
+          ),
+          VerticalGap.m,
+          Expanded(
+            child: Row(
+              children: [
+                FormInputField(
+                  onChangedFn: (value) {
+                    formDataNotifier.updateProperties({'x': value});
+                  },
+                  initialValue: formDataNotifier.getProperty('x'),
+                  dataType: FieldDataType.num,
+                  name: 'x',
+                  label: S.of(context).gps_x,
+                ),
+                HorizontalGap.m,
+                FormInputField(
+                  onChangedFn: (value) {
+                    formDataNotifier.updateProperties({'y': value});
+                  },
+                  initialValue: formDataNotifier.getProperty('y'),
+                  dataType: FieldDataType.num,
+                  name: 'y',
+                  label: S.of(context).gps_y,
+                ),
+                HorizontalGap.m,
+                FormInputField(
+                  onChangedFn: (value) {
+                    formDataNotifier.updateProperties({'address': value});
+                  },
+                  initialValue: formDataNotifier.getProperty('address'),
+                  dataType: FieldDataType.string,
+                  name: 'address',
+                  label: S.of(context).address,
+                ),
+              ],
+            ),
+          ),
+          VerticalGap.m,
+          Expanded(
+            child: Row(
+              children: [
+                FormInputField(
+                  onChangedFn: (value) {
+                    formDataNotifier.updateProperties({'initialCredit': value});
+                  },
+                  initialValue: formDataNotifier.getProperty('initialCredit'),
+                  dataType: FieldDataType.num,
+                  name: 'initialCredit',
+                  label: S.of(context).initialAmount,
+                ),
+                HorizontalGap.l,
+                FormDatePickerField(
+                  initialValue: formDataNotifier.getProperty('initialDate') is Timestamp
+                      ? formDataNotifier.getProperty('initialDate').toDate()
+                      : formDataNotifier.getProperty('initialDate'),
+                  name: 'initialDate',
+                  label: S.of(context).initialDate,
+                  onChangedFn: (date) {
+                    formDataNotifier.updateProperties({'initialDate': Timestamp.fromDate(date!)});
+                  },
+                ),
+              ],
+            ),
+          ),
+          VerticalGap.m,
+          Expanded(
+            child: Row(
+              children: [
+                FormInputField(
+                  onChangedFn: (value) {
+                    formDataNotifier.updateProperties({'sellingPriceType': value});
+                  },
+                  initialValue: formDataNotifier.getProperty('sellingPriceType'),
+                  dataType: FieldDataType.string,
+                  name: 'sellingPriceType',
+                  label: S.of(context).selling_price_type,
+                ),
+                HorizontalGap.m,
+                FormInputField(
+                  onChangedFn: (value) {
+                    formDataNotifier.updateProperties({'creditLimit': value});
+                  },
+                  initialValue: formDataNotifier.getProperty('creditLimit'),
+                  dataType: FieldDataType.num,
+                  name: 'creditLimit',
+                  label: S.of(context).credit_limit,
+                ),
+                HorizontalGap.m,
+                FormInputField(
+                  onChangedFn: (value) {
+                    formDataNotifier.updateProperties({'paymentDurationLimit': value});
+                  },
+                  initialValue: formDataNotifier.getProperty('paymentDurationLimit'),
+                  dataType: FieldDataType.num,
+                  name: 'paymentDurationLimit',
+                  label: S.of(context).payment_duration_limit,
+                ),
+              ],
+            ),
           ),
         ],
       ),

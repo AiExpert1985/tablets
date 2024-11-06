@@ -27,6 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_new_category":
             MessageLookupByLibrary.simpleMessage("Add a new Category"),
         "add_new_user": MessageLookupByLibrary.simpleMessage("Add a new user"),
+        "address": MessageLookupByLibrary.simpleMessage("Address"),
         "alert_before_delete":
             MessageLookupByLibrary.simpleMessage("Do you want to delete"),
         "amount": MessageLookupByLibrary.simpleMessage("Amount"),
@@ -40,6 +41,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "choose_image": MessageLookupByLibrary.simpleMessage("Choose image"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("Create a new account"),
+        "credit_limit": MessageLookupByLibrary.simpleMessage("Credit limit"),
         "customer": MessageLookupByLibrary.simpleMessage("Customer"),
         "customer_name": MessageLookupByLibrary.simpleMessage("Name"),
         "customers": MessageLookupByLibrary.simpleMessage("Customers"),
@@ -73,6 +75,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "failure": MessageLookupByLibrary.simpleMessage("Failure"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("Go back to home page"),
+        "gps_x": MessageLookupByLibrary.simpleMessage("X coordinate"),
+        "gps_y": MessageLookupByLibrary.simpleMessage("Y coordinate"),
         "greeting": MessageLookupByLibrary.simpleMessage("hi"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("I already have account"),
@@ -120,6 +124,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "page_not_found":
             MessageLookupByLibrary.simpleMessage("Page is not found"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
+        "payment_duration_limit":
+            MessageLookupByLibrary.simpleMessage("Payment duration limit"),
         "pending_transactions":
             MessageLookupByLibrary.simpleMessage("Pending transactions"),
         "phone": MessageLookupByLibrary.simpleMessage("Phone number"),
@@ -166,6 +172,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "search_not_found_in_db":
             MessageLookupByLibrary.simpleMessage("Not found in database"),
+        "selling_price_type":
+            MessageLookupByLibrary.simpleMessage("Selling price type"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign up"),
         "slogan": MessageLookupByLibrary.simpleMessage(

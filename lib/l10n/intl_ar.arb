@@ -136,5 +136,11 @@
     "region_name": "اسم المنطقة",
     "regions": "المناطق",
     "initialAmount": "الرصيد الاولي",
-    "initialDate": "تاريخ الرصيد الاولي"
+    "initialDate": "تاريخ الرصيد الاولي",
+    "gps_x": "احداثيات الطول",
+    "gps_y": "احداثيات العرض",
+    "address": "اقرب نقطة دالة",
+    "selling_price_type": "نوع سعر البيع",
+    "credit_limit": "اقصى حد للدين",
+    "payment_duration_limit": "اقصى مدة للسداد"
 }
