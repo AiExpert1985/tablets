@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 
 import 'package:tablets/src/common/interfaces/base_item.dart';
@@ -13,17 +11,18 @@ class Customer implements BaseItem {
   @override
   List<String> imageUrls;
   String salesman;
+  String salesmanDbRef;
 
   Customer({
     required this.dbKey,
     required this.name,
     required this.imageUrls,
     required this.salesman,
+    required this.salesmanDbRef,
   });
 
   @override
-  String get coverImageUrl =>
-      imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
+  String get coverImageUrl => imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
   @override
   Map<String, dynamic> toMap() {
@@ -32,6 +31,7 @@ class Customer implements BaseItem {
       'name': name,
       'imageUrls': imageUrls,
       'salesman': salesman,
+      'salesmanDbRef': salesmanDbRef,
     };
   }
 
@@ -41,12 +41,9 @@ class Customer implements BaseItem {
       name: map['name'] ?? '',
       imageUrls: List<String>.from(map['imageUrls']),
       salesman: map['salesman'] ?? '',
+      salesmanDbRef: map['salesmanDbRef'] ?? '',
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory Customer.fromJson(String source) => Customer.fromMap(json.decode(source));
 
   @override
   String toString() => 'ProductCategory(dbKey: $dbKey, name: $name, imageUrls: $imageUrls)';

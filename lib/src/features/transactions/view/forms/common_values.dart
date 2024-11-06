@@ -19,6 +19,7 @@ const String itemGiftQuantityKey = 'giftQuantity';
 const String itemTotalAmountKey = 'itemTotalAmount';
 const String itemTotalWeightKey = 'itemTotalWeight';
 const String subTotalAmountKey = 'subTotalAmount';
+const String salesmanDbRefKey = 'salesmanDbRef';
 
 Map<String, dynamic> emptyInvoiceItem = {
   nameKey: '',

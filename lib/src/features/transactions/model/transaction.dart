@@ -34,6 +34,7 @@ class Transaction implements BaseItem {
   String? totalAsText;
   double? totalWeight;
   double? subTotalAmount;
+  String? salesmanDbRef;
 
   double totalAmount;
   Transaction({
@@ -56,6 +57,7 @@ class Transaction implements BaseItem {
     this.totalWeight,
     this.subTotalAmount, // before the discount
     required this.totalAmount, // after discount
+    this.salesmanDbRef,
   });
 
   @override
@@ -80,6 +82,7 @@ class Transaction implements BaseItem {
       'totalWeight': totalWeight,
       'totalAmount': totalAmount,
       'subTotalAmount': subTotalAmount,
+      'salesmanDbRef': salesmanDbRef,
     };
   }
 
@@ -101,6 +104,7 @@ class Transaction implements BaseItem {
       totalWeight: map['totalWeight'],
       totalAmount: map['totalAmount'],
       subTotalAmount: map['subTotalAmount'],
+      salesmanDbRef: map['salesmanDbRef'],
     );
   }
 

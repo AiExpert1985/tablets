@@ -32,7 +32,7 @@ class CustomerFormFields extends ConsumerWidget {
             initialValue: formDataNotifier.getProperty('salesman'),
             dbRepository: repository,
             onChangedFn: (item) {
-              formDataNotifier.updateProperties({'salesman': item['name']});
+              formDataNotifier.updateProperties({'salesman': item['name'], 'salesmanDbRef': item['dbKey']});
             },
           )
         ],

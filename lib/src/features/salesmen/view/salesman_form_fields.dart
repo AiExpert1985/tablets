@@ -10,14 +10,27 @@ class SalesmanFormFields extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.watch(salesmanFormDataProvider.notifier);
-    return FormInputField(
-      dataType: FieldDataType.string,
-      name: 'name',
-      label: S.of(context).salesman_name,
-      initialValue: formDataNotifier.getProperty('name'),
-      onChangedFn: (value) {
-        formDataNotifier.updateProperties({'name': value});
-      },
+    return Column(
+      children: [
+        FormInputField(
+          dataType: FieldDataType.string,
+          name: 'name',
+          label: S.of(context).salesman_name,
+          initialValue: formDataNotifier.getProperty('name'),
+          onChangedFn: (value) {
+            formDataNotifier.updateProperties({'name': value});
+          },
+        ),
+        FormInputField(
+          dataType: FieldDataType.string,
+          name: 'name',
+          label: S.of(context).salesman_name,
+          initialValue: formDataNotifier.getProperty('name'),
+          onChangedFn: (value) {
+            formDataNotifier.updateProperties({'name': value});
+          },
+        ),
+      ],
     );
   }
 }
