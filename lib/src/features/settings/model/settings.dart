@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
 
 enum PaymentType { cash, credit }
 
@@ -43,23 +42,7 @@ class Settings {
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory Settings.fromJson(String source) => Settings.fromMap(json.decode(source) as Map<String, dynamic>);
-
   @override
   String toString() =>
       'Settings(paymentType: $paymentType, writeTotalAmountAsText: $writeTotalAmountAsText, currency: $currency)';
-
-  @override
-  bool operator ==(covariant Settings other) {
-    if (identical(this, other)) return true;
-
-    return other.paymentType == paymentType &&
-        other.writeTotalAmountAsText == writeTotalAmountAsText &&
-        other.currency == currency;
-  }
-
-  @override
-  int get hashCode => paymentType.hashCode ^ writeTotalAmountAsText.hashCode ^ currency.hashCode;
 }

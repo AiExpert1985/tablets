@@ -132,5 +132,7 @@
     "vendors": "Vendors",
     "vendor": "Vendor",
     "transaction_subTotal_amount": "Subtotal",
-    "phone": "Phone number"
+    "phone": "Phone number",
+    "region_name": "Region name",
+    "regions": "Regions"
 }

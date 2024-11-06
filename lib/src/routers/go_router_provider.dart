@@ -7,6 +7,7 @@ import 'package:tablets/src/features/customers/view/customer_main_screen.dart';
 import 'package:tablets/src/features/pending_transactions/pending_transactions.dart';
 import 'package:tablets/src/features/products/view/product_main_screen.dart';
 import 'package:tablets/src/features/gps_locations/presentation/sales_men_live_location_screen.dart';
+import 'package:tablets/src/features/regions/view/regions_main_screen.dart';
 import 'package:tablets/src/features/salesmen/view/salesman_main_screen.dart';
 import 'package:tablets/src/features/settings/view/settings_main_screen.dart';
 import 'package:tablets/src/features/transactions/view/transaction_main_screen.dart';
@@ -26,7 +27,8 @@ enum AppRoute {
   pendingTransactions,
   gps,
   customers,
-  vendors
+  vendors,
+  regions,
 }
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
@@ -78,8 +80,7 @@ final goRouterProvider = Provider<GoRouter>(
         GoRoute(
           path: '/salesmen',
           name: AppRoute.gps.name,
-          builder: (BuildContext context, GoRouterState state) =>
-              const SalesmenLiveLocationScreen(),
+          builder: (BuildContext context, GoRouterState state) => const SalesmenLiveLocationScreen(),
         ),
         GoRoute(
           path: '/settings',
@@ -110,6 +111,11 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/vendors',
           name: AppRoute.vendors.name,
           builder: (BuildContext context, GoRouterState state) => const VendorScreen(),
+        ),
+        GoRoute(
+          path: '/regions',
+          name: AppRoute.regions.name,
+          builder: (BuildContext context, GoRouterState state) => const RegionsScreen(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),

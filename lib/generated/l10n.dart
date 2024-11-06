@@ -1389,6 +1389,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Region name`
+  String get region_name {
+    return Intl.message(
+      'Region name',
+      name: 'region_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Regions`
+  String get regions {
+    return Intl.message(
+      'Regions',
+      name: 'regions',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

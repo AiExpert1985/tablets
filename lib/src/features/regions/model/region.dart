@@ -1,20 +1,18 @@
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/interfaces/base_item.dart';
 
-class Salesman implements BaseItem {
+class Region implements BaseItem {
   @override
   String dbRef;
   @override
   String name;
   @override
   List<String> imageUrls;
-  String? phone;
 
-  Salesman({
+  Region({
     required this.dbRef,
     required this.name,
     required this.imageUrls,
-    this.phone,
   });
 
   @override
@@ -26,19 +24,17 @@ class Salesman implements BaseItem {
       'dbRef': dbRef,
       'name': name,
       'imageUrls': imageUrls,
-      'phone': phone,
     };
   }
 
-  factory Salesman.fromMap(Map<String, dynamic> map) {
-    return Salesman(
+  factory Region.fromMap(Map<String, dynamic> map) {
+    return Region(
       dbRef: map['dbRef'] ?? '',
       name: map['name'] ?? '',
       imageUrls: List<String>.from(map['imageUrls']),
-      phone: map['phone'],
     );
   }
 
   @override
-  String toString() => 'ProductCategory(dbRef: $dbRef, name: $name, imageUrls: $imageUrls)';
+  String toString() => 'Region(dbRef: $dbRef, name: $name, imageUrls: $imageUrls)';
 }

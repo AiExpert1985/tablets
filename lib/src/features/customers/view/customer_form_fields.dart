@@ -6,6 +6,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
+import 'package:tablets/src/features/regions/repository/region_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 
 class CustomerFormFields extends ConsumerWidget {
@@ -14,7 +15,8 @@ class CustomerFormFields extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.watch(customerFormDataProvider.notifier);
-    final repository = ref.watch(salesmanRepositoryProvider);
+    final salesmanRepository = ref.watch(salesmanRepositoryProvider);
+    final regionRepository = ref.watch(regionRepositoryProvider);
     return Expanded(
       child: Column(
         children: [
@@ -29,12 +31,22 @@ class CustomerFormFields extends ConsumerWidget {
           ),
           VerticalGap.m,
           DropDownWithSearchFormField(
+            label: S.of(context).salesman_name,
             initialValue: formDataNotifier.getProperty('salesman'),
-            dbRepository: repository,
+            dbRepository: salesmanRepository,
             onChangedFn: (item) {
               formDataNotifier.updateProperties({'salesman': item['name'], 'salesmanDbRef': item['dbRef']});
             },
-          )
+          ),
+          VerticalGap.m,
+          DropDownWithSearchFormField(
+            label: S.of(context).region_name,
+            initialValue: formDataNotifier.getProperty('region'),
+            dbRepository: regionRepository,
+            onChangedFn: (item) {
+              formDataNotifier.updateProperties({'region': item['name'], 'regionDbRef': item['dbRef']});
+            },
+          ),
         ],
       ),
     );

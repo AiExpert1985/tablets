@@ -144,6 +144,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "product_subcategory":
             MessageLookupByLibrary.simpleMessage("التصنيف الفرعي "),
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
+        "region_name": MessageLookupByLibrary.simpleMessage("اسم المنطقة"),
+        "regions": MessageLookupByLibrary.simpleMessage("المناطق"),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "salesman_selection":

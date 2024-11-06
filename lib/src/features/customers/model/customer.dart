@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:tablets/src/common/interfaces/base_item.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 
@@ -12,6 +10,8 @@ class Customer implements BaseItem {
   List<String> imageUrls;
   String salesman;
   String salesmanDbRef;
+  String region;
+  String regionDbRef;
 
   Customer({
     required this.dbRef,
@@ -19,6 +19,8 @@ class Customer implements BaseItem {
     required this.imageUrls,
     required this.salesman,
     required this.salesmanDbRef,
+    required this.region,
+    required this.regionDbRef,
   });
 
   @override
@@ -32,6 +34,8 @@ class Customer implements BaseItem {
       'imageUrls': imageUrls,
       'salesman': salesman,
       'salesmanDbRef': salesmanDbRef,
+      'region': region,
+      'regionDbRef': regionDbRef,
     };
   }
 
@@ -42,25 +46,11 @@ class Customer implements BaseItem {
       imageUrls: List<String>.from(map['imageUrls']),
       salesman: map['salesman'] ?? '',
       salesmanDbRef: map['salesmanDbRef'] ?? '',
+      region: map['region'] ?? '',
+      regionDbRef: map['regionDbRef'] ?? '',
     );
   }
 
   @override
   String toString() => 'ProductCategory(dbRef: $dbRef, name: $name, imageUrls: $imageUrls)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is Customer &&
-        other.dbRef == dbRef &&
-        other.name == name &&
-        listEquals(other.imageUrls, imageUrls) &&
-        other.salesman == salesman;
-  }
-
-  @override
-  int get hashCode {
-    return dbRef.hashCode ^ name.hashCode ^ imageUrls.hashCode ^ salesman.hashCode;
-  }
 }

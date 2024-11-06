@@ -132,5 +132,7 @@
     "vendors": "المجهزين",
     "vendor": "المجهز",
     "transaction_subTotal_amount": "المبلغ المسدد",
-    "phone": "رقم الهاتف"
+    "phone": "رقم الهاتف",
+    "region_name": "اسم المنطقة",
+    "regions": "المناطق"
 }

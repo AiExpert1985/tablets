@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:tablets/src/common/interfaces/base_item.dart';
 
 class Product implements BaseItem {
@@ -115,51 +112,8 @@ class Product implements BaseItem {
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory Product.fromJson(String source) => Product.fromMap(json.decode(source));
-
   @override
   String toString() {
     return 'Product(dbRef: $dbRef, code: $code, name: $name, sellRetailPrice: $sellRetailPrice, sellWholePrice: $sellWholePrice, packageType: $packageType, packageWeight: $packageWeight, numItemsInsidePackage: $numItemsInsidePackage, alertWhenExceeds: $alertWhenExceeds, altertWhenLessThan: $altertWhenLessThan, salesmanComission: $salesmanComission, imageUrls: $imageUrls, category: $category, initialQuantity: $initialQuantity)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is Product &&
-        other.dbRef == dbRef &&
-        other.code == code &&
-        other.name == name &&
-        other.sellRetailPrice == sellRetailPrice &&
-        other.sellWholePrice == sellWholePrice &&
-        other.packageType == packageType &&
-        other.packageWeight == packageWeight &&
-        other.numItemsInsidePackage == numItemsInsidePackage &&
-        other.alertWhenExceeds == alertWhenExceeds &&
-        other.altertWhenLessThan == altertWhenLessThan &&
-        other.salesmanComission == salesmanComission &&
-        listEquals(other.imageUrls, imageUrls) &&
-        other.category == category &&
-        other.initialQuantity == initialQuantity;
-  }
-
-  @override
-  int get hashCode {
-    return dbRef.hashCode ^
-        code.hashCode ^
-        name.hashCode ^
-        sellRetailPrice.hashCode ^
-        sellWholePrice.hashCode ^
-        packageType.hashCode ^
-        packageWeight.hashCode ^
-        numItemsInsidePackage.hashCode ^
-        alertWhenExceeds.hashCode ^
-        altertWhenLessThan.hashCode ^
-        salesmanComission.hashCode ^
-        imageUrls.hashCode ^
-        category.hashCode ^
-        initialQuantity.hashCode;
   }
 }

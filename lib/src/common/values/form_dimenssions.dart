@@ -3,6 +3,9 @@ import 'package:tablets/src/common/values/constants.dart';
 const double categoryFormWidth = 350;
 const double categoryFormHeight = 400;
 
+const double regionFormWidth = 350;
+const double regionFormHeight = 400;
+
 const double productFormWidth = 600;
 const double productFormHeight = 600;
 

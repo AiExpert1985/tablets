@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
-
 import 'package:tablets/src/common/interfaces/base_item.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 
@@ -39,22 +35,6 @@ class Vendor implements BaseItem {
     );
   }
 
-  String toJson() => json.encode(toMap());
-
-  factory Vendor.fromJson(String source) => Vendor.fromMap(json.decode(source));
-
   @override
   String toString() => 'ProductCategory(dbRef: $dbRef, name: $name, imageUrls: $imageUrls)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is Vendor && other.dbRef == dbRef && other.name == name && listEquals(other.imageUrls, imageUrls);
-  }
-
-  @override
-  int get hashCode {
-    return dbRef.hashCode ^ name.hashCode ^ imageUrls.hashCode;
-  }
 }
