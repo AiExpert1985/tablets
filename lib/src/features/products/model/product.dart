@@ -5,7 +5,7 @@ import 'package:tablets/src/common/interfaces/base_item.dart';
 
 class Product implements BaseItem {
   @override
-  String dbKey;
+  String dbRef;
   @override
   String name;
   @override
@@ -23,7 +23,7 @@ class Product implements BaseItem {
   int initialQuantity;
 
   Product({
-    required this.dbKey,
+    required this.dbRef,
     required this.code,
     required this.name,
     required this.sellRetailPrice,
@@ -43,7 +43,7 @@ class Product implements BaseItem {
   String get coverImageUrl => imageUrls[imageUrls.length - 1];
 
   Product copyWith({
-    String? dbKey,
+    String? dbRef,
     int? code,
     String? name,
     double? sellRetailPrice,
@@ -59,7 +59,7 @@ class Product implements BaseItem {
     int? initialQuantity,
   }) {
     return Product(
-      dbKey: dbKey ?? this.dbKey,
+      dbRef: dbRef ?? this.dbRef,
       code: code ?? this.code,
       name: name ?? this.name,
       sellRetailPrice: sellRetailPrice ?? this.sellRetailPrice,
@@ -79,7 +79,7 @@ class Product implements BaseItem {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'dbKey': dbKey,
+      'dbRef': dbRef,
       'code': code,
       'name': name,
       'sellRetailPrice': sellRetailPrice,
@@ -98,7 +98,7 @@ class Product implements BaseItem {
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-      dbKey: map['dbKey'] ?? '',
+      dbRef: map['dbRef'] ?? '',
       code: map['code']?.toInt() ?? 0,
       name: map['name'] ?? '',
       sellRetailPrice: map['sellRetailPrice']?.toDouble() ?? 0.0,
@@ -121,7 +121,7 @@ class Product implements BaseItem {
 
   @override
   String toString() {
-    return 'Product(dbKey: $dbKey, code: $code, name: $name, sellRetailPrice: $sellRetailPrice, sellWholePrice: $sellWholePrice, packageType: $packageType, packageWeight: $packageWeight, numItemsInsidePackage: $numItemsInsidePackage, alertWhenExceeds: $alertWhenExceeds, altertWhenLessThan: $altertWhenLessThan, salesmanComission: $salesmanComission, imageUrls: $imageUrls, category: $category, initialQuantity: $initialQuantity)';
+    return 'Product(dbRef: $dbRef, code: $code, name: $name, sellRetailPrice: $sellRetailPrice, sellWholePrice: $sellWholePrice, packageType: $packageType, packageWeight: $packageWeight, numItemsInsidePackage: $numItemsInsidePackage, alertWhenExceeds: $alertWhenExceeds, altertWhenLessThan: $altertWhenLessThan, salesmanComission: $salesmanComission, imageUrls: $imageUrls, category: $category, initialQuantity: $initialQuantity)';
   }
 
   @override
@@ -129,7 +129,7 @@ class Product implements BaseItem {
     if (identical(this, other)) return true;
 
     return other is Product &&
-        other.dbKey == dbKey &&
+        other.dbRef == dbRef &&
         other.code == code &&
         other.name == name &&
         other.sellRetailPrice == sellRetailPrice &&
@@ -147,7 +147,7 @@ class Product implements BaseItem {
 
   @override
   int get hashCode {
-    return dbKey.hashCode ^
+    return dbRef.hashCode ^
         code.hashCode ^
         name.hashCode ^
         sellRetailPrice.hashCode ^

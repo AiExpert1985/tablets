@@ -119,6 +119,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "password": MessageLookupByLibrary.simpleMessage("Password"),
         "pending_transactions":
             MessageLookupByLibrary.simpleMessage("Pending transactions"),
+        "phone": MessageLookupByLibrary.simpleMessage("Phone number"),
         "product_alert_when_exceeds": MessageLookupByLibrary.simpleMessage(
             "Alert when available more than"),
         "product_altert_when_less_than": MessageLookupByLibrary.simpleMessage(

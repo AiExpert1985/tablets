@@ -107,7 +107,6 @@ class TransactionForm extends ConsumerWidget {
     final imageUrls = formImagesNotifier.saveChanges();
     final transaction = Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
     formController.saveItemToDb(context, transaction, isEditMode);
-    tempPrint(formDataNotifier.data);
   }
 
   Future<void> _onDeletePressed(BuildContext context, ItemFormData formDataNotifier,

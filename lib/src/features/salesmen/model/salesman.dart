@@ -5,7 +5,7 @@ import 'package:tablets/src/common/interfaces/base_item.dart';
 
 class Salesman implements BaseItem {
   @override
-  String dbKey;
+  String dbRef;
   @override
   String name;
   @override
@@ -13,7 +13,7 @@ class Salesman implements BaseItem {
   String? phone;
 
   Salesman({
-    required this.dbKey,
+    required this.dbRef,
     required this.name,
     required this.imageUrls,
     this.phone,
@@ -25,7 +25,7 @@ class Salesman implements BaseItem {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'dbKey': dbKey,
+      'dbRef': dbRef,
       'name': name,
       'imageUrls': imageUrls,
       'phone': phone,
@@ -34,7 +34,7 @@ class Salesman implements BaseItem {
 
   factory Salesman.fromMap(Map<String, dynamic> map) {
     return Salesman(
-      dbKey: map['dbKey'] ?? '',
+      dbRef: map['dbRef'] ?? '',
       name: map['name'] ?? '',
       imageUrls: List<String>.from(map['imageUrls']),
       phone: map['phone'],
@@ -42,15 +42,15 @@ class Salesman implements BaseItem {
   }
 
   @override
-  String toString() => 'ProductCategory(dbKey: $dbKey, name: $name, imageUrls: $imageUrls)';
+  String toString() => 'ProductCategory(dbRef: $dbRef, name: $name, imageUrls: $imageUrls)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is Salesman && other.dbKey == dbKey && other.name == name && listEquals(other.imageUrls, imageUrls);
+    return other is Salesman && other.dbRef == dbRef && other.name == name && listEquals(other.imageUrls, imageUrls);
   }
 
   @override
-  int get hashCode => dbKey.hashCode ^ name.hashCode ^ imageUrls.hashCode;
+  int get hashCode => dbRef.hashCode ^ name.hashCode ^ imageUrls.hashCode;
 }

@@ -1,5 +1,5 @@
 abstract class BaseItem {
-  String get dbKey; // Abstract getter for name
+  String get dbRef; // Abstract getter for name
   String get name; // Abstract getter for code
   List<String> get imageUrls;
   // returns last image

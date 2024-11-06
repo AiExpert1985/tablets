@@ -6,7 +6,7 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
   ItemFormData(super.state);
 
   void initialize({Map<String, dynamic>? initialData}) {
-    state = state = initialData ?? {'dbKey': generateRandomString(len: 8)};
+    state = state = initialData ?? {'dbRef': generateRandomString(len: 8)};
   }
 
   void updateProperties(Map<String, dynamic> properties) {

@@ -7,29 +7,28 @@ import 'package:tablets/src/common/interfaces/base_item.dart';
 
 class ProductCategory implements BaseItem {
   @override
-  String dbKey;
+  String dbRef;
   @override
   String name;
   @override
   List<String> imageUrls;
 
   ProductCategory({
-    required this.dbKey,
+    required this.dbRef,
     required this.name,
     required this.imageUrls,
   });
 
   @override
-  String get coverImageUrl =>
-      imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
+  String get coverImageUrl => imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
   ProductCategory copyWith({
-    String? dbKey,
+    String? dbRef,
     String? name,
     List<String>? imageUrls,
   }) {
     return ProductCategory(
-      dbKey: dbKey ?? this.dbKey,
+      dbRef: dbRef ?? this.dbRef,
       name: name ?? this.name,
       imageUrls: imageUrls ?? this.imageUrls,
     );
@@ -38,7 +37,7 @@ class ProductCategory implements BaseItem {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'dbKey': dbKey,
+      'dbRef': dbRef,
       'name': name,
       'imageUrls': imageUrls,
     };
@@ -46,7 +45,7 @@ class ProductCategory implements BaseItem {
 
   factory ProductCategory.fromMap(Map<String, dynamic> map) {
     return ProductCategory(
-      dbKey: map['dbKey'] ?? '',
+      dbRef: map['dbRef'] ?? '',
       name: map['name'] ?? '',
       imageUrls: List<String>.from(map['imageUrls']),
     );
@@ -57,18 +56,18 @@ class ProductCategory implements BaseItem {
   factory ProductCategory.fromJson(String source) => ProductCategory.fromMap(json.decode(source));
 
   @override
-  String toString() => 'ProductCategory(dbKey: $dbKey, name: $name, imageUrls: $imageUrls)';
+  String toString() => 'ProductCategory(dbRef: $dbRef, name: $name, imageUrls: $imageUrls)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
     return other is ProductCategory &&
-        other.dbKey == dbKey &&
+        other.dbRef == dbRef &&
         other.name == name &&
         listEquals(other.imageUrls, imageUrls);
   }
 
   @override
-  int get hashCode => dbKey.hashCode ^ name.hashCode ^ imageUrls.hashCode;
+  int get hashCode => dbRef.hashCode ^ name.hashCode ^ imageUrls.hashCode;
 }

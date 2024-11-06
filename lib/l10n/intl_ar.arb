@@ -131,5 +131,6 @@
     "no": "لا",
     "vendors": "المجهزين",
     "vendor": "المجهز",
-    "transaction_subTotal_amount": "المبلغ المسدد"
+    "transaction_subTotal_amount": "المبلغ المسدد",
+    "phone": "رقم الهاتف"
 }

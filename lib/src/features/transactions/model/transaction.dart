@@ -17,7 +17,7 @@ import 'package:tablets/src/common/interfaces/base_item.dart';
 //! map['date'] is Timestamp ? map['date'].toDate() : map['date'],,
 class Transaction implements BaseItem {
   @override
-  String dbKey;
+  String dbRef;
   @override
   String name; // transaction type: receipt, payment, gift, expenditure, invoice, returns, ...etc
   @override
@@ -28,7 +28,7 @@ class Transaction implements BaseItem {
   String? notes;
   String transactionType; // name of customer
   String? paymentType; // cash, debt
-  String? salesman; // dbKey of salesman
+  String? salesman; // dbRef of salesman
   List<Map<String, dynamic>>? items;
   double? discount;
   String? totalAsText;
@@ -39,7 +39,7 @@ class Transaction implements BaseItem {
   double totalAmount;
   Transaction({
     //required for all classes (BaseItem implementation)
-    required this.dbKey,
+    required this.dbRef,
     required this.name,
     required this.imageUrls,
     // all actions must have below properties
@@ -66,7 +66,7 @@ class Transaction implements BaseItem {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'dbKey': dbKey,
+      'dbRef': dbRef,
       'name': name,
       'imageUrls': imageUrls,
       'number': number,
@@ -88,7 +88,7 @@ class Transaction implements BaseItem {
 
   factory Transaction.fromMap(Map<String, dynamic> map) {
     return Transaction(
-      dbKey: map['dbKey'],
+      dbRef: map['dbRef'],
       name: map['name'],
       imageUrls: List<String>.from(map['imageUrls']),
       number: map['number'].toInt(),

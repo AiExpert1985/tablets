@@ -77,7 +77,6 @@ class InvoiceForm extends ConsumerWidget {
           initialValue: formDataNotifier.getProperty(nameKey),
           dbRepository: repository,
           onChangedFn: (item) {
-            tempPrint(item);
             formDataNotifier.updateProperties(
                 {nameKey: item['name'], salesmanKey: item['salesman'], salesmanDbRefKey: item['salesmanDbRef']});
           },
@@ -89,8 +88,7 @@ class InvoiceForm extends ConsumerWidget {
             initialValue: formDataNotifier.getProperty(salesmanKey),
             dbRepository: salesmanRepository,
             onChangedFn: (item) {
-              tempPrint(item);
-              formDataNotifier.updateProperties({salesmanKey: item['name'], salesmanDbRefKey: item['dbKey']});
+              formDataNotifier.updateProperties({salesmanKey: item['name'], salesmanDbRefKey: item['dbRef']});
             },
           ),
       ],

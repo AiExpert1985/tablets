@@ -5,7 +5,7 @@ import 'package:tablets/src/common/values/constants.dart' as constants;
 
 class Customer implements BaseItem {
   @override
-  String dbKey;
+  String dbRef;
   @override
   String name;
   @override
@@ -14,7 +14,7 @@ class Customer implements BaseItem {
   String salesmanDbRef;
 
   Customer({
-    required this.dbKey,
+    required this.dbRef,
     required this.name,
     required this.imageUrls,
     required this.salesman,
@@ -27,7 +27,7 @@ class Customer implements BaseItem {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'dbKey': dbKey,
+      'dbRef': dbRef,
       'name': name,
       'imageUrls': imageUrls,
       'salesman': salesman,
@@ -37,7 +37,7 @@ class Customer implements BaseItem {
 
   factory Customer.fromMap(Map<String, dynamic> map) {
     return Customer(
-      dbKey: map['dbKey'] ?? '',
+      dbRef: map['dbRef'] ?? '',
       name: map['name'] ?? '',
       imageUrls: List<String>.from(map['imageUrls']),
       salesman: map['salesman'] ?? '',
@@ -46,14 +46,14 @@ class Customer implements BaseItem {
   }
 
   @override
-  String toString() => 'ProductCategory(dbKey: $dbKey, name: $name, imageUrls: $imageUrls)';
+  String toString() => 'ProductCategory(dbRef: $dbRef, name: $name, imageUrls: $imageUrls)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
     return other is Customer &&
-        other.dbKey == dbKey &&
+        other.dbRef == dbRef &&
         other.name == name &&
         listEquals(other.imageUrls, imageUrls) &&
         other.salesman == salesman;
@@ -61,6 +61,6 @@ class Customer implements BaseItem {
 
   @override
   int get hashCode {
-    return dbKey.hashCode ^ name.hashCode ^ imageUrls.hashCode ^ salesman.hashCode;
+    return dbRef.hashCode ^ name.hashCode ^ imageUrls.hashCode ^ salesman.hashCode;
   }
 }
