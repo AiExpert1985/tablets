@@ -104,6 +104,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "input_validation_error_message_for_user_privilage":
             MessageLookupByLibrary.simpleMessage(
                 "You must select user privilage"),
+        "internal_transaction":
+            MessageLookupByLibrary.simpleMessage("Internal transactions"),
         "invoice_total_price":
             MessageLookupByLibrary.simpleMessage("Total price"),
         "invoice_total_weight":
@@ -174,6 +176,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Not found in database"),
         "selling_price_type":
             MessageLookupByLibrary.simpleMessage("Selling price type"),
+        "selling_price_type_retail":
+            MessageLookupByLibrary.simpleMessage("Retail"),
+        "selling_price_type_whole":
+            MessageLookupByLibrary.simpleMessage("Wholesale"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign up"),
         "slogan": MessageLookupByLibrary.simpleMessage(

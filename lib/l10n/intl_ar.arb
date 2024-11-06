@@ -112,7 +112,7 @@
     "salesmen": "المندوبين",
     "customer_name": "الأسم",
     "customers": "الزبائن",
-    "salesman_selection": "اختيار المندوب",
+    "salesman_selection": "المندوب",
     "customer": "الزبون",
     "item_sequence": "تسلسل",
     "item_name": "اسم المادة",
@@ -140,7 +140,10 @@
     "gps_x": "احداثيات الطول",
     "gps_y": "احداثيات العرض",
     "address": "اقرب نقطة دالة",
-    "selling_price_type": "نوع سعر البيع",
+    "selling_price_type": "نوع التعامل",
+    "selling_price_type_whole": "جملة",
+    "selling_price_type_retail": "مفرد",
     "credit_limit": "اقصى حد للدين",
-    "payment_duration_limit": "اقصى مدة للسداد"
+    "payment_duration_limit": "اقصى مدة للسداد",
+    "internal_transaction": "تعاملات داخلية"
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -39,7 +38,6 @@ class CustomerForm extends ConsumerWidget {
             if (!formController.validateData()) return;
             formController.submitData();
             final updateFormData = formDataNotifier.data;
-            tempPrint(updateFormData);
             final imageUrls = formImagesNotifier.saveChanges();
             final customer = Customer.fromMap({...updateFormData, 'imageUrls': imageUrls});
             formController.saveItemToDb(context, customer, isEditMode);
@@ -54,8 +52,8 @@ class CustomerForm extends ConsumerWidget {
           visible: isEditMode,
           child: IconButton(
               onPressed: () async {
-                bool? confiramtion =
-                    await showDeleteConfirmationDialog(context: context, message: formDataNotifier.data['name']);
+                bool? confiramtion = await showDeleteConfirmationDialog(
+                    context: context, message: formDataNotifier.data['name']);
                 if (confiramtion != null) {
                   final updateFormData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();

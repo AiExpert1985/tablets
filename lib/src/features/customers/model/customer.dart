@@ -22,6 +22,7 @@ class Customer implements BaseItem {
   String sellingPriceType; // wholesale or retail
   double creditLimit; // maximum allowed credit
   double paymentDurationLimit; // maximum days to close a transaction (pay its amount)
+  String? phone;
 
   Customer({
     required this.dbRef,
@@ -39,50 +40,16 @@ class Customer implements BaseItem {
     required this.sellingPriceType,
     required this.creditLimit,
     required this.paymentDurationLimit,
+    this.phone,
   });
 
   @override
-  String get coverImageUrl => imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
-
-  Customer copyWith({
-    String? dbRef,
-    String? name,
-    List<String>? imageUrls,
-    String? salesman,
-    String? salesmanDbRef,
-    String? region,
-    String? regionDbRef,
-    double? x,
-    double? y,
-    DateTime? initialDate,
-    double? initialCredit,
-    String? address,
-    String? sellingPriceType,
-    double? creditLimit,
-    double? paymentDurationLimit,
-  }) {
-    return Customer(
-      dbRef: dbRef ?? this.dbRef,
-      name: name ?? this.name,
-      imageUrls: imageUrls ?? this.imageUrls,
-      salesman: salesman ?? this.salesman,
-      salesmanDbRef: salesmanDbRef ?? this.salesmanDbRef,
-      region: region ?? this.region,
-      regionDbRef: regionDbRef ?? this.regionDbRef,
-      x: x ?? this.x,
-      y: y ?? this.y,
-      initialDate: initialDate ?? this.initialDate,
-      initialCredit: initialCredit ?? this.initialCredit,
-      address: address ?? this.address,
-      sellingPriceType: sellingPriceType ?? this.sellingPriceType,
-      creditLimit: creditLimit ?? this.creditLimit,
-      paymentDurationLimit: paymentDurationLimit ?? this.paymentDurationLimit,
-    );
-  }
+  String get coverImageUrl =>
+      imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
   @override
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    return {
       'dbRef': dbRef,
       'name': name,
       'imageUrls': imageUrls,
@@ -98,31 +65,34 @@ class Customer implements BaseItem {
       'sellingPriceType': sellingPriceType,
       'creditLimit': creditLimit,
       'paymentDurationLimit': paymentDurationLimit,
+      'phone': phone,
     };
   }
 
   factory Customer.fromMap(Map<String, dynamic> map) {
     return Customer(
-      dbRef: map['dbRef'],
-      name: map['name'],
+      dbRef: map['dbRef'] ?? '',
+      name: map['name'] ?? '',
       imageUrls: List<String>.from(map['imageUrls']),
-      salesman: map['salesman'],
-      salesmanDbRef: map['salesmanDbRef'],
-      region: map['region'] as String,
-      regionDbRef: map['regionDbRef'],
-      x: map['x'],
-      y: map['y'],
-      initialDate: map['initialDate'] is Timestamp ? map['initialDate'].toDate() : map['initialDate'],
-      initialCredit: map['initialCredit'],
+      salesman: map['salesman'] ?? '',
+      salesmanDbRef: map['salesmanDbRef'] ?? '',
+      region: map['region'] ?? '',
+      regionDbRef: map['regionDbRef'] ?? '',
+      x: map['x']?.toDouble(),
+      y: map['y']?.toDouble(),
+      initialDate:
+          map['initialDate'] is Timestamp ? map['initialDate'].toDate() : map['initialDate'],
+      initialCredit: map['initialCredit']?.toDouble() ?? 0.0,
       address: map['address'],
-      sellingPriceType: map['sellingPriceType'],
-      creditLimit: map['creditLimit'],
-      paymentDurationLimit: map['paymentDurationLimit'],
+      sellingPriceType: map['sellingPriceType'] ?? '',
+      phone: map['phone'] ?? '',
+      creditLimit: map['creditLimit']?.toDouble() ?? 0.0,
+      paymentDurationLimit: map['paymentDurationLimit']?.toDouble() ?? 0.0,
     );
   }
 
   @override
   String toString() {
-    return 'Customer(dbRef: $dbRef, name: $name, imageUrls: $imageUrls, salesman: $salesman, salesmanDbRef: $salesmanDbRef, region: $region, regionDbRef: $regionDbRef, x: $x, y: $y, initialDate: $initialDate, initialCredit: $initialCredit, address: $address, sellingPriceType: $sellingPriceType, creditLimit: $creditLimit, paymentDurationLimit: $paymentDurationLimit)';
+    return 'Customer(dbRef: $dbRef, name: $name, phone: $phone)';
   }
 }

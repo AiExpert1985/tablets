@@ -1470,6 +1470,26 @@ class S {
     );
   }
 
+  /// `Wholesale`
+  String get selling_price_type_whole {
+    return Intl.message(
+      'Wholesale',
+      name: 'selling_price_type_whole',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retail`
+  String get selling_price_type_retail {
+    return Intl.message(
+      'Retail',
+      name: 'selling_price_type_retail',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Credit limit`
   String get credit_limit {
     return Intl.message(
@@ -1485,6 +1505,16 @@ class S {
     return Intl.message(
       'Payment duration limit',
       name: 'payment_duration_limit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Internal transactions`
+  String get internal_transaction {
+    return Intl.message(
+      'Internal transactions',
+      name: 'internal_transaction',
       desc: '',
       args: [],
     );

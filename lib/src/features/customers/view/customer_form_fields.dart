@@ -5,6 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
+import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
@@ -33,18 +34,19 @@ class CustomerFormFields extends ConsumerWidget {
                 name: 'name',
                 label: S.of(context).salesman_name,
               ),
-              HorizontalGap.m,
+              HorizontalGap.l,
               DropDownWithSearchFormField(
-                label: S.of(context).salesman_name,
+                label: S.of(context).salesman_selection,
                 initialValue: formDataNotifier.getProperty('salesman'),
                 dbRepository: salesmanRepository,
                 onChangedFn: (item) {
-                  formDataNotifier.updateProperties({'salesman': item['name'], 'salesmanDbRef': item['dbRef']});
+                  formDataNotifier
+                      .updateProperties({'salesman': item['name'], 'salesmanDbRef': item['dbRef']});
                 },
               ),
             ]),
           ),
-          VerticalGap.m,
+          VerticalGap.l,
           Expanded(
             child: Row(
               children: [
@@ -53,7 +55,8 @@ class CustomerFormFields extends ConsumerWidget {
                   initialValue: formDataNotifier.getProperty('region'),
                   dbRepository: regionRepository,
                   onChangedFn: (item) {
-                    formDataNotifier.updateProperties({'region': item['name'], 'regionDbRef': item['dbRef']});
+                    formDataNotifier
+                        .updateProperties({'region': item['name'], 'regionDbRef': item['dbRef']});
                   },
                 ),
                 HorizontalGap.m,
@@ -69,7 +72,7 @@ class CustomerFormFields extends ConsumerWidget {
               ],
             ),
           ),
-          VerticalGap.m,
+          VerticalGap.l,
           Expanded(
             child: Row(
               children: [
@@ -82,7 +85,7 @@ class CustomerFormFields extends ConsumerWidget {
                   name: 'x',
                   label: S.of(context).gps_x,
                 ),
-                HorizontalGap.m,
+                HorizontalGap.l,
                 FormInputField(
                   onChangedFn: (value) {
                     formDataNotifier.updateProperties({'y': value});
@@ -92,7 +95,7 @@ class CustomerFormFields extends ConsumerWidget {
                   name: 'y',
                   label: S.of(context).gps_y,
                 ),
-                HorizontalGap.m,
+                HorizontalGap.l,
                 FormInputField(
                   onChangedFn: (value) {
                     formDataNotifier.updateProperties({'address': value});
@@ -105,7 +108,7 @@ class CustomerFormFields extends ConsumerWidget {
               ],
             ),
           ),
-          VerticalGap.m,
+          VerticalGap.l,
           Expanded(
             child: Row(
               children: [
@@ -132,20 +135,23 @@ class CustomerFormFields extends ConsumerWidget {
               ],
             ),
           ),
-          VerticalGap.m,
+          VerticalGap.l,
           Expanded(
             child: Row(
               children: [
-                FormInputField(
+                DropDownListFormField(
+                  initialValue: formDataNotifier.getProperty('sellingPriceType'),
+                  itemList: [
+                    S.of(context).selling_price_type_whole,
+                    S.of(context).selling_price_type_retail,
+                  ],
+                  label: S.of(context).selling_price_type,
+                  name: 'sellingPriceType',
                   onChangedFn: (value) {
                     formDataNotifier.updateProperties({'sellingPriceType': value});
                   },
-                  initialValue: formDataNotifier.getProperty('sellingPriceType'),
-                  dataType: FieldDataType.string,
-                  name: 'sellingPriceType',
-                  label: S.of(context).selling_price_type,
                 ),
-                HorizontalGap.m,
+                HorizontalGap.l,
                 FormInputField(
                   onChangedFn: (value) {
                     formDataNotifier.updateProperties({'creditLimit': value});
@@ -155,7 +161,7 @@ class CustomerFormFields extends ConsumerWidget {
                   name: 'creditLimit',
                   label: S.of(context).credit_limit,
                 ),
-                HorizontalGap.m,
+                HorizontalGap.l,
                 FormInputField(
                   onChangedFn: (value) {
                     formDataNotifier.updateProperties({'paymentDurationLimit': value});

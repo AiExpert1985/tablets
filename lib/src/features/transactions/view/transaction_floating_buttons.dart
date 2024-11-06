@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
-import 'package:tablets/src/features/transactions/view/transaction_new_form_dialog.dart';
+import 'package:tablets/src/features/transactions/view/transaction_group_selection.dart';
 
 class TransactionsFloatingButtons extends ConsumerWidget {
   const TransactionsFloatingButtons({super.key});
@@ -36,7 +36,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
           onTap: () {
             showDialog(
               context: context,
-              builder: (BuildContext ctx) => const TransactionTypeSelection(),
+              builder: (BuildContext ctx) => const TransactionGroupSelection(),
             ).whenComplete(() {});
           },
         ),

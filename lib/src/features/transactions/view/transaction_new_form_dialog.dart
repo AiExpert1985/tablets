@@ -8,20 +8,21 @@ import 'package:tablets/src/common/providers/text_editing_controllers_provider.d
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 
 class TransactionTypeSelection extends ConsumerWidget {
-  const TransactionTypeSelection({super.key});
+  const TransactionTypeSelection(this.transactionGroup, {super.key});
+  final String transactionGroup;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Define the form types and corresponding names
     final List<String> names = [
-      S.of(context).transaction_type_customer_invoice,
-      S.of(context).transaction_type_vender_invoice,
-      S.of(context).transaction_type_customer_receipt,
-      S.of(context).transaction_type_vendor_receipt,
-      S.of(context).transaction_type_expenditures,
-      S.of(context).transaction_type_gifts,
-      S.of(context).transaction_type_customer_return,
-      S.of(context).transaction_type_vender_return,
+      if (transactionGroup == 'customer') S.of(context).transaction_type_customer_invoice,
+      if (transactionGroup == 'customer') S.of(context).transaction_type_customer_receipt,
+      if (transactionGroup == 'customer') S.of(context).transaction_type_customer_return,
+      if (transactionGroup == 'vendor') S.of(context).transaction_type_gifts,
+      if (transactionGroup == 'vendor') S.of(context).transaction_type_vender_invoice,
+      if (transactionGroup == 'vendor') S.of(context).transaction_type_vendor_receipt,
+      if (transactionGroup == 'vendor') S.of(context).transaction_type_vender_return,
+      if (transactionGroup == 'internal') S.of(context).transaction_type_expenditures,
       S.of(context).transaction_type_damaged_items,
     ];
 

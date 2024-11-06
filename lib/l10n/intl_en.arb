@@ -141,6 +141,9 @@
     "gps_y": "Y coordinate",
     "address": "Address",
     "selling_price_type": "Selling price type",
+    "selling_price_type_whole": "Wholesale",
+    "selling_price_type_retail": "Retail",
     "credit_limit": "Credit limit",
-    "payment_duration_limit": "Payment duration limit"
+    "payment_duration_limit": "Payment duration limit",
+    "internal_transaction": "Internal transactions"
 }

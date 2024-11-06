@@ -103,6 +103,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "يجب ان يحتوي الاسم على 4 احرف على الاقل"),
         "input_validation_error_message_for_user_privilage":
             MessageLookupByLibrary.simpleMessage("يجب تحديد صلاحيات المستخدم"),
+        "internal_transaction":
+            MessageLookupByLibrary.simpleMessage("تعاملات داخلية"),
         "invoice_total_price":
             MessageLookupByLibrary.simpleMessage("المبلغ النهائي"),
         "invoice_total_weight":
@@ -157,8 +159,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "regions": MessageLookupByLibrary.simpleMessage("المناطق"),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
-        "salesman_selection":
-            MessageLookupByLibrary.simpleMessage("اختيار المندوب"),
+        "salesman_selection": MessageLookupByLibrary.simpleMessage("المندوب"),
         "salesmen": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
@@ -169,7 +170,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "search_not_found_in_db": MessageLookupByLibrary.simpleMessage(
             "لم يتم ايجاد المستند في قاعةد البيانات"),
         "selling_price_type":
-            MessageLookupByLibrary.simpleMessage("نوع سعر البيع"),
+            MessageLookupByLibrary.simpleMessage("نوع التعامل"),
+        "selling_price_type_retail":
+            MessageLookupByLibrary.simpleMessage("مفرد"),
+        "selling_price_type_whole":
+            MessageLookupByLibrary.simpleMessage("جملة"),
         "settings": MessageLookupByLibrary.simpleMessage("الاعدادات"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
         "slogan":

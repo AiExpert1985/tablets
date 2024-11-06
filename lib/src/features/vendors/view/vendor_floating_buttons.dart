@@ -10,7 +10,11 @@ class VendorFloatingButtons extends ConsumerWidget {
   const VendorFloatingButtons({super.key});
 
   void showAddVendorForm(BuildContext context, WidgetRef ref) {
-    ref.read(vendorFormDataProvider.notifier).initialize();
+    final formDataNotifier = ref.read(vendorFormDataProvider.notifier);
+    formDataNotifier.initialize();
+    formDataNotifier.updateProperties({
+      'initialDate': DateTime.now(),
+    });
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize();
     showDialog(
