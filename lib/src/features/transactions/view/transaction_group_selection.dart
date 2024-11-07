@@ -25,18 +25,22 @@ class TransactionGroupSelection extends ConsumerWidget {
       scrollable: true,
       content: Container(
         padding: const EdgeInsets.all(25),
-        width: 800,
-        height: 560,
+        width: 300,
+        height: 500,
         child: GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3, // Number of columns
-            childAspectRatio: 1.5, // Aspect ratio of each card
+            crossAxisCount: 1, // Number of columns
+            childAspectRatio: 1.7, // Aspect ratio of each card
           ),
           itemCount: names.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                TransactionTypeSelection(formTypes[index]);
+                Navigator.of(context).pop();
+                showDialog(
+                  context: context,
+                  builder: (BuildContext ctx) => TransactionTypeSelection(formTypes[index]),
+                ).whenComplete(() {});
               },
               child: Card(
                 elevation: 4,
