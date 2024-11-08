@@ -17,7 +17,7 @@ import 'package:tablets/src/features/customers/repository/customer_repository_pr
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
-import 'package:tablets/src/features/transactions/view/forms/common_values.dart';
+import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
 
 class ReceiptForm extends ConsumerWidget {
@@ -71,10 +71,13 @@ class ReceiptForm extends ConsumerWidget {
           initialValue: formDataNotifier.getProperty(nameKey),
           dbRepository: repository,
           onChangedFn: (item) {
-            formDataNotifier.updateProperties({
-              nameKey: item[nameKey],
-              salesmanKey: item[salesmanKey],
-            });
+            final properties = {
+              nameKey: item['name'],
+              nameDbRefKey: item['dbRef'],
+              salesmanKey: item['salesman'],
+              salesmanDbRefKey: item['salesmanDbRef']
+            };
+            formDataNotifier.updateProperties(properties);
           },
         ),
         if (!isVendor) HorizontalGap.l,
