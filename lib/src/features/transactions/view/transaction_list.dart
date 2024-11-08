@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
@@ -45,7 +44,7 @@ class TransactionsList extends ConsumerWidget {
                   itemCount: transactions.length,
                   itemBuilder: (context, index) {
                     final transaction = Transaction.fromMap(transactions[index]);
-                    return _buildTransactionRow(transaction, context, imagePickerNotifier,
+                    return _buildDataRow(transaction, context, imagePickerNotifier,
                         formDataNotifier, textEditingNotifier);
                   },
                 ),
@@ -70,7 +69,7 @@ class TransactionsList extends ConsumerWidget {
     );
   }
 
-  Widget _buildTransactionRow(
+  Widget _buildDataRow(
       Transaction transaction,
       BuildContext context,
       ImageSliderNotifier imagePickerNotifier,
@@ -144,6 +143,4 @@ class TransactionsList extends ConsumerWidget {
       color: Colors.grey[300], // Light gray color
     );
   }
-
-  String formatDate(DateTime date) => DateFormat('yyyy/MM/dd').format(date);
 }
