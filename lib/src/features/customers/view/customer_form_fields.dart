@@ -61,6 +61,7 @@ class CustomerFormFields extends ConsumerWidget {
                 ),
                 HorizontalGap.m,
                 FormInputField(
+                  isRequired: false,
                   onChangedFn: (value) {
                     formDataNotifier.updateProperties({'phone': value});
                   },
@@ -77,6 +78,7 @@ class CustomerFormFields extends ConsumerWidget {
             child: Row(
               children: [
                 FormInputField(
+                  isRequired: false,
                   onChangedFn: (value) {
                     formDataNotifier.updateProperties({'x': value});
                   },
@@ -87,6 +89,7 @@ class CustomerFormFields extends ConsumerWidget {
                 ),
                 HorizontalGap.l,
                 FormInputField(
+                  isRequired: false,
                   onChangedFn: (value) {
                     formDataNotifier.updateProperties({'y': value});
                   },
@@ -97,6 +100,7 @@ class CustomerFormFields extends ConsumerWidget {
                 ),
                 HorizontalGap.l,
                 FormInputField(
+                  isRequired: false,
                   onChangedFn: (value) {
                     formDataNotifier.updateProperties({'address': value});
                   },

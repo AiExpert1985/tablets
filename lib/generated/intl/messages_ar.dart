@@ -122,6 +122,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "no": MessageLookupByLibrary.simpleMessage("لا"),
+        "num_open_invoice":
+            MessageLookupByLibrary.simpleMessage("القوائم المفتوحة"),
         "number": MessageLookupByLibrary.simpleMessage("الرقم"),
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
@@ -158,6 +160,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
         "region_name": MessageLookupByLibrary.simpleMessage("اسم المنطقة"),
         "regions": MessageLookupByLibrary.simpleMessage("المناطق"),
+        "remaining_amount":
+            MessageLookupByLibrary.simpleMessage("المبلغ المتبقي"),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "salesman_selection": MessageLookupByLibrary.simpleMessage("المندوب"),

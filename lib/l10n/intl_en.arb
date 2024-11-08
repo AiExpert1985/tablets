@@ -146,5 +146,7 @@
     "credit_limit": "Credit limit",
     "payment_duration_limit": "Payment duration limit",
     "internal_transaction": "Internal transactions",
-    "current_debt": "Current debt"
+    "current_debt": "Current debt",
+    "num_open_invoice": "Num of open invoices",
+    "remaining_amount": "Remaining amount"
 }

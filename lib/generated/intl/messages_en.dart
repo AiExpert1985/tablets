@@ -123,6 +123,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "no": MessageLookupByLibrary.simpleMessage("No"),
+        "num_open_invoice":
+            MessageLookupByLibrary.simpleMessage("Num of open invoices"),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
         "page_not_found":
             MessageLookupByLibrary.simpleMessage("Page is not found"),
@@ -162,6 +164,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "products": MessageLookupByLibrary.simpleMessage("Products"),
         "region_name": MessageLookupByLibrary.simpleMessage("Region name"),
         "regions": MessageLookupByLibrary.simpleMessage("Regions"),
+        "remaining_amount":
+            MessageLookupByLibrary.simpleMessage("Remaining amount"),
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("Name"),
         "salesman_selection":

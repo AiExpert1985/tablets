@@ -146,5 +146,7 @@
     "credit_limit": "اقصى حد للدين",
     "payment_duration_limit": "اقصى مدة للسداد",
     "internal_transaction": "تعاملات داخلية",
-    "current_debt": "الدين الحالي"
+    "current_debt": "الدين الحالي",
+    "num_open_invoice": "القوائم المفتوحة",
+    "remaining_amount": "المبلغ المتبقي"
 }

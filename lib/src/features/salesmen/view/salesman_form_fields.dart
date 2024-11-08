@@ -24,6 +24,7 @@ class SalesmanFormFields extends ConsumerWidget {
           ),
           FormInputField(
             dataType: FieldDataType.string,
+            isRequired: false,
             name: 'phone',
             label: S.of(context).phone,
             initialValue: formDataNotifier.getProperty('phone'),

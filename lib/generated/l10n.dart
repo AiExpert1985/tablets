@@ -1529,6 +1529,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Num of open invoices`
+  String get num_open_invoice {
+    return Intl.message(
+      'Num of open invoices',
+      name: 'num_open_invoice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remaining amount`
+  String get remaining_amount {
+    return Intl.message(
+      'Remaining amount',
+      name: 'remaining_amount',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

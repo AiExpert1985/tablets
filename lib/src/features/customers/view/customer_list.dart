@@ -3,13 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
+import 'package:tablets/src/common/widgets/show_dialog_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/customers/utils/customer_total_debt.dart';
+import 'package:tablets/src/features/customers/utils/customer_utils.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -17,10 +19,10 @@ import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
-List<Map<String, dynamic>> _transactions = [];
+List<Map<String, dynamic>> _allTransactions = [];
 
 Future<void> _fetchTransactions(DbRepository transactionProvider) async {
-  _transactions = await transactionProvider.fetchItemListAsMaps();
+  _allTransactions = await transactionProvider.fetchItemListAsMaps();
 }
 
 void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
@@ -47,21 +49,26 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
       filterIsOn ? ref.read(customerFilteredListProvider).getFilteredList() : customertStream;
   return AsyncValueWidget<List<Map<String, dynamic>>>(
     value: customerListValue,
-    data: (transactions) {
+    data: (customers) {
       return Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             _buildHeaderRow(context),
-            const SizedBox(height: 19),
+            VerticalGap.l,
             _buildHorizontalLine(), // Add some space between header and data
             Expanded(
               child: ListView.builder(
-                itemCount: transactions.length,
+                itemCount: customers.length,
                 itemBuilder: (context, index) {
-                  final customer = Customer.fromMap(transactions[index]);
-                  return _buildDataRow(
-                      customer, context, imagePickerNotifier, formDataNotifier, _transactions);
+                  final customer = Customer.fromMap(customers[index]);
+                  final customerTransactions =
+                      getCustomerTransactions(_allTransactions, customer.dbRef);
+                  final totalDebt = getTotalDebt(customerTransactions);
+                  final openInvoices = getOpenInvoices(customerTransactions, totalDebt);
+
+                  return _buildDataRow(customer, context, imagePickerNotifier, formDataNotifier,
+                      totalDebt, openInvoices);
                 },
               ),
             ),
@@ -79,17 +86,18 @@ Widget _buildHeaderRow(BuildContext context) {
       Expanded(child: _buildHeader(S.of(context).customer)),
       Expanded(child: _buildHeader(S.of(context).salesman_selection)),
       Expanded(child: _buildHeader(S.of(context).current_debt)),
+      Expanded(child: _buildHeader(S.of(context).num_open_invoice)),
     ],
   );
 }
 
 Widget _buildDataRow(
-  Customer customer,
-  BuildContext context,
-  ImageSliderNotifier imagePickerNotifier,
-  ItemFormData formDataNotifier,
-  List<Map<String, dynamic>> transactions,
-) {
+    Customer customer,
+    BuildContext context,
+    ImageSliderNotifier imagePickerNotifier,
+    ItemFormData formDataNotifier,
+    double totalDebt,
+    List<List<dynamic>> openInvoices) {
   return Column(
     children: [
       Row(
@@ -113,9 +121,22 @@ Widget _buildDataRow(
             ),
           ),
           Expanded(child: _buildDataCell(customer.salesman)),
+          Expanded(child: _buildDataCell(numberToString(totalDebt))),
           Expanded(
-              child:
-                  _buildDataCell(doubleToString(calculateTotalDebt(transactions, customer.dbRef))))
+            child: InkWell(
+              child: _buildDataCell(numberToString(openInvoices.length)),
+              onTap: () {
+                final title = '${customer.name} (${openInvoices.length})';
+                final columnTitles = [
+                  S.of(context).transaction_number,
+                  S.of(context).transaction_date,
+                  S.of(context).transaction_amount,
+                  S.of(context).remaining_amount
+                ];
+                showDialogList(context, title, 600, 600, columnTitles, openInvoices);
+              },
+            ),
+          ),
         ],
       ),
       const SizedBox(height: 4), // Space between row and divider
@@ -150,3 +171,39 @@ Widget _buildHorizontalLine() {
     color: Colors.grey[300], // Light gray color
   );
 }
+
+// void _showOpenInvoices(BuildContext context, List<Map<String, dynamic>> dataList) {
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         title: Center(child: Text('${S.of(context).num_open_invoice} (${dataList.length})')),
+//         content: SizedBox(
+//           // Set a fixed height for the dialog content
+//           height: 300, // Adjust this height as needed
+//           width: 300, // Use max width
+//           child: ListView.builder(
+//             itemCount: dataList.length,
+//             itemBuilder: (context, index) {
+//               final data = dataList[index];
+//               return Padding(
+//                 padding: const EdgeInsets.symmetric(vertical: 5.0),
+//                 child: Center(child: Text('Number: ${data['number']}, Amount: ${data['amount']}')),
+//               );
+//             },
+//           ),
+//         ),
+//         actions: <Widget>[
+//           Center(
+//             child: IconButton(
+//               icon: const CancelIcon(),
+//               onPressed: () {
+//                 Navigator.of(context).pop();
+//               },
+//             ),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
