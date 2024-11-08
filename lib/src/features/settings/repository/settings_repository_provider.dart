@@ -7,5 +7,5 @@ final settingsRepositoryProvider = Provider<DbRepository>((ref) {
 
 final settingsStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   final settingsRepository = ref.watch(settingsRepositoryProvider);
-  return settingsRepository.watchItemAsMaps();
+  return settingsRepository.watchItemListAsMaps();
 });

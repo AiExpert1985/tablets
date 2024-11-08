@@ -1519,6 +1519,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Current debt`
+  String get current_debt {
+    return Intl.message(
+      'Current debt',
+      name: 'current_debt',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

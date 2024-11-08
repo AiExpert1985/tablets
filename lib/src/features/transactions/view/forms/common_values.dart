@@ -1,4 +1,5 @@
 const String nameKey = 'name';
+const String nameDbRefKey = 'nameDbRef';
 const String numberKey = 'number';
 const String dateKey = 'date';
 const String currencyKey = 'currency';

@@ -7,5 +7,5 @@ final regionRepositoryProvider = Provider<DbRepository>((ref) {
 
 final regionStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   final regionsRepository = ref.watch(regionRepositoryProvider);
-  return regionsRepository.watchItemAsMaps();
+  return regionsRepository.watchItemListAsMaps();
 });

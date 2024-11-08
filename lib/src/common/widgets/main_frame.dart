@@ -33,7 +33,7 @@ class AppScreenFrame extends StatelessWidget {
         ],
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
-      drawer: const MainDrawer(),
+      drawer: buildMainDrawer(context),
       body: Container(
         padding: const EdgeInsets.all(30),
         child: screenBody,

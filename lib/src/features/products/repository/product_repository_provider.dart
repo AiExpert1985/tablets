@@ -5,5 +5,5 @@ final productRepositoryProvider = Provider<DbRepository>((ref) => DbRepository('
 
 final productStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   final productRepository = ref.watch(productRepositoryProvider);
-  return productRepository.watchItemAsMaps();
+  return productRepository.watchItemListAsMaps();
 });

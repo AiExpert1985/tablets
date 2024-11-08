@@ -19,7 +19,8 @@ class Transaction implements BaseItem {
   @override
   String dbRef;
   @override
-  String name; // transaction type: receipt, payment, gift, expenditure, invoice, returns, ...etc
+  String name; // customer name, vendor name, expenditure name, ...etc name,
+  String? nameDbRef; // dbRef of customer and vendor
   @override
   List<String> imageUrls;
   int number; // receipt number, entered automatically (last_receipt + 1)
@@ -44,6 +45,7 @@ class Transaction implements BaseItem {
     required this.imageUrls,
     // all actions must have below properties
     required this.number,
+    this.nameDbRef,
     required this.date,
     required this.currency,
     this.notes,
@@ -68,6 +70,7 @@ class Transaction implements BaseItem {
     return {
       'dbRef': dbRef,
       'name': name,
+      'nameDbRef': nameDbRef,
       'imageUrls': imageUrls,
       'number': number,
       'date': date,
@@ -90,6 +93,7 @@ class Transaction implements BaseItem {
     return Transaction(
       dbRef: map['dbRef'],
       name: map['name'],
+      nameDbRef: map['nameDbRef'],
       imageUrls: List<String>.from(map['imageUrls']),
       number: map['number'].toInt(),
       date: map['date'] is Timestamp ? map['date'].toDate() : map['date'],

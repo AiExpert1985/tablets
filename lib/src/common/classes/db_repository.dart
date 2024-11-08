@@ -22,7 +22,9 @@ class DbRepository {
 
   Future<bool> updateItem(BaseItem updatedItem) async {
     try {
-      final query = _firestore.collection(_collectionName).where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
+      final query = _firestore
+          .collection(_collectionName)
+          .where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
       final querySnapshot = await query.get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
@@ -37,8 +39,10 @@ class DbRepository {
 
   Future<bool> deleteItem(BaseItem item) async {
     try {
-      final querySnapshot =
-          await _firestore.collection(_collectionName).where(_dbReferenceKey, isEqualTo: item.dbRef).get();
+      final querySnapshot = await _firestore
+          .collection(_collectionName)
+          .where(_dbReferenceKey, isEqualTo: item.dbRef)
+          .get();
       if (querySnapshot.size > 0) {
         final documentRef = querySnapshot.docs[0].reference;
         await documentRef.delete();
@@ -50,19 +54,23 @@ class DbRepository {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> watchItemAsMaps() {
+  Stream<List<Map<String, dynamic>>> watchItemListAsMaps() {
     final ref = _firestore.collection(_collectionName);
-    return ref.snapshots().map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+    return ref
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
   /// below function was not tested
-  Stream<List<BaseItem>> watchItemsAsItems() {
+  Stream<List<BaseItem>> watchItemListAsItems() {
     final query = _firestore.collection(_collectionName);
     final ref = query.withConverter(
       fromFirestore: (doc, _) => BaseItem.fromMap(doc.data()!),
       toFirestore: (BaseItem product, options) => product.toMap(),
     );
-    return ref.snapshots().map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+    return ref
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
   Future<BaseItem> fetchItemAsObject({String? filterKey, String? filterValue}) async {
@@ -88,10 +96,13 @@ class DbRepository {
           .where(filterKey, isLessThan: '$filterValue\uf8ff');
     }
     final snapshot = await query.get();
-    return snapshot.docs.map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>).toList().first;
+    return snapshot.docs
+        .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
+        .toList()
+        .first;
   }
 
-  Future<List<BaseItem>> fetchItemsAsObjects({String? filterKey, String? filterValue}) async {
+  Future<List<BaseItem>> fetchItemListAsObjects({String? filterKey, String? filterValue}) async {
     Query query = _firestore.collection(_collectionName);
     if (filterKey != null) {
       query = query
@@ -107,7 +118,8 @@ class DbRepository {
   }
 
   /// below function was not tested
-  Future<List<Map<String, dynamic>>> fetchItemListAsMaps({String? filterKey, String? filterValue}) async {
+  Future<List<Map<String, dynamic>>> fetchItemListAsMaps(
+      {String? filterKey, String? filterValue}) async {
     Query query = _firestore.collection(_collectionName);
     if (filterKey != null) {
       query = query

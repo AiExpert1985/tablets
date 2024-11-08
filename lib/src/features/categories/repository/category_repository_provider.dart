@@ -7,5 +7,5 @@ final categoryRepositoryProvider = Provider<DbRepository>((ref) {
 
 final categoryStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   final categoriesRepository = ref.watch(categoryRepositoryProvider);
-  return categoriesRepository.watchItemAsMaps();
+  return categoriesRepository.watchItemListAsMaps();
 });

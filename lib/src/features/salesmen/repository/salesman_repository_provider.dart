@@ -7,5 +7,5 @@ final salesmanRepositoryProvider = Provider<DbRepository>((ref) {
 
 final salesmanStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   final salesmanRepository = ref.watch(salesmanRepositoryProvider);
-  return salesmanRepository.watchItemAsMaps();
+  return salesmanRepository.watchItemListAsMaps();
 });

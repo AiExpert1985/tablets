@@ -42,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("Create a new account"),
         "credit_limit": MessageLookupByLibrary.simpleMessage("Credit limit"),
+        "current_debt": MessageLookupByLibrary.simpleMessage("Current debt"),
         "customer": MessageLookupByLibrary.simpleMessage("Customer"),
         "customer_name": MessageLookupByLibrary.simpleMessage("Name"),
         "customers": MessageLookupByLibrary.simpleMessage("Customers"),

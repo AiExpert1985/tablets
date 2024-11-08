@@ -145,5 +145,6 @@
     "selling_price_type_retail": "مفرد",
     "credit_limit": "اقصى حد للدين",
     "payment_duration_limit": "اقصى مدة للسداد",
-    "internal_transaction": "تعاملات داخلية"
+    "internal_transaction": "تعاملات داخلية",
+    "current_debt": "الدين الحالي"
 }

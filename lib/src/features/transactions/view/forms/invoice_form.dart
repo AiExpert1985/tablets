@@ -48,7 +48,8 @@ class InvoiceForm extends ConsumerWidget {
           children: [
             buildFormTitle(title),
             VerticalGap.xl,
-            _buildFirstRow(context, formDataNotifier, counterPartyRepository, salesmanRepository, isVendor),
+            _buildFirstRow(
+                context, formDataNotifier, counterPartyRepository, salesmanRepository, isVendor),
             VerticalGap.m,
             _buildSecondRow(context, formDataNotifier, textEditingNotifier),
             VerticalGap.m,
@@ -58,7 +59,8 @@ class InvoiceForm extends ConsumerWidget {
             VerticalGap.m,
             _buildFifthRow(context, formDataNotifier),
             VerticalGap.m,
-            buildItemList(context, formDataNotifier, textEditingNotifier, productRepository, hideGifts, false),
+            buildItemList(context, formDataNotifier, textEditingNotifier, productRepository,
+                hideGifts, false),
             VerticalGap.xxl,
             _buildTotalsRow(context, formDataNotifier, textEditingNotifier),
           ],
@@ -67,8 +69,8 @@ class InvoiceForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier, DbRepository repository,
-      DbRepository salesmanRepository, bool isVendor) {
+  Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier,
+      DbRepository repository, DbRepository salesmanRepository, bool isVendor) {
     return Row(
       children: [
         DropDownWithSearchFormField(
@@ -76,8 +78,13 @@ class InvoiceForm extends ConsumerWidget {
           initialValue: formDataNotifier.getProperty(nameKey),
           dbRepository: repository,
           onChangedFn: (item) {
-            formDataNotifier.updateProperties(
-                {nameKey: item['name'], salesmanKey: item['salesman'], salesmanDbRefKey: item['salesmanDbRef']});
+            final properties = {
+              nameKey: item['name'],
+              nameDbRefKey: item['dbRef'],
+              salesmanKey: item['salesman'],
+              salesmanDbRefKey: item['salesmanDbRef']
+            };
+            formDataNotifier.updateProperties(properties);
           },
         ),
         if (!isVendor) HorizontalGap.l,
@@ -87,15 +94,16 @@ class InvoiceForm extends ConsumerWidget {
             initialValue: formDataNotifier.getProperty(salesmanKey),
             dbRepository: salesmanRepository,
             onChangedFn: (item) {
-              formDataNotifier.updateProperties({salesmanKey: item['name'], salesmanDbRefKey: item['dbRef']});
+              formDataNotifier
+                  .updateProperties({salesmanKey: item['name'], salesmanDbRefKey: item['dbRef']});
             },
           ),
       ],
     );
   }
 
-  Widget _buildSecondRow(
-      BuildContext context, ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
+  Widget _buildSecondRow(BuildContext context, ItemFormData formDataNotifier,
+      TextControllerNotifier textEditingNotifier) {
     return Row(
       children: [
         DropDownListFormField(
@@ -206,8 +214,8 @@ class InvoiceForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildTotalsRow(
-      BuildContext context, ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
+  Widget _buildTotalsRow(BuildContext context, ItemFormData formDataNotifier,
+      TextControllerNotifier textEditingNotifier) {
     return SizedBox(
         width: customerInvoiceFormWidth * 0.6,
         child: Row(
