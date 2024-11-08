@@ -1549,6 +1549,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Payed amount`
+  String get paid_amount {
+    return Intl.message(
+      'Payed amount',
+      name: 'paid_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receipt number`
+  String get receipt_number {
+    return Intl.message(
+      'Receipt number',
+      name: 'receipt_number',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receipt date`
+  String get receipt_date {
+    return Intl.message(
+      'Receipt date',
+      name: 'receipt_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receipt amount`
+  String get receipt_amount {
+    return Intl.message(
+      'Receipt amount',
+      name: 'receipt_amount',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

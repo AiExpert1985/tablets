@@ -128,6 +128,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "number": MessageLookupByLibrary.simpleMessage("Number"),
         "page_not_found":
             MessageLookupByLibrary.simpleMessage("Page is not found"),
+        "paid_amount": MessageLookupByLibrary.simpleMessage("Payed amount"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
         "payment_duration_limit":
             MessageLookupByLibrary.simpleMessage("Payment duration limit"),
@@ -162,6 +163,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "product_subcategory":
             MessageLookupByLibrary.simpleMessage("Product subcategory"),
         "products": MessageLookupByLibrary.simpleMessage("Products"),
+        "receipt_amount":
+            MessageLookupByLibrary.simpleMessage("Receipt amount"),
+        "receipt_date": MessageLookupByLibrary.simpleMessage("Receipt date"),
+        "receipt_number":
+            MessageLookupByLibrary.simpleMessage("Receipt number"),
         "region_name": MessageLookupByLibrary.simpleMessage("Region name"),
         "regions": MessageLookupByLibrary.simpleMessage("Regions"),
         "remaining_amount":

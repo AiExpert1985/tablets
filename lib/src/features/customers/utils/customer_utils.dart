@@ -1,5 +1,6 @@
 // receive list of all transaction, it does filtering based on
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart' as trans;
 
@@ -43,26 +44,36 @@ double getTotalDebt(List<Map<String, dynamic>> transactions) {
 // open invoices are invoices that are not payed completely by customer
 // transactions must be order based on date in descending order
 List<List<dynamic>> getOpenInvoices(List<Map<String, dynamic>> transactions, double totalDebt) {
+  if (totalDebt <= 0) return [];
+  final lastReceipt = transactions
+      .firstWhere((item) => item[trans.transactionTypeKey] == TransactionType.customerReceipt.name);
+  String lastRecriptDate = formatDate(lastReceipt[trans.dateKey].toDate());
+  double lastReceiptnumber = lastReceipt[trans.numberKey];
+  double lastReceiptAmount = lastReceipt[trans.totalAmountKey];
   List<Map<String, dynamic>> invoices = transactions
       .where((item) => item[trans.transactionTypeKey] == TransactionType.customerInvoice.name)
       .toList();
-  if (totalDebt <= 0) return [];
   final List<List<dynamic>> openInvoices = [];
   double remainingDebt = totalDebt;
-  tempPrint(1);
   for (var invoice in invoices) {
     double invoiceNumber = invoice[trans.numberKey];
-    DateTime invoiceDate = invoice[trans.dateKey].toDate();
+    String invoiceDate = formatDate(invoice[trans.dateKey].toDate());
     double invoiceAmount = invoice[trans.totalAmountKey];
-    double invoiceRemainingAmount = invoiceAmount;
     remainingDebt -= invoiceAmount;
-    tempPrint(2);
-    openInvoices.add([invoiceNumber, invoiceDate, invoiceAmount, invoiceRemainingAmount]);
     if (remainingDebt <= 0) {
-      invoiceRemainingAmount = invoiceAmount - remainingDebt;
+      openInvoices.add([
+        invoiceNumber,
+        invoiceDate,
+        invoiceAmount,
+        -remainingDebt,
+        invoiceAmount + remainingDebt,
+        lastRecriptDate,
+        lastReceiptnumber,
+        lastReceiptAmount
+      ]);
       break;
     }
+    openInvoices.add([invoiceNumber, invoiceDate, invoiceAmount, 0, invoiceAmount, '', '']);
   }
-  tempPrint(openInvoices);
   return openInvoices;
 }

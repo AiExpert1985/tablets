@@ -127,6 +127,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "number": MessageLookupByLibrary.simpleMessage("الرقم"),
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
+        "paid_amount": MessageLookupByLibrary.simpleMessage("المبلغ المسدد"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
         "payment_duration_limit":
             MessageLookupByLibrary.simpleMessage("اقصى مدة للسداد"),
@@ -158,6 +159,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "product_subcategory":
             MessageLookupByLibrary.simpleMessage("التصنيف الفرعي "),
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
+        "receipt_amount": MessageLookupByLibrary.simpleMessage("مبلغ الوصل"),
+        "receipt_date": MessageLookupByLibrary.simpleMessage("تاريخ الوصل"),
+        "receipt_number": MessageLookupByLibrary.simpleMessage("رقم الوصل"),
         "region_name": MessageLookupByLibrary.simpleMessage("اسم المنطقة"),
         "regions": MessageLookupByLibrary.simpleMessage("المناطق"),
         "remaining_amount":

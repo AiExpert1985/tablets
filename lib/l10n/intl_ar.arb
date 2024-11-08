@@ -148,5 +148,9 @@
     "internal_transaction": "تعاملات داخلية",
     "current_debt": "الدين الحالي",
     "num_open_invoice": "القوائم المفتوحة",
-    "remaining_amount": "المبلغ المتبقي"
+    "remaining_amount": "المبلغ المتبقي",
+    "paid_amount": "المبلغ المسدد",
+    "receipt_number": "رقم الوصل",
+    "receipt_date": "تاريخ الوصل",
+    "receipt_amount": "مبلغ الوصل"
 }

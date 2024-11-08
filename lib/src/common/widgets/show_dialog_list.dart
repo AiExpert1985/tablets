@@ -14,7 +14,8 @@ void showDialogList(
     builder: (BuildContext context) {
       return AlertDialog(
         title: Center(child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold))),
-        content: SizedBox(
+        content: Container(
+          margin: const EdgeInsets.symmetric(vertical: 20),
           width: width,
           height: height,
           child: SingleChildScrollView(
@@ -25,9 +26,10 @@ void showDialogList(
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: columnTitles.map((item) {
-                      return Expanded(
+                      return SizedBox(
+                        width: width / columnTitles.length, // Set fixed width for each column
                         child: Text(
                           item,
                           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -48,9 +50,10 @@ void showDialogList(
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: data.map((item) {
-                          return Expanded(
+                          return SizedBox(
+                            width: width / columnTitles.length, // Set fixed width for each column
                             child: Text(
                               item.toString(),
                               textAlign: TextAlign.center,

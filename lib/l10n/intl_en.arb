@@ -148,5 +148,9 @@
     "internal_transaction": "Internal transactions",
     "current_debt": "Current debt",
     "num_open_invoice": "Num of open invoices",
-    "remaining_amount": "Remaining amount"
+    "remaining_amount": "Remaining amount",
+    "paid_amount": "Payed amount",
+    "receipt_number": "Receipt number",
+    "receipt_date": "Receipt date",
+    "receipt_amount": "Receipt amount"
 }

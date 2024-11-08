@@ -83,6 +83,7 @@ Widget _buildHeaderRow(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
+      Expanded(child: _buildHeader('')),
       Expanded(child: _buildHeader(S.of(context).customer)),
       Expanded(child: _buildHeader(S.of(context).salesman_selection)),
       Expanded(child: _buildHeader(S.of(context).current_debt)),
@@ -105,21 +106,15 @@ Widget _buildDataRow(
         children: [
           Expanded(
             child: InkWell(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircleAvatar(
-                    radius: 15,
-                    foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(customer.name),
-                ],
+              child: const CircleAvatar(
+                radius: 15,
+                foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
               ),
               onTap: () =>
                   _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer),
             ),
           ),
+          Expanded(child: _buildDataCell(customer.name)),
           Expanded(child: _buildDataCell(customer.salesman)),
           Expanded(child: _buildDataCell(numberToString(totalDebt))),
           Expanded(
@@ -131,9 +126,13 @@ Widget _buildDataRow(
                   S.of(context).transaction_number,
                   S.of(context).transaction_date,
                   S.of(context).transaction_amount,
-                  S.of(context).remaining_amount
+                  S.of(context).paid_amount,
+                  S.of(context).remaining_amount,
+                  S.of(context).receipt_date,
+                  S.of(context).receipt_number,
+                  S.of(context).receipt_amount,
                 ];
-                showDialogList(context, title, 600, 600, columnTitles, openInvoices);
+                showDialogList(context, title, 800, 400, columnTitles, openInvoices);
               },
             ),
           ),
