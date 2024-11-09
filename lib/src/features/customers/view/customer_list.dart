@@ -31,9 +31,9 @@ Color getStatusColor(int numDueInvoice, double totalDebt, Customer customer) {
     return Colors.red;
   }
   if (totalDebt >= customer.creditLimit * debtAmountWarning) {
-    return const Color.fromARGB(255, 153, 141, 28);
+    return Colors.orange;
   }
-  return Colors.green;
+  return Colors.black87;
 }
 
 void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,

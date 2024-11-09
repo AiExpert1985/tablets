@@ -10,6 +10,7 @@ import 'package:tablets/src/common/providers/text_editing_controllers_provider.d
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/values/settings.dart' as settings;
+import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/gaps.dart';
@@ -56,10 +57,12 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
     final creditLimit = selectedCustomer.creditLimit;
     if (totalDebt >= creditLimit) {}
     final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
-    if (totalAfterCurrentTransaction > creditLimit) {
-      return const Color.fromARGB(255, 241, 195, 195);
+    final openInvoices = getOpenInvoices(customerTransactions, totalDebt);
+    final dueInvoices = getDueInvoices(openInvoices, selectedCustomer.paymentDurationLimit);
+    if (totalAfterCurrentTransaction > creditLimit || dueInvoices.isNotEmpty) {
+      return const Color.fromARGB(255, 229, 177, 177);
     }
-    if (totalAfterCurrentTransaction > creditLimit * 0.75) {
+    if (totalAfterCurrentTransaction > creditLimit * debtAmountWarning) {
       return const Color.fromARGB(255, 243, 237, 187);
     }
     return Colors.white;

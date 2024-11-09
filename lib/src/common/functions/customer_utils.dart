@@ -96,7 +96,6 @@ List<List<dynamic>> getDueInvoices(List<List<dynamic>> openInvoices, double allo
       dueInvoices.add(invoice);
     }
   }
-  tempPrint(dueInvoices);
   return dueInvoices;
 }
 
