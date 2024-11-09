@@ -152,5 +152,7 @@
     "paid_amount": "Payed amount",
     "receipt_number": "Receipt number",
     "receipt_date": "Receipt date",
-    "receipt_amount": "Receipt amount"
+    "receipt_amount": "Receipt amount",
+    "due_debt_amount": "Due debt",
+    "num_due_invoices": "Due invoices"
 }

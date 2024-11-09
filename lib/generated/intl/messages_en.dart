@@ -69,6 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "db_success_updaging_doc": MessageLookupByLibrary.simpleMessage(
             "Document was updated successfully "),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "due_debt_amount": MessageLookupByLibrary.simpleMessage("Due debt"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "error_importing_image": MessageLookupByLibrary.simpleMessage(
@@ -123,6 +124,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "no": MessageLookupByLibrary.simpleMessage("No"),
+        "num_due_invoices":
+            MessageLookupByLibrary.simpleMessage("Due invoices"),
         "num_open_invoice":
             MessageLookupByLibrary.simpleMessage("Num of open invoices"),
         "number": MessageLookupByLibrary.simpleMessage("Number"),

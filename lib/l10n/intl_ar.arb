@@ -146,11 +146,13 @@
     "credit_limit": "اقصى حد للدين",
     "payment_duration_limit": "اقصى مدة للسداد",
     "internal_transaction": "تعاملات داخلية",
-    "current_debt": "الدين الحالي",
+    "current_debt": "الدين الكلي",
     "num_open_invoice": "القوائم المفتوحة",
     "remaining_amount": "المبلغ المتبقي",
     "paid_amount": "المبلغ المسدد",
     "receipt_number": "رقم الوصل",
     "receipt_date": "تاريخ الوصل",
-    "receipt_amount": "مبلغ الوصل"
+    "receipt_amount": "مبلغ الوصل",
+    "due_debt_amount": "الدين المستحق",
+    "num_due_invoices": "القوائم المتجاوزة"
 }

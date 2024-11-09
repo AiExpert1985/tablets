@@ -43,7 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
         "credit_limit": MessageLookupByLibrary.simpleMessage("اقصى حد للدين"),
-        "current_debt": MessageLookupByLibrary.simpleMessage("الدين الحالي"),
+        "current_debt": MessageLookupByLibrary.simpleMessage("الدين الكلي"),
         "customer": MessageLookupByLibrary.simpleMessage("الزبون"),
         "customer_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "customers": MessageLookupByLibrary.simpleMessage("الزبائن"),
@@ -70,6 +70,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "db_success_updaging_doc":
             MessageLookupByLibrary.simpleMessage("تم التعديل بنجاح"),
         "delete": MessageLookupByLibrary.simpleMessage("حذف"),
+        "due_debt_amount":
+            MessageLookupByLibrary.simpleMessage("الدين المستحق"),
         "edit": MessageLookupByLibrary.simpleMessage("تعديل"),
         "email": MessageLookupByLibrary.simpleMessage("البريد الالكتروني"),
         "error_importing_image":
@@ -122,6 +124,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "no": MessageLookupByLibrary.simpleMessage("لا"),
+        "num_due_invoices":
+            MessageLookupByLibrary.simpleMessage("القوائم المتجاوزة"),
         "num_open_invoice":
             MessageLookupByLibrary.simpleMessage("القوائم المفتوحة"),
         "number": MessageLookupByLibrary.simpleMessage("الرقم"),

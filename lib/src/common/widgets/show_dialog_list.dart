@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 
 void showDialogList(
@@ -52,6 +53,8 @@ void showDialogList(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: data.map((item) {
+                          if (item is DateTime) item = formatDate(item);
+                          if (item is! String) item = item.toString();
                           return SizedBox(
                             width: width / columnTitles.length, // Set fixed width for each column
                             child: Text(

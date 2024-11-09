@@ -1589,6 +1589,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Due debt`
+  String get due_debt_amount {
+    return Intl.message(
+      'Due debt',
+      name: 'due_debt_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Due invoices`
+  String get num_due_invoices {
+    return Intl.message(
+      'Due invoices',
+      name: 'num_due_invoices',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

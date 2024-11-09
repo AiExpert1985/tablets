@@ -4,6 +4,7 @@ import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/common/widgets/show_dialog_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
@@ -23,6 +24,16 @@ List<Map<String, dynamic>> _allTransactions = [];
 
 Future<void> _fetchTransactions(DbRepository transactionProvider) async {
   _allTransactions = await transactionProvider.fetchItemListAsMaps();
+}
+
+Color getStatusColor(int numDueInvoice, double totalDebt, Customer customer) {
+  if (totalDebt >= customer.creditLimit || numDueInvoice > 0) {
+    return Colors.red;
+  }
+  if (totalDebt >= customer.creditLimit * debtAmountWarning) {
+    return const Color.fromARGB(255, 153, 141, 28);
+  }
+  return Colors.green;
 }
 
 void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
@@ -66,9 +77,11 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
                       getCustomerTransactions(_allTransactions, customer.dbRef);
                   final totalDebt = getTotalDebt(customerTransactions);
                   final openInvoices = getOpenInvoices(customerTransactions, totalDebt);
-
+                  final dueInvoices = getDueInvoices(openInvoices, customer.paymentDurationLimit);
+                  final dueDebt = getDueDebt(dueInvoices, 4);
+                  Color statusColor = getStatusColor(dueInvoices.length, totalDebt, customer);
                   return _buildDataRow(customer, context, imagePickerNotifier, formDataNotifier,
-                      totalDebt, openInvoices);
+                      totalDebt, openInvoices, dueInvoices, dueDebt, statusColor);
                 },
               ),
             ),
@@ -88,6 +101,8 @@ Widget _buildHeaderRow(BuildContext context) {
       Expanded(child: _buildHeader(S.of(context).salesman_selection)),
       Expanded(child: _buildHeader(S.of(context).current_debt)),
       Expanded(child: _buildHeader(S.of(context).num_open_invoice)),
+      Expanded(child: _buildHeader(S.of(context).num_due_invoices)),
+      Expanded(child: _buildHeader(S.of(context).due_debt_amount)),
     ],
   );
 }
@@ -98,7 +113,20 @@ Widget _buildDataRow(
     ImageSliderNotifier imagePickerNotifier,
     ItemFormData formDataNotifier,
     double totalDebt,
-    List<List<dynamic>> openInvoices) {
+    List<List<dynamic>> openInvoices,
+    List<List<dynamic>> dueInvoices,
+    double dueDebt,
+    Color color) {
+  final invoiceColumnTitles = [
+    S.of(context).transaction_number,
+    S.of(context).transaction_date,
+    S.of(context).transaction_amount,
+    S.of(context).paid_amount,
+    S.of(context).remaining_amount,
+    S.of(context).receipt_date,
+    S.of(context).receipt_number,
+    S.of(context).receipt_amount,
+  ];
   return Column(
     children: [
       Row(
@@ -114,41 +142,42 @@ Widget _buildDataRow(
                   _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer),
             ),
           ),
-          Expanded(child: _buildDataCell(customer.name)),
-          Expanded(child: _buildDataCell(customer.salesman)),
-          Expanded(child: _buildDataCell(numberToString(totalDebt))),
+          Expanded(child: _buildDataCell(customer.name, color)),
+          Expanded(child: _buildDataCell(customer.salesman, color)),
+          Expanded(child: _buildDataCell(numberToText(totalDebt), color)),
           Expanded(
             child: InkWell(
-              child: _buildDataCell(numberToString(openInvoices.length)),
+              child: _buildDataCell(numberToText(openInvoices.length), color),
               onTap: () {
                 final title = '${customer.name} (${openInvoices.length})';
-                final columnTitles = [
-                  S.of(context).transaction_number,
-                  S.of(context).transaction_date,
-                  S.of(context).transaction_amount,
-                  S.of(context).paid_amount,
-                  S.of(context).remaining_amount,
-                  S.of(context).receipt_date,
-                  S.of(context).receipt_number,
-                  S.of(context).receipt_amount,
-                ];
-                showDialogList(context, title, 800, 400, columnTitles, openInvoices);
+                showDialogList(context, title, 800, 400, invoiceColumnTitles, openInvoices);
               },
             ),
           ),
+          Expanded(
+            child: InkWell(
+              child: _buildDataCell(numberToText(dueInvoices.length), color),
+              onTap: () {
+                final title = '${customer.name} (${dueInvoices.length})';
+                showDialogList(context, title, 800, 400, invoiceColumnTitles, dueInvoices);
+              },
+            ),
+          ),
+          Expanded(child: _buildDataCell(numberToText(dueDebt), color)),
         ],
       ),
+
       const SizedBox(height: 4), // Space between row and divider
       _buildHorizontalLine()
     ],
   );
 }
 
-Widget _buildDataCell(String text) {
+Widget _buildDataCell(String text, Color color) {
   return Text(
     text,
     textAlign: TextAlign.center,
-    style: const TextStyle(fontSize: 16),
+    style: TextStyle(fontSize: 16, color: color),
   );
 }
 
@@ -170,39 +199,3 @@ Widget _buildHorizontalLine() {
     color: Colors.grey[300], // Light gray color
   );
 }
-
-// void _showOpenInvoices(BuildContext context, List<Map<String, dynamic>> dataList) {
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//         title: Center(child: Text('${S.of(context).num_open_invoice} (${dataList.length})')),
-//         content: SizedBox(
-//           // Set a fixed height for the dialog content
-//           height: 300, // Adjust this height as needed
-//           width: 300, // Use max width
-//           child: ListView.builder(
-//             itemCount: dataList.length,
-//             itemBuilder: (context, index) {
-//               final data = dataList[index];
-//               return Padding(
-//                 padding: const EdgeInsets.symmetric(vertical: 5.0),
-//                 child: Center(child: Text('Number: ${data['number']}, Amount: ${data['amount']}')),
-//               );
-//             },
-//           ),
-//         ),
-//         actions: <Widget>[
-//           Center(
-//             child: IconButton(
-//               icon: const CancelIcon(),
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//             ),
-//           ),
-//         ],
-//       );
-//     },
-//   );
-// }

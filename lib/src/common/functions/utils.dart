@@ -89,7 +89,7 @@ List<Map<String, dynamic>> convertAsyncValueListToList(
 }
 
 /// if the number ends with .0 (example 55.0), it will remove .0 and convert to String
-String numberToString(dynamic value) {
+String numberToText(dynamic value) {
   // Check if the value is an integer
   if (value == value.toInt()) {
     return value.toInt().toString(); // Convert to int and return as string

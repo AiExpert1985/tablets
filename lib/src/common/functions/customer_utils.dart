@@ -61,7 +61,7 @@ List<List<dynamic>> getOpenInvoices(List<Map<String, dynamic>> transactions, dou
   double remainingDebt = totalDebt;
   for (var invoice in invoices) {
     double invoiceNumber = invoice[trans.numberKey];
-    String invoiceDate = formatDate(invoice[trans.dateKey].toDate());
+    DateTime invoiceDate = invoice[trans.dateKey].toDate();
     double invoiceAmount = invoice[trans.totalAmountKey];
     remainingDebt -= invoiceAmount;
     if (remainingDebt <= 0) {
@@ -80,4 +80,32 @@ List<List<dynamic>> getOpenInvoices(List<Map<String, dynamic>> transactions, dou
     openInvoices.add([invoiceNumber, invoiceDate, invoiceAmount, 0, invoiceAmount, '', '']);
   }
   return openInvoices;
+}
+
+// openInvoice is a list
+//[invoiceNumber, invoiceDate, invoiceAmount, payedAmount, remainingAmount, receiptDate,
+// receiptNumber, receiptAmount]
+// dueInvoices are invoices that exceeded the time limit for closing (example 20 days)
+List<List<dynamic>> getDueInvoices(List<List<dynamic>> openInvoices, double allowedDays) {
+  List<List<dynamic>> dueInvoices = [];
+  DateTime currentDate = DateTime.now();
+  for (var invoice in openInvoices) {
+    DateTime invoiceDate = invoice[1];
+    DateTime dueDate = invoiceDate.add(Duration(days: allowedDays.toInt()));
+    if (dueDate.isBefore(currentDate)) {
+      dueInvoices.add(invoice);
+    }
+  }
+  tempPrint(dueInvoices);
+  return dueInvoices;
+}
+
+double getDueDebt(List<List<dynamic>> dueInvoices, int amountIndex) {
+  double total = 0.0;
+  for (var invoice in dueInvoices) {
+    if (invoice.length > amountIndex) {
+      total += invoice[amountIndex] is num ? (invoice[amountIndex] as num).toDouble() : 0.0;
+    }
+  }
+  return total;
 }
