@@ -45,11 +45,15 @@ double getTotalDebt(List<Map<String, dynamic>> transactions) {
 // transactions must be order based on date in descending order
 List<List<dynamic>> getOpenInvoices(List<Map<String, dynamic>> transactions, double totalDebt) {
   if (totalDebt <= 0) return [];
-  final lastReceipt = transactions
-      .firstWhere((item) => item[trans.transactionTypeKey] == TransactionType.customerReceipt.name);
-  String lastRecriptDate = formatDate(lastReceipt[trans.dateKey].toDate());
-  double lastReceiptnumber = lastReceipt[trans.numberKey];
-  double lastReceiptAmount = lastReceipt[trans.totalAmountKey];
+  Map<String, dynamic> lastReceipt = transactions.firstWhere(
+    (item) => item[trans.transactionTypeKey] == TransactionType.customerReceipt.name,
+    orElse: () => {}, // protection against the case where there is no receipt
+  );
+  // below we add protection against the case where lastReceipt = {}
+  String lastRecriptDate =
+      lastReceipt[trans.dateKey] != null ? formatDate(lastReceipt[trans.dateKey].toDate()) : '';
+  dynamic lastReceiptnumber = lastReceipt[trans.numberKey] ?? '';
+  dynamic lastReceiptAmount = lastReceipt[trans.totalAmountKey] ?? '';
   List<Map<String, dynamic>> invoices = transactions
       .where((item) => item[trans.transactionTypeKey] == TransactionType.customerInvoice.name)
       .toList();
@@ -65,7 +69,7 @@ List<List<dynamic>> getOpenInvoices(List<Map<String, dynamic>> transactions, dou
         invoiceNumber,
         invoiceDate,
         invoiceAmount,
-        -remainingDebt,
+        remainingDebt.abs(),
         invoiceAmount + remainingDebt,
         lastRecriptDate,
         lastReceiptnumber,
