@@ -289,7 +289,9 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
                 formDataNotifier.updateProperties({totalAmountKey: value});
                 // check wether customer exceeded the debt or time limits
                 // below applies only for customer invoices not any other transaction
-                if (customer == null || widget.allTransactions == null) {
+                if (customer == null ||
+                    widget.allTransactions == null ||
+                    widget.transactionType != TransactionType.customerInvoice.name) {
                   return;
                 }
                 final invoiceColor = customerExceedsDebtLimit(customer!, formDataNotifier);
