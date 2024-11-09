@@ -5,7 +5,6 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/customer_utils.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
@@ -16,16 +15,21 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
+import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/alert_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
 
-class InvoiceForm extends ConsumerWidget {
+// I used ConsumerStatefulWidget because I find no other way to define customer global variable
+// which I used for coloring the background of the invoice when debt exceeds limits
+// because ConsumerWidget doen't allow declaring non final variables like customer
+class InvoiceForm extends ConsumerStatefulWidget {
   const InvoiceForm(this.title, this.transactionType,
       {this.allTransactions, this.isVendor = false, this.hideGifts = true, super.key});
 
@@ -35,44 +39,59 @@ class InvoiceForm extends ConsumerWidget {
   final List<Map<String, dynamic>>? allTransactions;
   final String transactionType;
 
-  bool customerExceedsDebtLimit(Map<String, dynamic> item, ItemFormData formDataNotifier) {
-    final customerTransactions = getCustomerTransactions(allTransactions!, item['dbRef']);
+  @override
+  ConsumerState<InvoiceForm> createState() => _InvoiceFormState();
+}
+
+class _InvoiceFormState extends ConsumerState<InvoiceForm> {
+  // customer is only used for calculation of exceeded debt
+  // which is used for changing background color
+  Customer? customer;
+
+  // returns a color based on customer current debt
+  Color customerExceedsDebtLimit(Customer selectedCustomer, ItemFormData formDataNotifier) {
+    final customerTransactions =
+        getCustomerTransactions(widget.allTransactions!, selectedCustomer.dbRef);
     final totalDebt = getTotalDebt(customerTransactions);
-    final creditLimit = item['creditLimit'];
+    final creditLimit = selectedCustomer.creditLimit;
     if (totalDebt >= creditLimit) {}
     final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
     if (totalAfterCurrentTransaction > creditLimit) {
-      return true;
+      return const Color.fromARGB(255, 241, 195, 195);
     }
-    return false;
+    if (totalAfterCurrentTransaction > creditLimit * 0.75) {
+      return const Color.fromARGB(255, 243, 237, 187);
+    }
+    return Colors.white;
   }
 
-  bool customerExceedsTimeLimit(Map<String, dynamic> item, ItemFormData formDataNotifier) {
-    return false;
+  Color customerExceedsTimeLimit(Map<String, dynamic> item, ItemFormData formDataNotifier) {
+    return Colors.white;
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
     final vendorRepository = ref.read(vendorRepositoryProvider);
     final productRepository = ref.read(productRepositoryProvider);
-    final counterPartyRepository = isVendor ? vendorRepository : customerRepository;
-    Map<String, dynamic>? customer;
+    final counterPartyRepository = widget.isVendor ? vendorRepository : customerRepository;
+    final backgroundColorNotifier = ref.read(invoiceBackgroundColorProvider.notifier);
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
-      child: Padding(
+      child: Container(
+        // color: backgroundColor,
         padding: const EdgeInsets.symmetric(vertical: 18),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildFormTitle(title),
+            buildFormTitle(widget.title),
             VerticalGap.xl,
             _buildFirstRow(context, formDataNotifier, counterPartyRepository, salesmanRepository,
-                isVendor, customer),
+                widget.isVendor, backgroundColorNotifier),
             VerticalGap.m,
             _buildSecondRow(context, formDataNotifier, textEditingNotifier),
             VerticalGap.m,
@@ -83,9 +102,10 @@ class InvoiceForm extends ConsumerWidget {
             _buildFifthRow(context, formDataNotifier),
             VerticalGap.m,
             buildItemList(context, formDataNotifier, textEditingNotifier, productRepository,
-                hideGifts, false),
+                widget.hideGifts, false),
             VerticalGap.xxl,
-            _buildTotalsRow(context, formDataNotifier, textEditingNotifier),
+            _buildTotalsRow(
+                context, formDataNotifier, textEditingNotifier, backgroundColorNotifier),
           ],
         ),
       ),
@@ -98,7 +118,7 @@ class InvoiceForm extends ConsumerWidget {
       DbRepository repository,
       DbRepository salesmanRepository,
       bool isVendor,
-      Map<String, dynamic>? customer) {
+      StateController<Color> backgroundColorNotifier) {
     return Row(
       children: [
         DropDownWithSearchFormField(
@@ -116,11 +136,13 @@ class InvoiceForm extends ConsumerWidget {
             formDataNotifier.updateProperties(properties);
             // check wether customer exceeded the debt or time limits
             // below applies only for customer invoices not any other transaction
-            if (transactionType != TransactionType.customerInvoice.name ||
-                allTransactions == null) {
+            if (widget.transactionType != TransactionType.customerInvoice.name ||
+                widget.allTransactions == null) {
               return;
             }
-            customerExceedsDebtLimit(item, formDataNotifier);
+            customer = Customer.fromMap(item);
+            final invoiceColor = customerExceedsDebtLimit(customer!, formDataNotifier);
+            backgroundColorNotifier.state = invoiceColor;
           },
         ),
         if (!isVendor) HorizontalGap.l,
@@ -251,7 +273,7 @@ class InvoiceForm extends ConsumerWidget {
   }
 
   Widget _buildTotalsRow(BuildContext context, ItemFormData formDataNotifier,
-      TextControllerNotifier textEditingNotifier) {
+      TextControllerNotifier textEditingNotifier, StateController<Color> backgroundColorNotifier) {
     return SizedBox(
         width: customerInvoiceFormWidth * 0.6,
         child: Row(
@@ -265,6 +287,13 @@ class InvoiceForm extends ConsumerWidget {
               initialValue: formDataNotifier.getProperty(totalAmountKey),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({totalAmountKey: value});
+                // check wether customer exceeded the debt or time limits
+                // below applies only for customer invoices not any other transaction
+                if (customer == null || widget.allTransactions == null) {
+                  return;
+                }
+                final invoiceColor = customerExceedsDebtLimit(customer!, formDataNotifier);
+                backgroundColorNotifier.state = invoiceColor;
               },
             ),
             HorizontalGap.xxl,

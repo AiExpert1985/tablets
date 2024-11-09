@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class FormFrame extends StatelessWidget {
   const FormFrame(
       {super.key,
+      this.backgroundColor,
       required this.formKey,
       required this.fields,
       required this.buttons,
       required this.width,
       required this.height});
+  final Color? backgroundColor;
   final Widget fields;
   final List<Widget> buttons;
   final GlobalKey<FormState> formKey;
@@ -17,6 +19,7 @@ class FormFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: backgroundColor,
       alignment: Alignment.center,
       insetPadding: const EdgeInsets.all(10),
       scrollable: true,

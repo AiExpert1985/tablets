@@ -10,6 +10,7 @@ import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
+import 'package:tablets/src/features/transactions/controllers/alert_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/view/forms/expenditure_form.dart';
@@ -72,8 +73,10 @@ class TransactionForm extends ConsumerWidget {
     final formController = ref.read(transactionFormControllerProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    final backgroundColor = ref.watch(invoiceBackgroundColorProvider);
     ref.watch(imagePickerProvider);
     return FormFrame(
+      backgroundColor: backgroundColor,
       formKey: formController.formKey,
       fields: _getFormWidget(context, transactionType),
       buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier),
