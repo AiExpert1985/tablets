@@ -106,6 +106,7 @@ class TransactionsList extends ConsumerWidget {
                   ],
                 ),
                 onTap: () {
+                  backgroundColorNofifier.state = Colors.white;
                   TransactionShowFormUtils.showForm(
                     context,
                     imagePickerNotifier,
