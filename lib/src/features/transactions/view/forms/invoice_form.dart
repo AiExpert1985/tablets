@@ -78,7 +78,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
     final vendorRepository = ref.read(vendorRepositoryProvider);
     final productRepository = ref.read(productRepositoryProvider);
     final counterPartyRepository = widget.isVendor ? vendorRepository : customerRepository;
-    final backgroundColorNotifier = ref.read(invoiceBackgroundColorProvider.notifier);
+    final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(

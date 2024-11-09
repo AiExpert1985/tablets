@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form_utils.dart';
@@ -61,6 +62,7 @@ class TransactionTypeSelection extends ConsumerWidget {
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
 
     return AlertDialog(
       alignment: Alignment.center,
@@ -86,8 +88,9 @@ class TransactionTypeSelection extends ConsumerWidget {
                     imagePickerNotifier,
                     formDataNotifier,
                     textEditingNotifier,
-                    formType: formTypes[index], // Use the corresponding form type
                     transactions,
+                    backgroundColorNofifier,
+                    formType: formTypes[index], // Use the corresponding form type
                   );
                 }
               },

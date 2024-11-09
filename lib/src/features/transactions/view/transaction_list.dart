@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -28,6 +29,7 @@ class TransactionsList extends ConsumerWidget {
     final transactionsListValue = filterIsOn
         ? ref.read(transactionFilteredListProvider).getFilteredList()
         : transactionStream;
+    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
 
     return AsyncValueWidget<List<Map<String, dynamic>>>(
       value: transactionsListValue,
@@ -44,8 +46,14 @@ class TransactionsList extends ConsumerWidget {
                   itemCount: allTransactions.length,
                   itemBuilder: (context, index) {
                     final transaction = Transaction.fromMap(allTransactions[index]);
-                    return _buildDataRow(transaction, context, imagePickerNotifier,
-                        formDataNotifier, textEditingNotifier, allTransactions);
+                    return _buildDataRow(
+                        transaction,
+                        context,
+                        imagePickerNotifier,
+                        formDataNotifier,
+                        textEditingNotifier,
+                        allTransactions,
+                        backgroundColorNofifier);
                   },
                 ),
               ),
@@ -75,7 +83,8 @@ class TransactionsList extends ConsumerWidget {
       ImageSliderNotifier imagePickerNotifier,
       ItemFormData formDataNotifier,
       TextControllerNotifier textEditingNotifier,
-      List<Map<String, dynamic>> allTransactions) {
+      List<Map<String, dynamic>> allTransactions,
+      StateController<Color> backgroundColorNofifier) {
     final transactionTypeScreenName = translateDbString(context, transaction.transactionType);
 
     return Column(
@@ -96,15 +105,18 @@ class TransactionsList extends ConsumerWidget {
                     Text(transactionTypeScreenName),
                   ],
                 ),
-                onTap: () => TransactionShowFormUtils.showForm(
-                  context,
-                  imagePickerNotifier,
-                  formDataNotifier,
-                  textEditingNotifier,
-                  allTransactions,
-                  formType: transaction.transactionType,
-                  transaction: transaction,
-                ),
+                onTap: () {
+                  TransactionShowFormUtils.showForm(
+                    context,
+                    imagePickerNotifier,
+                    formDataNotifier,
+                    textEditingNotifier,
+                    allTransactions,
+                    backgroundColorNofifier,
+                    transaction: transaction,
+                    formType: transaction.transactionType,
+                  );
+                },
               ),
             ),
             Expanded(child: _buildDataCell(formatDate(transaction.date))),

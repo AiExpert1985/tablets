@@ -73,32 +73,29 @@ class TransactionForm extends ConsumerWidget {
     final formController = ref.read(transactionFormControllerProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
-    final backgroundColor = ref.watch(invoiceBackgroundColorProvider);
-    final backgroundColorNofifier = ref.read(invoiceBackgroundColorProvider.notifier);
+    final backgroundColor = ref.watch(backgroundColorProvider);
+
     ref.watch(imagePickerProvider);
     return FormFrame(
       backgroundColor: backgroundColor,
       formKey: formController.formKey,
       fields: _getFormWidget(context, transactionType),
-      buttons: _actionButtons(
-          context, formController, formDataNotifier, formImagesNotifier, backgroundColorNofifier),
+      buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier),
       width: transactionFormDimenssions[transactionType]['width'],
       height: transactionFormDimenssions[transactionType]['height'],
     );
   }
 
   List<Widget> _actionButtons(
-      BuildContext context,
-      ItemFormController formController,
-      ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier,
-      StateController<Color> backgroundColorNofifier) {
+    BuildContext context,
+    ItemFormController formController,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+  ) {
     return [
       IconButton(
         onPressed: () {
           _onSavePressed(context, formController, formDataNotifier, formImagesNotifier);
-          // reset background color when form is closed
-          backgroundColorNofifier.state = Colors.white;
         },
         icon: const SaveIcon(),
       ),

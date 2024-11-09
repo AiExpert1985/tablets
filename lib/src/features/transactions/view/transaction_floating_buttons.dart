@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_group_selection.dart';
 
@@ -34,6 +35,8 @@ class TransactionsFloatingButtons extends ConsumerWidget {
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
           onTap: () {
+            // reset background color when form is closed
+            ref.read(backgroundColorProvider.notifier).state = Colors.white;
             showDialog(
               context: context,
               builder: (BuildContext ctx) => const TransactionGroupSelection(),
