@@ -18,9 +18,11 @@ import 'package:tablets/src/features/transactions/view/forms/receipt_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/statement_form.dart';
 
 class TransactionForm extends ConsumerWidget {
-  const TransactionForm(this.isEditMode, this.transactionType, {super.key});
+  const TransactionForm(this.isEditMode, this.transactionType, this.allTransactions, {super.key});
   final bool isEditMode; // used by formController to decide whether to save or update in db
   final String transactionType;
+  // used to validate wether customer can buy new invoice (if he didn't exceed limits)
+  final List<Map<String, dynamic>> allTransactions;
 
   Widget _getFormWidget(BuildContext context, String transactionType) {
     final titles = {
@@ -35,16 +37,17 @@ class TransactionForm extends ConsumerWidget {
       TransactionType.damagedItems.name: S.of(context).transaction_type_damaged_items,
     };
     if (transactionType == TransactionType.customerInvoice.name) {
-      return InvoiceForm(titles[transactionType]!, hideGifts: false);
+      return InvoiceForm(titles[transactionType]!, transactionType,
+          allTransactions: allTransactions, hideGifts: false);
     }
     if (transactionType == TransactionType.vendorInvoice.name) {
-      return InvoiceForm(titles[transactionType]!, isVendor: true);
+      return InvoiceForm(titles[transactionType]!, transactionType, isVendor: true);
     }
     if (transactionType == TransactionType.customerReturn.name) {
-      return InvoiceForm(titles[transactionType]!);
+      return InvoiceForm(titles[transactionType]!, transactionType);
     }
     if (transactionType == TransactionType.vendorReturn.name) {
-      return InvoiceForm(titles[transactionType]!, isVendor: true);
+      return InvoiceForm(titles[transactionType]!, transactionType, isVendor: true);
     }
     if (transactionType == TransactionType.customerReceipt.name) {
       return ReceiptForm(titles[transactionType]!);
@@ -79,11 +82,12 @@ class TransactionForm extends ConsumerWidget {
     );
   }
 
-  List<Widget> _actionButtons(BuildContext context, ItemFormController formController, ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier) {
+  List<Widget> _actionButtons(BuildContext context, ItemFormController formController,
+      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier) {
     return [
       IconButton(
-        onPressed: () => _onSavePressed(context, formController, formDataNotifier, formImagesNotifier),
+        onPressed: () =>
+            _onSavePressed(context, formController, formDataNotifier, formImagesNotifier),
         icon: const SaveIcon(),
       ),
       IconButton(
@@ -92,14 +96,15 @@ class TransactionForm extends ConsumerWidget {
       ),
       if (isEditMode)
         IconButton(
-          onPressed: () => _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController),
+          onPressed: () =>
+              _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController),
           icon: const DeleteIcon(),
         ),
     ];
   }
 
-  void _onSavePressed(BuildContext context, ItemFormController formController, ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier) {
+  void _onSavePressed(BuildContext context, ItemFormController formController,
+      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier) {
     if (!formController.validateData()) return;
     formController.submitData();
     final updateFormData = formDataNotifier.data;

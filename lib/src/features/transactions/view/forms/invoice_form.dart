@@ -4,7 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/customer_utils.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
@@ -23,11 +26,30 @@ import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
 
 class InvoiceForm extends ConsumerWidget {
-  const InvoiceForm(this.title, {this.isVendor = false, this.hideGifts = true, super.key});
+  const InvoiceForm(this.title, this.transactionType,
+      {this.allTransactions, this.isVendor = false, this.hideGifts = true, super.key});
 
   final String title;
   final bool hideGifts;
   final bool isVendor;
+  final List<Map<String, dynamic>>? allTransactions;
+  final String transactionType;
+
+  bool customerExceedsDebtLimit(Map<String, dynamic> item, ItemFormData formDataNotifier) {
+    final customerTransactions = getCustomerTransactions(allTransactions!, item['dbRef']);
+    final totalDebt = getTotalDebt(customerTransactions);
+    final creditLimit = item['creditLimit'];
+    if (totalDebt >= creditLimit) {}
+    final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
+    if (totalAfterCurrentTransaction > creditLimit) {
+      return true;
+    }
+    return false;
+  }
+
+  bool customerExceedsTimeLimit(Map<String, dynamic> item, ItemFormData formDataNotifier) {
+    return false;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,6 +60,7 @@ class InvoiceForm extends ConsumerWidget {
     final vendorRepository = ref.read(vendorRepositoryProvider);
     final productRepository = ref.read(productRepositoryProvider);
     final counterPartyRepository = isVendor ? vendorRepository : customerRepository;
+    Map<String, dynamic>? customer;
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
@@ -48,8 +71,8 @@ class InvoiceForm extends ConsumerWidget {
           children: [
             buildFormTitle(title),
             VerticalGap.xl,
-            _buildFirstRow(
-                context, formDataNotifier, counterPartyRepository, salesmanRepository, isVendor),
+            _buildFirstRow(context, formDataNotifier, counterPartyRepository, salesmanRepository,
+                isVendor, customer),
             VerticalGap.m,
             _buildSecondRow(context, formDataNotifier, textEditingNotifier),
             VerticalGap.m,
@@ -69,8 +92,13 @@ class InvoiceForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier,
-      DbRepository repository, DbRepository salesmanRepository, bool isVendor) {
+  Widget _buildFirstRow(
+      BuildContext context,
+      ItemFormData formDataNotifier,
+      DbRepository repository,
+      DbRepository salesmanRepository,
+      bool isVendor,
+      Map<String, dynamic>? customer) {
     return Row(
       children: [
         DropDownWithSearchFormField(
@@ -78,6 +106,7 @@ class InvoiceForm extends ConsumerWidget {
           initialValue: formDataNotifier.getProperty(nameKey),
           dbRepository: repository,
           onChangedFn: (item) {
+            // update customer field & related fields
             final properties = {
               nameKey: item['name'],
               nameDbRefKey: item['dbRef'],
@@ -85,6 +114,13 @@ class InvoiceForm extends ConsumerWidget {
               salesmanDbRefKey: item['salesmanDbRef']
             };
             formDataNotifier.updateProperties(properties);
+            // check wether customer exceeded the debt or time limits
+            // below applies only for customer invoices not any other transaction
+            if (transactionType != TransactionType.customerInvoice.name ||
+                allTransactions == null) {
+              return;
+            }
+            customerExceedsDebtLimit(item, formDataNotifier);
           },
         ),
         if (!isVendor) HorizontalGap.l,

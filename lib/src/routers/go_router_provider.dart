@@ -60,7 +60,7 @@ final goRouterProvider = Provider<GoRouter>(
         GoRoute(
           path: '/home',
           name: AppRoute.home.name,
-          builder: (BuildContext context, GoRouterState state) => const ProductsScreen(),
+          builder: (BuildContext context, GoRouterState state) => const TransactionsScreen(),
         ),
         GoRoute(
           path: '/login',
@@ -80,7 +80,8 @@ final goRouterProvider = Provider<GoRouter>(
         GoRoute(
           path: '/salesmen',
           name: AppRoute.gps.name,
-          builder: (BuildContext context, GoRouterState state) => const SalesmenLiveLocationScreen(),
+          builder: (BuildContext context, GoRouterState state) =>
+              const SalesmenLiveLocationScreen(),
         ),
         GoRoute(
           path: '/settings',

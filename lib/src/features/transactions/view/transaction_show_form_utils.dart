@@ -13,7 +13,8 @@ class TransactionShowFormUtils {
     BuildContext context,
     ImageSliderNotifier imagePickerNotifier,
     ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingNotifier, {
+    TextControllerNotifier textEditingNotifier,
+    List<Map<String, dynamic>> allTransactions, {
     String? formType,
     Transaction? transaction,
   }) {
@@ -30,7 +31,7 @@ class TransactionShowFormUtils {
 
     showDialog(
       context: context,
-      builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType),
+      builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType, allTransactions),
     ).whenComplete(() {
       imagePickerNotifier.close();
       textEditingNotifier.disposeControllers();

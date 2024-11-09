@@ -11,7 +11,7 @@ import 'package:tablets/src/features/customers/controllers/customer_filtered_lis
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/customers/utils/customer_utils.dart';
+import 'package:tablets/src/common/functions/customer_utils.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tablets/generated/l10n.dart';

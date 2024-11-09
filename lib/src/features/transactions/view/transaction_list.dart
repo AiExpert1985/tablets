@@ -31,7 +31,7 @@ class TransactionsList extends ConsumerWidget {
 
     return AsyncValueWidget<List<Map<String, dynamic>>>(
       value: transactionsListValue,
-      data: (transactions) {
+      data: (allTransactions) {
         return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -41,11 +41,11 @@ class TransactionsList extends ConsumerWidget {
               _buildHorizontalLine(), // Add some space between header and data
               Expanded(
                 child: ListView.builder(
-                  itemCount: transactions.length,
+                  itemCount: allTransactions.length,
                   itemBuilder: (context, index) {
-                    final transaction = Transaction.fromMap(transactions[index]);
+                    final transaction = Transaction.fromMap(allTransactions[index]);
                     return _buildDataRow(transaction, context, imagePickerNotifier,
-                        formDataNotifier, textEditingNotifier);
+                        formDataNotifier, textEditingNotifier, allTransactions);
                   },
                 ),
               ),
@@ -74,7 +74,8 @@ class TransactionsList extends ConsumerWidget {
       BuildContext context,
       ImageSliderNotifier imagePickerNotifier,
       ItemFormData formDataNotifier,
-      TextControllerNotifier textEditingNotifier) {
+      TextControllerNotifier textEditingNotifier,
+      List<Map<String, dynamic>> allTransactions) {
     final transactionTypeScreenName = translateDbString(context, transaction.transactionType);
 
     return Column(
@@ -100,6 +101,7 @@ class TransactionsList extends ConsumerWidget {
                   imagePickerNotifier,
                   formDataNotifier,
                   textEditingNotifier,
+                  allTransactions,
                   formType: transaction.transactionType,
                   transaction: transaction,
                 ),
