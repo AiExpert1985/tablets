@@ -1609,6 +1609,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Previous debt`
+  String get previous_debt {
+    return Intl.message(
+      'Previous debt',
+      name: 'previous_debt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Later debt`
+  String get later_debt {
+    return Intl.message(
+      'Later debt',
+      name: 'later_debt',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -120,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_sold_quantity": MessageLookupByLibrary.simpleMessage("العدد"),
         "item_total_price":
             MessageLookupByLibrary.simpleMessage("السعر الكلي للمادة"),
+        "later_debt": MessageLookupByLibrary.simpleMessage("الدين اللاحق"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
@@ -138,6 +139,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pending_transactions":
             MessageLookupByLibrary.simpleMessage("غير مثبت"),
         "phone": MessageLookupByLibrary.simpleMessage("رقم الهاتف"),
+        "previous_debt": MessageLookupByLibrary.simpleMessage("الدين السابق"),
         "product_alert_when_exceeds":
             MessageLookupByLibrary.simpleMessage(" تنبيه عندما يتجاوز"),
         "product_altert_when_less_than":

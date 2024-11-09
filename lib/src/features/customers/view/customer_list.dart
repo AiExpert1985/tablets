@@ -75,13 +75,14 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
                   final customer = Customer.fromMap(customers[index]);
                   final customerTransactions =
                       getCustomerTransactions(_allTransactions, customer.dbRef);
-                  final totalDebt = getTotalDebt(customerTransactions);
+                  final totalDebt = getTotalDebt(customerTransactions, customer);
                   final openInvoices = getOpenInvoices(customerTransactions, totalDebt);
                   final dueInvoices = getDueInvoices(openInvoices, customer.paymentDurationLimit);
                   final dueDebt = getDueDebt(dueInvoices, 4);
                   Color statusColor = getStatusColor(dueInvoices.length, totalDebt, customer);
+                  final matchingList = customerMatching(customerTransactions, customer, context);
                   return _buildDataRow(customer, context, imagePickerNotifier, formDataNotifier,
-                      totalDebt, openInvoices, dueInvoices, dueDebt, statusColor);
+                      totalDebt, openInvoices, dueInvoices, dueDebt, statusColor, matchingList);
                 },
               ),
             ),
@@ -108,15 +109,17 @@ Widget _buildHeaderRow(BuildContext context) {
 }
 
 Widget _buildDataRow(
-    Customer customer,
-    BuildContext context,
-    ImageSliderNotifier imagePickerNotifier,
-    ItemFormData formDataNotifier,
-    double totalDebt,
-    List<List<dynamic>> openInvoices,
-    List<List<dynamic>> dueInvoices,
-    double dueDebt,
-    Color color) {
+  Customer customer,
+  BuildContext context,
+  ImageSliderNotifier imagePickerNotifier,
+  ItemFormData formDataNotifier,
+  double totalDebt,
+  List<List<dynamic>> openInvoices,
+  List<List<dynamic>> dueInvoices,
+  double dueDebt,
+  Color color,
+  List<List<dynamic>> matchingList,
+) {
   final invoiceColumnTitles = [
     S.of(context).transaction_number,
     S.of(context).transaction_date,
@@ -126,6 +129,14 @@ Widget _buildDataRow(
     S.of(context).receipt_date,
     S.of(context).receipt_number,
     S.of(context).receipt_amount,
+  ];
+  final matchingColumnTitles = [
+    S.of(context).transaction_type,
+    S.of(context).transaction_number,
+    S.of(context).transaction_date,
+    S.of(context).transaction_amount,
+    S.of(context).previous_debt,
+    S.of(context).later_debt,
   ];
   return Column(
     children: [
@@ -144,7 +155,15 @@ Widget _buildDataRow(
           ),
           Expanded(child: _buildDataCell(customer.name, color)),
           Expanded(child: _buildDataCell(customer.salesman, color)),
-          Expanded(child: _buildDataCell(numberToText(totalDebt), color)),
+          Expanded(
+            child: InkWell(
+              child: _buildDataCell(numberToText(totalDebt), color),
+              onTap: () {
+                final title = '${customer.name} (${matchingList.length})';
+                showDialogList(context, title, 800, 400, matchingColumnTitles, matchingList);
+              },
+            ),
+          ),
           Expanded(
             child: InkWell(
               child: _buildDataCell(numberToText(openInvoices.length), color),

@@ -154,5 +154,7 @@
     "receipt_date": "Receipt date",
     "receipt_amount": "Receipt amount",
     "due_debt_amount": "Due debt",
-    "num_due_invoices": "Due invoices"
+    "num_due_invoices": "Due invoices",
+    "previous_debt": "Previous debt",
+    "later_debt": "Later debt"
 }

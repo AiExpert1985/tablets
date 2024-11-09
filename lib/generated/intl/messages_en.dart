@@ -120,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_sold_quantity":
             MessageLookupByLibrary.simpleMessage("Sold Qtty."),
         "item_total_price": MessageLookupByLibrary.simpleMessage("Total"),
+        "later_debt": MessageLookupByLibrary.simpleMessage("Later debt"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
@@ -138,6 +139,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pending_transactions":
             MessageLookupByLibrary.simpleMessage("Pending transactions"),
         "phone": MessageLookupByLibrary.simpleMessage("Phone number"),
+        "previous_debt": MessageLookupByLibrary.simpleMessage("Previous debt"),
         "product_alert_when_exceeds": MessageLookupByLibrary.simpleMessage(
             "Alert when available more than"),
         "product_altert_when_less_than": MessageLookupByLibrary.simpleMessage(

@@ -154,5 +154,7 @@
     "receipt_date": "تاريخ الوصل",
     "receipt_amount": "مبلغ الوصل",
     "due_debt_amount": "الدين المستحق",
-    "num_due_invoices": "القوائم المتجاوزة"
+    "num_due_invoices": "القوائم المتجاوزة",
+    "previous_debt": "الدين السابق",
+    "later_debt": "الدين اللاحق"
 }

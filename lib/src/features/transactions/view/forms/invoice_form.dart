@@ -53,7 +53,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
   Color customerExceedsDebtLimit(Customer selectedCustomer, ItemFormData formDataNotifier) {
     final customerTransactions =
         getCustomerTransactions(widget.allTransactions!, selectedCustomer.dbRef);
-    final totalDebt = getTotalDebt(customerTransactions);
+    final totalDebt = getTotalDebt(customerTransactions, selectedCustomer);
     final creditLimit = selectedCustomer.creditLimit;
     if (totalDebt >= creditLimit) {}
     final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);

@@ -1,8 +1,13 @@
 // receive list of all transaction, it does filtering based on
+import 'package:flutter/material.dart';
+import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart' as trans;
+import 'package:tablets/src/features/customers/model/customer.dart';
+
+import '../../features/transactions/model/transaction.dart';
 
 List<Map<String, dynamic>> getCustomerTransactions(
     List<Map<String, dynamic>> transactions, String dbRef) {
@@ -19,8 +24,8 @@ List<Map<String, dynamic>> getCustomerTransactions(
     });
 }
 
-double getTotalDebt(List<Map<String, dynamic>> transactions) {
-  double totalDebt = 0.0;
+double getTotalDebt(List<Map<String, dynamic>> transactions, Customer customer) {
+  double totalDebt = customer.initialCredit;
   for (var transaction in transactions) {
     if (transaction.containsKey(trans.totalAmountKey) && transaction[trans.totalAmountKey] is num) {
       double amount = transaction[trans.totalAmountKey];
@@ -107,4 +112,39 @@ double getDueDebt(List<List<dynamic>> dueInvoices, int amountIndex) {
     }
   }
   return total;
+}
+
+List<List<dynamic>> customerMatching(
+    List<Map<String, dynamic>> customerTransactions, Customer customer, BuildContext context) {
+  List<List<dynamic>> matchingTransactions = [];
+  double currentDebt = customer.initialCredit;
+  matchingTransactions.add([
+    S.of(context).initialAmount,
+    '',
+    customer.initialDate,
+    '',
+    '',
+    currentDebt,
+  ]);
+  for (int i = customerTransactions.length - 1; i >= 0; i--) {
+    final transaction = Transaction.fromMap(customerTransactions[i]);
+    final transactionType = transaction.transactionType;
+    if (transactionType == TransactionType.gifts.name) continue;
+    double amountSign = (transactionType == TransactionType.customerReceipt.name ||
+            transactionType == TransactionType.customerReturn.name)
+        ? -1
+        : 1;
+    final transactionAmount = transaction.totalAmount * amountSign;
+    final newDebt = currentDebt + transactionAmount;
+    matchingTransactions.add([
+      translateDbString(context, transactionType),
+      transaction.number,
+      transaction.date,
+      transactionAmount,
+      currentDebt,
+      newDebt
+    ]);
+    currentDebt = newDebt;
+  }
+  return matchingTransactions.reversed.toList();
 }
