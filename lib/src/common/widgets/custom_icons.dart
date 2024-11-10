@@ -119,6 +119,44 @@ class AddImageIcon extends StatelessWidget {
   }
 }
 
+class PrintIcon extends StatelessWidget {
+  const PrintIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Image.asset(
+        //   'assets/icons/buttons/print.png',
+        //   width: 25,
+        //   height: 22,
+        // ),
+        const Icon(Icons.print),
+        VerticalGap.s,
+        Text(S.of(context).print),
+      ],
+    );
+  }
+}
+
+class ShareIcon extends StatelessWidget {
+  const ShareIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(
+          Icons.share,
+          color: Colors.blue,
+        ),
+        VerticalGap.s,
+        Text(S.of(context).share),
+      ],
+    );
+  }
+}
+
 class LocaleAwareLogoutIcon extends StatelessWidget {
   const LocaleAwareLogoutIcon({super.key});
 

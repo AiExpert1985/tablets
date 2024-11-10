@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
-import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/common/widgets/show_dialog_list.dart';
@@ -59,16 +58,39 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
   final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
   final customerListValue =
       filterIsOn ? ref.read(customerFilteredListProvider).getFilteredList() : customertStream;
+
   return AsyncValueWidget<List<Map<String, dynamic>>>(
     value: customerListValue,
     data: (customers) {
+      // Calculate totals for the columns
+      double totalDebtSum = 0;
+      int totalOpenInvoices = 0;
+      int totalDueInvoices = 0;
+      double totalDueDebtSum = 0;
+
+      for (var customerData in customers) {
+        final customer = Customer.fromMap(customerData);
+        final customerTransactions = getCustomerTransactions(_allTransactions, customer.dbRef);
+        final totalDebt = getTotalDebt(customerTransactions, customer);
+        final openInvoices = getOpenInvoices(customerTransactions, totalDebt);
+        final dueInvoices = getDueInvoices(openInvoices, customer.paymentDurationLimit);
+        final dueDebt = getDueDebt(dueInvoices, 4);
+
+        totalDebtSum += totalDebt;
+        totalOpenInvoices += openInvoices.length;
+        totalDueInvoices += dueInvoices.length;
+        totalDueDebtSum += dueDebt;
+      }
+
       return Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildHeaderRow(context),
-            VerticalGap.l,
-            _buildHorizontalLine(), // Add some space between header and data
+            const Divider(),
+            // Pass totals to the header row
+            _buildHeaderRow(
+                context, totalDebtSum, totalOpenInvoices, totalDueInvoices, totalDueDebtSum),
+            const Divider(),
             Expanded(
               child: ListView.builder(
                 itemCount: customers.length,
@@ -82,8 +104,25 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
                   final dueDebt = getDueDebt(dueInvoices, 4);
                   Color statusColor = getStatusColor(dueInvoices.length, totalDebt, customer);
                   final matchingList = customerMatching(customerTransactions, customer, context);
-                  return _buildDataRow(customer, context, imagePickerNotifier, formDataNotifier,
-                      totalDebt, openInvoices, dueInvoices, dueDebt, statusColor, matchingList);
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0),
+                        child: _buildDataRow(
+                            customer,
+                            context,
+                            imagePickerNotifier,
+                            formDataNotifier,
+                            totalDebt,
+                            openInvoices,
+                            dueInvoices,
+                            dueDebt,
+                            statusColor,
+                            matchingList),
+                      ),
+                      const Divider(thickness: 0.2, color: Colors.grey)
+                    ],
+                  );
                 },
               ),
             ),
@@ -94,17 +133,34 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
   );
 }
 
-Widget _buildHeaderRow(BuildContext context) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+Widget _buildHeaderRow(BuildContext context, double totalDebtSum, int totalOpenInvoices,
+    int totalDueInvoices, double totalDueDebtSum) {
+  return Column(
     children: [
-      Expanded(child: _buildHeader('')),
-      Expanded(child: _buildHeader(S.of(context).customer)),
-      Expanded(child: _buildHeader(S.of(context).salesman_selection)),
-      Expanded(child: _buildHeader(S.of(context).current_debt)),
-      Expanded(child: _buildHeader(S.of(context).num_open_invoice)),
-      Expanded(child: _buildHeader(S.of(context).num_due_invoices)),
-      Expanded(child: _buildHeader(S.of(context).due_debt_amount)),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Expanded(child: SizedBox()), // Placeholder for the first column
+          const Expanded(child: SizedBox()), // Placeholder for the second column
+          const Expanded(child: SizedBox()), // Placeholder for the third column
+          Expanded(child: _buildHeader('(${numberToText(totalDebtSum)})')),
+          Expanded(child: _buildHeader('($totalOpenInvoices)')),
+          Expanded(child: _buildHeader('($totalDueInvoices)')),
+          Expanded(child: _buildHeader('(${numberToText(totalDueDebtSum)})')),
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(child: _buildHeader('')),
+          Expanded(child: _buildHeader(S.of(context).customer)),
+          Expanded(child: _buildHeader(S.of(context).salesman_selection)),
+          Expanded(child: _buildHeader(S.of(context).current_debt)),
+          Expanded(child: _buildHeader(S.of(context).num_open_invoice)),
+          Expanded(child: _buildHeader(S.of(context).num_due_invoices)),
+          Expanded(child: _buildHeader(S.of(context).due_debt_amount)),
+        ],
+      ),
     ],
   );
 }
@@ -162,7 +218,7 @@ Widget _buildDataRow(
               onTap: () {
                 final title = customer.name;
                 showDialogListWithDateFilter(
-                    context, title, 700, 800, matchingColumnTitles, matchingList, 2);
+                    context, title, 700, 700, matchingColumnTitles, matchingList, 2);
               },
             ),
           ),
@@ -170,7 +226,7 @@ Widget _buildDataRow(
             child: InkWell(
               child: _buildDataCell(numberToText(openInvoices.length), color),
               onTap: () {
-                final title = '${customer.name} (${openInvoices.length})';
+                final title = '${customer.name}  ( ${openInvoices.length} )';
                 showDialogList(context, title, 800, 400, invoiceColumnTitles, openInvoices);
               },
             ),
@@ -179,7 +235,7 @@ Widget _buildDataRow(
             child: InkWell(
               child: _buildDataCell(numberToText(dueInvoices.length), color),
               onTap: () {
-                final title = '${customer.name} (${dueInvoices.length})';
+                final title = '${customer.name}  ( ${dueInvoices.length} )';
                 showDialogList(context, title, 800, 400, invoiceColumnTitles, dueInvoices);
               },
             ),
@@ -187,9 +243,6 @@ Widget _buildDataRow(
           Expanded(child: _buildDataCell(numberToText(dueDebt), color)),
         ],
       ),
-
-      const SizedBox(height: 4), // Space between row and divider
-      _buildHorizontalLine()
     ],
   );
 }
@@ -208,15 +261,7 @@ Widget _buildHeader(String text) {
     textAlign: TextAlign.center,
     style: const TextStyle(
       fontSize: 18,
-      fontWeight: FontWeight.bold,
+      // fontWeight: FontWeight.bold,
     ),
-  );
-}
-
-Widget _buildHorizontalLine() {
-  return Container(
-    margin: const EdgeInsets.symmetric(vertical: 10),
-    height: 1, // Height of the divider
-    color: Colors.grey[300], // Light gray color
   );
 }

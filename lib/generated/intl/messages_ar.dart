@@ -141,6 +141,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("غير مثبت"),
         "phone": MessageLookupByLibrary.simpleMessage("رقم الهاتف"),
         "previous_debt": MessageLookupByLibrary.simpleMessage("الدين قبل"),
+        "print": MessageLookupByLibrary.simpleMessage("طباعة"),
         "product_alert_when_exceeds":
             MessageLookupByLibrary.simpleMessage(" تنبيه عندما يتجاوز"),
         "product_altert_when_less_than":
@@ -192,6 +193,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "selling_price_type_whole":
             MessageLookupByLibrary.simpleMessage("جملة"),
         "settings": MessageLookupByLibrary.simpleMessage("الاعدادات"),
+        "share": MessageLookupByLibrary.simpleMessage("ارسال"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
         "slogan":
             MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),

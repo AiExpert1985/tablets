@@ -141,6 +141,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Pending transactions"),
         "phone": MessageLookupByLibrary.simpleMessage("Phone number"),
         "previous_debt": MessageLookupByLibrary.simpleMessage("Previous debt"),
+        "print": MessageLookupByLibrary.simpleMessage("Print"),
         "product_alert_when_exceeds": MessageLookupByLibrary.simpleMessage(
             "Alert when available more than"),
         "product_altert_when_less_than": MessageLookupByLibrary.simpleMessage(
@@ -198,6 +199,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "selling_price_type_whole":
             MessageLookupByLibrary.simpleMessage("Wholesale"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "share": MessageLookupByLibrary.simpleMessage("Share"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign up"),
         "slogan": MessageLookupByLibrary.simpleMessage(
             "Tablets, where accounting started"),

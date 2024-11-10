@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 
 void showDialogList(
@@ -14,15 +15,33 @@ void showDialogList(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Center(child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold))),
+        title: Center(
+          child: Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
         content: _buildList(width, height, columnTitles, dataList),
         actions: <Widget>[
           Center(
-            child: IconButton(
-              icon: const CancelIcon(),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+            child: Row(
+              mainAxisSize: MainAxisSize.min, // Use min to wrap the buttons tightly
+              mainAxisAlignment: MainAxisAlignment.center, // Center the buttons
+              children: [
+                IconButton(
+                  icon: const PrintIcon(),
+                  onPressed: () {
+                    // TODO: Implement print functionality
+                  },
+                ),
+                HorizontalGap.m, // Add spacing between buttons
+                IconButton(
+                  icon: const ShareIcon(),
+                  onPressed: () {
+                    // TODO: Implement print functionality
+                  },
+                ),
+              ],
             ),
           ),
         ],
@@ -41,6 +60,7 @@ Widget _buildList(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Divider(), // Divider after column titles
           // Column Titles
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -58,7 +78,8 @@ Widget _buildList(
               }).toList(),
             ),
           ),
-          const Divider(),
+          const Divider(), // Divider after column titles
+
           // Data Rows
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(), // Prevents scrolling of ListView
@@ -66,22 +87,27 @@ Widget _buildList(
             itemCount: dataList.length,
             itemBuilder: (context, index) {
               final data = dataList[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: data.map((item) {
-                    if (item is DateTime) item = formatDate(item);
-                    if (item is! String) item = item.toString();
-                    return SizedBox(
-                      width: width / columnTitles.length, // Set fixed width for each column
-                      child: Text(
-                        item.toString(),
-                        textAlign: TextAlign.center,
-                      ),
-                    );
-                  }).toList(),
-                ),
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: data.map((item) {
+                        if (item is DateTime) item = formatDate(item);
+                        if (item is! String) item = item.toString();
+                        return SizedBox(
+                          width: width / columnTitles.length, // Set fixed width for each column
+                          child: Text(
+                            item.toString(),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  const Divider(thickness: 0.2, color: Colors.grey), // Divider after each data row
+                ],
               );
             },
           ),

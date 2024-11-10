@@ -54,21 +54,36 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Center(
-        child: Text(
-          widget.title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min, // Make the column take minimum height
-        children: [
-          // Date Picker
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
+      title: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(widget.title, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Button to remove date filter
+                Visibility(
+                  visible: selectedDate != null,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.clear,
+                      size: 15,
+                      color: Colors.red,
+                    ), // Clear icon
+                    onPressed: () {
+                      setState(() {
+                        selectedDate = null; // Remove date filter
+                      });
+                    },
+                  ),
+                ),
+                Text(
+                  selectedDate == null ? '' : formatDate(selectedDate!),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                HorizontalGap.m,
                 IconButton(
                   onPressed: () async {
                     final DateTime? pickedDate = await showDatePicker(
@@ -85,22 +100,22 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
                   },
                   icon: Image.asset(
                     'assets/icons/buttons/date_picker.png',
-                    width: 35,
-                    height: 35,
+                    width: 27,
+                    height: 27,
                   ),
-                ),
-                HorizontalGap.m,
-                Text(
-                  selectedDate == null ? '' : formatDate(selectedDate!),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-          ),
+          ],
+        ),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min, // Make the column take minimum height
+        children: [
           const Divider(),
-          // Column Titles (Not scrollable)
+          // Column Titles (Increased height)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0), // Decrease height of titles
+            padding: const EdgeInsets.symmetric(vertical: 8.0), // Increased height of titles
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: widget.columnTitles.map((item) {
@@ -119,7 +134,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           const Divider(),
           // Data List
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 15), // Adjust padding for the list
+            padding: const EdgeInsets.symmetric(vertical: 10), // Adjust padding for the list
             width: widget.width,
             height: widget.height * 0.6, // Set a fixed height for the list
             child: SingleChildScrollView(
@@ -133,24 +148,31 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
                     itemCount: _filteredDataList(widget.dataList, widget.dateIndex).length,
                     itemBuilder: (context, index) {
                       final data = _filteredDataList(widget.dataList, widget.dateIndex)[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10.0), // Increase space of each data row
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: data.map((item) {
-                            if (item is DateTime) item = formatDate(item);
-                            if (item is! String) item = item.toString();
-                            return SizedBox(
-                              width: widget.width /
-                                  widget.columnTitles.length, // Set fixed width for each column
-                              child: Text(
-                                item.toString(),
-                                textAlign: TextAlign.center,
-                              ),
-                            );
-                          }).toList(),
-                        ),
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5.0), // Reduced height of data rows
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: data.map((item) {
+                                if (item is DateTime) item = formatDate(item);
+                                if (item is! String) item = item.toString();
+                                return SizedBox(
+                                  width: widget.width /
+                                      widget.columnTitles.length, // Set fixed width for each column
+                                  child: Text(
+                                    item.toString(),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          const Divider(
+                              thickness: 0.2,
+                              color: Colors.grey) // Thin light horizontal line below each data row
+                        ],
                       );
                     },
                   ),
@@ -162,11 +184,24 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       ),
       actions: <Widget>[
         Center(
-          child: IconButton(
-            icon: const CancelIcon(),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+          child: Row(
+            mainAxisSize: MainAxisSize.min, // Use min to wrap the buttons tightly
+            mainAxisAlignment: MainAxisAlignment.center, // Center the buttons
+            children: [
+              IconButton(
+                icon: const PrintIcon(),
+                onPressed: () {
+                  // TODO: Implement print functionality
+                },
+              ),
+              HorizontalGap.m, // Add spacing between buttons
+              IconButton(
+                icon: const ShareIcon(),
+                onPressed: () {
+                  // TODO: Implement share functionality
+                },
+              ),
+            ],
           ),
         ),
       ],

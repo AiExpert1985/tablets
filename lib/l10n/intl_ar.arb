@@ -157,5 +157,7 @@
     "num_due_invoices": "القوائم المتجاوزة",
     "previous_debt": "الدين قبل",
     "later_debt": "الدين بعد",
-    "from_date": "من تاريخ"
+    "from_date": "من تاريخ",
+    "print": "طباعة",
+    "share": "ارسال"
 }
