@@ -34,6 +34,11 @@ class TransactionsList extends ConsumerWidget {
     return AsyncValueWidget<List<Map<String, dynamic>>>(
       value: transactionsListValue,
       data: (allTransactions) {
+        allTransactions.sort((a, b) {
+          DateTime dateA = a['date'].toDate();
+          DateTime dateB = b['date'].toDate();
+          return dateB.compareTo(dateA);
+        });
         return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(

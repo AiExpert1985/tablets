@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/features/customers/controllers/customer_drawer_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
@@ -17,8 +18,8 @@ class CustomerFloatingButtons extends ConsumerWidget {
       'initialDate': DateTime.now(),
       'initialCredit': 0,
       'sellingPriceType': S.of(context).selling_price_type_whole,
-      'creditLimit': 1000000,
-      'paymentDurationLimit': 20,
+      'creditLimit': maxDebtAmount,
+      'paymentDurationLimit': maxDebtDuration,
     });
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize();
