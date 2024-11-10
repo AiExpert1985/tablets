@@ -38,11 +38,7 @@ Widget buildMainDrawer(BuildContext context) {
                       title: S.of(context).products,
                       routeName: AppRoute.products.name),
                   VerticalGap.m,
-                  IconButton(
-                      icon: const Icon(Icons.settings),
-                      onPressed: () => showDialog(
-                          context: context,
-                          builder: (BuildContext ctx) => _showSettingDialog(context))),
+                  _buildSettingsButton(context),
                   PushWidgets.toEnd,
                   _buildMainDrawerButton(context,
                       iconName: 'pending_transactions',
@@ -96,6 +92,20 @@ Widget _buildMainDrawerButton(BuildContext context,
       });
 }
 
+Widget _buildSettingsButton(BuildContext context) {
+  return ListTile(
+      leading: Image.asset(
+        'assets/icons/side_drawer/settings.png',
+        width: 30,
+        fit: BoxFit.scaleDown,
+      ),
+      title: Text(S.of(context).settings),
+      onTap: () {
+        Navigator.of(context).pop();
+        showDialog(context: context, builder: (BuildContext ctx) => _showSettingDialog(context));
+      });
+}
+
 Widget _showSettingDialog(BuildContext context) {
   final List<String> names = [
     S.of(context).categories,
@@ -125,8 +135,7 @@ Widget _showSettingDialog(BuildContext context) {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              Navigator.of(context).pop(); // close dialog
-              Navigator.of(context).pop(); // close side drawer
+              Navigator.of(context).pop();
               context.goNamed(routes[index]);
             },
             child: Card(
