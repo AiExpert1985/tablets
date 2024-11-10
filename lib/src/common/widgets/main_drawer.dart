@@ -17,41 +17,32 @@ Widget buildMainDrawer(BuildContext context) {
                       iconName: 'transactions',
                       title: S.of(context).transactions,
                       routeName: AppRoute.transactions.name),
-                  VerticalGap.s,
+                  VerticalGap.m,
                   _buildMainDrawerButton(context,
                       iconName: 'customers',
                       title: S.of(context).customers,
                       routeName: AppRoute.customers.name),
-                  VerticalGap.s,
+                  VerticalGap.m,
                   _buildMainDrawerButton(context,
                       iconName: 'vendors',
                       title: S.of(context).vendors,
                       routeName: AppRoute.vendors.name),
-                  VerticalGap.s,
+                  VerticalGap.m,
                   _buildMainDrawerButton(context,
                       iconName: 'salesman',
                       title: S.of(context).salesmen,
                       routeName: AppRoute.salesman.name),
-                  VerticalGap.s,
+                  VerticalGap.m,
                   _buildMainDrawerButton(context,
                       iconName: 'products',
                       title: S.of(context).products,
                       routeName: AppRoute.products.name),
-                  VerticalGap.s,
-                  _buildMainDrawerButton(context,
-                      iconName: 'categories',
-                      title: S.of(context).categories,
-                      routeName: AppRoute.categories.name),
-                  VerticalGap.s,
-                  _buildMainDrawerButton(context,
-                      iconName: 'regions',
-                      title: S.of(context).regions,
-                      routeName: AppRoute.regions.name),
-                  VerticalGap.s,
-                  _buildMainDrawerButton(context,
-                      iconName: 'settings',
-                      title: S.of(context).settings,
-                      routeName: AppRoute.settings.name),
+                  VerticalGap.m,
+                  IconButton(
+                      icon: const Icon(Icons.settings),
+                      onPressed: () => showDialog(
+                          context: context,
+                          builder: (BuildContext ctx) => _showSettingDialog(context))),
                   PushWidgets.toEnd,
                   _buildMainDrawerButton(context,
                       iconName: 'pending_transactions',
@@ -103,4 +94,57 @@ Widget _buildMainDrawerButton(BuildContext context,
         Navigator.of(context).pop();
         context.goNamed(routeName);
       });
+}
+
+Widget _showSettingDialog(BuildContext context) {
+  final List<String> names = [
+    S.of(context).categories,
+    S.of(context).regions,
+    S.of(context).settings,
+  ];
+
+  final List<String> routes = [
+    AppRoute.categories.name,
+    AppRoute.regions.name,
+    AppRoute.settings.name
+  ];
+
+  return AlertDialog(
+    alignment: Alignment.center,
+    scrollable: true,
+    content: Container(
+      padding: const EdgeInsets.all(25),
+      width: 300,
+      height: 500,
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 1, // Number of columns
+          childAspectRatio: 1.7, // Aspect ratio of each card
+        ),
+        itemCount: names.length,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: () {
+              Navigator.of(context).pop(); // close dialog
+              Navigator.of(context).pop(); // close side drawer
+              context.goNamed(routes[index]);
+            },
+            child: Card(
+              elevation: 4,
+              margin: const EdgeInsets.all(16),
+              child: SizedBox(
+                height: 40, // Reduced height for the card
+                child: Center(
+                  child: Text(
+                    names[index], // Use the corresponding name
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    ),
+  );
 }
