@@ -18,25 +18,32 @@ class AppScreenFrame extends ConsumerWidget {
     final pageTitle = ref.watch(pageTitleProvider);
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     return Scaffold(
-      appBar: AppBar(
-        title: _buildPageTitle(context, pageTitle),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu, color: Colors.white),
-            onPressed: () => Scaffold.of(context).openDrawer(),
+      appBar: PreferredSize(
+        preferredSize: const Size(double.infinity, 65.0), // Height of the AppBar
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.9, // Set width to 90% of screen width
+          alignment: Alignment.center,
+          child: AppBar(
+            title: _buildPageTitle(context, pageTitle),
+            leading: Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(Icons.menu, color: Colors.white),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              ),
+            ),
+            actions: [
+              TextButton.icon(
+                onPressed: () => FirebaseAuth.instance.signOut(), //signout(ref),
+                icon: const LocaleAwareLogoutIcon(),
+                label: Text(
+                  S.of(context).logout,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+            backgroundColor: Theme.of(context).colorScheme.primary,
           ),
         ),
-        actions: [
-          TextButton.icon(
-            onPressed: () => FirebaseAuth.instance.signOut(), //signout(ref),
-            icon: const LocaleAwareLogoutIcon(),
-            label: Text(
-              S.of(context).logout,
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       drawer: buildMainDrawer(context, pageTitleNotifier),
       body: Container(
@@ -56,7 +63,10 @@ Widget _buildPageTitle(BuildContext context, String pageTitle) {
           alignment: Alignment.center, // Center the title text
           child: Text(
             pageTitle,
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 28,
+            ),
           ),
         ),
       ),

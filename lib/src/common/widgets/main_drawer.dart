@@ -104,13 +104,14 @@ Widget _buildSettingsButton(BuildContext context, StateController<String> pageTi
       ),
       title: Text(title),
       onTap: () {
-        pageTitleNotifier.state = title;
         Navigator.of(context).pop();
-        showDialog(context: context, builder: (BuildContext ctx) => _showSettingDialog(context));
+        showDialog(
+            context: context,
+            builder: (BuildContext ctx) => _showSettingDialog(context, pageTitleNotifier));
       });
 }
 
-Widget _showSettingDialog(BuildContext context) {
+Widget _showSettingDialog(BuildContext context, StateController<String> pageTitleNotifier) {
   final List<String> names = [
     S.of(context).categories,
     S.of(context).regions,
@@ -139,6 +140,7 @@ Widget _showSettingDialog(BuildContext context) {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
+              pageTitleNotifier.state = names[index];
               Navigator.of(context).pop();
               context.goNamed(routes[index]);
             },
