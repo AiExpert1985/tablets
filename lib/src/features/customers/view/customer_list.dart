@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/common/widgets/show_dialog_list.dart';
@@ -86,10 +87,13 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const Divider(),
+            // const Divider(),
             // Pass totals to the header row
-            _buildHeaderRow(
-                context, totalDebtSum, totalOpenInvoices, totalDueInvoices, totalDueDebtSum),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildHeaderRow(
+                  context, totalDebtSum, totalOpenInvoices, totalDueInvoices, totalDueDebtSum),
+            ),
             const Divider(),
             Expanded(
               child: ListView.builder(
@@ -140,18 +144,6 @@ Widget _buildHeaderRow(BuildContext context, double totalDebtSum, int totalOpenI
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Expanded(child: SizedBox()), // Placeholder for the first column
-          const Expanded(child: SizedBox()), // Placeholder for the second column
-          const Expanded(child: SizedBox()), // Placeholder for the third column
-          Expanded(child: _buildHeader('(${numberToText(totalDebtSum)})')),
-          Expanded(child: _buildHeader('($totalOpenInvoices)')),
-          Expanded(child: _buildHeader('($totalDueInvoices)')),
-          Expanded(child: _buildHeader('(${numberToText(totalDueDebtSum)})')),
-        ],
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
           Expanded(child: _buildHeader('')),
           Expanded(child: _buildHeader(S.of(context).customer)),
           Expanded(child: _buildHeader(S.of(context).salesman_selection)),
@@ -160,6 +152,22 @@ Widget _buildHeaderRow(BuildContext context, double totalDebtSum, int totalOpenI
           Expanded(child: _buildHeader(S.of(context).num_due_invoices)),
           Expanded(child: _buildHeader(S.of(context).due_debt_amount)),
         ],
+      ),
+      VerticalGap.m,
+      Visibility(
+        visible: showColumnTotals,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Expanded(child: SizedBox()), // Placeholder for the first column
+            const Expanded(child: SizedBox()), // Placeholder for the second column
+            const Expanded(child: SizedBox()), // Placeholder for the third column
+            Expanded(child: _buildHeader('(${numberToText(totalDebtSum)})')),
+            Expanded(child: _buildHeader('($totalOpenInvoices)')),
+            Expanded(child: _buildHeader('($totalDueInvoices)')),
+            Expanded(child: _buildHeader('(${numberToText(totalDueDebtSum)})')),
+          ],
+        ),
       ),
     ],
   );
@@ -261,7 +269,7 @@ Widget _buildHeader(String text) {
     textAlign: TextAlign.center,
     style: const TextStyle(
       fontSize: 18,
-      // fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.bold,
     ),
   );
 }
