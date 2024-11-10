@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tablets/src/app.dart';
-import 'package:tablets/src/common/functions/custom_inialization.dart' as my_initializer;
+import 'package:tablets/src/common/functions/app_inialization.dart' as my_initializer;
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,7 +41,8 @@ void registerErrorHandlers() {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: const Text('An error occurred -- handled by the registerErrorHandlers() function in main.dart'),
+        title: const Text(
+            'An error occurred -- handled by the registerErrorHandlers() function in main.dart'),
       ),
       body: Center(child: Text(details.toString())),
     );

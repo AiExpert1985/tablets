@@ -75,6 +75,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_importing_image": MessageLookupByLibrary.simpleMessage(
             "An error happend while importing images"),
         "failure": MessageLookupByLibrary.simpleMessage("Failure"),
+        "from_date": MessageLookupByLibrary.simpleMessage("From date"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("Go back to home page"),
         "gps_x": MessageLookupByLibrary.simpleMessage("X coordinate"),

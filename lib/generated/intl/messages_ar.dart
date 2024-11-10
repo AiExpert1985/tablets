@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_importing_image":
             MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء استيراد الصور"),
         "failure": MessageLookupByLibrary.simpleMessage("فشل"),
+        "from_date": MessageLookupByLibrary.simpleMessage("من تاريخ"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("العودة الى الصفحة الرئيسية"),
         "gps_x": MessageLookupByLibrary.simpleMessage("احداثيات الطول"),
@@ -120,7 +121,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_sold_quantity": MessageLookupByLibrary.simpleMessage("العدد"),
         "item_total_price":
             MessageLookupByLibrary.simpleMessage("السعر الكلي للمادة"),
-        "later_debt": MessageLookupByLibrary.simpleMessage("الدين اللاحق"),
+        "later_debt": MessageLookupByLibrary.simpleMessage("الدين بعد"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
@@ -139,7 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pending_transactions":
             MessageLookupByLibrary.simpleMessage("غير مثبت"),
         "phone": MessageLookupByLibrary.simpleMessage("رقم الهاتف"),
-        "previous_debt": MessageLookupByLibrary.simpleMessage("الدين السابق"),
+        "previous_debt": MessageLookupByLibrary.simpleMessage("الدين قبل"),
         "product_alert_when_exceeds":
             MessageLookupByLibrary.simpleMessage(" تنبيه عندما يتجاوز"),
         "product_altert_when_less_than":

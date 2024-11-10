@@ -156,5 +156,6 @@
     "due_debt_amount": "Due debt",
     "num_due_invoices": "Due invoices",
     "previous_debt": "Previous debt",
-    "later_debt": "Later debt"
+    "later_debt": "Later debt",
+    "from_date": "From date"
 }

@@ -7,6 +7,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/common/widgets/show_dialog_list.dart';
+import 'package:tablets/src/common/widgets/show_dialog_list_with_date_filter.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
@@ -159,8 +160,9 @@ Widget _buildDataRow(
             child: InkWell(
               child: _buildDataCell(numberToText(totalDebt), color),
               onTap: () {
-                final title = '${customer.name} (${matchingList.length})';
-                showDialogList(context, title, 800, 400, matchingColumnTitles, matchingList);
+                final title = customer.name;
+                showDialogListWithDateFilter(
+                    context, title, 700, 800, matchingColumnTitles, matchingList, 2);
               },
             ),
           ),

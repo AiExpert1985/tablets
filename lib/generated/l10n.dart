@@ -1629,6 +1629,16 @@ class S {
       args: [],
     );
   }
+
+  /// `From date`
+  String get from_date {
+    return Intl.message(
+      'From date',
+      name: 'from_date',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
