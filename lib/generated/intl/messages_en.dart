@@ -46,6 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "customer": MessageLookupByLibrary.simpleMessage("Customer"),
         "customer_name": MessageLookupByLibrary.simpleMessage("Name"),
         "customers": MessageLookupByLibrary.simpleMessage("Customers"),
+        "daily_income": MessageLookupByLibrary.simpleMessage("Daily income"),
         "date_picker_hint":
             MessageLookupByLibrary.simpleMessage("Select a date"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
@@ -204,6 +205,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "slogan": MessageLookupByLibrary.simpleMessage(
             "Tablets, where accounting started"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
+        "to_date": MessageLookupByLibrary.simpleMessage("To date"),
         "transaction_amount": MessageLookupByLibrary.simpleMessage("Amount"),
         "transaction_currency":
             MessageLookupByLibrary.simpleMessage("Currency"),
@@ -214,6 +216,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Discount"),
         "transaction_expenditure_bills":
             MessageLookupByLibrary.simpleMessage("Bills"),
+        "transaction_expenditure_money_transer":
+            MessageLookupByLibrary.simpleMessage("Money transer"),
         "transaction_expenditure_others":
             MessageLookupByLibrary.simpleMessage("Others"),
         "transaction_expenditure_rent":

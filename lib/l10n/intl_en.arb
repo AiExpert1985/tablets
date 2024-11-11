@@ -98,6 +98,7 @@
     "transaction_expenditure_others": "Others",
     "transaction_expenditure_bills": "Bills",
     "transaction_expenditure_type": "Expendure type",
+    "transaction_expenditure_money_transer": "Money transer",
     "transaction_type_expenditures": "Expenditures",
     "transaction_type_gifts": "Gifts",
     "transaction_type_customer_receipt": "Customer Receipt",
@@ -159,5 +160,7 @@
     "later_debt": "Later debt",
     "from_date": "From date",
     "print": "Print",
-    "share": "Share"
+    "share": "Share",
+    "daily_income": "Daily income",
+    "to_date": "To date"
 }

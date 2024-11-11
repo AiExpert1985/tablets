@@ -57,6 +57,7 @@ class ExpenditureForm extends ConsumerWidget {
             S.of(context).transaction_expenditure_salary,
             S.of(context).transaction_expenditure_rent,
             S.of(context).transaction_expenditure_bills,
+            S.of(context).transaction_expenditure_money_transer,
             S.of(context).transaction_expenditure_others,
           ],
           label: S.of(context).transaction_expenditure_type,

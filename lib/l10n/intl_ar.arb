@@ -99,6 +99,7 @@
     "transaction_expenditure_bills": "قوائم حكومية",
     "transaction_expenditure_type": "نوع المصاريف",
     "transaction_type_expenditures": "مصاريف",
+    "transaction_expenditure_money_transer": "عمولة حوالة",
     "transaction_type_gifts": "هدية",
     "transaction_type_customer_receipt": "وصل قبض",
     "transaction_type_vendor_receipt": "وصل دفع",
@@ -159,5 +160,7 @@
     "later_debt": "الدين بعد",
     "from_date": "من تاريخ",
     "print": "طباعة",
-    "share": "ارسال"
+    "share": "ارسال",
+    "daily_income": "الوارد اليومي",
+    "to_date": "الى تاريخ"
 }

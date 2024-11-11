@@ -47,6 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "customer": MessageLookupByLibrary.simpleMessage("الزبون"),
         "customer_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "customers": MessageLookupByLibrary.simpleMessage("الزبائن"),
+        "daily_income": MessageLookupByLibrary.simpleMessage("الوارد اليومي"),
         "date_picker_hint":
             MessageLookupByLibrary.simpleMessage("اختيار التاريخ"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
@@ -198,6 +199,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "slogan":
             MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
+        "to_date": MessageLookupByLibrary.simpleMessage("الى تاريخ"),
         "transaction_amount":
             MessageLookupByLibrary.simpleMessage("مبلغ القائمة"),
         "transaction_currency": MessageLookupByLibrary.simpleMessage("العملة"),
@@ -208,6 +210,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_discount": MessageLookupByLibrary.simpleMessage("الخصم"),
         "transaction_expenditure_bills":
             MessageLookupByLibrary.simpleMessage("قوائم حكومية"),
+        "transaction_expenditure_money_transer":
+            MessageLookupByLibrary.simpleMessage("عمولة حوالة"),
         "transaction_expenditure_others":
             MessageLookupByLibrary.simpleMessage("مصاريف اخرى"),
         "transaction_expenditure_rent":

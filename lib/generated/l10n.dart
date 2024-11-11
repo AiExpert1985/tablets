@@ -1040,6 +1040,16 @@ class S {
     );
   }
 
+  /// `Money transer`
+  String get transaction_expenditure_money_transer {
+    return Intl.message(
+      'Money transer',
+      name: 'transaction_expenditure_money_transer',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Expenditures`
   String get transaction_type_expenditures {
     return Intl.message(
@@ -1655,6 +1665,26 @@ class S {
     return Intl.message(
       'Share',
       name: 'share',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Daily income`
+  String get daily_income {
+    return Intl.message(
+      'Daily income',
+      name: 'daily_income',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To date`
+  String get to_date {
+    return Intl.message(
+      'To date',
+      name: 'to_date',
       desc: '',
       args: [],
     );
