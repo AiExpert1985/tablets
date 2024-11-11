@@ -14,7 +14,7 @@ class SalesmanFormFields extends ConsumerWidget {
       child: Column(
         children: [
           FormInputField(
-            dataType: FieldDataType.string,
+            dataType: FieldDataType.text,
             name: 'name',
             label: S.of(context).salesman_name,
             initialValue: formDataNotifier.getProperty('name'),
@@ -23,7 +23,7 @@ class SalesmanFormFields extends ConsumerWidget {
             },
           ),
           FormInputField(
-            dataType: FieldDataType.string,
+            dataType: FieldDataType.text,
             isRequired: false,
             name: 'phone',
             label: S.of(context).phone,

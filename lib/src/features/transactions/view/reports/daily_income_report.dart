@@ -77,14 +77,17 @@ class DailyIncomeReportState extends State<DailyIncomeReport> {
               ),
             ),
             VerticalGap.xxl,
-            GestureDetector(
+            InkWell(
               onTap: () {
                 _showTransactionsDialog(context);
               },
-              child: Text(
-                numberToText(income), // Function to convert number to text
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
+              child: SizedBox(
+                width: 250,
+                height: 55,
+                child: Center(
+                  child: Text(numberToText(income), // Function to convert number to text
+                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                ),
               ),
             ),
           ],

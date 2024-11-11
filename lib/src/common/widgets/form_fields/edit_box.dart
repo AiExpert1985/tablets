@@ -71,7 +71,7 @@ class FormInputField extends ConsumerWidget {
 
   FormFieldValidator<String>? _validator(BuildContext context) {
     return (value) {
-      if (dataType == FieldDataType.string) {
+      if (dataType == FieldDataType.text) {
         return validation.validateTextField(
             value, S.of(context).input_validation_error_message_for_text);
       }

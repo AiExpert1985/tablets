@@ -14,7 +14,7 @@ class RegionFormFields extends ConsumerWidget {
       onChangedFn: (value) {
         formDataNotifier.updateProperties({'name': value});
       },
-      dataType: FieldDataType.string,
+      dataType: FieldDataType.text,
       name: 'name',
       label: S.of(context).region_name,
       initialValue: formDataNotifier.getProperty('name'),

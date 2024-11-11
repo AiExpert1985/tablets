@@ -162,5 +162,7 @@
     "print": "Print",
     "share": "Share",
     "daily_income": "Daily income",
-    "to_date": "To date"
+    "to_date": "To date",
+    "notes": "Notes",
+    "product_buying_price": "Buying price"
 }

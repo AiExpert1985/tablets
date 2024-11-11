@@ -127,6 +127,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "no": MessageLookupByLibrary.simpleMessage("No"),
+        "notes": MessageLookupByLibrary.simpleMessage("Notes"),
         "num_due_invoices":
             MessageLookupByLibrary.simpleMessage("Due invoices"),
         "num_open_invoice":
@@ -147,6 +148,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Alert when available more than"),
         "product_altert_when_less_than": MessageLookupByLibrary.simpleMessage(
             "Alert when available is less than"),
+        "product_buying_price":
+            MessageLookupByLibrary.simpleMessage("Buying price"),
         "product_category":
             MessageLookupByLibrary.simpleMessage("Product category"),
         "product_code": MessageLookupByLibrary.simpleMessage("code"),

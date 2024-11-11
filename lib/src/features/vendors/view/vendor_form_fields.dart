@@ -22,7 +22,7 @@ class VendorFormFields extends ConsumerWidget {
               formDataNotifier.updateProperties({'name': value});
             },
             initialValue: formDataNotifier.getProperty('name'),
-            dataType: FieldDataType.string,
+            dataType: FieldDataType.text,
             name: 'name',
             label: S.of(context).salesman_name,
           ),
@@ -32,7 +32,7 @@ class VendorFormFields extends ConsumerWidget {
               formDataNotifier.updateProperties({'phone': value});
             },
             initialValue: formDataNotifier.getProperty('phone'),
-            dataType: FieldDataType.string,
+            dataType: FieldDataType.text,
             name: 'phone',
             label: S.of(context).phone,
           ),

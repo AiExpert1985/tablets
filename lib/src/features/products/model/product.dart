@@ -8,6 +8,7 @@ class Product implements BaseItem {
   @override
   List<String> imageUrls;
   int code;
+  double buyingPrice;
   double sellRetailPrice;
   double sellWholePrice;
   String packageType;
@@ -17,12 +18,15 @@ class Product implements BaseItem {
   int altertWhenLessThan;
   double salesmanComission;
   String category;
+  String categoryDbRef;
   int initialQuantity;
+  String? notes;
 
   Product({
     required this.dbRef,
     required this.code,
     required this.name,
+    required this.buyingPrice,
     required this.sellRetailPrice,
     required this.sellWholePrice,
     required this.packageType,
@@ -33,45 +37,13 @@ class Product implements BaseItem {
     required this.salesmanComission,
     required this.imageUrls,
     required this.category,
+    required this.categoryDbRef,
     required this.initialQuantity,
+    this.notes,
   });
 
   @override
   String get coverImageUrl => imageUrls[imageUrls.length - 1];
-
-  Product copyWith({
-    String? dbRef,
-    int? code,
-    String? name,
-    double? sellRetailPrice,
-    double? sellWholePrice,
-    String? packageType,
-    double? packageWeight,
-    int? numItemsInsidePackage,
-    int? alertWhenExceeds,
-    int? altertWhenLessThan,
-    double? salesmanComission,
-    List<String>? imageUrls,
-    String? category,
-    int? initialQuantity,
-  }) {
-    return Product(
-      dbRef: dbRef ?? this.dbRef,
-      code: code ?? this.code,
-      name: name ?? this.name,
-      sellRetailPrice: sellRetailPrice ?? this.sellRetailPrice,
-      sellWholePrice: sellWholePrice ?? this.sellWholePrice,
-      packageType: packageType ?? this.packageType,
-      packageWeight: packageWeight ?? this.packageWeight,
-      numItemsInsidePackage: numItemsInsidePackage ?? this.numItemsInsidePackage,
-      alertWhenExceeds: alertWhenExceeds ?? this.alertWhenExceeds,
-      altertWhenLessThan: altertWhenLessThan ?? this.altertWhenLessThan,
-      salesmanComission: salesmanComission ?? this.salesmanComission,
-      imageUrls: imageUrls ?? this.imageUrls,
-      category: category ?? this.category,
-      initialQuantity: initialQuantity ?? this.initialQuantity,
-    );
-  }
 
   @override
   Map<String, dynamic> toMap() {
@@ -79,6 +51,7 @@ class Product implements BaseItem {
       'dbRef': dbRef,
       'code': code,
       'name': name,
+      'buyingPrice': buyingPrice,
       'sellRetailPrice': sellRetailPrice,
       'sellWholePrice': sellWholePrice,
       'packageType': packageType,
@@ -89,7 +62,9 @@ class Product implements BaseItem {
       'salesmanComission': salesmanComission,
       'imageUrls': imageUrls,
       'category': category,
+      'categoryDbRef': categoryDbRef,
       'initialQuantity': initialQuantity,
+      'notes': notes,
     };
   }
 
@@ -98,6 +73,7 @@ class Product implements BaseItem {
       dbRef: map['dbRef'] ?? '',
       code: map['code']?.toInt() ?? 0,
       name: map['name'] ?? '',
+      buyingPrice: map['buyingPrice']?.toDouble() ?? 0.0,
       sellRetailPrice: map['sellRetailPrice']?.toDouble() ?? 0.0,
       sellWholePrice: map['sellWholePrice']?.toDouble() ?? 0.0,
       packageType: map['packageType'] ?? '',
@@ -108,7 +84,9 @@ class Product implements BaseItem {
       salesmanComission: map['salesmanComission']?.toDouble() ?? 0.0,
       imageUrls: List<String>.from(map['imageUrls']),
       category: map['category'] ?? '',
+      categoryDbRef: map['categoryDbRef'] ?? '',
       initialQuantity: map['initialQuantity']?.toInt() ?? 0,
+      notes: map['notes'] ?? '',
     );
   }
 

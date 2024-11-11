@@ -122,7 +122,7 @@ class StatementForm extends ConsumerWidget {
       children: [
         FormInputField(
           isRequired: false,
-          dataType: constants.FieldDataType.string,
+          dataType: constants.FieldDataType.text,
           name: notesKey,
           label: S.of(context).transaction_notes,
           initialValue: formDataNotifier.getProperty(notesKey),
@@ -141,7 +141,7 @@ class StatementForm extends ConsumerWidget {
         children: [
           FormInputField(
             isRequired: false,
-            dataType: constants.FieldDataType.string,
+            dataType: constants.FieldDataType.text,
             name: totalAsTextKey,
             label: S.of(context).transaction_total_amount_as_text,
             initialValue: formDataNotifier.getProperty(totalAsTextKey),

@@ -162,5 +162,7 @@
     "print": "طباعة",
     "share": "ارسال",
     "daily_income": "الوارد اليومي",
-    "to_date": "الى تاريخ"
+    "to_date": "الى تاريخ",
+    "notes": "الملاحظات",
+    "product_buying_price": "سعر الشراء"
 }

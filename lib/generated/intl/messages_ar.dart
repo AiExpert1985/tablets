@@ -127,6 +127,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "no": MessageLookupByLibrary.simpleMessage("لا"),
+        "notes": MessageLookupByLibrary.simpleMessage("الملاحظات"),
         "num_due_invoices":
             MessageLookupByLibrary.simpleMessage("القوائم المتجاوزة"),
         "num_open_invoice":
@@ -147,6 +148,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(" تنبيه عندما يتجاوز"),
         "product_altert_when_less_than":
             MessageLookupByLibrary.simpleMessage("تنبيه عندما يقل عن"),
+        "product_buying_price":
+            MessageLookupByLibrary.simpleMessage("سعر الشراء"),
         "product_category": MessageLookupByLibrary.simpleMessage("التصنيف"),
         "product_code": MessageLookupByLibrary.simpleMessage("رمز المادة"),
         "product_initial_quantitiy":
