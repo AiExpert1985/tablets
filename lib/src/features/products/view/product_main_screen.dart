@@ -11,7 +11,7 @@ class ProductsScreen extends ConsumerWidget {
     return const AppScreenFrame(
       screenBody: Stack(
         children: [
-          ProductsTable(),
+          ProductsList(),
           Positioned(
             bottom: 0,
             left: 0,

@@ -8,13 +8,12 @@ import 'package:tablets/src/features/products/controllers/product_filtered_list_
 import 'package:tablets/src/features/products/controllers/product_filter_controller_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
-import 'package:data_table_2/data_table_2.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/view/product_form.dart';
 
-class ProductsTable extends ConsumerWidget {
-  const ProductsTable({super.key});
+class ProductsList extends ConsumerWidget {
+  const ProductsList({super.key});
 
   void showEditProductForm(BuildContext context, WidgetRef ref, Product product) {
     ref.read(productFormDataProvider.notifier).initialize(initialData: product.toMap());
@@ -32,80 +31,77 @@ class ProductsTable extends ConsumerWidget {
     final filterIsOn = ref.watch(productFilterSwitchProvider);
     final productsListValue =
         filterIsOn ? ref.read(productFilteredListProvider).getFilteredList() : productStream;
+
     return AsyncValueWidget<List<Map<String, dynamic>>>(
-        value: productsListValue,
-        data: (products) {
-          List<DataRow2> rows = products.map((map) {
-            Product product = Product.fromMap(map);
-            return DataRow2(
-              cells: [
-                DataCell(Row(
-                  children: [
-                    InkWell(
-                      child: const CircleAvatar(
-                        radius: 15,
-                        foregroundImage: CachedNetworkImageProvider(constants.defaultImageUrl),
+      value: productsListValue,
+      data: (products) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              // Header Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 16), // Placeholder for the avatar
+                  Expanded(child: _buildHeader(S.of(context).product_code)),
+                  Expanded(child: _buildHeader(S.of(context).product_name)),
+                  Expanded(child: _buildHeader(S.of(context).product_sell_retail_price)),
+                  Expanded(child: _buildHeader(S.of(context).product_sell_whole_price)),
+                ],
+              ),
+              const Divider(), // Divider to separate header from the list
+              Expanded(
+                child: ListView.builder(
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    Product product = Product.fromMap(products[index]);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            child: const CircleAvatar(
+                              radius: 15,
+                              foregroundImage:
+                                  CachedNetworkImageProvider(constants.defaultImageUrl),
+                            ),
+                            onTap: () => showEditProductForm(context, ref, product),
+                          ),
+                          Expanded(child: _buildDataCell(product.code.toString())),
+                          Expanded(child: _buildDataCell(product.name)),
+                          Expanded(child: _buildDataCell(product.sellRetailPrice.toString())),
+                          Expanded(child: _buildDataCell(product.sellWholePrice.toString())),
+                        ],
                       ),
-                      onTap: () => showEditProductForm(context, ref, product),
-                    ),
-                    const SizedBox(width: 20),
-                    Text(product.code.toString()),
-                  ],
-                )),
-                DataCell(Text(product.name)),
-                DataCell(Text(product.sellRetailPrice.toString())),
-                DataCell(Text(product.sellWholePrice.toString())),
-              ],
-            );
-          }).toList();
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: DataTable2(
-              columnSpacing: 12,
-              horizontalMargin: 12,
-              minWidth: 400,
-              columns: [
-                DataColumn2(
-                  label: Row(
-                    children: [
-                      const SizedBox(width: 50),
-                      ColumnTitleText(S.of(context).product_code),
-                    ],
-                  ),
-                  size: ColumnSize.S,
+                    );
+                  },
                 ),
-                DataColumn2(
-                  label: ColumnTitleText(S.of(context).product_name),
-                  size: ColumnSize.S,
-                ),
-                DataColumn2(
-                  label: ColumnTitleText(S.of(context).product_sell_retail_price),
-                  size: ColumnSize.S,
-                ),
-                DataColumn2(
-                  label: ColumnTitleText(S.of(context).product_sell_whole_price),
-                  size: ColumnSize.S,
-                ),
-              ],
-              rows: rows,
-            ),
-          );
-        });
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
-}
 
-class ColumnTitleText extends StatelessWidget {
-  const ColumnTitleText(this.title, {super.key});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildHeader(String text) {
     return Text(
-      title,
+      text,
+      textAlign: TextAlign.center,
       style: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.bold,
       ),
+    );
+  }
+
+  Widget _buildDataCell(String text) {
+    return Text(
+      text,
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontSize: 16),
     );
   }
 }
