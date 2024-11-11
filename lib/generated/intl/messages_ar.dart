@@ -150,7 +150,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("تنبيه عندما يقل عن"),
         "product_buying_price":
             MessageLookupByLibrary.simpleMessage("سعر الشراء"),
-        "product_category": MessageLookupByLibrary.simpleMessage("التصنيف"),
+        "product_category": MessageLookupByLibrary.simpleMessage("صنف المادة"),
         "product_code": MessageLookupByLibrary.simpleMessage("رمز المادة"),
         "product_initial_quantitiy":
             MessageLookupByLibrary.simpleMessage("العدد الاولي"),
@@ -158,19 +158,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "product_num_items_inside_package":
             MessageLookupByLibrary.simpleMessage("عدد القطع في التعبئة"),
         "product_package_type":
-            MessageLookupByLibrary.simpleMessage("نوع التعبئة"),
+            MessageLookupByLibrary.simpleMessage("نوع العبوة"),
         "product_package_weight":
-            MessageLookupByLibrary.simpleMessage("وزن التعبئة"),
+            MessageLookupByLibrary.simpleMessage("وزن العبوة (بالكيلو)"),
         "product_photos": MessageLookupByLibrary.simpleMessage("الصور"),
         "product_salesman_comission":
-            MessageLookupByLibrary.simpleMessage("عمولة المندوب"),
+            MessageLookupByLibrary.simpleMessage("عمولة المندوب (دينار)"),
         "product_sell_retail_price":
-            MessageLookupByLibrary.simpleMessage("سعر المفرد"),
+            MessageLookupByLibrary.simpleMessage("سعر البيع للمفرد"),
         "product_sell_whole_price":
-            MessageLookupByLibrary.simpleMessage("سعر الجملة"),
+            MessageLookupByLibrary.simpleMessage("سعر البيع للجملة"),
         "product_subcategory":
             MessageLookupByLibrary.simpleMessage("التصنيف الفرعي "),
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
+        "quantity": MessageLookupByLibrary.simpleMessage("العدد"),
         "receipt_amount": MessageLookupByLibrary.simpleMessage("مبلغ الوصل"),
         "receipt_date": MessageLookupByLibrary.simpleMessage("تاريخ الوصل"),
         "receipt_number": MessageLookupByLibrary.simpleMessage("رقم الوصل"),

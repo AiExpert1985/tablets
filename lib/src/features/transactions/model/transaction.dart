@@ -37,6 +37,8 @@ class Transaction implements BaseItem {
   double? subTotalAmount;
   String? salesmanDbRef;
   String? sellingPriceType;
+  double? transactionTotalProfit;
+  double? salesmanTransactionComssion;
 
   double totalAmount;
   Transaction({
@@ -62,6 +64,8 @@ class Transaction implements BaseItem {
     required this.totalAmount, // after discount
     this.salesmanDbRef,
     this.sellingPriceType, // retail or whole, item prices depends on it
+    this.transactionTotalProfit,
+    this.salesmanTransactionComssion,
   });
 
   @override
@@ -89,6 +93,8 @@ class Transaction implements BaseItem {
       'subTotalAmount': subTotalAmount,
       'salesmanDbRef': salesmanDbRef,
       'sellingPriceType': sellingPriceType,
+      'transactionTotalProfit': transactionTotalProfit,
+      'salesmanTransactionComssion': salesmanTransactionComssion,
     };
   }
 
@@ -113,6 +119,8 @@ class Transaction implements BaseItem {
       subTotalAmount: map['subTotalAmount'],
       salesmanDbRef: map['salesmanDbRef'],
       sellingPriceType: map['sellingPriceType'],
+      transactionTotalProfit: map['transactionTotalProfit'],
+      salesmanTransactionComssion: map['salesmanTransactionComssion'],
     );
   }
 

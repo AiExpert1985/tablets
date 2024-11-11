@@ -70,8 +70,8 @@ List<Widget> _buildDataRows(
           _buildDropDownWithSearch(
               formDataNotifier, textEditingNotifier, productRepository, index, nameColumnWidth),
           if (!hidePrice)
-            _buildFormInputField(formDataNotifier, index, priceColumnWidth, itemsKey, itemPriceKey,
-                textEditingNotifier),
+            _buildFormInputField(formDataNotifier, index, priceColumnWidth, itemsKey,
+                itemSellingPriceKey, textEditingNotifier),
 
           _buildFormInputField(formDataNotifier, index, soldQuantityColumnWidth, itemsKey,
               itemSoldQuantityKey, textEditingNotifier),
@@ -94,7 +94,7 @@ Widget _buildAddItemButton(
     onPressed: () {
       formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem);
       textEditingNotifier.updateSubControllers(itemsKey, {
-        itemPriceKey: 0,
+        itemSellingPriceKey: 0,
         itemSoldQuantityKey: 0,
         itemGiftQuantityKey: 0,
         itemTotalAmountKey: 0,
@@ -118,7 +118,7 @@ Widget _buildDeleteItemButton(ItemFormData formDataNotifier,
             formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem, index: 0);
           } else {
             formDataNotifier.removeSubProperties(itemsKey, index);
-            textEditingNotifier.removeSubController(itemsKey, index, itemPriceKey);
+            textEditingNotifier.removeSubController(itemsKey, index, itemSellingPriceKey);
           }
           final totalAmount = _getTotal(formDataNotifier, itemsKey, itemTotalAmountKey);
           final totalWeight = _getTotal(formDataNotifier, itemsKey, itemTotalWeightKey);
@@ -205,12 +205,16 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
         // and triger the on changed function in price field using its controller
         final subProperties = {
           itemNameKey: item['name'],
-          itemPriceKey: _getItemPrice(formDataNotifier, item),
-          itemWeightKey: item['packageWeight']
+          itemDbRefKey: item['dbRef'],
+          itemSellingPriceKey: _getItemPrice(formDataNotifier, item),
+          itemWeightKey: item['packageWeight'],
+          itemBuyingPriceKey: item['buyingPrice'],
+          itemSalesmanComissionKey: item['salesmanComission'],
         };
         formDataNotifier.updateSubProperties(itemsKey, subProperties, index: index);
-        final price = formDataNotifier.getSubProperty(itemsKey, index, itemPriceKey);
-        textEditingNotifier.updateSubControllers(itemsKey, {itemPriceKey: price}, index: index);
+        final price = formDataNotifier.getSubProperty(itemsKey, index, itemSellingPriceKey);
+        textEditingNotifier.updateSubControllers(itemsKey, {itemSellingPriceKey: price},
+            index: index);
       },
     ),
   );
@@ -233,14 +237,14 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
         // this method is executed throught two ways, first when the field is updated by the user
         // and the second is automatic when user selects and item through adjacent product selection dropdown
         formDataNotifier.updateSubProperties(property, {subProperty: value}, index: index);
-        final price = formDataNotifier.getSubProperty(property, index, itemPriceKey);
+        final sellingPrice = formDataNotifier.getSubProperty(property, index, itemSellingPriceKey);
         final weight = formDataNotifier.getSubProperty(property, index, itemWeightKey);
         final soldQuantity = formDataNotifier.getSubProperty(property, index, itemSoldQuantityKey);
-        if (soldQuantity == null || price == null) {
+        if (soldQuantity == null || sellingPrice == null) {
           return;
         }
         final updatedSubProperties = {
-          itemTotalAmountKey: soldQuantity * price,
+          itemTotalAmountKey: soldQuantity * sellingPrice,
           itemTotalWeightKey: soldQuantity * weight
         };
         formDataNotifier.updateSubProperties(property, updatedSubProperties, index: index);
@@ -253,6 +257,34 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
         final updatedProperties = {totalAmountKey: totalAmount, totalWeightKey: itemsTotalWeight};
         formDataNotifier.updateProperties(updatedProperties);
         textEditingNotifier.updateControllers(updatedProperties);
+        // calculate total profit & salesman commision on item
+        final giftQuantity = formDataNotifier.getSubProperty(property, index, itemGiftQuantityKey);
+        if (giftQuantity == null) return;
+        final buyingPrice = formDataNotifier.getSubProperty(property, index, itemBuyingPriceKey);
+        final salesmanComission =
+            formDataNotifier.getSubProperty(property, index, itemSalesmanComissionKey);
+        final salesmanTotalComission = salesmanComission * soldQuantity;
+        final itemTotalProfit = ((sellingPrice - buyingPrice - salesmanComission) * soldQuantity) -
+            (giftQuantity * buyingPrice);
+
+        formDataNotifier.updateSubProperties(
+            property,
+            {
+              itemSalesmanTotalComissionKey: salesmanTotalComission,
+              itemTotalProfitKey: itemTotalProfit
+            },
+            index: index);
+        final transactionTotalProfit =
+            _getTotal(formDataNotifier, property, itemTotalProfitKey) - discount;
+        final salesmanTransactionComssion =
+            _getTotal(formDataNotifier, property, itemSalesmanTotalComissionKey);
+        tempPrint(transactionTotalProfit);
+        formDataNotifier.updateProperties(
+          {
+            transactionTotalProfitKey: transactionTotalProfit,
+            salesmanTransactionComssionKey: salesmanTransactionComssion
+          },
+        );
       },
     ),
     isLast: isLast,

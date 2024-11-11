@@ -166,6 +166,7 @@ class ProductFormFields extends ConsumerWidget {
             ),
             HorizontalGap.l,
             FormInputField(
+              isRequired: false,
               dataType: FieldDataType.text,
               name: 'notes',
               label: S.of(context).notes,

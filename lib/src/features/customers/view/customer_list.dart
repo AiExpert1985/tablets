@@ -49,7 +49,6 @@ void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
   ).whenComplete(imagePicker.close);
 }
 
-@override
 Widget buildCustomerList(BuildContext context, WidgetRef ref) {
   final transactionProvider = ref.read(transactionRepositoryProvider);
   _fetchTransactions(transactionProvider);

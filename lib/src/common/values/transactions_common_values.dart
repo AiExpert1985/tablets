@@ -13,8 +13,14 @@ const String totalAsTextKey = 'totalAsText';
 const String totalWeightKey = 'totalWeight';
 const String totalAmountKey = 'totalAmount';
 const String itemNameKey = 'name';
+const String itemDbRefKey = 'dbRef';
 const String itemWeightKey = 'weight';
-const String itemPriceKey = 'price';
+const String itemSellingPriceKey = 'sellingPrice';
+const String itemBuyingPriceKey = 'buyingPrice';
+const String itemSalesmanComissionKey = 'salesmanComission'; // commision on one item
+const String itemSalesmanTotalComissionKey =
+    'salesmanTotalComission'; // commision on one item quanity sold
+const String itemTotalProfitKey = 'itemTotalProfit';
 const String itemSoldQuantityKey = 'soldQuantity';
 const String itemGiftQuantityKey = 'giftQuantity';
 const String itemTotalAmountKey = 'itemTotalAmount';
@@ -22,10 +28,12 @@ const String itemTotalWeightKey = 'itemTotalWeight';
 const String subTotalAmountKey = 'subTotalAmount';
 const String salesmanDbRefKey = 'salesmanDbRef';
 const String sellingPriceTypeKey = 'sellingPriceType';
+const String transactionTotalProfitKey = 'transactionTotalProfit';
+const String salesmanTransactionComssionKey = 'salesmanTransactionComssion';
 
 Map<String, dynamic> emptyInvoiceItem = {
   nameKey: '',
-  itemPriceKey: 0,
+  itemSellingPriceKey: 0,
   itemWeightKey: 0,
   itemSoldQuantityKey: 0,
   itemGiftQuantityKey: 0,

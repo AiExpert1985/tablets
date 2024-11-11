@@ -70,12 +70,12 @@ class TransactionShowFormUtils {
       TextControllerNotifier textEditingNotifier, ItemFormData formDataNotifier) {
     List items = formDataNotifier.getProperty(itemsKey);
     for (var i = 0; i < items.length; i++) {
-      final price = formDataNotifier.getSubProperty(itemsKey, i, itemPriceKey);
+      final price = formDataNotifier.getSubProperty(itemsKey, i, itemSellingPriceKey);
       final weight = formDataNotifier.getSubProperty(itemsKey, i, itemWeightKey);
       final soldQuantity = formDataNotifier.getSubProperty(itemsKey, i, itemSoldQuantityKey);
       final giftQuantity = formDataNotifier.getSubProperty(itemsKey, i, itemGiftQuantityKey);
       textEditingNotifier.updateSubControllers(itemsKey, {
-        itemPriceKey: price,
+        itemSellingPriceKey: price,
         itemSoldQuantityKey: soldQuantity,
         itemGiftQuantityKey: giftQuantity,
         itemTotalAmountKey: soldQuantity == null || price == null ? 0 : soldQuantity * price,

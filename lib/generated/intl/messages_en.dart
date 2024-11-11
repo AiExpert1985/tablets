@@ -174,6 +174,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "product_subcategory":
             MessageLookupByLibrary.simpleMessage("Product subcategory"),
         "products": MessageLookupByLibrary.simpleMessage("Products"),
+        "quantity": MessageLookupByLibrary.simpleMessage("Quantity"),
         "receipt_amount":
             MessageLookupByLibrary.simpleMessage("Receipt amount"),
         "receipt_date": MessageLookupByLibrary.simpleMessage("Receipt date"),
