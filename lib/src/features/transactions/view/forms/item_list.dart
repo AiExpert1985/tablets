@@ -5,6 +5,7 @@ import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
@@ -204,7 +205,7 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
         // and triger the on changed function in price field using its controller
         final subProperties = {
           itemNameKey: item['name'],
-          itemPriceKey: item['sellWholePrice'],
+          itemPriceKey: _getItemPrice(formDataNotifier, item),
           itemWeightKey: item['packageWeight']
         };
         formDataNotifier.updateSubProperties(itemsKey, subProperties, index: index);
@@ -279,4 +280,28 @@ Widget buildDataCell(width, cell, {height = 45, isTitle = false, isFirst = false
           cell,
         ],
       ));
+}
+
+// item price is not the same for all customers, it depends on selling type to the customer,
+// if customer is not selected yet then default is salewhole type
+double _getItemPrice(ItemFormData formDataNotifier, Map<String, dynamic> item) {
+  final transactionType = formDataNotifier.getProperty(transactionTypeKey);
+  if (transactionType == TransactionType.expenditures.name ||
+      transactionType == TransactionType.gifts.name ||
+      transactionType == TransactionType.customerReceipt.name ||
+      transactionType == TransactionType.vendorReceipt.name) {
+    errorPrint('Wrong form type');
+    return 0;
+  }
+  // for vendor we use buying price
+  if (transactionType == TransactionType.vendorInvoice.name ||
+      transactionType == TransactionType.vendorReturn.name) {
+    return item['buyingPrice'];
+  }
+
+  final customerSellType = formDataNotifier.getProperty(sellingPriceTypeKey);
+  final price = customerSellType == null || customerSellType == SellPriceType.wholesale.name
+      ? item['sellWholePrice']
+      : item['sellRetailPrice'];
+  return price;
 }

@@ -5,6 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/customer_utils.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -134,7 +135,8 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
               nameKey: item['name'],
               nameDbRefKey: item['dbRef'],
               salesmanKey: item['salesman'],
-              salesmanDbRefKey: item['salesmanDbRef']
+              salesmanDbRefKey: item['salesmanDbRef'],
+              sellingPriceTypeKey: item['sellingPriceType']
             };
             formDataNotifier.updateProperties(properties);
             // check wether customer exceeded the debt or time limits
