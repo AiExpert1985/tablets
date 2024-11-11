@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
@@ -144,7 +145,8 @@ class CustomerFormFields extends ConsumerWidget {
             child: Row(
               children: [
                 DropDownListFormField(
-                  initialValue: formDataNotifier.getProperty('sellingPriceType'),
+                  initialValue: translateDbTextToScreenText(
+                      context, formDataNotifier.getProperty('sellingPriceType')),
                   itemList: [
                     S.of(context).selling_price_type_whole,
                     S.of(context).selling_price_type_retail,
@@ -152,7 +154,9 @@ class CustomerFormFields extends ConsumerWidget {
                   label: S.of(context).selling_price_type,
                   name: 'sellingPriceType',
                   onChangedFn: (value) {
-                    formDataNotifier.updateProperties({'sellingPriceType': value});
+                    if (value == null) return;
+                    final sellingPriceType = translateScreenTextToDbText(context, value);
+                    formDataNotifier.updateProperties({'sellingPriceType': sellingPriceType});
                   },
                 ),
                 HorizontalGap.l,

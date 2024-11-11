@@ -44,10 +44,10 @@ class CustomerForm extends ConsumerWidget {
           },
           icon: const SaveIcon(),
         ),
-        IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const CancelIcon(),
-        ),
+        // IconButton(
+        //   onPressed: () => Navigator.of(context).pop(),
+        //   icon: const CancelIcon(),
+        // ),
         Visibility(
           visible: isEditMode,
           child: IconButton(

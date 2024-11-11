@@ -45,16 +45,16 @@ class RegionForm extends ConsumerWidget {
           },
           icon: const SaveIcon(),
         ),
-        IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const CancelIcon(),
-        ),
+        // IconButton(
+        //   onPressed: () => Navigator.of(context).pop(),
+        //   icon: const CancelIcon(),
+        // ),
         Visibility(
           visible: isEditMode,
           child: IconButton(
               onPressed: () async {
-                bool? confiramtion =
-                    await showDeleteConfirmationDialog(context: context, message: formDataNotifier.data['name']);
+                bool? confiramtion = await showDeleteConfirmationDialog(
+                    context: context, message: formDataNotifier.data['name']);
                 if (confiramtion != null) {
                   final updateFormData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();

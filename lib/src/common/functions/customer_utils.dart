@@ -137,7 +137,7 @@ List<List<dynamic>> customerMatching(
     final transactionAmount = transaction.totalAmount * amountSign;
     final newDebt = currentDebt + transactionAmount;
     matchingTransactions.add([
-      translateDbString(context, transactionType),
+      translateDbTextToScreenText(context, transactionType),
       transaction.number,
       transaction.date,
       transactionAmount,

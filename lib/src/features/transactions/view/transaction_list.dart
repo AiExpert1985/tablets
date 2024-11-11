@@ -90,7 +90,8 @@ class TransactionsList extends ConsumerWidget {
       TextControllerNotifier textEditingNotifier,
       List<Map<String, dynamic>> allTransactions,
       StateController<Color> backgroundColorNofifier) {
-    final transactionTypeScreenName = translateDbString(context, transaction.transactionType);
+    final transactionTypeScreenName =
+        translateDbTextToScreenText(context, transaction.transactionType);
 
     return Column(
       children: [

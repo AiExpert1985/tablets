@@ -27,7 +27,7 @@ class SettingsParameters extends ConsumerWidget {
                     Text(S.of(context).transaction_payment_type),
                     HorizontalGap.xl,
                     InkWell(
-                      child: Text(translateDbString(context, settings.paymentType)),
+                      child: Text(translateDbTextToScreenText(context, settings.paymentType)),
                       onTap: () {},
                     )
                   ],
@@ -39,7 +39,7 @@ class SettingsParameters extends ConsumerWidget {
                     Text(S.of(context).transaction_currency),
                     HorizontalGap.l,
                     InkWell(
-                      child: Text(translateDbString(context, settings.currency)),
+                      child: Text(translateDbTextToScreenText(context, settings.currency)),
                       onTap: () {},
                     )
                   ],
@@ -51,8 +51,8 @@ class SettingsParameters extends ConsumerWidget {
                     Text(S.of(context).include_total_as_text),
                     HorizontalGap.l,
                     InkWell(
-                      child: Text(
-                          translateDbString(context, settings.writeTotalAmountAsText.toString())),
+                      child: Text(translateDbTextToScreenText(
+                          context, settings.writeTotalAmountAsText.toString())),
                       onTap: () {},
                     )
                   ],

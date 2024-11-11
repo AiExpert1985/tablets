@@ -51,7 +51,7 @@ class DeleteIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Icon(Icons.delete, color: Colors.blueAccent),
+        const Icon(Icons.delete, color: Colors.red),
         VerticalGap.s,
         Text(S.of(context).delete),
       ],

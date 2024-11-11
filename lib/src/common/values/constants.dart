@@ -14,3 +14,8 @@ enum TransactionType {
   customerInvoice,
   damagedItems
 }
+
+enum SellPriceType {
+  retail,
+  wholesale,
+}

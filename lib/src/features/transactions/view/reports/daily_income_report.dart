@@ -212,7 +212,8 @@ class DailyIncomeReportState extends State<DailyIncomeReport> {
                       final transaction = displayedTransactions[index];
                       final amount = transaction[totalAmountKey];
                       final date = transaction[dateKey].toDate();
-                      final type = translateDbString(context, transaction[transactionTypeKey]);
+                      final type =
+                          translateDbTextToScreenText(context, transaction[transactionTypeKey]);
                       final name = transaction['name']; // Assuming 'name' is the key for the name
                       final salesman = transaction[
                           'salesman']; // Assuming 'salesman' is the key for the salesman

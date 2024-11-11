@@ -99,10 +99,10 @@ class TransactionForm extends ConsumerWidget {
         },
         icon: const SaveIcon(),
       ),
-      IconButton(
-        onPressed: () => Navigator.of(context).pop(),
-        icon: const CancelIcon(),
-      ),
+      // IconButton(
+      //   onPressed: () => Navigator.of(context).pop(),
+      //   icon: const CancelIcon(),
+      // ),
       if (isEditMode)
         IconButton(
           onPressed: () =>
@@ -124,7 +124,7 @@ class TransactionForm extends ConsumerWidget {
 
   Future<void> _onDeletePressed(BuildContext context, ItemFormData formDataNotifier,
       ImageSliderNotifier formImagesNotifier, ItemFormController formController) async {
-    final message = translateDbString(context, formDataNotifier.data['name']);
+    final message = translateDbTextToScreenText(context, formDataNotifier.data['name']);
     final confirmation = await showDeleteConfirmationDialog(context: context, message: message);
     if (confirmation != null) {
       final imageUrls = formImagesNotifier.saveChanges();

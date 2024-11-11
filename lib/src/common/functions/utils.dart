@@ -9,7 +9,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/settings/model/settings.dart';
 import 'package:tablets/src/common/values/constants.dart';
 
-String translateDbString(BuildContext context, String dbName) {
+String translateDbTextToScreenText(BuildContext context, String dbText) {
   final Map<String, String> lookup = {
     TransactionType.expenditures.name: S.of(context).transaction_type_expenditures,
     TransactionType.gifts.name: S.of(context).transaction_type_gifts,
@@ -23,10 +23,35 @@ String translateDbString(BuildContext context, String dbName) {
     Currency.dollar.name: S.of(context).transaction_payment_Dollar,
     PaymentType.credit.name: S.of(context).transaction_payment_credit,
     PaymentType.cash.name: S.of(context).transaction_payment_cash,
+    SellPriceType.retail.name: S.of(context).selling_price_type_retail,
+    SellPriceType.wholesale.name: S.of(context).selling_price_type_whole,
     'true': S.of(context).yes,
     'false': S.of(context).no,
   };
-  return lookup[dbName] ?? dbName;
+  return lookup[dbText] ?? dbText;
+}
+
+String translateScreenTextToDbText(BuildContext context, String screenText) {
+  final Map<String, String> lookup = {
+    S.of(context).transaction_type_expenditures: TransactionType.expenditures.name,
+    S.of(context).transaction_type_gifts: TransactionType.gifts.name,
+    S.of(context).transaction_type_customer_receipt: TransactionType.customerReceipt.name,
+    S.of(context).transaction_type_vendor_receipt: TransactionType.vendorReceipt.name,
+    S.of(context).transaction_type_vender_return: TransactionType.vendorReturn.name,
+    S.of(context).transaction_type_customer_return: TransactionType.customerReturn.name,
+    S.of(context).transaction_type_vender_invoice: TransactionType.vendorInvoice.name,
+    S.of(context).transaction_type_customer_invoice: TransactionType.customerInvoice.name,
+    S.of(context).transaction_payment_Dinar: Currency.dinar.name,
+    S.of(context).transaction_payment_Dollar: Currency.dollar.name,
+    S.of(context).transaction_payment_credit: PaymentType.credit.name,
+    S.of(context).transaction_payment_cash: PaymentType.cash.name,
+    S.of(context).selling_price_type_retail: SellPriceType.retail.name,
+    S.of(context).selling_price_type_whole: SellPriceType.wholesale.name,
+    S.of(context).yes: 'true',
+    S.of(context).no: 'false',
+  };
+
+  return lookup[screenText] ?? screenText;
 }
 
 String generateRandomString({int len = 5}) {

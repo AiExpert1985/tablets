@@ -44,10 +44,10 @@ class SalesmanForm extends ConsumerWidget {
           },
           icon: const ApproveIcon(),
         ),
-        IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const CancelIcon(),
-        ),
+        // IconButton(
+        //   onPressed: () => Navigator.of(context).pop(),
+        //   icon: const CancelIcon(),
+        // ),
         Visibility(
           visible: isEditMode,
           child: IconButton(
