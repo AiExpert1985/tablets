@@ -105,6 +105,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
                 ),
                 Expanded(
                   child: FormBuilderDateTimePicker(
+                    textAlign: TextAlign.center,
                     name: 'start_date',
                     decoration: InputDecoration(
                       labelText: S.of(context).from_date,
@@ -140,6 +141,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
                 ),
                 Expanded(
                   child: FormBuilderDateTimePicker(
+                    textAlign: TextAlign.center,
                     name: 'end_date',
                     decoration: InputDecoration(
                       labelText: S.of(context).to_date,
@@ -261,18 +263,15 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
 
   void _filterOnDate(List<List<dynamic>> dataList, int dateIndex, DateTime? start, DateTime? end) {
     final newList = dataList.where((list) {
-      // Ensure the date is available at the specified index
       if (list.length <= dateIndex) {
-        return false; // Skip this list if it doesn't have a date at the specified index
+        return false;
       }
-      // Parse the date from the specified index
       DateTime date;
       try {
         date = DateTime.parse(list[dateIndex].toString());
       } catch (e) {
-        return false; // Skip this list if the date is not valid
+        return false;
       }
-      // Check if the date is within the specified range
       bool afterStart = start == null || date.isAfter(start) || date.isAtSameMomentAs(start);
       bool beforeEnd = end == null || date.isBefore(end) || date.isAtSameMomentAs(end);
       return afterStart && beforeEnd;
