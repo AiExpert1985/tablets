@@ -226,7 +226,7 @@ Widget _buildDataRow(
               onTap: () {
                 final title = customer.name;
                 showReportDialog(context, 700, 700, matchingColumnTitles, matchingList,
-                    dateIndex: 2, title: title);
+                    dateIndex: 2, title: title, sumIndex: 3);
                 // showDialogListWithDateFilter(
                 //     context, title, 700, 700, matchingColumnTitles, matchingList, 2);
               },
