@@ -166,5 +166,7 @@
     "notes": "Notes",
     "product_buying_price": "Buying price",
     "quantity": "Quantity",
-    "item_available_quantity": "Available quantity"
+    "item_available_quantity": "Available quantity",
+    "product_stock_quantity": "Stock",
+    "product_stock_amount": "Stock amount"
 }

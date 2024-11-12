@@ -59,8 +59,8 @@ Widget buildProductsList(BuildContext context, WidgetRef ref) {
                 Expanded(child: _buildHeader(S.of(context).product_buying_price)),
                 Expanded(child: _buildHeader(S.of(context).product_sell_retail_price)),
                 Expanded(child: _buildHeader(S.of(context).product_sell_whole_price)),
-                Expanded(child: _buildHeader(S.of(context).quantity)),
-                Expanded(child: _buildHeader(S.of(context).amount)),
+                Expanded(child: _buildHeader(S.of(context).product_stock_quantity)),
+                Expanded(child: _buildHeader(S.of(context).product_stock_amount)),
               ],
             ),
             const Divider(), // Divider to separate header from the list
@@ -70,33 +70,40 @@ Widget buildProductsList(BuildContext context, WidgetRef ref) {
                 itemBuilder: (context, index) {
                   Product product = Product.fromMap(products[index]);
                   final productTransactions = getProductTransactions(_allTransactions, product);
-                  final productTotals = getProductTotals(productTransactions);
-                  // final totalQuantity = productTotals[0];
-                  final totalQuantity = getTotalQuantity(_allTransactions, product);
+                  final productTotals = getProductTotals(productTransactions, product);
+                  final totalQuantity = productTotals[0];
                   tempPrint(productTotals);
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        InkWell(
-                          child: const CircleAvatar(
-                            radius: 15,
-                            foregroundImage: CachedNetworkImageProvider(constants.defaultImageUrl),
-                          ),
-                          onTap: () => showEditProductForm(context, ref, product),
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              child: const CircleAvatar(
+                                radius: 15,
+                                foregroundImage:
+                                    CachedNetworkImageProvider(constants.defaultImageUrl),
+                              ),
+                              onTap: () => showEditProductForm(context, ref, product),
+                            ),
+                            Expanded(child: _buildDataCell(product.code.toString())),
+                            Expanded(child: _buildDataCell(product.name)),
+                            Expanded(child: _buildDataCell(product.category)),
+                            Expanded(child: _buildDataCell(product.salesmanCommission.toString())),
+                            Expanded(child: _buildDataCell(product.buyingPrice.toString())),
+                            Expanded(child: _buildDataCell(product.sellRetailPrice.toString())),
+                            Expanded(child: _buildDataCell(product.sellWholePrice.toString())),
+                            Expanded(child: _buildDataCell(totalQuantity.toString())),
+                            Expanded(
+                                child: _buildDataCell(
+                                    (totalQuantity * product.buyingPrice).toString())),
+                          ],
                         ),
-                        Expanded(child: _buildDataCell(product.code.toString())),
-                        Expanded(child: _buildDataCell(product.name)),
-                        Expanded(child: _buildDataCell(product.category)),
-                        Expanded(child: _buildDataCell(product.salesmanCommission.toString())),
-                        Expanded(child: _buildDataCell(product.buyingPrice.toString())),
-                        Expanded(child: _buildDataCell(product.sellRetailPrice.toString())),
-                        Expanded(child: _buildDataCell(product.sellWholePrice.toString())),
-                        Expanded(child: _buildDataCell(totalQuantity.toString())),
-                        Expanded(child: _buildDataCell('')),
-                      ],
-                    ),
+                      ),
+                      const Divider(thickness: 0.3),
+                    ],
                   );
                 },
               ),

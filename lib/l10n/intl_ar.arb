@@ -166,5 +166,7 @@
     "notes": "الملاحظات",
     "product_buying_price": "سعر الشراء",
     "quantity": "العدد",
-    "item_available_quantity": "المخزون"
+    "item_available_quantity": "المخزون",
+    "product_stock_quantity": "المخزون",
+    "product_stock_amount": "قيمة المخزون"
 }

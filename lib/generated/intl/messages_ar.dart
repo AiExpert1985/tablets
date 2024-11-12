@@ -170,6 +170,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("سعر البيع للمفرد"),
         "product_sell_whole_price":
             MessageLookupByLibrary.simpleMessage("سعر البيع للجملة"),
+        "product_stock_amount":
+            MessageLookupByLibrary.simpleMessage("قيمة المخزون"),
+        "product_stock_quantity":
+            MessageLookupByLibrary.simpleMessage("المخزون"),
         "product_subcategory":
             MessageLookupByLibrary.simpleMessage("التصنيف الفرعي "),
         "products": MessageLookupByLibrary.simpleMessage("المواد"),

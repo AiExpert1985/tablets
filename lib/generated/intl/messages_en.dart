@@ -173,6 +173,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Retail price"),
         "product_sell_whole_price":
             MessageLookupByLibrary.simpleMessage("Wholesale price"),
+        "product_stock_amount":
+            MessageLookupByLibrary.simpleMessage("Stock amount"),
+        "product_stock_quantity": MessageLookupByLibrary.simpleMessage("Stock"),
         "product_subcategory":
             MessageLookupByLibrary.simpleMessage("Product subcategory"),
         "products": MessageLookupByLibrary.simpleMessage("Products"),

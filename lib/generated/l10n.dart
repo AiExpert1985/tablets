@@ -1729,6 +1729,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Stock`
+  String get product_stock_quantity {
+    return Intl.message(
+      'Stock',
+      name: 'product_stock_quantity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stock amount`
+  String get product_stock_amount {
+    return Intl.message(
+      'Stock amount',
+      name: 'product_stock_amount',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
