@@ -6,8 +6,9 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
-import 'package:tablets/src/common/widgets/show_dialog_list.dart';
-import 'package:tablets/src/common/widgets/show_dialog_list_with_date_filter.dart';
+import 'package:tablets/src/common/widgets/dialog_list.dart';
+// import 'package:tablets/src/common/widgets/dialog_list_with_date_filter.dart';
+import 'package:tablets/src/common/widgets/dialog_report.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
@@ -224,8 +225,10 @@ Widget _buildDataRow(
               child: _buildDataCell(numberToText(totalDebt), color),
               onTap: () {
                 final title = customer.name;
-                showDialogListWithDateFilter(
-                    context, title, 700, 700, matchingColumnTitles, matchingList, 2);
+                showReportDialog(context, 700, 700, matchingColumnTitles, matchingList,
+                    dateIndex: 2, title: title);
+                // showDialogListWithDateFilter(
+                //     context, title, 700, 700, matchingColumnTitles, matchingList, 2);
               },
             ),
           ),
