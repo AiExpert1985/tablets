@@ -114,6 +114,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("المبلغ النهائي"),
         "invoice_total_weight":
             MessageLookupByLibrary.simpleMessage("الوزن النهائي "),
+        "item_available_quantity":
+            MessageLookupByLibrary.simpleMessage("المخزون"),
         "item_gifts_quantity":
             MessageLookupByLibrary.simpleMessage("عدد الهدايا"),
         "item_name": MessageLookupByLibrary.simpleMessage("اسم المادة"),
@@ -162,7 +164,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "product_package_weight":
             MessageLookupByLibrary.simpleMessage("وزن العبوة (بالكيلو)"),
         "product_photos": MessageLookupByLibrary.simpleMessage("الصور"),
-        "product_salesman_comission":
+        "product_salesman_commission":
             MessageLookupByLibrary.simpleMessage("عمولة المندوب (دينار)"),
         "product_sell_retail_price":
             MessageLookupByLibrary.simpleMessage("سعر البيع للمفرد"),

@@ -209,7 +209,7 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
           itemSellingPriceKey: _getItemPrice(formDataNotifier, item),
           itemWeightKey: item['packageWeight'],
           itemBuyingPriceKey: item['buyingPrice'],
-          itemSalesmanComissionKey: item['salesmanComission'],
+          itemSalesmanCommissionKey: item['salesmanCommission'],
         };
         formDataNotifier.updateSubProperties(itemsKey, subProperties, index: index);
         final price = formDataNotifier.getSubProperty(itemsKey, index, itemSellingPriceKey);
@@ -261,24 +261,24 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
         final giftQuantity = formDataNotifier.getSubProperty(property, index, itemGiftQuantityKey);
         if (giftQuantity == null) return;
         final buyingPrice = formDataNotifier.getSubProperty(property, index, itemBuyingPriceKey);
-        final salesmanComission =
-            formDataNotifier.getSubProperty(property, index, itemSalesmanComissionKey);
-        final salesmanTotalComission = salesmanComission * soldQuantity;
-        final itemTotalProfit = ((sellingPrice - buyingPrice - salesmanComission) * soldQuantity) -
-            (giftQuantity * buyingPrice);
+        final salesmanCommission =
+            formDataNotifier.getSubProperty(property, index, itemSalesmanCommissionKey);
+        final salesmanTotalCommission = salesmanCommission ?? 0 * soldQuantity ?? 0;
+        final itemTotalProfit =
+            ((sellingPrice ?? 0 - buyingPrice ?? 0 - salesmanCommission ?? 0) * soldQuantity ?? 0) -
+                (giftQuantity ?? 0 * buyingPrice ?? 0);
 
         formDataNotifier.updateSubProperties(
             property,
             {
-              itemSalesmanTotalComissionKey: salesmanTotalComission,
+              itemSalesmanTotalCommissionKey: salesmanTotalCommission,
               itemTotalProfitKey: itemTotalProfit
             },
             index: index);
         final transactionTotalProfit =
             _getTotal(formDataNotifier, property, itemTotalProfitKey) - discount;
         final salesmanTransactionComssion =
-            _getTotal(formDataNotifier, property, itemSalesmanTotalComissionKey);
-        tempPrint(transactionTotalProfit);
+            _getTotal(formDataNotifier, property, itemSalesmanTotalCommissionKey);
         formDataNotifier.updateProperties(
           {
             transactionTotalProfitKey: transactionTotalProfit,

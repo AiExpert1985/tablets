@@ -16,7 +16,7 @@ class Product implements BaseItem {
   int numItemsInsidePackage;
   int alertWhenExceeds;
   int altertWhenLessThan;
-  double salesmanComission;
+  double salesmanCommission;
   String category;
   String categoryDbRef;
   int initialQuantity;
@@ -34,7 +34,7 @@ class Product implements BaseItem {
     required this.numItemsInsidePackage,
     required this.alertWhenExceeds,
     required this.altertWhenLessThan,
-    required this.salesmanComission,
+    required this.salesmanCommission,
     required this.imageUrls,
     required this.category,
     required this.categoryDbRef,
@@ -59,7 +59,7 @@ class Product implements BaseItem {
       'numItemsInsidePackage': numItemsInsidePackage,
       'alertWhenExceeds': alertWhenExceeds,
       'altertWhenLessThan': altertWhenLessThan,
-      'salesmanComission': salesmanComission,
+      'salesmanCommission': salesmanCommission,
       'imageUrls': imageUrls,
       'category': category,
       'categoryDbRef': categoryDbRef,
@@ -81,7 +81,7 @@ class Product implements BaseItem {
       numItemsInsidePackage: map['numItemsInsidePackage']?.toInt() ?? 0,
       alertWhenExceeds: map['alertWhenExceeds']?.toInt() ?? 0,
       altertWhenLessThan: map['altertWhenLessThan']?.toInt() ?? 0,
-      salesmanComission: map['salesmanComission']?.toDouble() ?? 0.0,
+      salesmanCommission: map['salesmanCommission']?.toDouble() ?? 0.0,
       imageUrls: List<String>.from(map['imageUrls']),
       category: map['category'] ?? '',
       categoryDbRef: map['categoryDbRef'] ?? '',
@@ -92,6 +92,6 @@ class Product implements BaseItem {
 
   @override
   String toString() {
-    return 'Product(dbRef: $dbRef, code: $code, name: $name, sellRetailPrice: $sellRetailPrice, sellWholePrice: $sellWholePrice, packageType: $packageType, packageWeight: $packageWeight, numItemsInsidePackage: $numItemsInsidePackage, alertWhenExceeds: $alertWhenExceeds, altertWhenLessThan: $altertWhenLessThan, salesmanComission: $salesmanComission, imageUrls: $imageUrls, category: $category, initialQuantity: $initialQuantity)';
+    return 'Product(dbRef: $dbRef, code: $code, name: $name, sellRetailPrice: $sellRetailPrice, sellWholePrice: $sellWholePrice, packageType: $packageType, packageWeight: $packageWeight, numItemsInsidePackage: $numItemsInsidePackage, alertWhenExceeds: $alertWhenExceeds, altertWhenLessThan: $altertWhenLessThan, salesmanCommission: $salesmanCommission, imageUrls: $imageUrls, category: $category, initialQuantity: $initialQuantity)';
   }
 }

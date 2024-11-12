@@ -114,6 +114,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Total price"),
         "invoice_total_weight":
             MessageLookupByLibrary.simpleMessage("Total weight"),
+        "item_available_quantity":
+            MessageLookupByLibrary.simpleMessage("Available quantity"),
         "item_gifts_quantity":
             MessageLookupByLibrary.simpleMessage("Gifts Qtty."),
         "item_name": MessageLookupByLibrary.simpleMessage("Item name"),
@@ -165,7 +167,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Package weight"),
         "product_photos":
             MessageLookupByLibrary.simpleMessage("Product photos"),
-        "product_salesman_comission":
+        "product_salesman_commission":
             MessageLookupByLibrary.simpleMessage("Salesman commision"),
         "product_sell_retail_price":
             MessageLookupByLibrary.simpleMessage("Retail price"),

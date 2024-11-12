@@ -20,6 +20,7 @@ import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
 
+// used for gifts and damages items
 class StatementForm extends ConsumerWidget {
   const StatementForm(this.title, {this.isGift = false, super.key});
 

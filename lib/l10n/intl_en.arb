@@ -42,7 +42,7 @@
     "product_num_items_inside_package": "Number of item in eacch package",
     "product_alert_when_exceeds": "Alert when available more than",
     "product_altert_when_less_than": "Alert when available is less than",
-    "product_salesman_comission": "Salesman commision",
+    "product_salesman_commission": "Salesman commision",
     "product_photos": "Product photos",
     "product_category": "Product category",
     "product_subcategory": "Product subcategory",
@@ -165,5 +165,6 @@
     "to_date": "To date",
     "notes": "Notes",
     "product_buying_price": "Buying price",
-    "quantity": "Quantity"
+    "quantity": "Quantity",
+    "item_available_quantity": "Available quantity"
 }

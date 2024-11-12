@@ -157,11 +157,11 @@ class ProductFormFields extends ConsumerWidget {
           children: [
             FormInputField(
               dataType: FieldDataType.num,
-              name: 'salesmanComission',
-              label: S.of(context).product_salesman_comission,
-              initialValue: formDataNotifier.getProperty('salesmanComission'),
+              name: 'salesmanCommission',
+              label: S.of(context).product_salesman_commission,
+              initialValue: formDataNotifier.getProperty('salesmanCommission'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'salesmanComission': value});
+                formDataNotifier.updateProperties({'salesmanCommission': value});
               },
             ),
             HorizontalGap.l,

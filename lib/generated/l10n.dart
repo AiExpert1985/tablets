@@ -481,10 +481,10 @@ class S {
   }
 
   /// `Salesman commision`
-  String get product_salesman_comission {
+  String get product_salesman_commission {
     return Intl.message(
       'Salesman commision',
-      name: 'product_salesman_comission',
+      name: 'product_salesman_commission',
       desc: '',
       args: [],
     );
@@ -1715,6 +1715,16 @@ class S {
     return Intl.message(
       'Quantity',
       name: 'quantity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available quantity`
+  String get item_available_quantity {
+    return Intl.message(
+      'Available quantity',
+      name: 'item_available_quantity',
       desc: '',
       args: [],
     );

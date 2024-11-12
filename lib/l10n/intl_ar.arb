@@ -42,7 +42,7 @@
     "product_num_items_inside_package": "عدد القطع في التعبئة",
     "product_alert_when_exceeds": " تنبيه عندما يتجاوز",
     "product_altert_when_less_than": "تنبيه عندما يقل عن",
-    "product_salesman_comission": "عمولة المندوب (دينار)",
+    "product_salesman_commission": "عمولة المندوب (دينار)",
     "product_photos": "الصور",
     "product_category": "صنف المادة",
     "product_subcategory": "التصنيف الفرعي ",
@@ -165,5 +165,6 @@
     "to_date": "الى تاريخ",
     "notes": "الملاحظات",
     "product_buying_price": "سعر الشراء",
-    "quantity": "العدد"
+    "quantity": "العدد",
+    "item_available_quantity": "المخزون"
 }

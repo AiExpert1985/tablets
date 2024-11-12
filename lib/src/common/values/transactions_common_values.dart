@@ -17,9 +17,9 @@ const String itemDbRefKey = 'dbRef';
 const String itemWeightKey = 'weight';
 const String itemSellingPriceKey = 'sellingPrice';
 const String itemBuyingPriceKey = 'buyingPrice';
-const String itemSalesmanComissionKey = 'salesmanComission'; // commision on one item
-const String itemSalesmanTotalComissionKey =
-    'salesmanTotalComission'; // commision on one item quanity sold
+const String itemSalesmanCommissionKey = 'salesmanCommission'; // commision on one item
+const String itemSalesmanTotalCommissionKey =
+    'salesmanTotalCommission'; // commision on one item quanity sold
 const String itemTotalProfitKey = 'itemTotalProfit';
 const String itemSoldQuantityKey = 'soldQuantity';
 const String itemGiftQuantityKey = 'giftQuantity';
