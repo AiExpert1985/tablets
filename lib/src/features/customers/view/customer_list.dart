@@ -225,8 +225,16 @@ Widget _buildDataRow(
               child: _buildDataCell(numberToText(totalDebt), color),
               onTap: () {
                 final title = customer.name;
+                final selectionList = [
+                  translateDbTextToScreenText(context, TransactionType.customerInvoice.name)
+                ];
                 showReportDialog(context, 700, 700, matchingColumnTitles, matchingList,
-                    dateIndex: 2, title: title, sumIndex: 3);
+                    dateIndex: 2,
+                    title: title,
+                    sumIndex: 3,
+                    dropdownIndex: 0,
+                    dropdownList: selectionList,
+                    dropdownLabel: S.of(context).transaction_type);
                 // showDialogListWithDateFilter(
                 //     context, title, 700, 700, matchingColumnTitles, matchingList, 2);
               },

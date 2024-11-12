@@ -19,6 +19,7 @@ void showReportDialog(
   int? dateIndex,
   int? dropdownIndex,
   List<String>? dropdownList,
+  String? dropdownLabel,
   int? sumIndex,
 }) {
   showDialog(
@@ -33,6 +34,7 @@ void showReportDialog(
         dateIndex: dateIndex,
         dropdownIndex: dropdownIndex,
         dropdownList: dropdownList,
+        dropdownLabel: dropdownLabel,
         sumIndex: sumIndex,
       );
     },
@@ -48,6 +50,7 @@ class _DateFilterDialog extends StatefulWidget {
   final int? dateIndex;
   final int? dropdownIndex;
   final List<String>? dropdownList;
+  final String? dropdownLabel;
   final int? sumIndex;
 
   const _DateFilterDialog({
@@ -59,6 +62,7 @@ class _DateFilterDialog extends StatefulWidget {
     this.dateIndex,
     this.dropdownIndex,
     this.dropdownList,
+    this.dropdownLabel,
     this.sumIndex,
   });
 
@@ -69,6 +73,7 @@ class _DateFilterDialog extends StatefulWidget {
 class __DateFilterDialogState extends State<_DateFilterDialog> {
   DateTime? startDate;
   DateTime? endDate;
+  String? selectedDropdownValue;
   List<List<dynamic>> filteredList = [];
 
   @override
@@ -93,27 +98,29 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
                   setState(() {
                     startDate = null;
                   });
-                  _filterOnDate(widget.dataList, widget.dateIndex!, startDate, endDate);
+                  _filterData();
                 }),
                 _buildDatePicker('start_date', startDate, S.of(context).from_date, (value) {
                   setState(() {
                     startDate = value;
                   });
-                  _filterOnDate(widget.dataList, widget.dateIndex!, startDate, endDate);
+                  _filterData();
                 }),
-                HorizontalGap.xl,
+                HorizontalGap.l,
                 _buildCancelButton(endDate, () {
                   setState(() {
                     endDate = null;
                   });
-                  _filterOnDate(widget.dataList, widget.dateIndex!, startDate, endDate);
+                  _filterData();
                 }),
                 _buildDatePicker('end_date', endDate, S.of(context).to_date, (value) {
                   setState(() {
                     endDate = value;
                   });
-                  _filterOnDate(widget.dataList, widget.dateIndex!, startDate, endDate);
+                  _filterData();
                 }),
+                HorizontalGap.l,
+                if (widget.dropdownIndex != null && widget.dropdownList != null) _buildDropdown(),
               ],
             ),
           ],
@@ -132,21 +139,58 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     );
   }
 
-  void _filterOnDate(List<List<dynamic>> dataList, int dateIndex, DateTime? start, DateTime? end) {
-    final newList = dataList.where((list) {
-      if (list.length <= dateIndex) return false;
-      DateTime date;
-      try {
-        date = DateTime.parse(list[dateIndex].toString());
-      } catch (e) {
-        return false;
+  void _filterData() {
+    final newList = widget.dataList.where((list) {
+      // Filter by date
+      if (widget.dateIndex != null && list.length > widget.dateIndex!) {
+        DateTime date;
+        try {
+          date = DateTime.parse(list[widget.dateIndex!].toString());
+        } catch (e) {
+          return false;
+        }
+        bool dateInRange =
+            (startDate == null || date.isAfter(startDate!) || date.isAtSameMomentAs(startDate!)) &&
+                (endDate == null || date.isBefore(endDate!) || date.isAtSameMomentAs(endDate!));
+
+        // Filter by dropdown selection if applicable
+        if (widget.dropdownIndex != null && widget.dropdownList != null) {
+          String dropdownValue = list[widget.dropdownIndex!].toString();
+          return dateInRange &&
+              (selectedDropdownValue == null || dropdownValue == selectedDropdownValue);
+        }
+        return dateInRange;
       }
-      return (start == null || date.isAfter(start) || date.isAtSameMomentAs(start)) &&
-          (end == null || date.isBefore(end) || date.isAtSameMomentAs(end));
+      return false;
     }).toList();
+
     setState(() {
       filteredList = newList;
     });
+  }
+
+  Widget _buildDropdown() {
+    return Expanded(
+      child: FormBuilderDropdown(
+        decoration: InputDecoration(
+          labelText: widget.dropdownLabel,
+          border: const OutlineInputBorder(),
+        ),
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedDropdownValue = newValue;
+          });
+          _filterData();
+        },
+        name: 'drop_down_selection',
+        items: widget.dropdownList!.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ),
+    );
   }
 
   Widget _buildDatePicker(

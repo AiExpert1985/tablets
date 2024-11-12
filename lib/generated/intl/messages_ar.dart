@@ -197,6 +197,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("بحث"),
         "search_not_found_in_db": MessageLookupByLibrary.simpleMessage(
             "لم يتم ايجاد المستند في قاعةد البيانات"),
+        "select": MessageLookupByLibrary.simpleMessage("اختيار"),
         "selling_price_type":
             MessageLookupByLibrary.simpleMessage("نوع التعامل"),
         "selling_price_type_retail":

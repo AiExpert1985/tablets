@@ -1749,6 +1749,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Select`
+  String get select {
+    return Intl.message(
+      'Select',
+      name: 'select',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

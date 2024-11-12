@@ -202,6 +202,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "search_not_found_in_db":
             MessageLookupByLibrary.simpleMessage("Not found in database"),
+        "select": MessageLookupByLibrary.simpleMessage("Select"),
         "selling_price_type":
             MessageLookupByLibrary.simpleMessage("Selling price type"),
         "selling_price_type_retail":
