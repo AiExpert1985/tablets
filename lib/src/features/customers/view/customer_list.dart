@@ -226,7 +226,10 @@ Widget _buildDataRow(
               onTap: () {
                 final title = customer.name;
                 final selectionList = [
-                  translateDbTextToScreenText(context, TransactionType.customerInvoice.name)
+                  translateDbTextToScreenText(context, TransactionType.customerInvoice.name),
+                  translateDbTextToScreenText(context, TransactionType.customerReceipt.name),
+                  translateDbTextToScreenText(context, TransactionType.customerReturn.name),
+                  translateDbTextToScreenText(context, TransactionType.gifts.name),
                 ];
                 showReportDialog(context, 700, 700, matchingColumnTitles, matchingList,
                     dateIndex: 2,

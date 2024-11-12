@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
-
-const double dialogHeightFactor = 0.6;
-const double iconSize = 15.0;
 
 void showReportDialog(
   BuildContext context,
@@ -73,7 +71,7 @@ class _DateFilterDialog extends StatefulWidget {
 class __DateFilterDialogState extends State<_DateFilterDialog> {
   DateTime? startDate;
   DateTime? endDate;
-  String? selectedDropdownValue;
+  List<String> selectedDropdownValues = [];
   List<List<dynamic>> filteredList = [];
 
   @override
@@ -119,10 +117,11 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
                   });
                   _filterData();
                 }),
-                HorizontalGap.l,
-                if (widget.dropdownIndex != null && widget.dropdownList != null) _buildDropdown(),
               ],
             ),
+            VerticalGap.l,
+            if (widget.dropdownIndex != null && widget.dropdownList != null)
+              _buildMultiSelectDropdown(),
           ],
         ),
       ),
@@ -157,7 +156,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         if (widget.dropdownIndex != null && widget.dropdownList != null) {
           String dropdownValue = list[widget.dropdownIndex!].toString();
           return dateInRange &&
-              (selectedDropdownValue == null || dropdownValue == selectedDropdownValue);
+              (selectedDropdownValues.isEmpty || selectedDropdownValues.contains(dropdownValue));
         }
         return dateInRange;
       }
@@ -169,27 +168,33 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     });
   }
 
-  Widget _buildDropdown() {
-    return Expanded(
-      child: FormBuilderDropdown(
-        decoration: InputDecoration(
-          labelText: widget.dropdownLabel,
-          border: const OutlineInputBorder(),
-        ),
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedDropdownValue = newValue;
-          });
-          _filterData();
-        },
-        name: 'drop_down_selection',
-        items: widget.dropdownList!.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
+  Widget _buildMultiSelectDropdown() {
+    return MultiSelectDialogField(
+      separateSelectedItems: false,
+      dialogHeight: widget.dropdownList!.length * 60,
+      dialogWidth: 200,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey), // Border color
+        borderRadius: BorderRadius.circular(4.0), // Rounded corners
       ),
+      confirmText: Text(S.of(context).select),
+      cancelText: Text(S.of(context).cancel),
+      items: widget.dropdownList!
+          .map((String value) => MultiSelectItem<String>(value, value))
+          .toList(),
+      title: Text(widget.dropdownLabel ?? ''),
+      buttonText: Text(
+        widget.dropdownLabel ?? '',
+        style: const TextStyle(color: Colors.black26, fontSize: 15),
+      ),
+      onConfirm: (List<String> values) {
+        setState(() {
+          selectedDropdownValues = values;
+        });
+        _filterData();
+      },
+      initialValue: selectedDropdownValues,
+      searchable: true,
     );
   }
 
@@ -200,6 +205,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         textAlign: TextAlign.center,
         name: name,
         decoration: InputDecoration(
+          labelStyle: const TextStyle(color: Colors.black26, fontSize: 15),
           labelText: labelText,
           border: const OutlineInputBorder(),
         ),
@@ -215,7 +221,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     return Visibility(
       visible: date != null,
       child: IconButton(
-        icon: const Icon(Icons.clear, size: iconSize, color: Colors.red),
+        icon: const Icon(Icons.clear, size: 15, color: Colors.red),
         onPressed: onPressed,
       ),
     );
@@ -244,39 +250,29 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       width: widget.width,
-      height: widget.height * dialogHeightFactor,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: filteredList.length,
-              separatorBuilder: (context, index) =>
-                  const Divider(thickness: 0.2, color: Colors.grey),
-              itemBuilder: (context, index) {
-                final data = filteredList[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: data.map((item) {
-                      if (item is DateTime) item = formatDate(item);
-                      return SizedBox(
-                        width: widget.width / widget.titleList.length,
-                        child: Text(
-                          item.toString(),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    }).toList(),
+      height: widget.height * 0.5, // Set a fixed height for the list
+      child: ListView.separated(
+        itemCount: filteredList.length,
+        separatorBuilder: (context, index) => const Divider(thickness: 0.2, color: Colors.grey),
+        itemBuilder: (context, index) {
+          final data = filteredList[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: data.map((item) {
+                if (item is DateTime) item = formatDate(item);
+                return SizedBox(
+                  width: widget.width / widget.titleList.length,
+                  child: Text(
+                    item.toString(),
+                    textAlign: TextAlign.center,
                   ),
                 );
-              },
+              }).toList(),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
