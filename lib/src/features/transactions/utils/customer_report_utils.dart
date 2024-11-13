@@ -20,8 +20,7 @@ void showCustomerMatchingReport(
   );
 }
 
-void showOpenInvoicesReport(
-    BuildContext context, List<List<dynamic>> transactionList, String title) {
+void showInvoicesReport(BuildContext context, List<List<dynamic>> transactionList, String title) {
   final selectionList = _getInvoiceStatusDropList(context);
   showReportDialog(
     context,

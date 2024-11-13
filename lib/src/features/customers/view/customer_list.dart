@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -10,11 +9,11 @@ import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
-import 'package:tablets/src/features/customers/controllers/reports/customer_report_utils.dart';
-import 'package:tablets/src/features/customers/controllers/reports/open_invoices_report.dart';
+import 'package:tablets/src/features/transactions/utils/customer_report_utils.dart';
+import 'package:tablets/src/features/transactions/utils/open_invoices_calculation.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_utils.dart';
+import 'package:tablets/src/features/transactions/utils/customer_screen_utils.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -23,7 +22,14 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
-List<Map<String, dynamic>> _allTransactions = [];
+List<Map<String, dynamic>> _transactionsList = [];
+List<Customer> _customersList = [];
+List<List<Map<String, dynamic>>> _customerTransactionsList = [];
+List<List<List<dynamic>>> _processedInvoicesList = [];
+List<List<List<dynamic>>> _openInvoicesList = [];
+List<double> _totalDebtList = [];
+List<List<List<dynamic>>> _dueInvoicesList = [];
+List<double> _dueDebtList = [];
 
 Widget buildCustomerList(BuildContext context, WidgetRef ref) {
   final transactionProvider = ref.read(transactionRepositoryProvider);
@@ -38,11 +44,12 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
   return AsyncValueWidget<List<Map<String, dynamic>>>(
     value: customerListValue,
     data: (customers) {
+      _processCustomerTransactions(context, customers);
       return Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildHeaderRow(context, customers),
+            _buildHeaderRow(context),
             const Divider(),
             _buildDataRows(context, customers, formDataNotifier, imagePickerNotifier)
           ],
@@ -58,34 +65,9 @@ Widget _buildDataRows(BuildContext context, List<Map<String, dynamic>> customers
     child: ListView.builder(
       itemCount: customers.length,
       itemBuilder: (ctx, index) {
-        final customer = Customer.fromMap(customers[index]);
-        final customerTransactions = getCustomerTransactions(_allTransactions, customer.dbRef);
-        final totalDebt = getTotalDebt(customerTransactions, customer);
-        // final openInvoices =
-        //     getOpenInvoices(context, customerTransactions, totalDebt, useScreenName: true);
-        // if customer has initial credit, we need to take that into account by creating fake
-        // transaction that is only used for calculating open transactions
-        if (customer.initialCredit > 0) {
-          customerTransactions.add(Transaction(
-            dbRef: 'na',
-            name: customer.name,
-            imageUrls: ['na'],
-            number: 1111111111,
-            date: customer.initialDate,
-            currency: 'na',
-            transactionType: 'initialCredit',
-            totalAmount: customer.initialCredit,
-          ).toMap());
-        }
-        final openInvoices = getCustomerInvoicesStatus(context, customerTransactions, customer);
-        final dueInvoices = getDueInvoices(openInvoices, customer.paymentDurationLimit);
-        final dueDebt = getDueDebt(dueInvoices, 4);
-        Color statusColor = _getStatusColor(dueInvoices.length, totalDebt, customer);
-        final matchingList = customerMatching(customerTransactions, customer, ctx);
         return Column(
           children: [
-            _buildDataRow(customer, ctx, imagePickerNotifier, formDataNotifier, totalDebt,
-                openInvoices, dueInvoices, dueDebt, statusColor, matchingList),
+            _buildDataRow(ctx, index, imagePickerNotifier, formDataNotifier),
             const Divider(thickness: 0.2, color: Colors.grey)
           ],
         );
@@ -94,31 +76,18 @@ Widget _buildDataRows(BuildContext context, List<Map<String, dynamic>> customers
   );
 }
 
-Widget _buildHeaderRow(BuildContext context, List<Map<String, dynamic>> customers) {
-  // I tried to avoid recalculating below values (because they are already calculated during
-  // building data rows) but I couldn't because this widget is built before the data row widgets
-  // I tried to used StatefullWidget to benefit from setState() but it wasn't either useful
-  // because you can't update state variables during widget build (you can't call setState inside
-  // build method unless there is a button pressed, which we don't have in our case)
-  // TODO in future I will try to find a way to remove this code duplication
-  double totalDebtSum = 0;
-  int totalOpenInvoices = 0;
-  int totalDueInvoices = 0;
-  double totalDueDebtSum = 0;
+Widget _buildHeaderRow(BuildContext context) {
+  int totalOpenInvoices = _openInvoicesList
+      .expand((innerList) => innerList) // Flatten the second level
+      .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
+      .length;
+  int totalDueInvoices = _dueInvoicesList
+      .expand((innerList) => innerList) // Flatten the second level
+      .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
+      .length;
+  double totalDebtSum = _totalDebtList.reduce((a, b) => a + b);
+  double totalDueDebtSum = _dueDebtList.reduce((a, b) => a + b);
 
-  for (var customerData in customers) {
-    final customer = Customer.fromMap(customerData);
-    final customerTransactions = getCustomerTransactions(_allTransactions, customer.dbRef);
-    final totalDebt = getTotalDebt(customerTransactions, customer);
-    final openInvoices = getOpenInvoices(context, customerTransactions, totalDebt);
-    final dueInvoices = getDueInvoices(openInvoices, customer.paymentDurationLimit);
-    final dueDebt = getDueDebt(dueInvoices, 4);
-
-    totalDebtSum += totalDebt;
-    totalOpenInvoices += openInvoices.length;
-    totalDueInvoices += dueInvoices.length;
-    totalDueDebtSum += dueDebt;
-  }
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Column(
@@ -131,8 +100,9 @@ Widget _buildHeaderRow(BuildContext context, List<Map<String, dynamic>> customer
             Expanded(child: _buildHeader(S.of(context).salesman_selection)),
             Expanded(child: _buildHeader(S.of(context).current_debt)),
             Expanded(child: _buildHeader(S.of(context).num_open_invoice)),
-            Expanded(child: _buildHeader(S.of(context).num_due_invoices)),
             Expanded(child: _buildHeader(S.of(context).due_debt_amount)),
+            Expanded(child: _buildHeader(S.of(context).average_invoice_closing_duration)),
+            Expanded(child: _buildHeader(S.of(context).customer_invoice_profit)),
           ],
         ),
         VerticalGap.m,
@@ -145,9 +115,10 @@ Widget _buildHeaderRow(BuildContext context, List<Map<String, dynamic>> customer
               const Expanded(child: SizedBox()), // Placeholder for the second column
               const Expanded(child: SizedBox()), // Placeholder for the third column
               Expanded(child: _buildHeader('(${numberToText(totalDebtSum)})')),
-              Expanded(child: _buildHeader('($totalOpenInvoices)')),
-              Expanded(child: _buildHeader('($totalDueInvoices)')),
+              Expanded(child: _buildHeader('$totalOpenInvoices ($totalDueInvoices)')),
               Expanded(child: _buildHeader('(${numberToText(totalDueDebtSum)})')),
+              const Expanded(child: SizedBox()), // Placeholder for the third column
+              const Expanded(child: SizedBox()), // Placeholder for the third column
             ],
           ),
         ),
@@ -157,17 +128,22 @@ Widget _buildHeaderRow(BuildContext context, List<Map<String, dynamic>> customer
 }
 
 Widget _buildDataRow(
-  Customer customer,
   BuildContext context,
+  int index,
   ImageSliderNotifier imagePickerNotifier,
   ItemFormData formDataNotifier,
-  double totalDebt,
-  List<List<dynamic>> openInvoices,
-  List<List<dynamic>> dueInvoices,
-  double dueDebt,
-  Color color,
-  List<List<dynamic>> matchingList,
 ) {
+  final customer = _customersList[index];
+  final customerTransactions = _customerTransactionsList[index];
+  final processedInvoices = _processedInvoicesList[index];
+  final numOpenInvoices = _openInvoicesList[index].length;
+  final dueInvoices = _dueInvoicesList[index];
+  final numDueInvoices = dueInvoices.length;
+  final totalDebt = _totalDebtList[index];
+  final dueDebt = _dueDebtList[index];
+  final matchingList = customerMatching(customerTransactions, customer, context);
+  bool isValidCustomer = _isValidCustomer(dueDebt, totalDebt, customer);
+  Color color = isValidCustomer ? Colors.black87 : Colors.red;
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 6.0),
     child: Column(
@@ -195,19 +171,20 @@ Widget _buildDataRow(
             ),
             Expanded(
               child: InkWell(
-                child: _buildDataCell(numberToText(openInvoices.length), color),
-                onTap: () => showOpenInvoicesReport(
-                    context, openInvoices, '${customer.name}  ( ${openInvoices.length} )'),
+                child: _buildDataCell('$numOpenInvoices ($numDueInvoices)', color),
+                onTap: () => showInvoicesReport(context, processedInvoices,
+                    '${customer.name}  ( ${processedInvoices.length} )'),
               ),
             ),
             Expanded(
               child: InkWell(
-                child: _buildDataCell(numberToText(dueInvoices.length), color),
-                onTap: () => showDueInvoicesReport(
-                    context, dueInvoices, '${customer.name}  ( ${dueInvoices.length} )'),
+                child: _buildDataCell(numberToText(dueDebt), color),
+                onTap: () => showInvoicesReport(
+                    context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
               ),
             ),
-            Expanded(child: _buildDataCell(numberToText(dueDebt), color)),
+            Expanded(child: _buildDataCell('TODO', color)),
+            Expanded(child: _buildDataCell('TODO', color)),
           ],
         ),
       ],
@@ -235,17 +212,13 @@ Widget _buildHeader(String text) {
 }
 
 Future<void> _fetchTransactions(DbRepository transactionProvider) async {
-  _allTransactions = await transactionProvider.fetchItemListAsMaps();
+  _transactionsList = await transactionProvider.fetchItemListAsMaps();
 }
 
-Color _getStatusColor(int numDueInvoice, double totalDebt, Customer customer) {
-  if (totalDebt >= customer.creditLimit || numDueInvoice > 0) {
-    return Colors.red;
-  }
-  if (totalDebt >= customer.creditLimit * debtAmountWarning) {
-    return Colors.orange;
-  }
-  return Colors.black87;
+// we stop transactions if customer either exceeded limit of debt, or has dueDebt
+// which is transactions that are not closed within allowed time (for example 20 days)
+bool _isValidCustomer(double dueDebt, double totalDebt, Customer customer) {
+  return totalDebt < customer.creditLimit || dueDebt < 0;
 }
 
 void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
@@ -258,4 +231,40 @@ void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
       isEditMode: true,
     ),
   ).whenComplete(imagePicker.close);
+}
+
+void _processCustomerTransactions(BuildContext context, List<Map<String, dynamic>> customers) {
+  for (var customerData in customers) {
+    final customer = Customer.fromMap(customerData);
+    _customersList.add(customer);
+    final customerTransactions = getCustomerTransactions(_transactionsList, customer.dbRef);
+    _customerTransactionsList.add(customerTransactions);
+    // if customer has initial credit, it should be added to the tansactions, so, we add
+    // it here and give it transaction type 'initialCredit'
+    if (customer.initialCredit > 0) {
+      customerTransactions.add(Transaction(
+        dbRef: 'na',
+        name: customer.name,
+        imageUrls: ['na'],
+        number: 1000001,
+        date: customer.initialDate,
+        currency: 'na',
+        transactionType: TransactionType.initialCredit.name,
+        totalAmount: customer.initialCredit,
+      ).toMap());
+    }
+    final processedInvoices = getCustomerInvoicesStatus(context, customerTransactions, customer);
+    _processedInvoicesList.add(processedInvoices);
+    final openInvoices = getOpenInvoices(context, processedInvoices);
+    _openInvoicesList.add(openInvoices);
+
+    final totalDebt = getTotalDebt(openInvoices);
+    _totalDebtList.add(totalDebt);
+    final dueInvoices = getDueInvoices(context, openInvoices);
+
+    _dueInvoicesList.add(dueInvoices);
+
+    final dueDebt = getDueDebt(dueInvoices);
+    _dueDebtList.add(dueDebt);
+  }
 }

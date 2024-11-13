@@ -4,13 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_utils.dart';
+import 'package:tablets/src/features/transactions/model/transaction.dart' as transaction;
+import 'package:tablets/src/features/transactions/utils/customer_screen_utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/values/settings.dart' as settings;
-import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/gaps.dart';
@@ -23,6 +23,7 @@ import 'package:tablets/src/features/products/repository/product_repository_prov
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
+import 'package:tablets/src/features/transactions/utils/open_invoices_calculation.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
@@ -50,22 +51,32 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
   Customer? customer;
 
   // returns a color based on customer current debt
-  Color customerExceedsDebtLimit(Customer selectedCustomer, ItemFormData formDataNotifier) {
+  bool isValidCustomer(Customer selectedCustomer, ItemFormData formDataNotifier) {
     final customerTransactions =
         getCustomerTransactions(widget.allTransactions!, selectedCustomer.dbRef);
-    final totalDebt = getTotalDebt(customerTransactions, selectedCustomer);
+    // if customer has initial credit, it should be added to the tansactions, so, we add
+    // it here and give it transaction type 'initialCredit'
+    if (selectedCustomer.initialCredit > 0) {
+      customerTransactions.add(transaction.Transaction(
+        dbRef: 'na',
+        name: selectedCustomer.name,
+        imageUrls: ['na'],
+        number: 1000001,
+        date: selectedCustomer.initialDate,
+        currency: 'na',
+        transactionType: TransactionType.initialCredit.name,
+        totalAmount: selectedCustomer.initialCredit,
+      ).toMap());
+    }
+    final processedInvoices =
+        getCustomerInvoicesStatus(context, customerTransactions, selectedCustomer);
+    final openInvoices = getOpenInvoices(context, processedInvoices);
+    final totalDebt = getTotalDebt(openInvoices);
+    final dueInvoices = getDueInvoices(context, openInvoices);
+    final dueDebt = getDueDebt(dueInvoices);
     final creditLimit = selectedCustomer.creditLimit;
-    if (totalDebt >= creditLimit) {}
     final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
-    final openInvoices = getOpenInvoices(context, customerTransactions, totalDebt);
-    final dueInvoices = getDueInvoices(openInvoices, selectedCustomer.paymentDurationLimit);
-    if (totalAfterCurrentTransaction > creditLimit || dueInvoices.isNotEmpty) {
-      return const Color.fromARGB(255, 229, 177, 177);
-    }
-    if (totalAfterCurrentTransaction > creditLimit * debtAmountWarning) {
-      return const Color.fromARGB(255, 243, 237, 187);
-    }
-    return Colors.white;
+    return totalAfterCurrentTransaction < creditLimit && dueDebt <= 0;
   }
 
   @override
@@ -141,7 +152,9 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
               return;
             }
             customer = Customer.fromMap(item);
-            final invoiceColor = customerExceedsDebtLimit(customer!, formDataNotifier);
+            final validCustomer = isValidCustomer(customer!, formDataNotifier);
+            final invoiceColor =
+                validCustomer ? Colors.white : const Color.fromARGB(255, 245, 187, 184);
             backgroundColorNotifier.state = invoiceColor;
           },
         ),
@@ -294,7 +307,9 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
                     widget.transactionType != TransactionType.customerInvoice.name) {
                   return;
                 }
-                final invoiceColor = customerExceedsDebtLimit(customer!, formDataNotifier);
+                final validCustomer = isValidCustomer(customer!, formDataNotifier);
+                final invoiceColor =
+                    validCustomer ? Colors.white : const Color.fromARGB(255, 248, 177, 177);
                 backgroundColorNotifier.state = invoiceColor;
               },
             ),

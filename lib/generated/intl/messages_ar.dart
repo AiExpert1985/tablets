@@ -33,6 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("هل ترغب بحذف"),
         "amount": MessageLookupByLibrary.simpleMessage("المبلغ"),
         "approve": MessageLookupByLibrary.simpleMessage("موافق"),
+        "average_invoice_closing_duration":
+            MessageLookupByLibrary.simpleMessage("معدل الاغلاق (ايام)"),
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),
@@ -45,6 +47,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "credit_limit": MessageLookupByLibrary.simpleMessage("اقصى حد للدين"),
         "current_debt": MessageLookupByLibrary.simpleMessage("الدين الكلي"),
         "customer": MessageLookupByLibrary.simpleMessage("الزبون"),
+        "customer_invoice_profit":
+            MessageLookupByLibrary.simpleMessage("ارباح الزبون"),
         "customer_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "customers": MessageLookupByLibrary.simpleMessage("الزبائن"),
         "daily_income": MessageLookupByLibrary.simpleMessage("الوارد اليومي"),

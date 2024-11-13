@@ -32,6 +32,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Do you want to delete"),
         "amount": MessageLookupByLibrary.simpleMessage("Amount"),
         "approve": MessageLookupByLibrary.simpleMessage("Yes"),
+        "average_invoice_closing_duration":
+            MessageLookupByLibrary.simpleMessage(
+                "Average invoice closing duration"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "categories": MessageLookupByLibrary.simpleMessage("Categories"),
         "category": MessageLookupByLibrary.simpleMessage("Category"),
@@ -44,6 +47,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "credit_limit": MessageLookupByLibrary.simpleMessage("Credit limit"),
         "current_debt": MessageLookupByLibrary.simpleMessage("Current debt"),
         "customer": MessageLookupByLibrary.simpleMessage("Customer"),
+        "customer_invoice_profit": MessageLookupByLibrary.simpleMessage(
+            "Customer profit from invoices"),
         "customer_name": MessageLookupByLibrary.simpleMessage("Name"),
         "customers": MessageLookupByLibrary.simpleMessage("Customers"),
         "daily_income": MessageLookupByLibrary.simpleMessage("Daily income"),

@@ -1849,6 +1849,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Average invoice closing duration`
+  String get average_invoice_closing_duration {
+    return Intl.message(
+      'Average invoice closing duration',
+      name: 'average_invoice_closing_duration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Customer profit from invoices`
+  String get customer_invoice_profit {
+    return Intl.message(
+      'Customer profit from invoices',
+      name: 'customer_invoice_profit',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

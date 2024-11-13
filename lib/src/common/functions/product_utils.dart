@@ -1,6 +1,5 @@
 // create a list of lists, where each resulting list contains transaction info
 // [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 

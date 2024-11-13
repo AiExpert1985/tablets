@@ -178,5 +178,7 @@
     "invoice_close_duration": "المدة (يوم)",
     "invoice_status_open": "مفتوح",
     "invoice_status_closed": "مغلق",
-    "invoice_status_due": "مستحق"
+    "invoice_status_due": "مستحق",
+    "average_invoice_closing_duration": "معدل الاغلاق (ايام)",
+    "customer_invoice_profit": "ارباح الزبون"
 }
