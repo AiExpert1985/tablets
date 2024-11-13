@@ -110,6 +110,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("يجب تحديد صلاحيات المستخدم"),
         "internal_transaction":
             MessageLookupByLibrary.simpleMessage("تعاملات داخلية"),
+        "invoice_close_duration":
+            MessageLookupByLibrary.simpleMessage("المدة (يوم)"),
+        "invoice_status": MessageLookupByLibrary.simpleMessage("الحالة"),
+        "invoice_status_closed": MessageLookupByLibrary.simpleMessage("مغلق"),
+        "invoice_status_due": MessageLookupByLibrary.simpleMessage("مستحق"),
+        "invoice_status_open": MessageLookupByLibrary.simpleMessage("مفتوح"),
         "invoice_total_price":
             MessageLookupByLibrary.simpleMessage("المبلغ النهائي"),
         "invoice_total_weight":
@@ -137,8 +143,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "number": MessageLookupByLibrary.simpleMessage("الرقم"),
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
-        "paid_amount": MessageLookupByLibrary.simpleMessage("المبلغ المسدد"),
+        "paid_amount":
+            MessageLookupByLibrary.simpleMessage("المبلغ المسدد من القائمة"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
+        "payment": MessageLookupByLibrary.simpleMessage("التسديد"),
         "payment_duration_limit":
             MessageLookupByLibrary.simpleMessage("اقصى مدة للسداد"),
         "pending_transactions":
@@ -178,13 +186,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("التصنيف الفرعي "),
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
         "quantity": MessageLookupByLibrary.simpleMessage("العدد"),
-        "receipt_amount": MessageLookupByLibrary.simpleMessage("مبلغ الوصل"),
-        "receipt_date": MessageLookupByLibrary.simpleMessage("تاريخ الوصل"),
-        "receipt_number": MessageLookupByLibrary.simpleMessage("رقم الوصل"),
+        "receipt_amount": MessageLookupByLibrary.simpleMessage("مبلغ التسديد"),
+        "receipt_date": MessageLookupByLibrary.simpleMessage("تاريخ التسديد"),
+        "receipt_number": MessageLookupByLibrary.simpleMessage("رقم التسديد"),
+        "receipt_type": MessageLookupByLibrary.simpleMessage("نوع التسديد"),
         "region_name": MessageLookupByLibrary.simpleMessage("اسم المنطقة"),
         "regions": MessageLookupByLibrary.simpleMessage("المناطق"),
         "remaining_amount":
-            MessageLookupByLibrary.simpleMessage("المبلغ المتبقي"),
+            MessageLookupByLibrary.simpleMessage("المتبقى من القائمة"),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "salesman_selection": MessageLookupByLibrary.simpleMessage("المندوب"),
@@ -272,6 +281,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_type_expenditures":
             MessageLookupByLibrary.simpleMessage("مصاريف"),
         "transaction_type_gifts": MessageLookupByLibrary.simpleMessage("هدية"),
+        "transaction_type_initial_credit":
+            MessageLookupByLibrary.simpleMessage("رصيد اولي"),
         "transaction_type_vender_invoice":
             MessageLookupByLibrary.simpleMessage("قائمة مجهز"),
         "transaction_type_vender_return":

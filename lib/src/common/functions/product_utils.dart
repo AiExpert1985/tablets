@@ -54,6 +54,5 @@ List<dynamic> getProductTotals(List<List<dynamic>> productTransactions, Product 
     totalProfit += transaction[5]; // totalProfit
     totalSalesmanCommission += transaction[6]; // totalSalesmanCommission
   }
-  tempPrint([totalQuantity, totalProfit, totalSalesmanCommission]);
   return [totalQuantity, totalProfit, totalSalesmanCommission];
 }

@@ -72,7 +72,6 @@ Widget buildProductsList(BuildContext context, WidgetRef ref) {
                   final productTransactions = getProductTransactions(_allTransactions, product);
                   final productTotals = getProductTotals(productTransactions, product);
                   final totalQuantity = productTotals[0];
-                  tempPrint(productTotals);
                   return Column(
                     children: [
                       Padding(

@@ -108,6 +108,7 @@
     "transaction_type_vender_invoice": "Vender Invoice",
     "transaction_type_customer_invoice": "Customer Invoice",
     "transaction_type_damaged_items": "Damaged Items",
+    "transaction_type_initial_credit": "Initial credit Items",
     "salesman_name": "Name",
     "category_name": "Name",
     "salesmen": "Salesmen",
@@ -154,6 +155,7 @@
     "receipt_number": "Receipt number",
     "receipt_date": "Receipt date",
     "receipt_amount": "Receipt amount",
+    "receipt_type": "ٌReceipt type",
     "due_debt_amount": "Due debt",
     "num_due_invoices": "Due invoices",
     "previous_debt": "Previous debt",
@@ -170,5 +172,11 @@
     "product_stock_quantity": "Stock",
     "product_stock_amount": "Stock amount",
     "select": "Select",
-    "total": "Total"
+    "total": "Total",
+    "payment": "Payment",
+    "invoice_status": "Invoice status",
+    "invoice_close_duration": "Invoice closing duration",
+    "invoice_status_open": "Open",
+    "invoice_status_closed": "Closed",
+    "invoice_status_due": "Due"
 }

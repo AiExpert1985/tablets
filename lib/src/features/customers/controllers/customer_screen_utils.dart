@@ -7,7 +7,7 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart' as trans;
 import 'package:tablets/src/features/customers/model/customer.dart';
 
-import '../../features/transactions/model/transaction.dart';
+import '../../transactions/model/transaction.dart';
 
 List<Map<String, dynamic>> getCustomerTransactions(
     List<Map<String, dynamic>> transactions, String dbRef) {
@@ -48,10 +48,14 @@ double getTotalDebt(List<Map<String, dynamic>> transactions, Customer customer) 
 
 // open invoices are invoices that are not payed completely by customer
 // transactions must be order based on date in descending order
-List<List<dynamic>> getOpenInvoices(List<Map<String, dynamic>> transactions, double totalDebt) {
+List<List<dynamic>> getOpenInvoices(
+    BuildContext context, List<Map<String, dynamic>> transactions, double totalDebt,
+    {bool useScreenName = false}) {
   if (totalDebt <= 0) return [];
   Map<String, dynamic> lastReceipt = transactions.firstWhere(
-    (item) => item[trans.transactionTypeKey] == TransactionType.customerReceipt.name,
+    (item) =>
+        item[trans.transactionTypeKey] == TransactionType.customerReceipt.name ||
+        item[trans.transactionTypeKey] == TransactionType.customerReturn.name,
     orElse: () => {}, // protection against the case where there is no receipt
   );
   // below we add protection against the case where lastReceipt = {}
@@ -59,6 +63,7 @@ List<List<dynamic>> getOpenInvoices(List<Map<String, dynamic>> transactions, dou
       lastReceipt[trans.dateKey] != null ? formatDate(lastReceipt[trans.dateKey].toDate()) : '';
   dynamic lastReceiptnumber = lastReceipt[trans.numberKey] ?? '';
   dynamic lastReceiptAmount = lastReceipt[trans.totalAmountKey] ?? '';
+  dynamic lastReceiptType = lastReceipt[trans.transactionTypeKey] ?? '';
   List<Map<String, dynamic>> invoices = transactions
       .where((item) => item[trans.transactionTypeKey] == TransactionType.customerInvoice.name)
       .toList();
@@ -68,21 +73,24 @@ List<List<dynamic>> getOpenInvoices(List<Map<String, dynamic>> transactions, dou
     double invoiceNumber = invoice[trans.numberKey];
     DateTime invoiceDate = invoice[trans.dateKey].toDate();
     double invoiceAmount = invoice[trans.totalAmountKey];
+    String invoiceType =
+        useScreenName ? translateDbTextToScreenText(context, lastReceiptType) : lastReceiptType;
     remainingDebt -= invoiceAmount;
     if (remainingDebt <= 0) {
       openInvoices.add([
         invoiceNumber,
         invoiceDate,
         invoiceAmount,
-        remainingDebt.abs(),
-        invoiceAmount + remainingDebt,
+        invoiceType,
         lastRecriptDate,
         lastReceiptnumber,
-        lastReceiptAmount
+        lastReceiptAmount,
+        remainingDebt.abs(),
+        invoiceAmount + remainingDebt,
       ]);
       break;
     }
-    openInvoices.add([invoiceNumber, invoiceDate, invoiceAmount, 0, invoiceAmount, '', '']);
+    openInvoices.add([invoiceNumber, invoiceDate, invoiceAmount, '', '', '', '', 0, invoiceAmount]);
   }
   return openInvoices;
 }

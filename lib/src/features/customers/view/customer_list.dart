@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -9,15 +10,17 @@ import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
-import 'package:tablets/src/features/customers/controllers/customer_report_utils.dart';
+import 'package:tablets/src/features/customers/controllers/reports/customer_report_utils.dart';
+import 'package:tablets/src/features/customers/controllers/reports/open_invoices_report.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/common/functions/customer_utils.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_utils.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
 List<Map<String, dynamic>> _allTransactions = [];
@@ -41,7 +44,7 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
           children: [
             _buildHeaderRow(context, customers),
             const Divider(),
-            _buildDataRows(customers, formDataNotifier, imagePickerNotifier)
+            _buildDataRows(context, customers, formDataNotifier, imagePickerNotifier)
           ],
         ),
       );
@@ -49,8 +52,8 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
   );
 }
 
-Widget _buildDataRows(List<Map<String, dynamic>> customers, ItemFormData formDataNotifier,
-    ImageSliderNotifier imagePickerNotifier) {
+Widget _buildDataRows(BuildContext context, List<Map<String, dynamic>> customers,
+    ItemFormData formDataNotifier, ImageSliderNotifier imagePickerNotifier) {
   return Expanded(
     child: ListView.builder(
       itemCount: customers.length,
@@ -58,7 +61,23 @@ Widget _buildDataRows(List<Map<String, dynamic>> customers, ItemFormData formDat
         final customer = Customer.fromMap(customers[index]);
         final customerTransactions = getCustomerTransactions(_allTransactions, customer.dbRef);
         final totalDebt = getTotalDebt(customerTransactions, customer);
-        final openInvoices = getOpenInvoices(customerTransactions, totalDebt);
+        // final openInvoices =
+        //     getOpenInvoices(context, customerTransactions, totalDebt, useScreenName: true);
+        // if customer has initial credit, we need to take that into account by creating fake
+        // transaction that is only used for calculating open transactions
+        if (customer.initialCredit > 0) {
+          customerTransactions.add(Transaction(
+            dbRef: 'na',
+            name: customer.name,
+            imageUrls: ['na'],
+            number: 1111111111,
+            date: customer.initialDate,
+            currency: 'na',
+            transactionType: 'initialCredit',
+            totalAmount: customer.initialCredit,
+          ).toMap());
+        }
+        final openInvoices = getCustomerInvoicesStatus(context, customerTransactions, customer);
         final dueInvoices = getDueInvoices(openInvoices, customer.paymentDurationLimit);
         final dueDebt = getDueDebt(dueInvoices, 4);
         Color statusColor = _getStatusColor(dueInvoices.length, totalDebt, customer);
@@ -76,7 +95,12 @@ Widget _buildDataRows(List<Map<String, dynamic>> customers, ItemFormData formDat
 }
 
 Widget _buildHeaderRow(BuildContext context, List<Map<String, dynamic>> customers) {
-  // Calculate totals for the columns
+  // I tried to avoid recalculating below values (because they are already calculated during
+  // building data rows) but I couldn't because this widget is built before the data row widgets
+  // I tried to used StatefullWidget to benefit from setState() but it wasn't either useful
+  // because you can't update state variables during widget build (you can't call setState inside
+  // build method unless there is a button pressed, which we don't have in our case)
+  // TODO in future I will try to find a way to remove this code duplication
   double totalDebtSum = 0;
   int totalOpenInvoices = 0;
   int totalDueInvoices = 0;
@@ -86,7 +110,7 @@ Widget _buildHeaderRow(BuildContext context, List<Map<String, dynamic>> customer
     final customer = Customer.fromMap(customerData);
     final customerTransactions = getCustomerTransactions(_allTransactions, customer.dbRef);
     final totalDebt = getTotalDebt(customerTransactions, customer);
-    final openInvoices = getOpenInvoices(customerTransactions, totalDebt);
+    final openInvoices = getOpenInvoices(context, customerTransactions, totalDebt);
     final dueInvoices = getDueInvoices(openInvoices, customer.paymentDurationLimit);
     final dueDebt = getDueDebt(dueInvoices, 4);
 

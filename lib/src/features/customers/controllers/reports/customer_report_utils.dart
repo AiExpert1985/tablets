@@ -22,12 +22,17 @@ void showCustomerMatchingReport(
 
 void showOpenInvoicesReport(
     BuildContext context, List<List<dynamic>> transactionList, String title) {
+  final selectionList = _getInvoiceStatusDropList(context);
   showReportDialog(
     context,
     _getInvoiceReportTitles(context),
     transactionList,
     title: title,
-    sumIndex: 4,
+    sumIndex: 6,
+    dateIndex: 1,
+    dropdownIndex: 4,
+    dropdownList: selectionList,
+    dropdownLabel: S.of(context).invoice_status,
   );
 }
 
@@ -38,7 +43,7 @@ void showDueInvoicesReport(
     _getInvoiceReportTitles(context),
     transactionList,
     title: title,
-    sumIndex: 4,
+    sumIndex: 7,
   );
 }
 
@@ -56,11 +61,10 @@ List<String> _getInvoiceReportTitles(BuildContext context) {
     S.of(context).transaction_number,
     S.of(context).transaction_date,
     S.of(context).transaction_amount,
-    S.of(context).paid_amount,
+    S.of(context).payment,
+    S.of(context).invoice_status,
+    S.of(context).invoice_close_duration,
     S.of(context).remaining_amount,
-    S.of(context).receipt_date,
-    S.of(context).receipt_number,
-    S.of(context).receipt_amount,
   ];
 }
 
@@ -71,5 +75,13 @@ List<String> _getTransactionTypeDropList(BuildContext context) {
     translateDbTextToScreenText(context, TransactionType.customerReturn.name),
     translateDbTextToScreenText(context, TransactionType.gifts.name),
     S.of(context).initialAmount
+  ];
+}
+
+List<String> _getInvoiceStatusDropList(BuildContext context) {
+  return [
+    S.of(context).invoice_status_closed,
+    S.of(context).invoice_status_open,
+    S.of(context).invoice_status_due,
   ];
 }

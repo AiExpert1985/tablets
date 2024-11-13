@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
-import 'package:tablets/src/common/functions/customer_utils.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -57,7 +57,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
     final creditLimit = selectedCustomer.creditLimit;
     if (totalDebt >= creditLimit) {}
     final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
-    final openInvoices = getOpenInvoices(customerTransactions, totalDebt);
+    final openInvoices = getOpenInvoices(context, customerTransactions, totalDebt);
     final dueInvoices = getDueInvoices(openInvoices, selectedCustomer.paymentDurationLimit);
     if (totalAfterCurrentTransaction > creditLimit || dueInvoices.isNotEmpty) {
       return const Color.fromARGB(255, 229, 177, 177);
@@ -65,10 +65,6 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
     if (totalAfterCurrentTransaction > creditLimit * debtAmountWarning) {
       return const Color.fromARGB(255, 243, 237, 187);
     }
-    return Colors.white;
-  }
-
-  Color customerExceedsTimeLimit(Map<String, dynamic> item, ItemFormData formDataNotifier) {
     return Colors.white;
   }
 

@@ -12,10 +12,17 @@ enum TransactionType {
   customerReturn,
   vendorInvoice,
   customerInvoice,
-  damagedItems
+  damagedItems,
+  initialCredit // not a real transaction but is used in some reports related to customer
 }
 
 enum SellPriceType {
   retail,
   wholesale,
+}
+
+enum InvoiceStatus {
+  open,
+  closed,
+  due,
 }

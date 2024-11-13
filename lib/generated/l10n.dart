@@ -1140,6 +1140,16 @@ class S {
     );
   }
 
+  /// `Initial credit Items`
+  String get transaction_type_initial_credit {
+    return Intl.message(
+      'Initial credit Items',
+      name: 'transaction_type_initial_credit',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Name`
   String get salesman_name {
     return Intl.message(
@@ -1600,6 +1610,16 @@ class S {
     );
   }
 
+  /// `ٌReceipt type`
+  String get receipt_type {
+    return Intl.message(
+      'ٌReceipt type',
+      name: 'receipt_type',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Due debt`
   String get due_debt_amount {
     return Intl.message(
@@ -1765,6 +1785,66 @@ class S {
     return Intl.message(
       'Total',
       name: 'total',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payment`
+  String get payment {
+    return Intl.message(
+      'Payment',
+      name: 'payment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invoice status`
+  String get invoice_status {
+    return Intl.message(
+      'Invoice status',
+      name: 'invoice_status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invoice closing duration`
+  String get invoice_close_duration {
+    return Intl.message(
+      'Invoice closing duration',
+      name: 'invoice_close_duration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open`
+  String get invoice_status_open {
+    return Intl.message(
+      'Open',
+      name: 'invoice_status_open',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Closed`
+  String get invoice_status_closed {
+    return Intl.message(
+      'Closed',
+      name: 'invoice_status_closed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Due`
+  String get invoice_status_due {
+    return Intl.message(
+      'Due',
+      name: 'invoice_status_due',
       desc: '',
       args: [],
     );

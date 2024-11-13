@@ -110,6 +110,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "You must select user privilage"),
         "internal_transaction":
             MessageLookupByLibrary.simpleMessage("Internal transactions"),
+        "invoice_close_duration":
+            MessageLookupByLibrary.simpleMessage("Invoice closing duration"),
+        "invoice_status":
+            MessageLookupByLibrary.simpleMessage("Invoice status"),
+        "invoice_status_closed": MessageLookupByLibrary.simpleMessage("Closed"),
+        "invoice_status_due": MessageLookupByLibrary.simpleMessage("Due"),
+        "invoice_status_open": MessageLookupByLibrary.simpleMessage("Open"),
         "invoice_total_price":
             MessageLookupByLibrary.simpleMessage("Total price"),
         "invoice_total_weight":
@@ -139,6 +146,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Page is not found"),
         "paid_amount": MessageLookupByLibrary.simpleMessage("Payed amount"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
+        "payment": MessageLookupByLibrary.simpleMessage("Payment"),
         "payment_duration_limit":
             MessageLookupByLibrary.simpleMessage("Payment duration limit"),
         "pending_transactions":
@@ -185,6 +193,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "receipt_date": MessageLookupByLibrary.simpleMessage("Receipt date"),
         "receipt_number":
             MessageLookupByLibrary.simpleMessage("Receipt number"),
+        "receipt_type": MessageLookupByLibrary.simpleMessage("ٌReceipt type"),
         "region_name": MessageLookupByLibrary.simpleMessage("Region name"),
         "regions": MessageLookupByLibrary.simpleMessage("Regions"),
         "remaining_amount":
@@ -276,6 +285,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_type_expenditures":
             MessageLookupByLibrary.simpleMessage("Expenditures"),
         "transaction_type_gifts": MessageLookupByLibrary.simpleMessage("Gifts"),
+        "transaction_type_initial_credit":
+            MessageLookupByLibrary.simpleMessage("Initial credit Items"),
         "transaction_type_vender_invoice":
             MessageLookupByLibrary.simpleMessage("Vender Invoice"),
         "transaction_type_vender_return":
