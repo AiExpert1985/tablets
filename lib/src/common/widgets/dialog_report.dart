@@ -280,18 +280,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   }
 
   Widget _buildTitle() {
-    return _buildRowContrainer(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            widget.title!,
-            style: const TextStyle(fontSize: 18),
-          ),
-        ],
-      ),
-      includeMargine: false,
-    );
+    return Text(widget.title!, style: const TextStyle(fontSize: 20));
   }
 
   Widget _buildSumDisplay() {
@@ -338,10 +327,10 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     ];
   }
 
-  Widget _buildRowContrainer(Widget childWidget, {bool includeMargine = true}) {
+  Widget _buildRowContrainer(Widget childWidget) {
     return Container(
         height: 50,
-        margin: includeMargine ? const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0) : null,
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         decoration: BoxDecoration(
             color: const Color.fromARGB(255, 227, 240, 247),

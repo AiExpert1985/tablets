@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
-import 'package:tablets/src/common/values/dialog_report_titles.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
@@ -11,6 +10,7 @@ import 'package:tablets/src/common/widgets/dialog_report.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_report_utils.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/common/functions/customer_utils.dart';
@@ -22,20 +22,6 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
 List<Map<String, dynamic>> _allTransactions = [];
-
-Future<void> _fetchTransactions(DbRepository transactionProvider) async {
-  _allTransactions = await transactionProvider.fetchItemListAsMaps();
-}
-
-Color getStatusColor(int numDueInvoice, double totalDebt, Customer customer) {
-  if (totalDebt >= customer.creditLimit || numDueInvoice > 0) {
-    return Colors.red;
-  }
-  if (totalDebt >= customer.creditLimit * debtAmountWarning) {
-    return Colors.orange;
-  }
-  return Colors.black87;
-}
 
 void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
     ImageSliderNotifier imagePicker, Customer customer) {
@@ -105,7 +91,7 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
                   final openInvoices = getOpenInvoices(customerTransactions, totalDebt);
                   final dueInvoices = getDueInvoices(openInvoices, customer.paymentDurationLimit);
                   final dueDebt = getDueDebt(dueInvoices, 4);
-                  Color statusColor = getStatusColor(dueInvoices.length, totalDebt, customer);
+                  Color statusColor = _getStatusColor(dueInvoices.length, totalDebt, customer);
                   final matchingList = customerMatching(customerTransactions, customer, context);
                   return Column(
                     children: [
@@ -184,24 +170,6 @@ Widget _buildDataRow(
   Color color,
   List<List<dynamic>> matchingList,
 ) {
-  final invoiceColumnTitles = [
-    S.of(context).transaction_number,
-    S.of(context).transaction_date,
-    S.of(context).transaction_amount,
-    S.of(context).paid_amount,
-    S.of(context).remaining_amount,
-    S.of(context).receipt_date,
-    S.of(context).receipt_number,
-    S.of(context).receipt_amount,
-  ];
-  final matchingColumnTitles = [
-    S.of(context).transaction_type,
-    S.of(context).transaction_number,
-    S.of(context).transaction_date,
-    S.of(context).transaction_amount,
-    S.of(context).previous_debt,
-    S.of(context).later_debt,
-  ];
   return Column(
     children: [
       Row(
@@ -222,34 +190,21 @@ Widget _buildDataRow(
           Expanded(
             child: InkWell(
               child: _buildDataCell(numberToText(totalDebt), color),
-              onTap: () {
-                final title = customer.name;
-                final selectionList = getTransactionTypeDropList(context);
-                showReportDialog(context, matchingColumnTitles, matchingList,
-                    dateIndex: 2,
-                    title: title,
-                    dropdownIndex: 0,
-                    dropdownList: selectionList,
-                    dropdownLabel: S.of(context).transaction_type);
-              },
+              onTap: () => _showCustomerMatchingReport(context, matchingList, customer.name),
             ),
           ),
           Expanded(
             child: InkWell(
               child: _buildDataCell(numberToText(openInvoices.length), color),
-              onTap: () {
-                final title = '${customer.name}  ( ${openInvoices.length} )';
-                showReportDialog(context, invoiceColumnTitles, openInvoices, title: title);
-              },
+              onTap: () => _showOpenInvoicesReport(
+                  context, openInvoices, '${customer.name}  ( ${openInvoices.length} )'),
             ),
           ),
           Expanded(
             child: InkWell(
               child: _buildDataCell(numberToText(dueInvoices.length), color),
-              onTap: () {
-                final title = '${customer.name}  ( ${dueInvoices.length} )';
-                showReportDialog(context, invoiceColumnTitles, dueInvoices, title: title);
-              },
+              onTap: () => _showDueInvoicesReport(
+                  context, dueInvoices, '${customer.name}  ( ${dueInvoices.length} )'),
             ),
           ),
           Expanded(child: _buildDataCell(numberToText(dueDebt), color)),
@@ -275,5 +230,54 @@ Widget _buildHeader(String text) {
       fontSize: 18,
       fontWeight: FontWeight.bold,
     ),
+  );
+}
+
+Future<void> _fetchTransactions(DbRepository transactionProvider) async {
+  _allTransactions = await transactionProvider.fetchItemListAsMaps();
+}
+
+Color _getStatusColor(int numDueInvoice, double totalDebt, Customer customer) {
+  if (totalDebt >= customer.creditLimit || numDueInvoice > 0) {
+    return Colors.red;
+  }
+  if (totalDebt >= customer.creditLimit * debtAmountWarning) {
+    return Colors.orange;
+  }
+  return Colors.black87;
+}
+
+void _showCustomerMatchingReport(
+    BuildContext context, List<List<dynamic>> transactionList, String title) {
+  final selectionList = getTransactionTypeDropList(context);
+  showReportDialog(
+    context,
+    getCustomerMatchingReportTitles(context),
+    transactionList,
+    dateIndex: 2,
+    title: title,
+    dropdownIndex: 0,
+    dropdownList: selectionList,
+    dropdownLabel: S.of(context).transaction_type,
+  );
+}
+
+void _showOpenInvoicesReport(
+    BuildContext context, List<List<dynamic>> transactionList, String title) {
+  showReportDialog(
+    context,
+    getInvoiceReportTitles(context),
+    transactionList,
+    title: title,
+  );
+}
+
+void _showDueInvoicesReport(
+    BuildContext context, List<List<dynamic>> transactionList, String title) {
+  showReportDialog(
+    context,
+    getInvoiceReportTitles(context),
+    transactionList,
+    title: title,
   );
 }
