@@ -231,16 +231,8 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   }
 
   Widget _buildListTitles() {
-    return Container(
-      height: 50,
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 227, 240, 247),
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(color: Colors.grey.shade300), // Border color
-      ),
-      child: Row(
+    return _buildRowContrainer(
+      Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: widget.titleList.map((item) {
           return SizedBox(
@@ -288,7 +280,18 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   }
 
   Widget _buildTitle() {
-    return Text(widget.title!, style: const TextStyle(fontWeight: FontWeight.bold));
+    return _buildRowContrainer(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            widget.title!,
+            style: const TextStyle(fontSize: 18),
+          ),
+        ],
+      ),
+      includeMargine: false,
+    );
   }
 
   Widget _buildSumDisplay() {
@@ -298,22 +301,12 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         sum += item[widget.sumIndex!]?.toDouble() ?? 0;
       }
     }
-    return Container(
-      height: 50,
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 227, 240, 247),
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(color: Colors.grey.shade300), // Border color
-      ),
-      child: Row(
+    return _buildRowContrainer(
+      Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(S.of(context).total,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          Text(doubleToStringWithComma(sum),
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18))
+          Text(S.of(context).total, style: const TextStyle(fontSize: 18)),
+          Text(doubleToStringWithComma(sum), style: const TextStyle(fontSize: 18))
         ],
       ),
     );
@@ -343,5 +336,17 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         ),
       ),
     ];
+  }
+
+  Widget _buildRowContrainer(Widget childWidget, {bool includeMargine = true}) {
+    return Container(
+        height: 50,
+        margin: includeMargine ? const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0) : null,
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 227, 240, 247),
+            borderRadius: BorderRadius.circular(8.0),
+            border: Border.all(color: Colors.grey.shade300)),
+        child: childWidget);
   }
 }
