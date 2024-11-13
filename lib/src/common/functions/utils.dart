@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -142,4 +143,16 @@ String doubleToStringWithComma(double value, {int? numDecimalPlaces}) {
       RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match match) => '${match[1]},');
   // Combine the whole part and the decimal part
   return formattedWholePart + decimalPart;
+}
+
+// order a list of lists based on date, from latest to oldest
+List<List<dynamic>> sortByDate(List<List<dynamic>> list, int dateIndex) {
+  list.sort((a, b) {
+    final dateA = a[dateIndex] is Timestamp
+        ? a[dateIndex].toDate()
+        : a[dateIndex]; // Assuming dateKey is the key for the date
+    final dateB = b[dateIndex] is Timestamp ? b[dateIndex].toDate() : b[dateIndex];
+    return dateB.compareTo(dateA); // Descending order
+  });
+  return list;
 }

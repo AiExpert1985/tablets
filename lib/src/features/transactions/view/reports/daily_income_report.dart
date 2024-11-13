@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart'; // Make sure to add this dependency in pubspec.yaml
 import 'package:intl/intl.dart';
@@ -134,8 +135,10 @@ class DailyIncomeReportState extends State<DailyIncomeReport> {
 
     // Sort the displayed transactions based on the date in descending order
     displayedTransactions.sort((a, b) {
-      final dateA = a[dateKey].toDate(); // Assuming dateKey is the key for the date
-      final dateB = b[dateKey].toDate();
+      final dateA = a[dateKey] is Timestamp
+          ? a[dateKey].toDate()
+          : a[dateKey]; // Assuming dateKey is the key for the date
+      final dateB = b[dateKey] is Timestamp ? b[dateKey].toDate() : b[dateKey];
       return dateB.compareTo(dateA); // Descending order
     });
 

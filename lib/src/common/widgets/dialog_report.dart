@@ -9,8 +9,6 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 
 void showReportDialog(
   BuildContext context,
-  double width,
-  double height,
   List<String> columnTitles,
   List<List<dynamic>> dataList, {
   String? title,
@@ -19,6 +17,8 @@ void showReportDialog(
   List<String>? dropdownList,
   String? dropdownLabel,
   int? sumIndex,
+  double width = 800,
+  double height = 700,
 }) {
   showDialog(
     context: context,

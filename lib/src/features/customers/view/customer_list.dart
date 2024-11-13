@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/values/dialog_report_titles.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
@@ -223,16 +224,10 @@ Widget _buildDataRow(
               child: _buildDataCell(numberToText(totalDebt), color),
               onTap: () {
                 final title = customer.name;
-                final selectionList = [
-                  translateDbTextToScreenText(context, TransactionType.customerInvoice.name),
-                  translateDbTextToScreenText(context, TransactionType.customerReceipt.name),
-                  translateDbTextToScreenText(context, TransactionType.customerReturn.name),
-                  translateDbTextToScreenText(context, TransactionType.gifts.name),
-                ];
-                showReportDialog(context, 700, 700, matchingColumnTitles, matchingList,
+                final selectionList = getTransactionTypeDropList(context);
+                showReportDialog(context, matchingColumnTitles, matchingList,
                     dateIndex: 2,
                     title: title,
-                    sumIndex: 5,
                     dropdownIndex: 0,
                     dropdownList: selectionList,
                     dropdownLabel: S.of(context).transaction_type);
@@ -244,8 +239,7 @@ Widget _buildDataRow(
               child: _buildDataCell(numberToText(openInvoices.length), color),
               onTap: () {
                 final title = '${customer.name}  ( ${openInvoices.length} )';
-                showReportDialog(context, 800, 400, invoiceColumnTitles, openInvoices,
-                    title: title);
+                showReportDialog(context, invoiceColumnTitles, openInvoices, title: title);
               },
             ),
           ),
@@ -254,7 +248,7 @@ Widget _buildDataRow(
               child: _buildDataCell(numberToText(dueInvoices.length), color),
               onTap: () {
                 final title = '${customer.name}  ( ${dueInvoices.length} )';
-                showReportDialog(context, 800, 400, invoiceColumnTitles, dueInvoices, title: title);
+                showReportDialog(context, invoiceColumnTitles, dueInvoices, title: title);
               },
             ),
           ),
