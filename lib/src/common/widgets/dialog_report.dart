@@ -100,9 +100,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Divider(),
           _buildListTitles(),
-          const Divider(),
           _buildDataList(),
           if (widget.sumIndex != null) _buildSumDisplay(),
         ],
@@ -233,8 +231,15 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   }
 
   Widget _buildListTitles() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+    return Container(
+      height: 50,
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 227, 240, 247),
+        borderRadius: BorderRadius.circular(8.0),
+        border: Border.all(color: Colors.grey.shade300), // Border color
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: widget.titleList.map((item) {
@@ -295,9 +300,10 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     }
     return Container(
       height: 50,
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       decoration: BoxDecoration(
-        color: Colors.black45,
+        color: const Color.fromARGB(255, 227, 240, 247),
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(color: Colors.grey.shade300), // Border color
       ),
