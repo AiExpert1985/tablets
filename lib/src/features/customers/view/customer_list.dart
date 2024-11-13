@@ -6,8 +6,6 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
-import 'package:tablets/src/common/widgets/dialog_list.dart';
-// import 'package:tablets/src/common/widgets/dialog_list_with_date_filter.dart';
 import 'package:tablets/src/common/widgets/dialog_report.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
@@ -234,12 +232,10 @@ Widget _buildDataRow(
                 showReportDialog(context, 700, 700, matchingColumnTitles, matchingList,
                     dateIndex: 2,
                     title: title,
-                    sumIndex: 3,
+                    sumIndex: 5,
                     dropdownIndex: 0,
                     dropdownList: selectionList,
                     dropdownLabel: S.of(context).transaction_type);
-                // showDialogListWithDateFilter(
-                //     context, title, 700, 700, matchingColumnTitles, matchingList, 2);
               },
             ),
           ),
@@ -248,7 +244,8 @@ Widget _buildDataRow(
               child: _buildDataCell(numberToText(openInvoices.length), color),
               onTap: () {
                 final title = '${customer.name}  ( ${openInvoices.length} )';
-                showDialogList(context, title, 800, 400, invoiceColumnTitles, openInvoices);
+                showReportDialog(context, 800, 400, invoiceColumnTitles, openInvoices,
+                    title: title);
               },
             ),
           ),
@@ -257,7 +254,7 @@ Widget _buildDataRow(
               child: _buildDataCell(numberToText(dueInvoices.length), color),
               onTap: () {
                 final title = '${customer.name}  ( ${dueInvoices.length} )';
-                showDialogList(context, title, 800, 400, invoiceColumnTitles, dueInvoices);
+                showReportDialog(context, 800, 400, invoiceColumnTitles, dueInvoices, title: title);
               },
             ),
           ),

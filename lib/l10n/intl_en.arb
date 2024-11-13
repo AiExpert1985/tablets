@@ -169,5 +169,6 @@
     "item_available_quantity": "Available quantity",
     "product_stock_quantity": "Stock",
     "product_stock_amount": "Stock amount",
-    "select": "Select"
+    "select": "Select",
+    "total": "Total"
 }

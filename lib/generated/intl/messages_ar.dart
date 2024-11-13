@@ -211,6 +211,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
         "to_date": MessageLookupByLibrary.simpleMessage("الى تاريخ"),
+        "total": MessageLookupByLibrary.simpleMessage("المجموع"),
         "transaction_amount":
             MessageLookupByLibrary.simpleMessage("مبلغ القائمة"),
         "transaction_currency": MessageLookupByLibrary.simpleMessage("العملة"),

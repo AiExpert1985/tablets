@@ -169,5 +169,6 @@
     "item_available_quantity": "المخزون",
     "product_stock_quantity": "المخزون",
     "product_stock_amount": "قيمة المخزون",
-    "select": "اختيار"
+    "select": "اختيار",
+    "total": "المجموع"
 }

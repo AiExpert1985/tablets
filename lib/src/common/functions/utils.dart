@@ -123,3 +123,23 @@ String numberToText(dynamic value) {
 }
 
 String formatDate(DateTime date) => DateFormat('yyyy/MM/dd').format(date);
+
+// used to create thousand comma separators for numbers displayed in the UI
+// it can be used with or without decimal places using numDecimalPlaces optional parameter
+String doubleToStringWithComma(double value, {int? numDecimalPlaces}) {
+  String valueString = '';
+  if (numDecimalPlaces != null) {
+    valueString = value.toStringAsFixed(numDecimalPlaces); // Keeping 2 decimal places
+  } else {
+    valueString = value.toString();
+  }
+  // Split the string into whole and decimal parts
+  List<String> parts = valueString.split('.');
+  String wholePart = parts[0];
+  String decimalPart = parts.length > 1 ? '.${parts[1]}' : '';
+  // Add commas to the whole part
+  String formattedWholePart = wholePart.replaceAllMapped(
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match match) => '${match[1]},');
+  // Combine the whole part and the decimal part
+  return formattedWholePart + decimalPart;
+}

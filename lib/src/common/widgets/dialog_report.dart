@@ -90,35 +90,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           children: [
             if (widget.title != null) _buildTitle(),
             VerticalGap.xl,
-            Row(
-              children: [
-                _buildCancelButton(startDate, () {
-                  setState(() {
-                    startDate = null;
-                  });
-                  _filterData();
-                }),
-                _buildDatePicker('start_date', startDate, S.of(context).from_date, (value) {
-                  setState(() {
-                    startDate = value;
-                  });
-                  _filterData();
-                }),
-                HorizontalGap.l,
-                _buildCancelButton(endDate, () {
-                  setState(() {
-                    endDate = null;
-                  });
-                  _filterData();
-                }),
-                _buildDatePicker('end_date', endDate, S.of(context).to_date, (value) {
-                  setState(() {
-                    endDate = value;
-                  });
-                  _filterData();
-                }),
-              ],
-            ),
+            if (widget.dateIndex != null) _buildDateSelectionRow(),
             VerticalGap.l,
             if (widget.dropdownIndex != null && widget.dropdownList != null)
               _buildMultiSelectDropdown(),
@@ -132,6 +104,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           _buildListTitles(),
           const Divider(),
           _buildDataList(),
+          if (widget.sumIndex != null) _buildSumDisplay(),
         ],
       ),
       actions: _buildButtons(),
@@ -166,6 +139,38 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     setState(() {
       filteredList = newList;
     });
+  }
+
+  Widget _buildDateSelectionRow() {
+    return Row(
+      children: [
+        _buildCancelButton(startDate, () {
+          setState(() {
+            startDate = null;
+          });
+          _filterData();
+        }),
+        _buildDatePicker('start_date', startDate, S.of(context).from_date, (value) {
+          setState(() {
+            startDate = value;
+          });
+          _filterData();
+        }),
+        HorizontalGap.l,
+        _buildCancelButton(endDate, () {
+          setState(() {
+            endDate = null;
+          });
+          _filterData();
+        }),
+        _buildDatePicker('end_date', endDate, S.of(context).to_date, (value) {
+          setState(() {
+            endDate = value;
+          });
+          _filterData();
+        }),
+      ],
+    );
   }
 
   Widget _buildMultiSelectDropdown() {
@@ -279,6 +284,33 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
 
   Widget _buildTitle() {
     return Text(widget.title!, style: const TextStyle(fontWeight: FontWeight.bold));
+  }
+
+  Widget _buildSumDisplay() {
+    double sum = 0;
+    for (var item in filteredList) {
+      if (item.length > widget.sumIndex!) {
+        sum += item[widget.sumIndex!]?.toDouble() ?? 0;
+      }
+    }
+    return Container(
+      height: 50,
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: Colors.black45,
+        borderRadius: BorderRadius.circular(8.0),
+        border: Border.all(color: Colors.grey.shade300), // Border color
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(S.of(context).total,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          Text(doubleToStringWithComma(sum),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18))
+        ],
+      ),
+    );
   }
 
   List<Widget> _buildButtons() {
