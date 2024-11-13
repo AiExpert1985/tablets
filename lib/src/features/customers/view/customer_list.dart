@@ -6,7 +6,6 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
-import 'package:tablets/src/common/widgets/dialog_report.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
@@ -22,18 +21,6 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
 List<Map<String, dynamic>> _allTransactions = [];
-
-void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
-    ImageSliderNotifier imagePicker, Customer customer) {
-  formDataNotifier.initialize(initialData: customer.toMap());
-  imagePicker.initialize(urls: customer.imageUrls);
-  showDialog(
-    context: context,
-    builder: (BuildContext ctx) => const CustomerForm(
-      isEditMode: true,
-    ),
-  ).whenComplete(imagePicker.close);
-}
 
 Widget buildCustomerList(BuildContext context, WidgetRef ref) {
   final transactionProvider = ref.read(transactionRepositoryProvider);
@@ -80,45 +67,40 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
                   context, totalDebtSum, totalOpenInvoices, totalDueInvoices, totalDueDebtSum),
             ),
             const Divider(),
-            Expanded(
-              child: ListView.builder(
-                itemCount: customers.length,
-                itemBuilder: (context, index) {
-                  final customer = Customer.fromMap(customers[index]);
-                  final customerTransactions =
-                      getCustomerTransactions(_allTransactions, customer.dbRef);
-                  final totalDebt = getTotalDebt(customerTransactions, customer);
-                  final openInvoices = getOpenInvoices(customerTransactions, totalDebt);
-                  final dueInvoices = getDueInvoices(openInvoices, customer.paymentDurationLimit);
-                  final dueDebt = getDueDebt(dueInvoices, 4);
-                  Color statusColor = _getStatusColor(dueInvoices.length, totalDebt, customer);
-                  final matchingList = customerMatching(customerTransactions, customer, context);
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6.0),
-                        child: _buildDataRow(
-                            customer,
-                            context,
-                            imagePickerNotifier,
-                            formDataNotifier,
-                            totalDebt,
-                            openInvoices,
-                            dueInvoices,
-                            dueDebt,
-                            statusColor,
-                            matchingList),
-                      ),
-                      const Divider(thickness: 0.2, color: Colors.grey)
-                    ],
-                  );
-                },
-              ),
-            ),
+            _buildDataRows(customers, formDataNotifier, imagePickerNotifier)
           ],
         ),
       );
     },
+  );
+}
+
+Widget _buildDataRows(List<Map<String, dynamic>> customers, ItemFormData formDataNotifier,
+    ImageSliderNotifier imagePickerNotifier) {
+  return Expanded(
+    child: ListView.builder(
+      itemCount: customers.length,
+      itemBuilder: (ctx, index) {
+        final customer = Customer.fromMap(customers[index]);
+        final customerTransactions = getCustomerTransactions(_allTransactions, customer.dbRef);
+        final totalDebt = getTotalDebt(customerTransactions, customer);
+        final openInvoices = getOpenInvoices(customerTransactions, totalDebt);
+        final dueInvoices = getDueInvoices(openInvoices, customer.paymentDurationLimit);
+        final dueDebt = getDueDebt(dueInvoices, 4);
+        Color statusColor = _getStatusColor(dueInvoices.length, totalDebt, customer);
+        final matchingList = customerMatching(customerTransactions, customer, ctx);
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              child: _buildDataRow(customer, ctx, imagePickerNotifier, formDataNotifier, totalDebt,
+                  openInvoices, dueInvoices, dueDebt, statusColor, matchingList),
+            ),
+            const Divider(thickness: 0.2, color: Colors.grey)
+          ],
+        );
+      },
+    ),
   );
 }
 
@@ -190,20 +172,20 @@ Widget _buildDataRow(
           Expanded(
             child: InkWell(
               child: _buildDataCell(numberToText(totalDebt), color),
-              onTap: () => _showCustomerMatchingReport(context, matchingList, customer.name),
+              onTap: () => showCustomerMatchingReport(context, matchingList, customer.name),
             ),
           ),
           Expanded(
             child: InkWell(
               child: _buildDataCell(numberToText(openInvoices.length), color),
-              onTap: () => _showOpenInvoicesReport(
+              onTap: () => showOpenInvoicesReport(
                   context, openInvoices, '${customer.name}  ( ${openInvoices.length} )'),
             ),
           ),
           Expanded(
             child: InkWell(
               child: _buildDataCell(numberToText(dueInvoices.length), color),
-              onTap: () => _showDueInvoicesReport(
+              onTap: () => showDueInvoicesReport(
                   context, dueInvoices, '${customer.name}  ( ${dueInvoices.length} )'),
             ),
           ),
@@ -247,37 +229,14 @@ Color _getStatusColor(int numDueInvoice, double totalDebt, Customer customer) {
   return Colors.black87;
 }
 
-void _showCustomerMatchingReport(
-    BuildContext context, List<List<dynamic>> transactionList, String title) {
-  final selectionList = getTransactionTypeDropList(context);
-  showReportDialog(
-    context,
-    getCustomerMatchingReportTitles(context),
-    transactionList,
-    dateIndex: 2,
-    title: title,
-    dropdownIndex: 0,
-    dropdownList: selectionList,
-    dropdownLabel: S.of(context).transaction_type,
-  );
-}
-
-void _showOpenInvoicesReport(
-    BuildContext context, List<List<dynamic>> transactionList, String title) {
-  showReportDialog(
-    context,
-    getInvoiceReportTitles(context),
-    transactionList,
-    title: title,
-  );
-}
-
-void _showDueInvoicesReport(
-    BuildContext context, List<List<dynamic>> transactionList, String title) {
-  showReportDialog(
-    context,
-    getInvoiceReportTitles(context),
-    transactionList,
-    title: title,
-  );
+void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
+    ImageSliderNotifier imagePicker, Customer customer) {
+  formDataNotifier.initialize(initialData: customer.toMap());
+  imagePicker.initialize(urls: customer.imageUrls);
+  showDialog(
+    context: context,
+    builder: (BuildContext ctx) => const CustomerForm(
+      isEditMode: true,
+    ),
+  ).whenComplete(imagePicker.close);
 }

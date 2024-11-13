@@ -117,14 +117,11 @@ double getDueDebt(List<List<dynamic>> dueInvoices, int amountIndex) {
 List<List<dynamic>> customerMatching(
     List<Map<String, dynamic>> customerTransactions, Customer customer, BuildContext context) {
   List<List<dynamic>> matchingTransactions = [];
-  double currentDebt = customer.initialCredit;
   matchingTransactions.add([
     S.of(context).initialAmount,
     '',
     customer.initialDate,
-    '',
-    '',
-    currentDebt,
+    customer.initialCredit,
   ]);
   for (int i = customerTransactions.length - 1; i >= 0; i--) {
     final transaction = Transaction.fromMap(customerTransactions[i]);
@@ -135,16 +132,12 @@ List<List<dynamic>> customerMatching(
         ? -1
         : 1;
     final transactionAmount = transaction.totalAmount * amountSign;
-    final newDebt = currentDebt + transactionAmount;
     matchingTransactions.add([
       translateDbTextToScreenText(context, transactionType),
       transaction.number,
       transaction.date,
       transactionAmount,
-      currentDebt,
-      newDebt
     ]);
-    currentDebt = newDebt;
   }
   return matchingTransactions.reversed.toList();
 }
