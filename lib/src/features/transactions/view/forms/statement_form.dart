@@ -73,8 +73,10 @@ class StatementForm extends ConsumerWidget {
           dbRepository: repository,
           onChangedFn: (item) {
             formDataNotifier.updateProperties({
-              nameKey: item[nameKey],
-              salesmanKey: item[salesmanKey],
+              if (isGift) nameDbRefKey: item['dbRef'],
+              nameKey: item['name'],
+              if (isGift) salesmanKey: item['salesman'],
+              if (isGift) salesmanDbRefKey: item['salesmanDbRef'],
             });
           },
         ),

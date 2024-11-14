@@ -181,5 +181,6 @@
     "invoice_status_due": "Due",
     "average_invoice_closing_duration": "Average invoice closing duration",
     "customer_invoice_profit": "Customer profit from invoices",
-    "invoice_profit": "Invoice profit"
+    "invoice_profit": "Invoice profit",
+    "customer_gifts_and_discounts": "Customer gifts and discounts"
 }

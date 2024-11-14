@@ -30,7 +30,7 @@ const String salesmanDbRefKey = 'salesmanDbRef';
 const String sellingPriceTypeKey = 'sellingPriceType';
 const String transactionTotalProfitKey = 'transactionTotalProfit';
 const String salesmanTransactionComssionKey = 'salesmanTransactionComssion';
-const String itemsTotalProfitKey = 'itemsTotalProfit'; // profit of all items in the transaction
+const String itemsTotalProfitKey = 'itemsProfit'; // profit of all items in the transaction
 
 Map<String, dynamic> emptyInvoiceItem = {
   nameKey: '',

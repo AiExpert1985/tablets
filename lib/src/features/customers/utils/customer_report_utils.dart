@@ -17,6 +17,11 @@ void showCustomerMatchingReport(
       useOriginalTransaction: true);
 }
 
+void showGiftsReport(BuildContext context, List<List<dynamic>> giftsList, String title) {
+  showReportDialog(context, _getGiftsReportTitles(context), giftsList,
+      dateIndex: 3, title: title, sumIndex: 4, useOriginalTransaction: true);
+}
+
 void showInvoicesReport(BuildContext context, List<List<dynamic>> invoices, String title) {
   final selectionList = _getInvoiceStatusDropList(context);
   showReportDialog(
@@ -83,6 +88,15 @@ List<String> _getProfitReportTitles(BuildContext context) {
     S.of(context).transaction_amount,
     S.of(context).invoice_status,
     S.of(context).invoice_profit,
+  ];
+}
+
+List<String> _getGiftsReportTitles(BuildContext context) {
+  return [
+    S.of(context).transaction_number,
+    S.of(context).transaction_type,
+    S.of(context).transaction_date,
+    S.of(context).transaction_amount,
   ];
 }
 

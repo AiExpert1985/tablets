@@ -1879,6 +1879,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Customer gifts and discounts`
+  String get customer_gifts_and_discounts {
+    return Intl.message(
+      'Customer gifts and discounts',
+      name: 'customer_gifts_and_discounts',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

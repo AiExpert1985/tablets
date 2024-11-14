@@ -181,5 +181,6 @@
     "invoice_status_due": "مستحق",
     "average_invoice_closing_duration": "معدل ايام الاغلاق",
     "customer_invoice_profit": "ارباح قوائم الزبون",
-    "invoice_profit": "ربح القائمة"
+    "invoice_profit": "ربح القائمة",
+    "customer_gifts_and_discounts": "خصومات و هدايا"
 }

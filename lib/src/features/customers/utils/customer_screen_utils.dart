@@ -1,9 +1,11 @@
 // receive list of all transaction, it does filtering based on
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart' as trans;
+import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 
 import '../../transactions/model/transaction.dart';
@@ -126,4 +128,48 @@ int calculateAverageClosingDays(List<List<dynamic>> processedInvoices, int daysI
   // .73 doesn't make any effect on the result the user needs from this info
   // since he just needs to know whether client is fast to payback or not
   return average.round();
+}
+
+// filter transactions and keep only gifts and customerInvoices that contains a discount
+// or gift items and return it in a list of lists, where each list contains
+// [Transaction, num, type, date, amount]
+List<List<dynamic>> getGiftsAndDiscounts(
+    BuildContext context, List<Map<String, dynamic>> customerTransactions) {
+  List<List<dynamic>> giftsAndDiscounts = [];
+  for (var transactionMap in customerTransactions) {
+    if (transactionMap[transactionTypeKey] == TransactionType.gifts.name) {
+      final transaction = Transaction.fromMap(transactionMap);
+      giftsAndDiscounts.add([
+        transaction,
+        transaction.number,
+        translateDbTextToScreenText(context, transaction.transactionType),
+        transaction.date,
+        transaction.transactionTotalProfit ?? 0,
+      ]);
+    } else if (transactionMap[transactionTypeKey] == TransactionType.customerInvoice.name) {
+      final transaction = Transaction.fromMap(transactionMap);
+      final items = transaction.items;
+      final discount = transaction.discount ?? 0;
+      double giftItemsAmount = 0;
+      for (var item in items ?? []) {
+        giftItemsAmount += item['giftQuantity'] * item['buyingPrice'];
+      }
+      if (giftItemsAmount > 0 || discount > 0) {
+        giftsAndDiscounts.add([
+          transaction,
+          transaction.number,
+          translateDbTextToScreenText(context, transaction.transactionType),
+          transaction.date,
+          giftItemsAmount + discount,
+        ]);
+      }
+    }
+  }
+
+  return sortByDate(giftsAndDiscounts, 3);
+}
+
+double getTotalGiftsAndDiscounts(List<List<dynamic>> giftsList, int amountIndex) {
+  if (giftsList.isEmpty) return 0;
+  return giftsList.map((item) => item[amountIndex] as double).reduce((a, b) => a + b);
 }

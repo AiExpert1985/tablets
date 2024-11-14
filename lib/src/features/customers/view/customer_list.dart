@@ -34,6 +34,8 @@ List<double> _dueDebtList = [];
 List<int> _averageInvoiceClosingDaysList = [];
 List<List<List<dynamic>>> _invoicesWithProfitList = [];
 List<double> _totalProfitList = [];
+List<List<List<dynamic>>> _giftsAndDiscountsList = [];
+List<double> _totalGiftsAmountList = [];
 
 Widget buildCustomerList(BuildContext context, WidgetRef ref) {
   final transactionProvider = ref.read(transactionRepositoryProvider);
@@ -113,6 +115,7 @@ Widget _buildHeaderRow(BuildContext context) {
             Expanded(child: _buildHeader(S.of(context).due_debt_amount)),
             Expanded(child: _buildHeader(S.of(context).average_invoice_closing_duration)),
             Expanded(child: _buildHeader(S.of(context).customer_invoice_profit)),
+            Expanded(child: _buildHeader(S.of(context).customer_gifts_and_discounts)),
           ],
         ),
         VerticalGap.m,
@@ -129,6 +132,7 @@ Widget _buildHeaderRow(BuildContext context) {
               Expanded(child: _buildHeader('(${numberToText(totalDueDebtSum)})')),
               Expanded(child: _buildHeader('(${numberToText(averageClosingDays)})')),
               Expanded(child: _buildHeader('(${numberToText(totalProfitSum)})')),
+              const Expanded(child: SizedBox()), // Placeholder
             ],
           ),
         ),
@@ -155,6 +159,8 @@ Widget _buildDataRow(
   final dueDebt = _dueDebtList[index];
   final invoiceWithProfit = _invoicesWithProfitList[index];
   final profit = _totalProfitList[index];
+  final giftsAndDiscounts = _giftsAndDiscountsList[index];
+  final totalGiftsAmount = _totalGiftsAmountList[index];
   final matchingList = customerMatching(customerTransactions, customer, context);
   bool isValidCustomer = _isValidCustomer(dueDebt, totalDebt, customer);
   Color color = isValidCustomer ? Colors.black87 : Colors.red;
@@ -192,22 +198,28 @@ Widget _buildDataRow(
             ),
             Expanded(
               child: InkWell(
-                child: _buildDataCell(numberToText(dueDebt), color),
+                child: _buildDataCell('$dueDebt', color),
                 onTap: () => showInvoicesReport(
                     context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
               ),
             ),
             Expanded(
               child: InkWell(
-                child: _buildDataCell(numberToText(invoiceAverageClosingDays), color),
+                child: _buildDataCell('$invoiceAverageClosingDays', color),
                 onTap: () => showInvoicesReport(
                     context, closedInvoices, '${customer.name}  ( $invoiceAverageClosingDays )'),
               ),
             ),
             Expanded(
               child: InkWell(
-                child: _buildDataCell(numberToText(profit), color),
+                child: _buildDataCell('$profit', color),
                 onTap: () => showProfitReport(context, invoiceWithProfit, customer.name),
+              ),
+            ),
+            Expanded(
+              child: InkWell(
+                child: _buildDataCell('$totalGiftsAmount', color),
+                onTap: () => showGiftsReport(context, giftsAndDiscounts, customer.name),
               ),
             ),
           ],
@@ -296,5 +308,9 @@ void _processCustomerTransactions(BuildContext context, List<Map<String, dynamic
     _dueInvoicesList.add(dueInvoices);
     final dueDebt = getDueDebt(dueInvoices, 7);
     _dueDebtList.add(dueDebt);
+    final giftsAndDicounts = getGiftsAndDiscounts(context, customerTransactions);
+    _giftsAndDiscountsList.add(giftsAndDicounts);
+    final totalGiftsAmount = getTotalGiftsAndDiscounts(giftsAndDicounts, 4);
+    _totalGiftsAmountList.add(totalGiftsAmount);
   }
 }

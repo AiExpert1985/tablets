@@ -47,6 +47,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "credit_limit": MessageLookupByLibrary.simpleMessage("اقصى حد للدين"),
         "current_debt": MessageLookupByLibrary.simpleMessage("الدين الكلي"),
         "customer": MessageLookupByLibrary.simpleMessage("الزبون"),
+        "customer_gifts_and_discounts":
+            MessageLookupByLibrary.simpleMessage("خصومات و هدايا"),
         "customer_invoice_profit":
             MessageLookupByLibrary.simpleMessage("ارباح قوائم الزبون"),
         "customer_name": MessageLookupByLibrary.simpleMessage("الأسم"),
