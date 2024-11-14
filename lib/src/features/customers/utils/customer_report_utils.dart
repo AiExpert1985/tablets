@@ -32,6 +32,7 @@ void showInvoicesReport(BuildContext context, List<List<dynamic>> invoices, Stri
     dropdownIndex: 4,
     dropdownList: selectionList,
     dropdownLabel: S.of(context).invoice_status,
+    useOriginalTransaction: true,
   );
 }
 
@@ -42,6 +43,7 @@ void showDueInvoicesReport(BuildContext context, List<List<dynamic>> invoices, S
     invoices,
     title: title,
     sumIndex: 7,
+    useOriginalTransaction: true,
   );
 }
 
@@ -52,6 +54,7 @@ void showProfitReport(BuildContext context, List<List<dynamic>> invoices, String
     invoices,
     title: title,
     sumIndex: 4,
+    useOriginalTransaction: true,
   );
 }
 

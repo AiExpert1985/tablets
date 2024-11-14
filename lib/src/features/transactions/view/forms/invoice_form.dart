@@ -70,10 +70,10 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
     }
     final processedInvoices =
         getCustomerProcessedInvoices(context, customerTransactions, selectedCustomer);
-    final openInvoices = getOpenInvoices(context, processedInvoices);
-    final totalDebt = getTotalDebt(openInvoices, 6);
-    final dueInvoices = getDueInvoices(context, openInvoices);
-    final dueDebt = getDueDebt(dueInvoices, 6);
+    final openInvoices = getOpenInvoices(context, processedInvoices, 5);
+    final totalDebt = getTotalDebt(openInvoices, 7);
+    final dueInvoices = getDueInvoices(context, openInvoices, 5);
+    final dueDebt = getDueDebt(dueInvoices, 7);
     final creditLimit = selectedCustomer.creditLimit;
     final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
     return totalAfterCurrentTransaction < creditLimit && dueDebt <= 0;

@@ -47,12 +47,14 @@ List<List<dynamic>> customerMatching(
   return matchingTransactions.reversed.toList();
 }
 
-List<List<dynamic>> getOpenInvoices(BuildContext context, List<List<dynamic>> processedInvoices) {
+List<List<dynamic>> getOpenInvoices(
+    BuildContext context, List<List<dynamic>> processedInvoices, int statusIndex) {
   if (processedInvoices.isEmpty) return [];
   String openStatus = S.of(context).invoice_status_open;
   String dueStatus = S.of(context).invoice_status_due;
-  final openInvoices =
-      processedInvoices.where((item) => item[4] == openStatus || item[4] == dueStatus).toList();
+  final openInvoices = processedInvoices
+      .where((item) => item[statusIndex] == openStatus || item[statusIndex] == dueStatus)
+      .toList();
   // skip last index, which stores the profit of the invoice
   final openInvoicesWithoutProfit = openInvoices
       .map((innerList) => innerList.sublist(0, innerList.length - 1)) // Skip the last index
@@ -61,16 +63,18 @@ List<List<dynamic>> getOpenInvoices(BuildContext context, List<List<dynamic>> pr
 }
 
 List<List<dynamic>> getDueInvoices(
-    BuildContext context, List<List<dynamic>> openInvoicesWithoutProfit) {
+    BuildContext context, List<List<dynamic>> openInvoicesWithoutProfit, int statusIndex) {
   if (openInvoicesWithoutProfit.isEmpty) return [];
   String dueStatus = S.of(context).invoice_status_due;
-  return openInvoicesWithoutProfit.where((item) => item[4] == dueStatus).toList();
+  return openInvoicesWithoutProfit.where((item) => item[statusIndex] == dueStatus).toList();
 }
 
-List<List<dynamic>> getClosedInvoices(BuildContext context, List<List<dynamic>> processedInvoices) {
+List<List<dynamic>> getClosedInvoices(
+    BuildContext context, List<List<dynamic>> processedInvoices, int statusIndex) {
   if (processedInvoices.isEmpty) return [];
   String closedStatus = S.of(context).invoice_status_closed;
-  final closedInvoices = processedInvoices.where((item) => item[4] == closedStatus).toList();
+  final closedInvoices =
+      processedInvoices.where((item) => item[statusIndex] == closedStatus).toList();
   // skip last index, which stores the profit of the invoice
   final closedInvoicesWithoutProfit = closedInvoices
       .map((innerList) => innerList.sublist(0, innerList.length - 1)) // Skip the last index
@@ -89,7 +93,7 @@ double getDueDebt(List<List<dynamic>> dueInvoices, int amountIndex) {
 }
 
 List<List<dynamic>> getInvoicesWithProfit(List<List<dynamic>> processedInvoices) {
-  List<int> skippedIndexes = [3, 5, 6];
+  List<int> skippedIndexes = [4, 6, 7];
   List<List<dynamic>> invoicesWithProfit = [];
   for (var invoice in processedInvoices) {
     List<dynamic> filteredInnerList = [];

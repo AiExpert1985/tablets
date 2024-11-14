@@ -6,6 +6,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
+import 'package:tablets/src/common/widgets/show_transaction_dialog.dart';
 
 void showReportDialog(
   BuildContext context,
@@ -19,22 +20,26 @@ void showReportDialog(
   int? sumIndex,
   double width = 800,
   double height = 700,
+  // if useOriginalTransaction is ture, it means first item is the orginal transaction
+  // it will not be displayed in the rows of data, but used to show the orginal transaction
+  // as a read only dialog when the row is pressed.
+  bool useOriginalTransaction = false,
 }) {
   showDialog(
     context: context,
     builder: (context) {
       return _DateFilterDialog(
-        title: title,
-        width: width,
-        height: height,
-        titleList: columnTitles,
-        dataList: dataList,
-        dateIndex: dateIndex,
-        dropdownIndex: dropdownIndex,
-        dropdownList: dropdownList,
-        dropdownLabel: dropdownLabel,
-        sumIndex: sumIndex,
-      );
+          title: title,
+          width: width,
+          height: height,
+          titleList: columnTitles,
+          dataList: dataList,
+          dateIndex: dateIndex,
+          dropdownIndex: dropdownIndex,
+          dropdownList: dropdownList,
+          dropdownLabel: dropdownLabel,
+          sumIndex: sumIndex,
+          useOriginalTransaction: useOriginalTransaction);
     },
   );
 }
@@ -50,6 +55,7 @@ class _DateFilterDialog extends StatefulWidget {
   final List<String>? dropdownList;
   final String? dropdownLabel;
   final int? sumIndex;
+  final bool useOriginalTransaction;
 
   const _DateFilterDialog({
     required this.width,
@@ -62,6 +68,7 @@ class _DateFilterDialog extends StatefulWidget {
     this.dropdownList,
     this.dropdownLabel,
     this.sumIndex,
+    required this.useOriginalTransaction,
   });
 
   @override
@@ -259,23 +266,39 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         itemBuilder: (context, index) {
           final data = filteredList[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: data.map((item) {
-                if (item is DateTime) item = formatDate(item);
-                return SizedBox(
-                  width: widget.width / widget.titleList.length,
-                  child: Text(
-                    item.toString(),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }).toList(),
-            ),
-          );
+              padding: const EdgeInsets.symmetric(vertical: 5.0), child: _buildDataRow(data));
         },
       ),
+    );
+  }
+
+  Widget _buildDataRow(List<dynamic> data) {
+    // if useOriginalTransaction is true, it means first item is Transaction
+    // we don't want to display it, we want to used it as a button that show
+    // a read only transaction dialog
+    final itemsToDisplay = widget.useOriginalTransaction
+        ? data.sublist(1, data.length) // Exclude the last item
+        : data;
+    return InkWell(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: itemsToDisplay.map((item) {
+          if (item is DateTime) item = formatDate(item);
+          return SizedBox(
+            width: widget.width / widget.titleList.length,
+            child: Text(
+              item.toString(),
+              textAlign: TextAlign.center,
+            ),
+          );
+        }).toList(),
+      ),
+      onTap: () {
+        if (widget.useOriginalTransaction) {
+          // if useOriginalTransaction the, first item is alway the orginal transaction
+          showReadOnlyTransaction(context, data[0]);
+        }
+      },
     );
   }
 

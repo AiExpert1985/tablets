@@ -282,19 +282,19 @@ void _processCustomerTransactions(BuildContext context, List<Map<String, dynamic
     _processedInvoicesList.add(processedInvoices);
     final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
     _invoicesWithProfitList.add(invoicesWithProfit);
-    final totalProfit = getTotalProfit(invoicesWithProfit, 4);
+    final totalProfit = getTotalProfit(invoicesWithProfit, 5);
     _totalProfitList.add(totalProfit);
-    final closedInvoices = getClosedInvoices(context, processedInvoices);
+    final closedInvoices = getClosedInvoices(context, processedInvoices, 5);
     _closedInvoicesList.add(closedInvoices);
-    final averageClosingDays = calculateAverageClosingDays(closedInvoices, 5);
+    final averageClosingDays = calculateAverageClosingDays(closedInvoices, 6);
     _averageInvoiceClosingDaysList.add(averageClosingDays);
-    final openInvoices = getOpenInvoices(context, processedInvoices);
+    final openInvoices = getOpenInvoices(context, processedInvoices, 5);
     _openInvoicesList.add(openInvoices);
-    final totalDebt = getTotalDebt(openInvoices, 6);
+    final totalDebt = getTotalDebt(openInvoices, 7);
     _totalDebtList.add(totalDebt);
-    final dueInvoices = getDueInvoices(context, openInvoices);
+    final dueInvoices = getDueInvoices(context, openInvoices, 5);
     _dueInvoicesList.add(dueInvoices);
-    final dueDebt = getDueDebt(dueInvoices, 6);
+    final dueDebt = getDueDebt(dueInvoices, 7);
     _dueDebtList.add(dueDebt);
   }
 }

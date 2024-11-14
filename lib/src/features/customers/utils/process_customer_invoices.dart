@@ -24,9 +24,12 @@ class InvoiceInfo {
   List<ReceiptUsed> receiptsUsed;
   Duration durationToClose;
   double profit;
+  // store a copy of orignal tranasction to be used later to display a read only version of
+  // the transaction
+  Transaction originalTransaction;
 
   InvoiceInfo(this.type, this.number, this.date, this.totalAmount, this.amountLeft, this.status,
-      this.receiptsUsed, this.durationToClose, this.profit);
+      this.receiptsUsed, this.durationToClose, this.profit, this.originalTransaction);
 }
 
 List<InvoiceInfo> processTransactions(List<Map<String, dynamic>> transactions) {
@@ -76,7 +79,7 @@ List<InvoiceInfo> processTransactions(List<Map<String, dynamic>> transactions) {
         ? lastReceiptDate.difference(invoice.date)
         : DateTime.now().difference(invoice.date);
     result.add(InvoiceInfo(invoice.transactionType, invoice.number.toString(), invoice.date,
-        invoice.totalAmount, amountLeft, status, usedReceipts, durationToClose, profit));
+        invoice.totalAmount, amountLeft, status, usedReceipts, durationToClose, profit, invoice));
   }
   return result;
 }
@@ -106,6 +109,7 @@ List<List<dynamic>> getCustomerProcessedInvoices(
       }
     }
     invoicesStatus.add([
+      invoice.originalTransaction,
       invoice.type == TransactionType.initialCredit.name ? '' : invoice.number,
       invoice.date,
       invoice.totalAmount,
