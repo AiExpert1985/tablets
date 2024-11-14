@@ -35,7 +35,7 @@ class StatementForm extends ConsumerWidget {
     final customerRepository = ref.read(customerRepositoryProvider);
     final vendorRepository = ref.read(vendorRepositoryProvider);
     final productRepository = ref.read(productRepositoryProvider);
-    final counterPartyRepository = isGift ? vendorRepository : customerRepository;
+    final counterPartyRepository = isGift ? customerRepository : vendorRepository;
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(

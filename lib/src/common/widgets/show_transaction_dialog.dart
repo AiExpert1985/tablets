@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
+import 'package:tablets/src/common/widgets/read_only_transaction_forms/read_only_expenditure_form.dart';
 import 'package:tablets/src/common/widgets/read_only_transaction_forms/read_only_form_field.dart';
 import 'package:tablets/src/common/widgets/read_only_transaction_forms/read_only_invoice_form.dart';
 import 'package:tablets/src/common/widgets/read_only_transaction_forms/read_only_receipt_form.dart';
+import 'package:tablets/src/common/widgets/read_only_transaction_forms/read_only_statement_form.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 
 void showReadOnlyTransaction(BuildContext context, Transaction transaction) {
@@ -41,15 +43,15 @@ Widget _selectTransactionForm(Transaction transaction) {
   if (transaction.transactionType == TransactionType.vendorReceipt.name) {
     return ReadOnlyTransactionReceipt(transaction, isVendor: true);
   }
-  // if (transactionType == TransactionType.gifts.name) {
-  //   return StatementForm(titles[transactionType]!, isGift: true);
-  // }
-  // if (transactionType == TransactionType.damagedItems.name) {
-  //   return StatementForm(titles[transactionType]!);
-  // }
-  // if (transactionType == TransactionType.expenditures.name) {
-  //   return ExpenditureForm(titles[transactionType]!);
-  // }
+  if (transaction.transactionType == TransactionType.gifts.name) {
+    return ReadOnlyStatementTransaction(transaction, isGift: true);
+  }
+  if (transaction.transactionType == TransactionType.damagedItems.name) {
+    return ReadOnlyStatementTransaction(transaction);
+  }
+  if (transaction.transactionType == TransactionType.expenditures.name) {
+    return ReadOnlyExpenditureTransaction(transaction);
+  }
   if (transaction.transactionType == TransactionType.initialCredit.name) {
     return _buildInitialCredit(transaction);
   }

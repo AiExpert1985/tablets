@@ -180,6 +180,6 @@
     "invoice_status_closed": "مغلق",
     "invoice_status_due": "مستحق",
     "average_invoice_closing_duration": "معدل ايام الاغلاق",
-    "customer_invoice_profit": "ارباح الزبون",
+    "customer_invoice_profit": "ارباح قوائم الزبون",
     "invoice_profit": "ربح القائمة"
 }

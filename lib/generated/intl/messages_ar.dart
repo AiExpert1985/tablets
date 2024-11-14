@@ -48,7 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "current_debt": MessageLookupByLibrary.simpleMessage("الدين الكلي"),
         "customer": MessageLookupByLibrary.simpleMessage("الزبون"),
         "customer_invoice_profit":
-            MessageLookupByLibrary.simpleMessage("ارباح الزبون"),
+            MessageLookupByLibrary.simpleMessage("ارباح قوائم الزبون"),
         "customer_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "customers": MessageLookupByLibrary.simpleMessage("الزبائن"),
         "daily_income": MessageLookupByLibrary.simpleMessage("الوارد اليومي"),

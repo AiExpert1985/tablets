@@ -1,30 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/values/form_dimenssions.dart';
-import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart' as settings;
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/read_only_transaction_forms/read_only_form_field.dart';
-import 'package:tablets/src/common/widgets/read_only_transaction_forms/read_only_item_list.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 
-class ReadOnlyTransactionInvoice extends StatelessWidget {
-  const ReadOnlyTransactionInvoice(this.transaction,
-      {this.isVendor = false, this.hideGifts = true, super.key});
+class ReadOnlyExpenditureTransaction extends ConsumerWidget {
+  const ReadOnlyExpenditureTransaction(this.transaction, {super.key});
+
   final Transaction transaction;
-  final bool hideGifts;
-  final bool isVendor;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      child: Container(
-        // color: backgroundColor,
+      child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 18),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            VerticalGap.xl,
-            _buildFirstRow(context, transaction, isVendor),
+            _buildFirstRow(context, transaction),
             VerticalGap.m,
             _buildSecondRow(context, transaction),
             VerticalGap.m,
@@ -33,49 +28,39 @@ class ReadOnlyTransactionInvoice extends StatelessWidget {
             _buildForthRow(context, transaction),
             VerticalGap.m,
             _buildFifthRow(context, transaction),
-            VerticalGap.m,
-            buildReadOnlyItemList(context, transaction, hideGifts, false),
-            VerticalGap.xxl,
-            _buildTotalsRow(context, transaction),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFirstRow(BuildContext context, Transaction transaction, bool isVendor) {
-    final nameLabel = isVendor ? S.of(context).vendor : S.of(context).customer;
-    final salesmanLabel = S.of(context).transaction_salesman;
+  Widget _buildFirstRow(BuildContext context, Transaction transaction) {
+    final nameLabel = S.of(context).transaction_expenditure_type;
     return Row(
       children: [
         readOnlyTextFormField(transaction.name, label: nameLabel),
-        if (!isVendor) HorizontalGap.l,
-        if (!isVendor) readOnlyTextFormField(transaction.salesman, label: salesmanLabel),
       ],
     );
   }
 
   Widget _buildSecondRow(BuildContext context, Transaction transaction) {
     final currencyLabel = S.of(context).transaction_currency;
-    final discountLabel = S.of(context).transaction_discount;
+    final subTotalLabel = S.of(context).transaction_subTotal_amount;
     return Row(
       children: [
         readOnlyTextFormField(transaction.currency, label: currencyLabel),
         HorizontalGap.l,
-        readOnlyTextFormField(transaction.discount, label: discountLabel),
+        readOnlyTextFormField(transaction.subTotalAmount, label: subTotalLabel),
       ],
     );
   }
 
   Widget _buildThirdRow(BuildContext context, Transaction transaction) {
     final numberLabel = S.of(context).transaction_number;
-    final paymentTypeLabel = S.of(context).transaction_payment_type;
     final dateLabel = S.of(context).transaction_date;
     return Row(
       children: [
         readOnlyTextFormField(transaction.number, label: numberLabel),
-        HorizontalGap.l,
-        readOnlyTextFormField(transaction.currency, label: paymentTypeLabel),
         HorizontalGap.l,
         readOnlyTextFormField(transaction.currency, label: dateLabel),
       ],
@@ -101,19 +86,5 @@ class ReadOnlyTransactionInvoice extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Widget _buildTotalsRow(BuildContext context, Transaction transaction) {
-    final totalSumLabel = S.of(context).invoice_total_price;
-    final totalWeightLabel = S.of(context).invoice_total_weight;
-    return SizedBox(
-        width: customerInvoiceFormWidth * 0.6,
-        child: Row(
-          children: [
-            readOnlyTextFormField(transaction.totalAmount, label: totalSumLabel),
-            HorizontalGap.xxl,
-            readOnlyTextFormField(transaction.totalWeight, label: totalWeightLabel),
-          ],
-        ));
   }
 }
