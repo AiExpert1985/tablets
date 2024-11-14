@@ -34,7 +34,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "amount": MessageLookupByLibrary.simpleMessage("المبلغ"),
         "approve": MessageLookupByLibrary.simpleMessage("موافق"),
         "average_invoice_closing_duration":
-            MessageLookupByLibrary.simpleMessage("معدل الاغلاق (ايام)"),
+            MessageLookupByLibrary.simpleMessage("معدل ايام الاغلاق"),
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),
@@ -116,6 +116,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("تعاملات داخلية"),
         "invoice_close_duration":
             MessageLookupByLibrary.simpleMessage("المدة (يوم)"),
+        "invoice_profit": MessageLookupByLibrary.simpleMessage("ربح القائمة"),
         "invoice_status": MessageLookupByLibrary.simpleMessage("الحالة"),
         "invoice_status_closed": MessageLookupByLibrary.simpleMessage("مغلق"),
         "invoice_status_due": MessageLookupByLibrary.simpleMessage("مستحق"),

@@ -20,12 +20,12 @@ void showCustomerMatchingReport(
   );
 }
 
-void showInvoicesReport(BuildContext context, List<List<dynamic>> transactionList, String title) {
+void showInvoicesReport(BuildContext context, List<List<dynamic>> invoices, String title) {
   final selectionList = _getInvoiceStatusDropList(context);
   showReportDialog(
     context,
     _getInvoiceReportTitles(context),
-    transactionList,
+    invoices,
     title: title,
     sumIndex: 6,
     dateIndex: 1,
@@ -35,14 +35,23 @@ void showInvoicesReport(BuildContext context, List<List<dynamic>> transactionLis
   );
 }
 
-void showDueInvoicesReport(
-    BuildContext context, List<List<dynamic>> transactionList, String title) {
+void showDueInvoicesReport(BuildContext context, List<List<dynamic>> invoices, String title) {
   showReportDialog(
     context,
     _getInvoiceReportTitles(context),
-    transactionList,
+    invoices,
     title: title,
     sumIndex: 7,
+  );
+}
+
+void showProfitReport(BuildContext context, List<List<dynamic>> invoices, String title) {
+  showReportDialog(
+    context,
+    _getProfitReportTitles(context),
+    invoices,
+    title: title,
+    sumIndex: 4,
   );
 }
 
@@ -64,6 +73,16 @@ List<String> _getInvoiceReportTitles(BuildContext context) {
     S.of(context).invoice_status,
     S.of(context).invoice_close_duration,
     S.of(context).remaining_amount,
+  ];
+}
+
+List<String> _getProfitReportTitles(BuildContext context) {
+  return [
+    S.of(context).transaction_number,
+    S.of(context).transaction_date,
+    S.of(context).transaction_amount,
+    S.of(context).invoice_status,
+    S.of(context).invoice_profit,
   ];
 }
 

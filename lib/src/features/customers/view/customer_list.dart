@@ -9,11 +9,11 @@ import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
-import 'package:tablets/src/features/transactions/utils/customer_report_utils.dart';
-import 'package:tablets/src/features/transactions/utils/open_invoices_calculation.dart';
+import 'package:tablets/src/features/customers/utils/customer_report_utils.dart';
+import 'package:tablets/src/features/customers/utils/process_customer_invoices.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/transactions/utils/customer_screen_utils.dart';
+import 'package:tablets/src/features/customers/utils/customer_screen_utils.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -26,10 +26,14 @@ List<Map<String, dynamic>> _transactionsList = [];
 List<Customer> _customersList = [];
 List<List<Map<String, dynamic>>> _customerTransactionsList = [];
 List<List<List<dynamic>>> _processedInvoicesList = [];
+List<List<List<dynamic>>> _closedInvoicesList = [];
 List<List<List<dynamic>>> _openInvoicesList = [];
 List<double> _totalDebtList = [];
 List<List<List<dynamic>>> _dueInvoicesList = [];
 List<double> _dueDebtList = [];
+List<double> _averageInvoiceClosingDaysList = [];
+List<List<List<dynamic>>> _invoicesWithProfitList = [];
+List<double> _totalProfitList = [];
 
 Widget buildCustomerList(BuildContext context, WidgetRef ref) {
   final transactionProvider = ref.read(transactionRepositoryProvider);
@@ -87,6 +91,12 @@ Widget _buildHeaderRow(BuildContext context) {
       .length;
   double totalDebtSum = _totalDebtList.reduce((a, b) => a + b);
   double totalDueDebtSum = _dueDebtList.reduce((a, b) => a + b);
+  double totalProfitSum = _totalProfitList.reduce((a, b) => a + b);
+
+  double averageClosingDays = _averageInvoiceClosingDaysList.isNotEmpty
+      ? _averageInvoiceClosingDaysList.reduce((a, b) => a + b) /
+          _averageInvoiceClosingDaysList.length
+      : 0.0;
 
   return Padding(
     padding: const EdgeInsets.all(8.0),
@@ -117,8 +127,8 @@ Widget _buildHeaderRow(BuildContext context) {
               Expanded(child: _buildHeader('(${numberToText(totalDebtSum)})')),
               Expanded(child: _buildHeader('$totalOpenInvoices ($totalDueInvoices)')),
               Expanded(child: _buildHeader('(${numberToText(totalDueDebtSum)})')),
-              const Expanded(child: SizedBox()), // Placeholder for the third column
-              const Expanded(child: SizedBox()), // Placeholder for the third column
+              Expanded(child: _buildHeader('(${numberToText(averageClosingDays)})')),
+              Expanded(child: _buildHeader('(${numberToText(totalProfitSum)})')),
             ],
           ),
         ),
@@ -135,12 +145,16 @@ Widget _buildDataRow(
 ) {
   final customer = _customersList[index];
   final customerTransactions = _customerTransactionsList[index];
-  final processedInvoices = _processedInvoicesList[index];
-  final numOpenInvoices = _openInvoicesList[index].length;
+  final closedInvoices = _closedInvoicesList[index];
+  final invoiceAverageClosingDays = _averageInvoiceClosingDaysList[index];
+  final openInvoices = _openInvoicesList[index];
+  final numOpenInvoices = openInvoices.length;
   final dueInvoices = _dueInvoicesList[index];
   final numDueInvoices = dueInvoices.length;
   final totalDebt = _totalDebtList[index];
   final dueDebt = _dueDebtList[index];
+  final invoiceWithProfit = _invoicesWithProfitList[index];
+  final profit = _totalProfitList[index];
   final matchingList = customerMatching(customerTransactions, customer, context);
   bool isValidCustomer = _isValidCustomer(dueDebt, totalDebt, customer);
   Color color = isValidCustomer ? Colors.black87 : Colors.red;
@@ -172,8 +186,8 @@ Widget _buildDataRow(
             Expanded(
               child: InkWell(
                 child: _buildDataCell('$numOpenInvoices ($numDueInvoices)', color),
-                onTap: () => showInvoicesReport(context, processedInvoices,
-                    '${customer.name}  ( ${processedInvoices.length} )'),
+                onTap: () => showInvoicesReport(
+                    context, openInvoices, '${customer.name}  ( $numOpenInvoices )'),
               ),
             ),
             Expanded(
@@ -183,8 +197,19 @@ Widget _buildDataRow(
                     context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
               ),
             ),
-            Expanded(child: _buildDataCell('TODO', color)),
-            Expanded(child: _buildDataCell('TODO', color)),
+            Expanded(
+              child: InkWell(
+                child: _buildDataCell(numberToText(invoiceAverageClosingDays), color),
+                onTap: () => showInvoicesReport(
+                    context, closedInvoices, '${customer.name}  ( $invoiceAverageClosingDays )'),
+              ),
+            ),
+            Expanded(
+              child: InkWell(
+                child: _buildDataCell(numberToText(profit), color),
+                onTap: () => showProfitReport(context, invoiceWithProfit, customer.name),
+              ),
+            ),
           ],
         ),
       ],
@@ -253,18 +278,23 @@ void _processCustomerTransactions(BuildContext context, List<Map<String, dynamic
         totalAmount: customer.initialCredit,
       ).toMap());
     }
-    final processedInvoices = getCustomerInvoicesStatus(context, customerTransactions, customer);
+    final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
     _processedInvoicesList.add(processedInvoices);
+    final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
+    _invoicesWithProfitList.add(invoicesWithProfit);
+    final totalProfit = getTotalProfit(invoicesWithProfit, 4);
+    _totalProfitList.add(totalProfit);
+    final closedInvoices = getClosedInvoices(context, processedInvoices);
+    _closedInvoicesList.add(closedInvoices);
+    final averageClosingDays = calculateAverageClosingDays(closedInvoices, 5);
+    _averageInvoiceClosingDaysList.add(averageClosingDays);
     final openInvoices = getOpenInvoices(context, processedInvoices);
     _openInvoicesList.add(openInvoices);
-
-    final totalDebt = getTotalDebt(openInvoices);
+    final totalDebt = getTotalDebt(openInvoices, 6);
     _totalDebtList.add(totalDebt);
     final dueInvoices = getDueInvoices(context, openInvoices);
-
     _dueInvoicesList.add(dueInvoices);
-
-    final dueDebt = getDueDebt(dueInvoices);
+    final dueDebt = getDueDebt(dueInvoices, 6);
     _dueDebtList.add(dueDebt);
   }
 }

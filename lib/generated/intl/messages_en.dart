@@ -117,6 +117,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Internal transactions"),
         "invoice_close_duration":
             MessageLookupByLibrary.simpleMessage("Invoice closing duration"),
+        "invoice_profit":
+            MessageLookupByLibrary.simpleMessage("Invoice profit"),
         "invoice_status":
             MessageLookupByLibrary.simpleMessage("Invoice status"),
         "invoice_status_closed": MessageLookupByLibrary.simpleMessage("Closed"),

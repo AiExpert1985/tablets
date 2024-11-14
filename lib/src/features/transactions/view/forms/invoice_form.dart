@@ -5,7 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart' as transaction;
-import 'package:tablets/src/features/transactions/utils/customer_screen_utils.dart';
+import 'package:tablets/src/features/customers/utils/customer_screen_utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -23,7 +23,7 @@ import 'package:tablets/src/features/products/repository/product_repository_prov
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
-import 'package:tablets/src/features/transactions/utils/open_invoices_calculation.dart';
+import 'package:tablets/src/features/customers/utils/process_customer_invoices.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
@@ -69,11 +69,11 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
       ).toMap());
     }
     final processedInvoices =
-        getCustomerInvoicesStatus(context, customerTransactions, selectedCustomer);
+        getCustomerProcessedInvoices(context, customerTransactions, selectedCustomer);
     final openInvoices = getOpenInvoices(context, processedInvoices);
-    final totalDebt = getTotalDebt(openInvoices);
+    final totalDebt = getTotalDebt(openInvoices, 6);
     final dueInvoices = getDueInvoices(context, openInvoices);
-    final dueDebt = getDueDebt(dueInvoices);
+    final dueDebt = getDueDebt(dueInvoices, 6);
     final creditLimit = selectedCustomer.creditLimit;
     final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
     return totalAfterCurrentTransaction < creditLimit && dueDebt <= 0;

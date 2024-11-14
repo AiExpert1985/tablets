@@ -23,16 +23,15 @@ class InvoiceInfo {
   String status;
   List<ReceiptUsed> receiptsUsed;
   Duration durationToClose;
+  double profit;
 
   InvoiceInfo(this.type, this.number, this.date, this.totalAmount, this.amountLeft, this.status,
-      this.receiptsUsed, this.durationToClose);
+      this.receiptsUsed, this.durationToClose, this.profit);
 }
 
 List<InvoiceInfo> processTransactions(List<Map<String, dynamic>> transactions) {
-  // Separate invoices and receipts
   List<Transaction> invoices = [];
   List<Transaction> receipts = [];
-
   for (var trans in transactions) {
     Transaction transaction = Transaction.fromMap(trans);
     if (transaction.transactionType == TransactionType.customerInvoice.name ||
@@ -43,66 +42,46 @@ List<InvoiceInfo> processTransactions(List<Map<String, dynamic>> transactions) {
       receipts.add(transaction);
     }
   }
-
-  // Sort invoices and receipts by date
   invoices.sort((a, b) => a.date.compareTo(b.date));
   receipts.sort((a, b) => a.date.compareTo(b.date));
-
   List<InvoiceInfo> result = [];
   double remainingAmount = 0;
   List<ReceiptUsed> usedReceipts = [];
   int receiptIndex = 0;
-
   for (var invoice in invoices) {
     remainingAmount = invoice.totalAmount;
     usedReceipts = [];
     DateTime lastReceiptDate = invoice.date; // Initialize to the invoice date
-
+    final profit = invoice.transactionTotalProfit ?? 0;
     while (remainingAmount > 0 && receiptIndex < receipts.length) {
       var receipt = receipts[receiptIndex];
-
       if (receipt.totalAmount > 0) {
         double amountToUse =
             (receipt.totalAmount >= remainingAmount) ? remainingAmount : receipt.totalAmount;
-
-        // Create a ReceiptUsed instance for the amount being used
         usedReceipts.add(ReceiptUsed(receipt.transactionType, receipt.number.toString(),
             receipt.date, receipt.totalAmount, amountToUse));
-
-        // Deduct the amount used from the receipt and the invoice
         remainingAmount -= amountToUse;
         receipt.totalAmount -= amountToUse;
-
-        // Update the last receipt date
         lastReceiptDate = receipt.date;
-
-        // If the receipt is fully used, move to the next receipt
         if (receipt.totalAmount <= 0) {
           receiptIndex++;
         }
       } else {
-        // Move to the next receipt if the current one is fully used
         receiptIndex++;
       }
     }
-
-    // Determine status and amount left
     String status = remainingAmount > 0 ? 'open' : 'closed';
     double amountLeft = remainingAmount > 0 ? remainingAmount : 0;
-
-    // Calculate duration to close
     Duration durationToClose = status == 'closed'
         ? lastReceiptDate.difference(invoice.date)
         : DateTime.now().difference(invoice.date);
-
     result.add(InvoiceInfo(invoice.transactionType, invoice.number.toString(), invoice.date,
-        invoice.totalAmount, amountLeft, status, usedReceipts, durationToClose));
+        invoice.totalAmount, amountLeft, status, usedReceipts, durationToClose, profit));
   }
-
   return result;
 }
 
-List<List<dynamic>> getCustomerInvoicesStatus(
+List<List<dynamic>> getCustomerProcessedInvoices(
     BuildContext context, List<Map<String, dynamic>> transactions, Customer customer) {
   List<List<dynamic>> invoicesStatus = [];
   List<InvoiceInfo> processedInvoices = processTransactions(transactions);
@@ -133,7 +112,8 @@ List<List<dynamic>> getCustomerInvoicesStatus(
       receiptInfo,
       status,
       invoice.durationToClose.inDays,
-      amountLeft
+      amountLeft,
+      invoice.profit,
     ]);
   }
   return sortByDate(invoicesStatus, 1);

@@ -1869,6 +1869,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Invoice profit`
+  String get invoice_profit {
+    return Intl.message(
+      'Invoice profit',
+      name: 'invoice_profit',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
