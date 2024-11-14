@@ -36,6 +36,7 @@ List<List<dynamic>> customerMatching(
         : 1;
     final transactionAmount = transaction.totalAmount * amountSign;
     matchingTransactions.add([
+      transaction,
       translateDbTextToScreenText(context, transactionType),
       transaction.transactionType == TransactionType.initialCredit.name
           ? ''

@@ -7,17 +7,14 @@ import 'package:tablets/src/common/widgets/dialog_report.dart';
 void showCustomerMatchingReport(
     BuildContext context, List<List<dynamic>> transactionList, String title) {
   final selectionList = _getTransactionTypeDropList(context);
-  showReportDialog(
-    context,
-    _getCustomerMatchingReportTitles(context),
-    transactionList,
-    dateIndex: 2,
-    title: title,
-    dropdownIndex: 0,
-    dropdownList: selectionList,
-    dropdownLabel: S.of(context).transaction_type,
-    sumIndex: 3,
-  );
+  showReportDialog(context, _getCustomerMatchingReportTitles(context), transactionList,
+      dateIndex: 3,
+      title: title,
+      dropdownIndex: 1,
+      dropdownList: selectionList,
+      dropdownLabel: S.of(context).transaction_type,
+      sumIndex: 4,
+      useOriginalTransaction: true);
 }
 
 void showInvoicesReport(BuildContext context, List<List<dynamic>> invoices, String title) {
@@ -27,9 +24,9 @@ void showInvoicesReport(BuildContext context, List<List<dynamic>> invoices, Stri
     _getInvoiceReportTitles(context),
     invoices,
     title: title,
-    sumIndex: 6,
-    dateIndex: 1,
-    dropdownIndex: 4,
+    sumIndex: 7,
+    dateIndex: 2,
+    dropdownIndex: 5,
     dropdownList: selectionList,
     dropdownLabel: S.of(context).invoice_status,
     useOriginalTransaction: true,
@@ -42,7 +39,7 @@ void showDueInvoicesReport(BuildContext context, List<List<dynamic>> invoices, S
     _getInvoiceReportTitles(context),
     invoices,
     title: title,
-    sumIndex: 7,
+    sumIndex: 8,
     useOriginalTransaction: true,
   );
 }
@@ -53,7 +50,7 @@ void showProfitReport(BuildContext context, List<List<dynamic>> invoices, String
     _getProfitReportTitles(context),
     invoices,
     title: title,
-    sumIndex: 4,
+    sumIndex: 6,
     useOriginalTransaction: true,
   );
 }

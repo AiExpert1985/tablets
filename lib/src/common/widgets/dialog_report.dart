@@ -265,8 +265,18 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         separatorBuilder: (context, index) => const Divider(thickness: 0.2, color: Colors.grey),
         itemBuilder: (context, index) {
           final data = filteredList[index];
-          return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0), child: _buildDataRow(data));
+          return InkWell(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: _buildDataRow(data),
+            ),
+            onTap: () {
+              if (widget.useOriginalTransaction) {
+                // if useOriginalTransaction the, first item is alway the orginal transaction
+                showReadOnlyTransaction(context, data[0]);
+              }
+            },
+          );
         },
       ),
     );
@@ -279,26 +289,18 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     final itemsToDisplay = widget.useOriginalTransaction
         ? data.sublist(1, data.length) // Exclude the last item
         : data;
-    return InkWell(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: itemsToDisplay.map((item) {
-          if (item is DateTime) item = formatDate(item);
-          return SizedBox(
-            width: widget.width / widget.titleList.length,
-            child: Text(
-              item.toString(),
-              textAlign: TextAlign.center,
-            ),
-          );
-        }).toList(),
-      ),
-      onTap: () {
-        if (widget.useOriginalTransaction) {
-          // if useOriginalTransaction the, first item is alway the orginal transaction
-          showReadOnlyTransaction(context, data[0]);
-        }
-      },
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: itemsToDisplay.map((item) {
+        if (item is DateTime) item = formatDate(item);
+        return SizedBox(
+          width: widget.width / widget.titleList.length,
+          child: Text(
+            item.toString(),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }).toList(),
     );
   }
 
