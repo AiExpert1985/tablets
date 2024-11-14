@@ -197,9 +197,17 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
           label: S.of(context).transaction_discount,
           onChangedFn: (value) {
             formDataNotifier.updateProperties({discountKey: value});
+
             final subTotalAmount = formDataNotifier.getProperty(subTotalAmountKey);
             final totalAmount = subTotalAmount - value;
-            final updatedProperties = {totalAmountKey: totalAmount};
+            final itemsTotalProfit = formDataNotifier.getProperty(itemsTotalProfitKey) ?? 0;
+            final salesmanTransactionComssion =
+                formDataNotifier.getProperty(salesmanTransactionComssionKey) ?? 0;
+            final transactionTotalProfit = itemsTotalProfit - value - salesmanTransactionComssion;
+            final updatedProperties = {
+              transactionTotalProfitKey: transactionTotalProfit,
+              totalAmountKey: totalAmount,
+            };
             formDataNotifier.updateProperties(updatedProperties);
             textEditingNotifier.updateControllers(updatedProperties);
           },

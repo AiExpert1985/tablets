@@ -264,9 +264,8 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
         final salesmanCommission =
             formDataNotifier.getSubProperty(property, index, itemSalesmanCommissionKey);
         final salesmanTotalCommission = salesmanCommission * soldQuantity;
-        final itemTotalProfit = ((sellingPrice - buyingPrice) * soldQuantity) -
-            salesmanTotalCommission -
-            (giftQuantity * buyingPrice);
+        final itemTotalProfit =
+            ((sellingPrice - buyingPrice) * soldQuantity) - (giftQuantity * buyingPrice);
 
         formDataNotifier.updateSubProperties(
             property,
@@ -275,12 +274,13 @@ Widget _buildFormInputField(ItemFormData formDataNotifier, int index, double wid
               itemTotalProfitKey: itemTotalProfit
             },
             index: index);
-        final transactionTotalProfit =
-            _getTotal(formDataNotifier, property, itemTotalProfitKey) - discount;
+        final itemsTotalProfit = _getTotal(formDataNotifier, property, itemTotalProfitKey);
         final salesmanTransactionComssion =
             _getTotal(formDataNotifier, property, itemSalesmanTotalCommissionKey);
+        final transactionTotalProfit = itemsTotalProfit - discount - salesmanTransactionComssion;
         formDataNotifier.updateProperties(
           {
+            itemsTotalProfitKey: itemsTotalProfit,
             transactionTotalProfitKey: transactionTotalProfit,
             salesmanTransactionComssionKey: salesmanTransactionComssion
           },

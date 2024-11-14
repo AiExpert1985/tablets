@@ -38,6 +38,8 @@ class Transaction implements BaseItem {
   String? salesmanDbRef;
   String? sellingPriceType;
   double? transactionTotalProfit;
+  double?
+      itemsTotalProfit; // the difference between selling price & buying price for all items sold
   double? salesmanTransactionComssion;
 
   double totalAmount;
@@ -65,6 +67,7 @@ class Transaction implements BaseItem {
     this.salesmanDbRef,
     this.sellingPriceType, // retail or whole, item prices depends on it
     this.transactionTotalProfit,
+    this.itemsTotalProfit,
     this.salesmanTransactionComssion,
   });
 
@@ -94,6 +97,7 @@ class Transaction implements BaseItem {
       'salesmanDbRef': salesmanDbRef,
       'sellingPriceType': sellingPriceType,
       'transactionTotalProfit': transactionTotalProfit,
+      'itemsTotalProfit': itemsTotalProfit,
       'salesmanTransactionComssion': salesmanTransactionComssion,
     };
   }
@@ -120,6 +124,7 @@ class Transaction implements BaseItem {
       salesmanDbRef: map['salesmanDbRef'],
       sellingPriceType: map['sellingPriceType'],
       transactionTotalProfit: map['transactionTotalProfit'],
+      itemsTotalProfit: map['itemsTotalProfit'],
       salesmanTransactionComssion: map['salesmanTransactionComssion'],
     );
   }
