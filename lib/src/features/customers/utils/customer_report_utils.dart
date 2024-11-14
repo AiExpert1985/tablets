@@ -50,7 +50,7 @@ void showProfitReport(BuildContext context, List<List<dynamic>> invoices, String
     _getProfitReportTitles(context),
     invoices,
     title: title,
-    sumIndex: 6,
+    sumIndex: 5,
     useOriginalTransaction: true,
   );
 }

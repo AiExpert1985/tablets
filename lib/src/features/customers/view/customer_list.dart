@@ -31,7 +31,7 @@ List<List<List<dynamic>>> _openInvoicesList = [];
 List<double> _totalDebtList = [];
 List<List<List<dynamic>>> _dueInvoicesList = [];
 List<double> _dueDebtList = [];
-List<double> _averageInvoiceClosingDaysList = [];
+List<int> _averageInvoiceClosingDaysList = [];
 List<List<List<dynamic>>> _invoicesWithProfitList = [];
 List<double> _totalProfitList = [];
 

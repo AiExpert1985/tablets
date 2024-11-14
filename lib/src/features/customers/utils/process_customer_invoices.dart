@@ -120,5 +120,5 @@ List<List<dynamic>> getCustomerProcessedInvoices(
       invoice.profit,
     ]);
   }
-  return sortByDate(invoicesStatus, 1);
+  return sortByDate(invoicesStatus, 2);
 }

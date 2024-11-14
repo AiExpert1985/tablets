@@ -113,7 +113,7 @@ double getTotalProfit(List<List<dynamic>> invoicesWithProfit, int profitIndex) {
   return invoicesWithProfit.map((item) => item[profitIndex] as double).reduce((a, b) => a + b);
 }
 
-double calculateAverageClosingDays(List<List<dynamic>> processedInvoices, int daysIndex) {
+int calculateAverageClosingDays(List<List<dynamic>> processedInvoices, int daysIndex) {
   List<double> values = processedInvoices
       .where((innerList) => innerList.length > daysIndex && innerList[daysIndex] is num)
       .map((innerList) => innerList[daysIndex] as double)
@@ -121,5 +121,9 @@ double calculateAverageClosingDays(List<List<dynamic>> processedInvoices, int da
   double average = values.isNotEmpty
       ? values.reduce((a, b) => a + b) / values.length
       : 0.0; // Avoid division by zero
-  return average;
+  // by rounding to int, I sacrifice some accuracy for earsier understanding
+  // I think for user it is more understandable to see 15 days to close a transaction, than 15.73
+  // .73 doesn't make any effect on the result the user needs from this info
+  // since he just needs to know whether client is fast to payback or not
+  return average.round();
 }
