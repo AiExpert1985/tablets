@@ -23,14 +23,16 @@ class ProductForm extends ConsumerWidget {
     ref.watch(imagePickerProvider);
     return FormFrame(
       formKey: formController.formKey,
-      fields: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ImageSlider(imageUrls: formDataNotifier.data['imageUrls']),
-          VerticalGap.l,
-          const ProductFormFields(editMode: true),
-        ],
+      fields: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ImageSlider(imageUrls: formDataNotifier.data['imageUrls']),
+            VerticalGap.l,
+            const ProductFormFields(editMode: true),
+          ],
+        ),
       ),
       buttons: [
         IconButton(

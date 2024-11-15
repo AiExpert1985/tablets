@@ -176,7 +176,7 @@ void _processProductTransactions(BuildContext context, List<Map<String, dynamic>
     final productProcessedTransactions =
         getProductProcessedTransactions(context, _transactionsList, product);
     _productProcessedTransactionsList.add(productProcessedTransactions);
-    final productTotals = getProductTotals(productProcessedTransactions, product);
+    final productTotals = getProductTotals(productProcessedTransactions);
     _productTotalQuantityList.add(productTotals[0]);
     _productTotalProfitsList.add(productTotals[1]);
     _productTotalCommissionsList.add(productTotals[2]);

@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
@@ -15,6 +18,7 @@ class ProductFormFields extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.watch(productFormDataProvider.notifier);
     final repository = ref.read(categoryRepositoryProvider);
+
     return Column(
       children: [
         Row(
@@ -89,11 +93,11 @@ class ProductFormFields extends ConsumerWidget {
           children: [
             FormInputField(
               dataType: FieldDataType.num,
-              name: 'initialQuantity',
-              label: S.of(context).product_initial_quantitiy,
-              initialValue: formDataNotifier.getProperty('initialQuantity'),
+              name: 'salesmanCommission',
+              label: S.of(context).product_salesman_commission,
+              initialValue: formDataNotifier.getProperty('salesmanCommission'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'initialQuantity': value});
+                formDataNotifier.updateProperties({'salesmanCommission': value});
               },
             ),
             HorizontalGap.l,
@@ -157,14 +161,27 @@ class ProductFormFields extends ConsumerWidget {
           children: [
             FormInputField(
               dataType: FieldDataType.num,
-              name: 'salesmanCommission',
-              label: S.of(context).product_salesman_commission,
-              initialValue: formDataNotifier.getProperty('salesmanCommission'),
+              name: 'initialQuantity',
+              label: S.of(context).product_initial_quantitiy,
+              initialValue: formDataNotifier.getProperty('initialQuantity'),
               onChangedFn: (value) {
-                formDataNotifier.updateProperties({'salesmanCommission': value});
+                formDataNotifier.updateProperties({'initialQuantity': value});
               },
             ),
             HorizontalGap.l,
+            FormDatePickerField(
+              initialValue: _getInitialDate(formDataNotifier),
+              name: 'initialDate',
+              label: S.of(context).transaction_date,
+              onChangedFn: (date) {
+                formDataNotifier.updateProperties({'initialDate': Timestamp.fromDate(date!)});
+              },
+            ),
+          ],
+        ),
+        VerticalGap.m,
+        Row(
+          children: [
             FormInputField(
               isRequired: false,
               dataType: FieldDataType.text,
@@ -179,5 +196,12 @@ class ProductFormFields extends ConsumerWidget {
         )
       ],
     );
+  }
+
+  DateTime _getInitialDate(ItemFormData formDataNotifier) {
+    final initialDate = formDataNotifier.getProperty('initialDate');
+    if (initialDate == null) return DateTime.now();
+    if (initialDate is Timestamp) return initialDate.toDate();
+    return initialDate;
   }
 }

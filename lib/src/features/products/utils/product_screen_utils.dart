@@ -16,7 +16,7 @@ List<List<dynamic>> getProductProcessedTransactions(
       name: 'na',
       imageUrls: ['na'],
       number: 1000001,
-      date: DateTime.now(), //TODO must add initial quanity date
+      date: product.initialDate,
       currency: 'na',
       transactionType: TransactionType.initialCredit.name,
       totalAmount: product.initialQuantity as double,
@@ -25,7 +25,7 @@ List<List<dynamic>> getProductProcessedTransactions(
       initialTransaction,
       translateDbTextToScreenText(context, TransactionType.initialCredit.name),
       '',
-      initialTransaction.date,
+      product.initialDate,
       product.initialQuantity,
       0,
       0
@@ -53,9 +53,6 @@ List<List<dynamic>> getProductProcessedTransactions(
         totalQuantity += item['giftQuantity'] as int;
       } else if (type == TransactionType.damagedItems.name) {
         totalQuantity -= item['soldQuantity'] as int;
-      } else if (type == TransactionType.initialCredit.name) {
-        tempPrint(transactionMap);
-        number = '';
       } else {
         continue;
       }
@@ -74,8 +71,8 @@ List<List<dynamic>> getProductProcessedTransactions(
   return sortByDate(result, 3);
 }
 
-List<dynamic> getProductTotals(List<List<dynamic>> productTransactions, Product product) {
-  int totalQuantity = product.initialQuantity;
+List<dynamic> getProductTotals(List<List<dynamic>> productTransactions) {
+  int totalQuantity = 0;
   double totalProfit = 0.0;
   double totalSalesmanCommission = 0.0;
   for (var transaction in productTransactions) {

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tablets/src/common/interfaces/base_item.dart';
 
 class Product implements BaseItem {
@@ -20,6 +21,7 @@ class Product implements BaseItem {
   String category;
   String categoryDbRef;
   int initialQuantity;
+  DateTime initialDate;
   String? notes;
 
   Product({
@@ -39,6 +41,7 @@ class Product implements BaseItem {
     required this.category,
     required this.categoryDbRef,
     required this.initialQuantity,
+    required this.initialDate,
     this.notes,
   });
 
@@ -64,6 +67,7 @@ class Product implements BaseItem {
       'category': category,
       'categoryDbRef': categoryDbRef,
       'initialQuantity': initialQuantity,
+      'initialDate': initialDate,
       'notes': notes,
     };
   }
@@ -86,6 +90,8 @@ class Product implements BaseItem {
       category: map['category'] ?? '',
       categoryDbRef: map['categoryDbRef'] ?? '',
       initialQuantity: map['initialQuantity']?.toInt() ?? 0,
+      initialDate:
+          map['initialDate'] is Timestamp ? map['initialDate'].toDate() : map['initialDate'],
       notes: map['notes'] ?? '',
     );
   }
