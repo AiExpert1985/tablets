@@ -1889,6 +1889,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Days`
+  String get days {
+    return Intl.message(
+      'Days',
+      name: 'days',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

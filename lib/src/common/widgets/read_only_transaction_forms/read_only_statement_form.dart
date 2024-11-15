@@ -73,7 +73,7 @@ class ReadOnlyStatementTransaction extends ConsumerWidget {
   Widget _buildFourthRow(BuildContext context, Transaction transaction) {
     final totalAsTextlLabel = S.of(context).transaction_total_amount_as_text;
     return Visibility(
-      visible: settings.writeTotalAmountAsText,
+      visible: !settings.hideTransactionAmountAsText,
       child: Row(
         children: [
           readOnlyTextFormField(transaction.totalAsText, label: totalAsTextlLabel),

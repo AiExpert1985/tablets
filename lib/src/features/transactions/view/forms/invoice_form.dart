@@ -275,7 +275,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
 
   Widget _buildFifthRow(BuildContext context, ItemFormData formDataNotifier) {
     return Visibility(
-      visible: settings.writeTotalAmountAsText,
+      visible: !settings.hideTransactionAmountAsText,
       child: Row(
         children: [
           FormInputField(

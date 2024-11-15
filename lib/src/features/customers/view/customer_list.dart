@@ -94,6 +94,7 @@ Widget _buildHeaderRow(BuildContext context) {
   double totalDebtSum = _totalDebtList.reduce((a, b) => a + b);
   double totalDueDebtSum = _dueDebtList.reduce((a, b) => a + b);
   double totalProfitSum = _totalProfitList.reduce((a, b) => a + b);
+  double totalGifts = _totalGiftsAmountList.reduce((a, b) => a + b);
 
   double averageClosingDays = _averageInvoiceClosingDaysList.isNotEmpty
       ? _averageInvoiceClosingDaysList.reduce((a, b) => a + b) /
@@ -114,25 +115,29 @@ Widget _buildHeaderRow(BuildContext context) {
             Expanded(child: _buildHeader(S.of(context).num_open_invoice)),
             Expanded(child: _buildHeader(S.of(context).due_debt_amount)),
             Expanded(child: _buildHeader(S.of(context).average_invoice_closing_duration)),
-            Expanded(child: _buildHeader(S.of(context).customer_invoice_profit)),
+            Visibility(
+                visible: !hideCustomerProfit,
+                child: Expanded(child: _buildHeader(S.of(context).customer_invoice_profit))),
             Expanded(child: _buildHeader(S.of(context).customer_gifts_and_discounts)),
           ],
         ),
         VerticalGap.m,
         Visibility(
-          visible: showColumnTotals,
+          visible: !hideMainScreenColumnTotals,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const SizedBox(), // Placeholder for the first column
               const Expanded(child: SizedBox()), // Placeholder for the second column
               const Expanded(child: SizedBox()), // Placeholder for the third column
-              Expanded(child: _buildHeader('(${numberToText(totalDebtSum)})')),
+              Expanded(child: _buildHeader('($totalDebtSum)')),
               Expanded(child: _buildHeader('$totalOpenInvoices ($totalDueInvoices)')),
-              Expanded(child: _buildHeader('(${numberToText(totalDueDebtSum)})')),
-              Expanded(child: _buildHeader('(${numberToText(averageClosingDays)})')),
-              Expanded(child: _buildHeader('(${numberToText(totalProfitSum)})')),
-              const Expanded(child: SizedBox()), // Placeholder
+              Expanded(child: _buildHeader('($totalDueDebtSum)')),
+              Expanded(child: _buildHeader('($averageClosingDays ${S.of(context).days} )')),
+              Visibility(
+                  visible: !hideCustomerProfit,
+                  child: Expanded(child: _buildHeader('($totalProfitSum)'))),
+              Expanded(child: _buildHeader('($totalGifts)')), // Placeholder
             ],
           ),
         ),
@@ -208,10 +213,13 @@ Widget _buildDataRow(
                     context, closedInvoices, '${customer.name}  ( $invoiceAverageClosingDays )'),
               ),
             ),
-            Expanded(
-              child: InkWell(
-                child: _buildDataCell('$profit', color),
-                onTap: () => showProfitReport(context, invoiceWithProfit, customer.name),
+            Visibility(
+              visible: !hideCustomerProfit,
+              child: Expanded(
+                child: InkWell(
+                  child: _buildDataCell('$profit', color),
+                  onTap: () => showProfitReport(context, invoiceWithProfit, customer.name),
+                ),
               ),
             ),
             Expanded(

@@ -56,6 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "daily_income": MessageLookupByLibrary.simpleMessage("Daily income"),
         "date_picker_hint":
             MessageLookupByLibrary.simpleMessage("Select a date"),
+        "days": MessageLookupByLibrary.simpleMessage("Days"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
             "An error happened while adding to the database"),
         "db_error_deleting_doc": MessageLookupByLibrary.simpleMessage(

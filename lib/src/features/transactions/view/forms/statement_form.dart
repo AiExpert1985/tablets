@@ -139,7 +139,7 @@ class StatementForm extends ConsumerWidget {
 
   Widget _buildFourthRow(BuildContext context, ItemFormData formDataNotifier) {
     return Visibility(
-      visible: settings.writeTotalAmountAsText,
+      visible: !settings.hideTransactionAmountAsText,
       child: Row(
         children: [
           FormInputField(

@@ -179,8 +179,9 @@
     "invoice_status_open": "مفتوح",
     "invoice_status_closed": "مغلق",
     "invoice_status_due": "مستحق",
-    "average_invoice_closing_duration": "معدل ايام الاغلاق",
+    "average_invoice_closing_duration": "معدل الاغلاق",
     "customer_invoice_profit": "ارباح قوائم الزبون",
     "invoice_profit": "ربح القائمة",
-    "customer_gifts_and_discounts": "خصومات و هدايا"
+    "customer_gifts_and_discounts": "خصومات و هدايا",
+    "days": "ايام"
 }

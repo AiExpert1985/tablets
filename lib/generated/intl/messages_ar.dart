@@ -34,7 +34,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "amount": MessageLookupByLibrary.simpleMessage("المبلغ"),
         "approve": MessageLookupByLibrary.simpleMessage("موافق"),
         "average_invoice_closing_duration":
-            MessageLookupByLibrary.simpleMessage("معدل ايام الاغلاق"),
+            MessageLookupByLibrary.simpleMessage("معدل الاغلاق"),
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),
@@ -56,6 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "daily_income": MessageLookupByLibrary.simpleMessage("الوارد اليومي"),
         "date_picker_hint":
             MessageLookupByLibrary.simpleMessage("اختيار التاريخ"),
+        "days": MessageLookupByLibrary.simpleMessage("ايام"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات"),
         "db_error_deleting_doc": MessageLookupByLibrary.simpleMessage(

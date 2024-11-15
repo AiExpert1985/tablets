@@ -96,7 +96,7 @@ List<String> _getGiftsReportTitles(BuildContext context) {
     S.of(context).transaction_number,
     S.of(context).transaction_type,
     S.of(context).transaction_date,
-    S.of(context).transaction_amount,
+    S.of(context).customer_gifts_and_discounts,
   ];
 }
 

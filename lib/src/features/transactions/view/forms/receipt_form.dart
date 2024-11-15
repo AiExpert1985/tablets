@@ -203,7 +203,7 @@ class ReceiptForm extends ConsumerWidget {
 
   Widget _buildFifthRow(BuildContext context, ItemFormData formDataNotifier) {
     return Visibility(
-      visible: settings.writeTotalAmountAsText,
+      visible: !settings.hideTransactionAmountAsText,
       child: Row(
         children: [
           FormInputField(

@@ -143,7 +143,7 @@ List<List<dynamic>> getGiftsAndDiscounts(
         transaction.number,
         translateDbTextToScreenText(context, transaction.transactionType),
         transaction.date,
-        transaction.transactionTotalProfit ?? 0,
+        -(transaction.transactionTotalProfit ?? 0),
       ]);
     } else if (transactionMap[transactionTypeKey] == TransactionType.customerInvoice.name) {
       final transaction = Transaction.fromMap(transactionMap);
