@@ -56,8 +56,8 @@ Widget buildProductsList(BuildContext context, WidgetRef ref) {
                 Expanded(child: _buildHeader(S.of(context).product_category)),
                 Expanded(child: _buildHeader(S.of(context).product_salesman_commission)),
                 Expanded(child: _buildHeader(S.of(context).product_buying_price)),
-                Expanded(child: _buildHeader(S.of(context).product_sell_retail_price)),
                 Expanded(child: _buildHeader(S.of(context).product_sell_whole_price)),
+                Expanded(child: _buildHeader(S.of(context).product_sell_retail_price)),
                 Expanded(child: _buildHeader(S.of(context).product_stock_quantity)),
                 Expanded(child: _buildHeader(S.of(context).product_stock_amount)),
               ],
@@ -91,8 +91,8 @@ Widget buildProductsList(BuildContext context, WidgetRef ref) {
                             Expanded(child: _buildDataCell(product.category)),
                             Expanded(child: _buildDataCell(product.salesmanCommission.toString())),
                             Expanded(child: _buildDataCell(product.buyingPrice.toString())),
-                            Expanded(child: _buildDataCell(product.sellRetailPrice.toString())),
                             Expanded(child: _buildDataCell(product.sellWholePrice.toString())),
+                            Expanded(child: _buildDataCell(product.sellRetailPrice.toString())),
                             Expanded(child: _buildDataCell(totalQuantity.toString())),
                             Expanded(
                                 child: _buildDataCell(

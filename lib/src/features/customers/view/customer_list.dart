@@ -107,7 +107,7 @@ Widget _buildHeaderRow(BuildContext context) {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: _buildHeader('')),
+            _buildHeader(''),
             Expanded(child: _buildHeader(S.of(context).customer)),
             Expanded(child: _buildHeader(S.of(context).salesman_selection)),
             Expanded(child: _buildHeader(S.of(context).current_debt)),
@@ -124,7 +124,7 @@ Widget _buildHeaderRow(BuildContext context) {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Expanded(child: SizedBox()), // Placeholder for the first column
+              const SizedBox(), // Placeholder for the first column
               const Expanded(child: SizedBox()), // Placeholder for the second column
               const Expanded(child: SizedBox()), // Placeholder for the third column
               Expanded(child: _buildHeader('(${numberToText(totalDebtSum)})')),
@@ -171,15 +171,13 @@ Widget _buildDataRow(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: InkWell(
-                child: const CircleAvatar(
-                  radius: 15,
-                  foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
-                ),
-                onTap: () =>
-                    _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer),
+            InkWell(
+              child: const CircleAvatar(
+                radius: 15,
+                foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
               ),
+              onTap: () =>
+                  _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer),
             ),
             Expanded(child: _buildDataCell(customer.name, color)),
             Expanded(child: _buildDataCell(customer.salesman, color)),

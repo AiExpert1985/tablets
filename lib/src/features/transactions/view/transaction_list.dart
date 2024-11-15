@@ -73,6 +73,7 @@ class TransactionsList extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        const SizedBox(width: 16), // Placeholder for the avatar
         Expanded(child: _buildHeader(S.of(context).transaction_type)),
         Expanded(child: _buildHeader(S.of(context).transaction_date)),
         Expanded(child: _buildHeader(S.of(context).transaction_name)),
@@ -98,34 +99,26 @@ class TransactionsList extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: InkWell(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CircleAvatar(
-                      radius: 15,
-                      foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(transactionTypeScreenName),
-                  ],
-                ),
-                onTap: () {
-                  backgroundColorNofifier.state = Colors.white;
-                  TransactionShowFormUtils.showForm(
-                    context,
-                    imagePickerNotifier,
-                    formDataNotifier,
-                    textEditingNotifier,
-                    allTransactions,
-                    backgroundColorNofifier,
-                    transaction: transaction,
-                    formType: transaction.transactionType,
-                  );
-                },
+            InkWell(
+              child: const CircleAvatar(
+                radius: 15,
+                foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
               ),
+              onTap: () {
+                backgroundColorNofifier.state = Colors.white;
+                TransactionShowFormUtils.showForm(
+                  context,
+                  imagePickerNotifier,
+                  formDataNotifier,
+                  textEditingNotifier,
+                  allTransactions,
+                  backgroundColorNofifier,
+                  transaction: transaction,
+                  formType: transaction.transactionType,
+                );
+              },
             ),
+            Expanded(child: _buildDataCell(transactionTypeScreenName)),
             Expanded(child: _buildDataCell(formatDate(transaction.date))),
             Expanded(child: _buildDataCell(transaction.name)),
             Expanded(child: _buildDataCell(transaction.number.toString())),

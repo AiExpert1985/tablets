@@ -1,7 +1,6 @@
 // receive list of all transaction, it does filtering based on
 import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart' as trans;
