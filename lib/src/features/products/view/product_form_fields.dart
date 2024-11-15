@@ -14,6 +14,7 @@ import 'package:tablets/src/features/products/controllers/product_form_controlle
 class ProductFormFields extends ConsumerWidget {
   const ProductFormFields({super.key, this.editMode = false});
   final bool editMode;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.watch(productFormDataProvider.notifier);
@@ -21,187 +22,108 @@ class ProductFormFields extends ConsumerWidget {
 
     return Column(
       children: [
-        Row(
-          children: [
-            FormInputField(
-              dataType: FieldDataType.num,
-              name: 'code',
-              label: S.of(context).product_code,
-              initialValue: formDataNotifier.getProperty('code'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'code': value});
-              },
-            ),
-            HorizontalGap.l,
-            FormInputField(
-              dataType: FieldDataType.text,
-              name: 'name',
-              label: S.of(context).product_name,
-              initialValue: formDataNotifier.getProperty('name'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'name': value});
-              },
-            ),
-            HorizontalGap.l,
-            DropDownWithSearchFormField(
-              label: S.of(context).category_selection,
-              initialValue: formDataNotifier.getProperty('category'),
-              dbRepository: repository,
-              onChangedFn: (item) {
-                formDataNotifier
-                    .updateProperties({'category': item['name'], 'categoryDbRef': item['dbRef']});
-              },
-            ),
-          ],
-        ),
+        _buildRow(context, formDataNotifier, [
+          _createFormField('code', FieldDataType.num, S.of(context).product_code, formDataNotifier),
+          HorizontalGap.m,
+          _createFormField(
+              'name', FieldDataType.text, S.of(context).product_name, formDataNotifier),
+          HorizontalGap.m,
+          _createDropdownField(S.of(context).category_selection, formDataNotifier, repository),
+        ]),
         VerticalGap.m,
-        Row(
-          children: [
-            FormInputField(
-              dataType: FieldDataType.num,
-              name: 'buyingPrice',
-              label: S.of(context).product_buying_price,
-              initialValue: formDataNotifier.getProperty('buyingPrice'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'buyingPrice': value});
-              },
-            ),
-            HorizontalGap.l,
-            FormInputField(
-              dataType: FieldDataType.num,
-              name: 'sellRetailPrice',
-              label: S.of(context).product_sell_retail_price,
-              initialValue: formDataNotifier.getProperty('sellRetailPrice'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'sellRetailPrice': value});
-              },
-            ),
-            HorizontalGap.l,
-            FormInputField(
-              dataType: FieldDataType.num,
-              name: 'sellWholePrice',
-              label: S.of(context).product_sell_whole_price,
-              initialValue: formDataNotifier.getProperty('sellWholePrice'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'sellWholePrice': value});
-              },
-            ),
-          ],
-        ),
+        _buildRow(context, formDataNotifier, [
+          _createFormField('buyingPrice', FieldDataType.num, S.of(context).product_buying_price,
+              formDataNotifier),
+          HorizontalGap.m,
+          _createFormField('sellWholePrice', FieldDataType.num,
+              S.of(context).product_sell_whole_price, formDataNotifier),
+          HorizontalGap.m,
+          _createFormField('sellRetailPrice', FieldDataType.num,
+              S.of(context).product_sell_retail_price, formDataNotifier),
+        ]),
         VerticalGap.m,
-        Row(
-          children: [
-            FormInputField(
-              dataType: FieldDataType.num,
-              name: 'salesmanCommission',
-              label: S.of(context).product_salesman_commission,
-              initialValue: formDataNotifier.getProperty('salesmanCommission'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'salesmanCommission': value});
-              },
-            ),
-            HorizontalGap.l,
-            FormInputField(
-              dataType: FieldDataType.num,
-              name: 'altertWhenLessThan',
-              label: S.of(context).product_altert_when_less_than,
-              initialValue: formDataNotifier.getProperty('altertWhenLessThan'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'altertWhenLessThan': value});
-              },
-            ),
-            HorizontalGap.l,
-            FormInputField(
-              dataType: FieldDataType.num,
-              name: 'alertWhenExceeds',
-              label: S.of(context).product_alert_when_exceeds,
-              initialValue: formDataNotifier.getProperty('alertWhenExceeds'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'alertWhenExceeds': value});
-              },
-            ),
-          ],
-        ),
+        _buildRow(context, formDataNotifier, [
+          _createFormField('salesmanCommission', FieldDataType.num,
+              S.of(context).product_salesman_commission, formDataNotifier),
+          HorizontalGap.m,
+          _createFormField('altertWhenLessThan', FieldDataType.num,
+              S.of(context).product_altert_when_less_than, formDataNotifier),
+          HorizontalGap.m,
+          _createFormField('alertWhenExceeds', FieldDataType.num,
+              S.of(context).product_alert_when_exceeds, formDataNotifier),
+        ]),
         VerticalGap.m,
-        Row(
-          children: [
-            FormInputField(
-              dataType: FieldDataType.text,
-              name: 'packageType',
-              label: S.of(context).product_package_type,
-              initialValue: formDataNotifier.getProperty('packageType'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'packageType': value});
-              },
-            ),
-            HorizontalGap.l,
-            FormInputField(
-              dataType: FieldDataType.num,
-              name: 'packageWeight',
-              label: S.of(context).product_package_weight,
-              initialValue: formDataNotifier.getProperty('packageWeight'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'packageWeight': value});
-              },
-            ),
-            HorizontalGap.l,
-            FormInputField(
-              dataType: FieldDataType.num,
-              name: 'numItemsInsidePackage',
-              label: S.of(context).product_num_items_inside_package,
-              initialValue: formDataNotifier.getProperty('numItemsInsidePackage'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'numItemsInsidePackage': value});
-              },
-            ),
-          ],
-        ),
+        _buildRow(context, formDataNotifier, [
+          _createFormField('packageType', FieldDataType.text, S.of(context).product_package_type,
+              formDataNotifier),
+          HorizontalGap.m,
+          _createFormField('packageWeight', FieldDataType.num, S.of(context).product_package_weight,
+              formDataNotifier),
+          HorizontalGap.m,
+          _createFormField('numItemsInsidePackage', FieldDataType.num,
+              S.of(context).product_num_items_inside_package, formDataNotifier),
+        ]),
         VerticalGap.m,
-        Row(
-          children: [
-            FormInputField(
-              dataType: FieldDataType.num,
-              name: 'initialQuantity',
-              label: S.of(context).product_initial_quantitiy,
-              initialValue: formDataNotifier.getProperty('initialQuantity'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'initialQuantity': value});
-              },
-            ),
-            HorizontalGap.l,
-            FormDatePickerField(
-              initialValue: _getInitialDate(formDataNotifier),
-              name: 'initialDate',
-              label: S.of(context).transaction_date,
-              onChangedFn: (date) {
-                formDataNotifier.updateProperties({'initialDate': Timestamp.fromDate(date!)});
-              },
-            ),
-          ],
-        ),
+        _buildRow(context, formDataNotifier, [
+          _createFormField('initialQuantity', FieldDataType.num,
+              S.of(context).product_initial_quantitiy, formDataNotifier),
+          HorizontalGap.m,
+          _createDatePickerField(context, formDataNotifier),
+        ]),
         VerticalGap.m,
-        Row(
-          children: [
-            FormInputField(
-              isRequired: false,
-              dataType: FieldDataType.text,
-              name: 'notes',
-              label: S.of(context).notes,
-              initialValue: formDataNotifier.getProperty('notes'),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({'notes': value});
-              },
-            ),
-          ],
-        )
+        _buildRow(context, formDataNotifier, [
+          _createFormField('notes', FieldDataType.text, S.of(context).notes, formDataNotifier,
+              isRequired: false),
+        ]),
       ],
     );
   }
 
-  DateTime _getInitialDate(ItemFormData formDataNotifier) {
-    final initialDate = formDataNotifier.getProperty('initialDate');
-    if (initialDate == null) return DateTime.now();
-    if (initialDate is Timestamp) return initialDate.toDate();
-    return initialDate;
+  Widget _buildRow(BuildContext context, ItemFormData formDataNotifier, List<Widget> fields) {
+    return Row(
+      children: fields.map((field) => field).toList(),
+    );
+  }
+
+  Widget _createFormField(
+      String name, FieldDataType dataType, String label, ItemFormData formDataNotifier,
+      {bool isRequired = true}) {
+    return FormInputField(
+      dataType: dataType,
+      name: name,
+      label: label,
+      initialValue: formDataNotifier.getProperty(name),
+      onChangedFn: (value) {
+        formDataNotifier.updateProperties({name: value});
+      },
+      isRequired: isRequired,
+    );
+  }
+
+  Widget _createDropdownField(String label, ItemFormData formDataNotifier, var repository) {
+    return DropDownWithSearchFormField(
+      label: label,
+      initialValue: formDataNotifier.getProperty('category'),
+      dbRepository: repository,
+      onChangedFn: (item) {
+        formDataNotifier.updateProperties({
+          'category': item['name'],
+          'categoryDbRef': item['dbRef'],
+        });
+      },
+    );
+  }
+
+  Widget _createDatePickerField(BuildContext context, ItemFormData formDataNotifier) {
+    return FormDatePickerField(
+      initialValue: formDataNotifier.getProperty('initialDate') is Timestamp
+          ? formDataNotifier.getProperty('initialDate').toDate()
+          : formDataNotifier.getProperty('initialDate'),
+      name: 'initialDate',
+      label: S.of(context).transaction_date,
+      onChangedFn: (date) {
+        formDataNotifier.updateProperties({'initialDate': Timestamp.fromDate(date!)});
+      },
+    );
   }
 }

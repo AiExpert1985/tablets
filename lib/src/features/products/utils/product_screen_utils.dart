@@ -1,12 +1,11 @@
-// create a list of lists, where each resulting list contains transaction info
-// [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
 import 'package:flutter/material.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 
+// create a list of lists, where each resulting list contains transaction info
+// [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
 List<List<dynamic>> getProductProcessedTransactions(
     BuildContext context, List<Map<String, dynamic>> transactions, Product product) {
   List<List<dynamic>> result = [];
@@ -76,9 +75,9 @@ List<dynamic> getProductTotals(List<List<dynamic>> productTransactions) {
   double totalProfit = 0.0;
   double totalSalesmanCommission = 0.0;
   for (var transaction in productTransactions) {
-    totalQuantity += transaction[4] as int; // totalQuantity
-    totalProfit += transaction[5]; // totalProfit
-    totalSalesmanCommission += transaction[6]; // totalSalesmanCommission
+    totalQuantity += transaction[4] as int;
+    totalProfit += transaction[5];
+    totalSalesmanCommission += transaction[6];
   }
   return [totalQuantity, totalProfit, totalSalesmanCommission];
 }

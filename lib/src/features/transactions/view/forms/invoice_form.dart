@@ -243,7 +243,9 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
         ),
         HorizontalGap.l,
         FormDatePickerField(
-          initialValue: _getInitialDate(formDataNotifier),
+          initialValue: formDataNotifier.getProperty(dateKey) is Timestamp
+              ? formDataNotifier.getProperty(dateKey).toDate()
+              : formDataNotifier.getProperty(dateKey),
           name: dateKey,
           label: S.of(context).transaction_date,
           onChangedFn: (date) {
@@ -333,12 +335,5 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
             ),
           ],
         ));
-  }
-
-  DateTime _getInitialDate(ItemFormData formDataNotifier) {
-    final initialDate = formDataNotifier.getProperty(dateKey);
-    if (initialDate == null) return DateTime.now();
-    if (initialDate is Timestamp) return initialDate.toDate();
-    return initialDate;
   }
 }
