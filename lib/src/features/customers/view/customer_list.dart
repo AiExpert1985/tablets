@@ -277,6 +277,7 @@ void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
 }
 
 void _processCustomerTransactions(BuildContext context, List<Map<String, dynamic>> customers) {
+  _resetGlobalLists();
   for (var customerData in customers) {
     final customer = Customer.fromMap(customerData);
     _customersList.add(customer);
@@ -319,4 +320,20 @@ void _processCustomerTransactions(BuildContext context, List<Map<String, dynamic
     final totalGiftsAmount = getTotalGiftsAndDiscounts(giftsAndDicounts, 4);
     _totalGiftsAmountList.add(totalGiftsAmount);
   }
+}
+
+void _resetGlobalLists() {
+  _customersList = [];
+  _customerTransactionsList = [];
+  _processedInvoicesList = [];
+  _closedInvoicesList = [];
+  _openInvoicesList = [];
+  _totalDebtList = [];
+  _dueInvoicesList = [];
+  _dueDebtList = [];
+  _averageInvoiceClosingDaysList = [];
+  _invoicesWithProfitList = [];
+  _totalProfitList = [];
+  _giftsAndDiscountsList = [];
+  _totalGiftsAmountList = [];
 }

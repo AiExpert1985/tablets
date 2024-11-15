@@ -17,7 +17,7 @@ class ProductFormFields extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formDataNotifier = ref.watch(productFormDataProvider.notifier);
+    final formDataNotifier = ref.read(productFormDataProvider.notifier);
     final repository = ref.read(categoryRepositoryProvider);
 
     return Column(

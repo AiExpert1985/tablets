@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/features/products/utils/product_report_utils.dart';
 import 'package:tablets/src/features/products/utils/product_screen_utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
@@ -19,6 +20,11 @@ import 'package:tablets/src/features/products/view/product_form.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
 List<Map<String, dynamic>> _transactionsList = [];
+List<Product> _productsList = [];
+List<List<List<dynamic>>> _productProcessedTransactionsList = [];
+List<double> _productTotalQuantityList = [];
+List<double> _productTotalProfitsList = [];
+List<double> _productTotalCommissionsList = [];
 
 Future<void> _fetchTransactions(DbRepository transactionProvider) async {
   _transactionsList = await transactionProvider.fetchItemListAsMaps();
@@ -109,6 +115,8 @@ Widget _buildDataRow(
   Product product = _productsList[index];
   final productTransactions = _productProcessedTransactionsList[index];
   final totalQuantity = _productTotalQuantityList[index];
+  tempPrint(product.name);
+  tempPrint(product.code);
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 6.0),
     child: Row(
@@ -163,13 +171,8 @@ Widget _buildDataCell(String text) {
   );
 }
 
-List<Product> _productsList = [];
-List<List<List<dynamic>>> _productProcessedTransactionsList = [];
-List<double> _productTotalQuantityList = [];
-List<double> _productTotalProfitsList = [];
-List<double> _productTotalCommissionsList = [];
-
 void _processProductTransactions(BuildContext context, List<Map<String, dynamic>> products) {
+  _resetGlobalLists();
   for (var productData in products) {
     final product = Product.fromMap(productData);
     _productsList.add(product);
@@ -218,4 +221,12 @@ void _processProductTransactions(BuildContext context, List<Map<String, dynamic>
   //   final totalGiftsAmount = getTotalGiftsAndDiscounts(giftsAndDicounts, 4);
   //   _totalGiftsAmountList.add(totalGiftsAmount);
   // }
+}
+
+void _resetGlobalLists() {
+  _productsList = [];
+  _productProcessedTransactionsList = [];
+  _productTotalQuantityList = [];
+  _productTotalProfitsList = [];
+  _productTotalCommissionsList = [];
 }
