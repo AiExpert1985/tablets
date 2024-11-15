@@ -185,6 +185,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Package weight"),
         "product_photos":
             MessageLookupByLibrary.simpleMessage("Product photos"),
+        "product_profits":
+            MessageLookupByLibrary.simpleMessage("Product profits"),
         "product_salesman_commission":
             MessageLookupByLibrary.simpleMessage("Salesman commision"),
         "product_sell_retail_price":

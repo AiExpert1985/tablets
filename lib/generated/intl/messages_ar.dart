@@ -180,6 +180,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "product_package_weight":
             MessageLookupByLibrary.simpleMessage("وزن العبوة (بالكيلو)"),
         "product_photos": MessageLookupByLibrary.simpleMessage("الصور"),
+        "product_profits": MessageLookupByLibrary.simpleMessage("ارباح المادة"),
         "product_salesman_commission":
             MessageLookupByLibrary.simpleMessage("عمولة المندوب (دينار)"),
         "product_sell_retail_price":

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/common/values/transactions_common_values.dart' as trans;
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 
@@ -13,13 +12,13 @@ List<Map<String, dynamic>> getCustomerTransactions(
     List<Map<String, dynamic>> transactions, String dbRef) {
   // Filter transactions for the given database reference
   List<Map<String, dynamic>> customerTransactions =
-      transactions.where((item) => item[trans.nameDbRefKey] == dbRef).toList();
+      transactions.where((item) => item[nameDbRefKey] == dbRef).toList();
 
   // Sort the transactions in descending order based on the transaction date
   return customerTransactions
     ..sort((a, b) {
-      final dateA = a[trans.dateKey];
-      final dateB = b[trans.dateKey];
+      final dateA = a[dateKey];
+      final dateB = b[dateKey];
       return dateB.compareTo(dateA);
     });
 }

@@ -2,19 +2,37 @@
 // [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/products/model/product.dart';
+import 'package:tablets/src/features/transactions/model/transaction.dart';
+import 'package:tablets/src/common/values/transactions_common_values.dart';
 
-List<List<dynamic>> getProductTransactions(
+List<Map<String, dynamic>> getProductTransactions(
+    List<Map<String, dynamic>> transactions, String dbRef) {
+  // Filter transactions for the given database reference
+  List<Map<String, dynamic>> productTransactions =
+      transactions.where((item) => item[nameDbRefKey] == dbRef).toList();
+
+  // Sort the transactions in descending order based on the transaction date
+  return productTransactions
+    ..sort((a, b) {
+      final dateA = a[dateKey];
+      final dateB = b[dateKey];
+      return dateB.compareTo(dateA);
+    });
+}
+
+List<List<dynamic>> getProductProcessedTransactions(
     List<Map<String, dynamic>> transactions, Product product) {
   List<List<dynamic>> result = [];
-  for (var transaction in transactions) {
+  for (var transactionMap in transactions) {
+    Transaction transaction = Transaction.fromMap(transactionMap);
     int totalQuantity = 0;
     double totalProfit = 0;
     double totalSalesmanCommission = 0;
-    String type = transaction['transactionType'];
-    int number = transaction['number'];
-    String name = transaction['name'];
-    DateTime date = transaction['date'].toDate();
-    for (var item in transaction['items']) {
+    String type = transaction.transactionType;
+    int number = transaction.number;
+    String name = transaction.name;
+    DateTime date = transaction.date;
+    for (var item in transaction.items ?? []) {
       if (item['dbRef'] != product.dbRef) continue;
       if (type == TransactionType.customerInvoice.name ||
           type == TransactionType.vendorReturn.name) {
@@ -26,10 +44,13 @@ List<List<dynamic>> getProductTransactions(
           type == TransactionType.customerReturn.name) {
         totalQuantity += item['soldQuantity'] as int;
         totalQuantity += item['giftQuantity'] as int;
+      } else if (type == TransactionType.damagedItems.name) {
+        totalQuantity -= item['soldQuantity'] as int;
       } else {
         continue;
       }
       List<dynamic> transactionDetails = [
+        transaction,
         type,
         number,
         name,
@@ -49,9 +70,9 @@ List<dynamic> getProductTotals(List<List<dynamic>> productTransactions, Product 
   double totalProfit = 0.0;
   double totalSalesmanCommission = 0.0;
   for (var transaction in productTransactions) {
-    totalQuantity += transaction[4] as int; // totalQuantity
-    totalProfit += transaction[5]; // totalProfit
-    totalSalesmanCommission += transaction[6]; // totalSalesmanCommission
+    totalQuantity += transaction[5] as int; // totalQuantity
+    totalProfit += transaction[6]; // totalProfit
+    totalSalesmanCommission += transaction[7]; // totalSalesmanCommission
   }
   return [totalQuantity, totalProfit, totalSalesmanCommission];
 }

@@ -183,5 +183,6 @@
     "customer_invoice_profit": "ارباح قوائم الزبون",
     "invoice_profit": "ربح القائمة",
     "customer_gifts_and_discounts": "خصومات و هدايا",
-    "days": "ايام"
+    "days": "ايام",
+    "product_profits": "ارباح المادة"
 }

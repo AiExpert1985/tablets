@@ -183,5 +183,6 @@
     "customer_invoice_profit": "Customer profit from invoices",
     "invoice_profit": "Invoice profit",
     "customer_gifts_and_discounts": "Customer gifts and discounts",
-    "days": "Days"
+    "days": "Days",
+    "product_profits": "Product profits"
 }
