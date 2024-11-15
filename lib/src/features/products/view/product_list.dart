@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/features/products/utils/product_report_utils.dart';
 import 'package:tablets/src/features/products/utils/product_screen_utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/settings.dart';
@@ -120,17 +121,23 @@ Widget _buildDataRow(
           ),
           onTap: () => showEditProductForm(context, product, formDataNotifier, imagePickerNotifier),
         ),
-        Expanded(child: _buildDataCell(product.code.toString())),
+        Expanded(child: _buildDataCell('${product.code}')),
         Expanded(child: _buildDataCell(product.name)),
         Expanded(child: _buildDataCell(product.category)),
-        Expanded(child: _buildDataCell(product.salesmanCommission.toString())),
+        Expanded(child: _buildDataCell('${product.salesmanCommission}')),
         Visibility(
-            visible: !hideProductBuyingPrice,
-            child: Expanded(child: _buildDataCell(product.buyingPrice.toString()))),
-        Expanded(child: _buildDataCell(product.sellWholePrice.toString())),
-        Expanded(child: _buildDataCell(product.sellRetailPrice.toString())),
-        Expanded(child: _buildDataCell(totalQuantity.toString())),
-        Expanded(child: _buildDataCell((totalQuantity * product.buyingPrice).toString())),
+          visible: !hideProductBuyingPrice,
+          child: Expanded(child: _buildDataCell('${product.buyingPrice}')),
+        ),
+        Expanded(child: _buildDataCell('${product.sellWholePrice}')),
+        Expanded(child: _buildDataCell('${product.sellRetailPrice}')),
+        Expanded(
+          child: InkWell(
+            child: _buildDataCell('$totalQuantity'),
+            onTap: () => showHistoryReport(context, productTransactions, product.name),
+          ),
+        ),
+        Expanded(child: _buildDataCell('${(totalQuantity * product.buyingPrice)}')),
         Expanded(child: _buildDataCell('TODO')),
       ],
     ),
@@ -167,7 +174,7 @@ void _processProductTransactions(BuildContext context, List<Map<String, dynamic>
     final product = Product.fromMap(productData);
     _productsList.add(product);
     final productProcessedTransactions =
-        getProductProcessedTransactions(_transactionsList, product);
+        getProductProcessedTransactions(context, _transactionsList, product);
     _productProcessedTransactionsList.add(productProcessedTransactions);
     final productTotals = getProductTotals(productProcessedTransactions, product);
     _productTotalQuantityList.add(productTotals[0]);

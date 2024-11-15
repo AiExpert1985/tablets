@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
@@ -95,6 +96,7 @@ class TransactionForm extends ConsumerWidget {
     return [
       IconButton(
         onPressed: () {
+          tempPrint(formDataNotifier.data);
           _onSavePressed(context, formController, formDataNotifier, formImagesNotifier);
         },
         icon: const SaveIcon(),

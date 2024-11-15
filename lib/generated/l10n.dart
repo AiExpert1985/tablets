@@ -1909,6 +1909,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Damaged items`
+  String get damagedItems {
+    return Intl.message(
+      'Damaged items',
+      name: 'damagedItems',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

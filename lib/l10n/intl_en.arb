@@ -184,5 +184,6 @@
     "invoice_profit": "Invoice profit",
     "customer_gifts_and_discounts": "Customer gifts and discounts",
     "days": "Days",
-    "product_profits": "Product profits"
+    "product_profits": "Product profits",
+    "damagedItems": "Damaged items"
 }

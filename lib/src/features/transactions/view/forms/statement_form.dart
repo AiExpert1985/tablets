@@ -86,7 +86,9 @@ class StatementForm extends ConsumerWidget {
           initialValue: formDataNotifier.getProperty(salesmanKey),
           dbRepository: salesmanRepository,
           onChangedFn: (item) {
-            formDataNotifier.updateProperties({salesmanKey: item[nameKey]});
+            formDataNotifier.updateProperties({
+              salesmanKey: item[nameKey],
+            });
           },
         ),
       ],
@@ -102,7 +104,13 @@ class StatementForm extends ConsumerWidget {
           label: S.of(context).transaction_number,
           initialValue: formDataNotifier.getProperty(numberKey),
           onChangedFn: (value) {
-            formDataNotifier.updateProperties({numberKey: value});
+            // we need to add damaged item name here because there is no selection as in other forms
+            // so, when user enter transaction number, if the type is damaged items, then the name
+            // we be inserted automatically
+            formDataNotifier.updateProperties({
+              if (!isGift) nameKey: S.of(context).damagedItems,
+              numberKey: value,
+            });
           },
         ),
         HorizontalGap.l,

@@ -184,5 +184,6 @@
     "invoice_profit": "ربح القائمة",
     "customer_gifts_and_discounts": "خصومات و هدايا",
     "days": "ايام",
-    "product_profits": "ارباح المادة"
+    "product_profits": "ارباح المادة",
+    "damagedItems": "مواد تالفة"
 }

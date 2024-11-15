@@ -1,27 +1,13 @@
 // create a list of lists, where each resulting list contains transaction info
 // [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
+import 'package:flutter/material.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/common/values/transactions_common_values.dart';
-
-List<Map<String, dynamic>> getProductTransactions(
-    List<Map<String, dynamic>> transactions, String dbRef) {
-  // Filter transactions for the given database reference
-  List<Map<String, dynamic>> productTransactions =
-      transactions.where((item) => item[nameDbRefKey] == dbRef).toList();
-
-  // Sort the transactions in descending order based on the transaction date
-  return productTransactions
-    ..sort((a, b) {
-      final dateA = a[dateKey];
-      final dateB = b[dateKey];
-      return dateB.compareTo(dateA);
-    });
-}
 
 List<List<dynamic>> getProductProcessedTransactions(
-    List<Map<String, dynamic>> transactions, Product product) {
+    BuildContext context, List<Map<String, dynamic>> transactions, Product product) {
   List<List<dynamic>> result = [];
   for (var transactionMap in transactions) {
     Transaction transaction = Transaction.fromMap(transactionMap);
@@ -30,7 +16,6 @@ List<List<dynamic>> getProductProcessedTransactions(
     double totalSalesmanCommission = 0;
     String type = transaction.transactionType;
     int number = transaction.number;
-    String name = transaction.name;
     DateTime date = transaction.date;
     for (var item in transaction.items ?? []) {
       if (item['dbRef'] != product.dbRef) continue;
@@ -51,9 +36,8 @@ List<List<dynamic>> getProductProcessedTransactions(
       }
       List<dynamic> transactionDetails = [
         transaction,
-        type,
+        translateDbTextToScreenText(context, type),
         number,
-        name,
         date,
         totalQuantity,
         totalProfit,
@@ -62,7 +46,7 @@ List<List<dynamic>> getProductProcessedTransactions(
       result.add(transactionDetails);
     }
   }
-  return result;
+  return sortByDate(result, 3);
 }
 
 List<dynamic> getProductTotals(List<List<dynamic>> productTransactions, Product product) {
@@ -70,9 +54,9 @@ List<dynamic> getProductTotals(List<List<dynamic>> productTransactions, Product 
   double totalProfit = 0.0;
   double totalSalesmanCommission = 0.0;
   for (var transaction in productTransactions) {
-    totalQuantity += transaction[5] as int; // totalQuantity
-    totalProfit += transaction[6]; // totalProfit
-    totalSalesmanCommission += transaction[7]; // totalSalesmanCommission
+    totalQuantity += transaction[4] as int; // totalQuantity
+    totalProfit += transaction[5]; // totalProfit
+    totalSalesmanCommission += transaction[6]; // totalSalesmanCommission
   }
   return [totalQuantity, totalProfit, totalSalesmanCommission];
 }
