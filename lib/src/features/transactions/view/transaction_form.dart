@@ -96,7 +96,6 @@ class TransactionForm extends ConsumerWidget {
     return [
       IconButton(
         onPressed: () {
-          tempPrint(formDataNotifier.data);
           _onSavePressed(context, formController, formDataNotifier, formImagesNotifier);
         },
         icon: const SaveIcon(),

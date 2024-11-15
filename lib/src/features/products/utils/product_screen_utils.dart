@@ -1,6 +1,7 @@
 // create a list of lists, where each resulting list contains transaction info
 // [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
 import 'package:flutter/material.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/products/model/product.dart';
@@ -9,13 +10,34 @@ import 'package:tablets/src/features/transactions/model/transaction.dart';
 List<List<dynamic>> getProductProcessedTransactions(
     BuildContext context, List<Map<String, dynamic>> transactions, Product product) {
   List<List<dynamic>> result = [];
+  if (product.initialQuantity > 0) {
+    final initialTransaction = Transaction(
+      dbRef: 'na',
+      name: 'na',
+      imageUrls: ['na'],
+      number: 1000001,
+      date: DateTime.now(), //TODO must add initial quanity date
+      currency: 'na',
+      transactionType: TransactionType.initialCredit.name,
+      totalAmount: product.initialQuantity as double,
+    );
+    result.add([
+      initialTransaction,
+      translateDbTextToScreenText(context, TransactionType.initialCredit.name),
+      '',
+      initialTransaction.date,
+      product.initialQuantity,
+      0,
+      0
+    ]);
+  }
   for (var transactionMap in transactions) {
     Transaction transaction = Transaction.fromMap(transactionMap);
     int totalQuantity = 0;
     double totalProfit = 0;
     double totalSalesmanCommission = 0;
     String type = transaction.transactionType;
-    int number = transaction.number;
+    String number = '${transaction.number}';
     DateTime date = transaction.date;
     for (var item in transaction.items ?? []) {
       if (item['dbRef'] != product.dbRef) continue;
@@ -31,6 +53,9 @@ List<List<dynamic>> getProductProcessedTransactions(
         totalQuantity += item['giftQuantity'] as int;
       } else if (type == TransactionType.damagedItems.name) {
         totalQuantity -= item['soldQuantity'] as int;
+      } else if (type == TransactionType.initialCredit.name) {
+        tempPrint(transactionMap);
+        number = '';
       } else {
         continue;
       }
