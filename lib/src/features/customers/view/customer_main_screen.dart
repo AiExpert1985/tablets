@@ -8,11 +8,11 @@ class CustomerScreen extends ConsumerWidget {
   const CustomerScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AppScreenFrame(
+    return const AppScreenFrame(
       screenBody: Stack(
         children: [
-          buildCustomerList(context, ref),
-          const Positioned(
+          CustomerList(),
+          Positioned(
             bottom: 0,
             left: 0,
             child: CustomerFloatingButtons(),

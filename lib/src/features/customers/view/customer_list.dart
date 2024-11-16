@@ -36,261 +36,269 @@ List<double> _totalProfitList = [];
 List<List<List<dynamic>>> _giftsAndDiscountsList = [];
 List<double> _totalGiftsAmountList = [];
 
-Widget buildCustomerList(BuildContext context, WidgetRef ref) {
-  final transactionProvider = ref.read(transactionRepositoryProvider);
-  _fetchTransactions(transactionProvider);
-  final formDataNotifier = ref.read(customerFormDataProvider.notifier);
-  final customertStream = ref.watch(customerStreamProvider);
-  final filterIsOn = ref.watch(customerFilterSwitchProvider);
-  final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
-  final customerListValue =
-      filterIsOn ? ref.read(customerFilteredListProvider).getFilteredList() : customertStream;
+class CustomerList extends ConsumerWidget {
+  const CustomerList({super.key});
 
-  return AsyncValueWidget<List<Map<String, dynamic>>>(
-    value: customerListValue,
-    data: (customers) {
-      _processCustomerTransactions(context, customers);
-      return Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            _buildListHeaders(context),
-            const Divider(),
-            _buildListData(context, customers, formDataNotifier, imagePickerNotifier)
-          ],
-        ),
-      );
-    },
-  );
-}
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final transactionProvider = ref.read(transactionRepositoryProvider);
+    _fetchTransactions(transactionProvider);
+    final formDataNotifier = ref.read(customerFormDataProvider.notifier);
+    final customertStream = ref.watch(customerStreamProvider);
+    final filterIsOn = ref.watch(customerFilterSwitchProvider);
+    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+    final customerListValue =
+        filterIsOn ? ref.read(customerFilteredListProvider).getFilteredList() : customertStream;
 
-Widget _buildListData(BuildContext context, List<Map<String, dynamic>> customers,
-    ItemFormData formDataNotifier, ImageSliderNotifier imagePickerNotifier) {
-  return Expanded(
-    child: ListView.builder(
-      itemCount: customers.length,
-      itemBuilder: (ctx, index) {
-        return Column(
-          children: [
-            _buildDataRow(ctx, index, imagePickerNotifier, formDataNotifier),
-            const Divider(thickness: 0.2, color: Colors.grey)
-          ],
+    return AsyncValueWidget<List<Map<String, dynamic>>>(
+      value: customerListValue,
+      data: (customers) {
+        _processCustomerTransactions(context, customers);
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _buildListHeaders(context),
+              const Divider(),
+              _buildListData(context, customers, formDataNotifier, imagePickerNotifier)
+            ],
+          ),
         );
       },
-    ),
-  );
-}
+    );
+  }
 
-Widget _buildListHeaders(BuildContext context) {
-  return Column(
-    children: [
-      Row(
+  Widget _buildListData(BuildContext context, List<Map<String, dynamic>> customers,
+      ItemFormData formDataNotifier, ImageSliderNotifier imagePickerNotifier) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: customers.length,
+        itemBuilder: (ctx, index) {
+          return Column(
+            children: [
+              _buildDataRow(ctx, index, imagePickerNotifier, formDataNotifier),
+              const Divider(thickness: 0.2, color: Colors.grey)
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildListHeaders(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const MainScreenPlaceholder(width: 20, isExpanded: false),
+            MainScreenHeaderCell(S.of(context).customer),
+            MainScreenHeaderCell(S.of(context).salesman_selection),
+            MainScreenHeaderCell(S.of(context).current_debt),
+            MainScreenHeaderCell(S.of(context).num_open_invoice),
+            MainScreenHeaderCell(S.of(context).due_debt_amount),
+            MainScreenHeaderCell(S.of(context).average_invoice_closing_duration),
+            if (!hideCustomerProfit) MainScreenHeaderCell(S.of(context).customer_invoice_profit),
+            MainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
+          ],
+        ),
+        VerticalGap.m,
+        if (!hideMainScreenColumnTotals) _buildHeaderTotalsRow(context)
+      ],
+    );
+  }
+
+  Widget _buildDataRow(
+    BuildContext context,
+    int index,
+    ImageSliderNotifier imagePickerNotifier,
+    ItemFormData formDataNotifier,
+  ) {
+    final customer = _customersList[index];
+    final customerTransactions = _customerTransactionsList[index];
+    final closedInvoices = _closedInvoicesList[index];
+    final invoiceAverageClosingDays = _averageInvoiceClosingDaysList[index];
+    final openInvoices = _openInvoicesList[index];
+    final numOpenInvoices = openInvoices.length;
+    final dueInvoices = _dueInvoicesList[index];
+    final numDueInvoices = dueInvoices.length;
+    final totalDebt = _totalDebtList[index];
+    final dueDebt = _dueDebtList[index];
+    final invoiceWithProfit = _invoicesWithProfitList[index];
+    final profit = _totalProfitList[index];
+    final giftsAndDiscounts = _giftsAndDiscountsList[index];
+    final totalGiftsAmount = _totalGiftsAmountList[index];
+    final matchingList = customerMatching(customerTransactions, customer, context);
+    bool inValidCustomer = _inValidCustomer(dueDebt, totalDebt, customer);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const MainScreenPlaceholder(width: 20, isExpanded: false),
-          MainScreenHeaderCell(S.of(context).customer),
-          MainScreenHeaderCell(S.of(context).salesman_selection),
-          MainScreenHeaderCell(S.of(context).current_debt),
-          MainScreenHeaderCell(S.of(context).num_open_invoice),
-          MainScreenHeaderCell(S.of(context).due_debt_amount),
-          MainScreenHeaderCell(S.of(context).average_invoice_closing_duration),
-          if (!hideCustomerProfit) MainScreenHeaderCell(S.of(context).customer_invoice_profit),
-          MainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
-        ],
-      ),
-      VerticalGap.m,
-      if (!hideMainScreenColumnTotals) _buildHeaderTotalsRow(context)
-    ],
-  );
-}
-
-Widget _buildDataRow(
-  BuildContext context,
-  int index,
-  ImageSliderNotifier imagePickerNotifier,
-  ItemFormData formDataNotifier,
-) {
-  final customer = _customersList[index];
-  final customerTransactions = _customerTransactionsList[index];
-  final closedInvoices = _closedInvoicesList[index];
-  final invoiceAverageClosingDays = _averageInvoiceClosingDaysList[index];
-  final openInvoices = _openInvoicesList[index];
-  final numOpenInvoices = openInvoices.length;
-  final dueInvoices = _dueInvoicesList[index];
-  final numDueInvoices = dueInvoices.length;
-  final totalDebt = _totalDebtList[index];
-  final dueDebt = _dueDebtList[index];
-  final invoiceWithProfit = _invoicesWithProfitList[index];
-  final profit = _totalProfitList[index];
-  final giftsAndDiscounts = _giftsAndDiscountsList[index];
-  final totalGiftsAmount = _totalGiftsAmountList[index];
-  final matchingList = customerMatching(customerTransactions, customer, context);
-  bool inValidCustomer = _inValidCustomer(dueDebt, totalDebt, customer);
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        MainScreenEditButton(defaultImageUrl,
-            () => _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer)),
-        MainScreenTextCell(customer.name, isWarning: inValidCustomer),
-        MainScreenTextCell(customer.salesman, isWarning: inValidCustomer),
-        MainScreenClickableCell(
-          totalDebt,
-          () => showCustomerMatchingReport(context, matchingList, customer.name),
-          isWarning: inValidCustomer,
-        ),
-        MainScreenClickableCell(
-          '$numOpenInvoices ($numDueInvoices)',
-          () => showInvoicesReport(context, openInvoices, '${customer.name}  ( $numOpenInvoices )'),
-          isWarning: inValidCustomer,
-        ),
-        MainScreenClickableCell(
-          dueDebt,
-          () => showInvoicesReport(context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
-          isWarning: inValidCustomer,
-        ),
-        MainScreenClickableCell(
-          invoiceAverageClosingDays,
-          () => showInvoicesReport(
-              context, closedInvoices, '${customer.name}  ( $invoiceAverageClosingDays )'),
-          isWarning: inValidCustomer,
-        ),
-        if (!hideCustomerProfit)
+          MainScreenEditButton(
+              defaultImageUrl,
+              () =>
+                  _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer)),
+          MainScreenTextCell(customer.name, isWarning: inValidCustomer),
+          MainScreenTextCell(customer.salesman, isWarning: inValidCustomer),
           MainScreenClickableCell(
-            profit,
-            () => showProfitReport(context, invoiceWithProfit, customer.name),
+            totalDebt,
+            () => showCustomerMatchingReport(context, matchingList, customer.name),
             isWarning: inValidCustomer,
           ),
-        MainScreenClickableCell(
-          totalGiftsAmount,
-          () => showGiftsReport(context, giftsAndDiscounts, customer.name),
-          isWarning: inValidCustomer,
-        ),
+          MainScreenClickableCell(
+            '$numOpenInvoices ($numDueInvoices)',
+            () =>
+                showInvoicesReport(context, openInvoices, '${customer.name}  ( $numOpenInvoices )'),
+            isWarning: inValidCustomer,
+          ),
+          MainScreenClickableCell(
+            dueDebt,
+            () => showInvoicesReport(context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
+            isWarning: inValidCustomer,
+          ),
+          MainScreenClickableCell(
+            invoiceAverageClosingDays,
+            () => showInvoicesReport(
+                context, closedInvoices, '${customer.name}  ( $invoiceAverageClosingDays )'),
+            isWarning: inValidCustomer,
+          ),
+          if (!hideCustomerProfit)
+            MainScreenClickableCell(
+              profit,
+              () => showProfitReport(context, invoiceWithProfit, customer.name),
+              isWarning: inValidCustomer,
+            ),
+          MainScreenClickableCell(
+            totalGiftsAmount,
+            () => showGiftsReport(context, giftsAndDiscounts, customer.name),
+            isWarning: inValidCustomer,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderTotalsRow(BuildContext context) {
+    int totalOpenInvoices = _openInvoicesList
+        .expand((innerList) => innerList) // Flatten the second level
+        .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
+        .length;
+    int totalDueInvoices = _dueInvoicesList
+        .expand((innerList) => innerList) // Flatten the second level
+        .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
+        .length;
+    double totalDebtSum = _totalDebtList.reduce((a, b) => a + b);
+    double totalDueDebtSum = _dueDebtList.reduce((a, b) => a + b);
+    double totalProfitSum = _totalProfitList.reduce((a, b) => a + b);
+    double totalGifts = _totalGiftsAmountList.reduce((a, b) => a + b);
+
+    double averageClosingDays = _averageInvoiceClosingDaysList.isNotEmpty
+        ? _averageInvoiceClosingDaysList.reduce((a, b) => a + b) /
+            _averageInvoiceClosingDaysList.length
+        : 0.0;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const MainScreenPlaceholder(width: 20, isExpanded: false),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        MainScreenHeaderCell(totalDebtSum, isColumnTotal: true),
+        MainScreenHeaderCell('$totalOpenInvoices ($totalDueInvoices)'),
+        MainScreenHeaderCell(totalDueDebtSum, isColumnTotal: true),
+        MainScreenHeaderCell('($averageClosingDays ${S.of(context).days} )'),
+        if (!hideCustomerProfit) MainScreenHeaderCell(totalProfitSum, isColumnTotal: true),
+        MainScreenHeaderCell(totalGifts, isColumnTotal: true),
       ],
-    ),
-  );
-}
+    );
+  }
 
-Widget _buildHeaderTotalsRow(BuildContext context) {
-  int totalOpenInvoices = _openInvoicesList
-      .expand((innerList) => innerList) // Flatten the second level
-      .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
-      .length;
-  int totalDueInvoices = _dueInvoicesList
-      .expand((innerList) => innerList) // Flatten the second level
-      .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
-      .length;
-  double totalDebtSum = _totalDebtList.reduce((a, b) => a + b);
-  double totalDueDebtSum = _dueDebtList.reduce((a, b) => a + b);
-  double totalProfitSum = _totalProfitList.reduce((a, b) => a + b);
-  double totalGifts = _totalGiftsAmountList.reduce((a, b) => a + b);
-
-  double averageClosingDays = _averageInvoiceClosingDaysList.isNotEmpty
-      ? _averageInvoiceClosingDaysList.reduce((a, b) => a + b) /
-          _averageInvoiceClosingDaysList.length
-      : 0.0;
-
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      const MainScreenPlaceholder(width: 20, isExpanded: false),
-      const MainScreenPlaceholder(),
-      const MainScreenPlaceholder(),
-      MainScreenHeaderCell(totalDebtSum, isColumnTotal: true),
-      MainScreenHeaderCell('$totalOpenInvoices ($totalDueInvoices)'),
-      MainScreenHeaderCell(totalDueDebtSum, isColumnTotal: true),
-      MainScreenHeaderCell('($averageClosingDays ${S.of(context).days} )'),
-      if (!hideCustomerProfit) MainScreenHeaderCell(totalProfitSum, isColumnTotal: true),
-      MainScreenHeaderCell(totalGifts, isColumnTotal: true),
-    ],
-  );
-}
-
-Future<void> _fetchTransactions(DbRepository transactionProvider) async {
-  _transactionsList = await transactionProvider.fetchItemListAsMaps();
-}
+  Future<void> _fetchTransactions(DbRepository transactionProvider) async {
+    _transactionsList = await transactionProvider.fetchItemListAsMaps();
+  }
 
 // we stop transactions if customer either exceeded limit of debt, or has dueDebt
 // which is transactions that are not closed within allowed time (for example 20 days)
-bool _inValidCustomer(double dueDebt, double totalDebt, Customer customer) {
-  return totalDebt > customer.creditLimit || dueDebt > 0;
-}
-
-void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
-    ImageSliderNotifier imagePicker, Customer customer) {
-  formDataNotifier.initialize(initialData: customer.toMap());
-  imagePicker.initialize(urls: customer.imageUrls);
-  showDialog(
-    context: context,
-    builder: (BuildContext ctx) => const CustomerForm(
-      isEditMode: true,
-    ),
-  ).whenComplete(imagePicker.close);
-}
-
-void _processCustomerTransactions(BuildContext context, List<Map<String, dynamic>> customers) {
-  _resetGlobalLists();
-  for (var customerData in customers) {
-    final customer = Customer.fromMap(customerData);
-    _updateGlobalLists(context, customer);
+  bool _inValidCustomer(double dueDebt, double totalDebt, Customer customer) {
+    return totalDebt > customer.creditLimit || dueDebt > 0;
   }
-}
 
-void _updateGlobalLists(BuildContext context, Customer customer) {
-  _customersList.add(customer);
-  final customerTransactions = getCustomerTransactions(_transactionsList, customer.dbRef);
-  _customerTransactionsList.add(customerTransactions);
-  // if customer has initial credit, it should be added to the tansactions, so, we add
-  // it here and give it transaction type 'initialCredit'
-  if (customer.initialCredit > 0) {
-    customerTransactions.add(Transaction(
-      dbRef: 'na',
-      name: customer.name,
-      imageUrls: ['na'],
-      number: 1000001,
-      date: customer.initialDate,
-      currency: 'na',
-      transactionType: TransactionType.initialCredit.name,
-      totalAmount: customer.initialCredit,
-    ).toMap());
+  void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
+      ImageSliderNotifier imagePicker, Customer customer) {
+    formDataNotifier.initialize(initialData: customer.toMap());
+    imagePicker.initialize(urls: customer.imageUrls);
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => const CustomerForm(
+        isEditMode: true,
+      ),
+    ).whenComplete(imagePicker.close);
   }
-  final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
-  _processedInvoicesList.add(processedInvoices);
-  final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
-  _invoicesWithProfitList.add(invoicesWithProfit);
-  final totalProfit = getTotalProfit(invoicesWithProfit, 5);
-  _totalProfitList.add(totalProfit);
-  final closedInvoices = getClosedInvoices(context, processedInvoices, 5);
-  _closedInvoicesList.add(closedInvoices);
-  final averageClosingDays = calculateAverageClosingDays(closedInvoices, 6);
-  _averageInvoiceClosingDaysList.add(averageClosingDays);
-  final openInvoices = getOpenInvoices(context, processedInvoices, 5);
-  _openInvoicesList.add(openInvoices);
-  final totalDebt = getTotalDebt(openInvoices, 7);
-  _totalDebtList.add(totalDebt);
-  final dueInvoices = getDueInvoices(context, openInvoices, 5);
-  _dueInvoicesList.add(dueInvoices);
-  final dueDebt = getDueDebt(dueInvoices, 7);
-  _dueDebtList.add(dueDebt);
-  final giftsAndDicounts = getGiftsAndDiscounts(context, customerTransactions);
-  _giftsAndDiscountsList.add(giftsAndDicounts);
-  final totalGiftsAmount = getTotalGiftsAndDiscounts(giftsAndDicounts, 4);
-  _totalGiftsAmountList.add(totalGiftsAmount);
-}
 
-void _resetGlobalLists() {
-  _customersList = [];
-  _customerTransactionsList = [];
-  _processedInvoicesList = [];
-  _closedInvoicesList = [];
-  _openInvoicesList = [];
-  _totalDebtList = [];
-  _dueInvoicesList = [];
-  _dueDebtList = [];
-  _averageInvoiceClosingDaysList = [];
-  _invoicesWithProfitList = [];
-  _totalProfitList = [];
-  _giftsAndDiscountsList = [];
-  _totalGiftsAmountList = [];
+  void _processCustomerTransactions(BuildContext context, List<Map<String, dynamic>> customers) {
+    _resetGlobalLists();
+    for (var customerData in customers) {
+      final customer = Customer.fromMap(customerData);
+      _updateGlobalLists(context, customer);
+    }
+  }
+
+  void _updateGlobalLists(BuildContext context, Customer customer) {
+    _customersList.add(customer);
+    final customerTransactions = getCustomerTransactions(_transactionsList, customer.dbRef);
+    _customerTransactionsList.add(customerTransactions);
+    // if customer has initial credit, it should be added to the tansactions, so, we add
+    // it here and give it transaction type 'initialCredit'
+    if (customer.initialCredit > 0) {
+      customerTransactions.add(Transaction(
+        dbRef: 'na',
+        name: customer.name,
+        imageUrls: ['na'],
+        number: 1000001,
+        date: customer.initialDate,
+        currency: 'na',
+        transactionType: TransactionType.initialCredit.name,
+        totalAmount: customer.initialCredit,
+      ).toMap());
+    }
+    final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
+    _processedInvoicesList.add(processedInvoices);
+    final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
+    _invoicesWithProfitList.add(invoicesWithProfit);
+    final totalProfit = getTotalProfit(invoicesWithProfit, 5);
+    _totalProfitList.add(totalProfit);
+    final closedInvoices = getClosedInvoices(context, processedInvoices, 5);
+    _closedInvoicesList.add(closedInvoices);
+    final averageClosingDays = calculateAverageClosingDays(closedInvoices, 6);
+    _averageInvoiceClosingDaysList.add(averageClosingDays);
+    final openInvoices = getOpenInvoices(context, processedInvoices, 5);
+    _openInvoicesList.add(openInvoices);
+    final totalDebt = getTotalDebt(openInvoices, 7);
+    _totalDebtList.add(totalDebt);
+    final dueInvoices = getDueInvoices(context, openInvoices, 5);
+    _dueInvoicesList.add(dueInvoices);
+    final dueDebt = getDueDebt(dueInvoices, 7);
+    _dueDebtList.add(dueDebt);
+    final giftsAndDicounts = getGiftsAndDiscounts(context, customerTransactions);
+    _giftsAndDiscountsList.add(giftsAndDicounts);
+    final totalGiftsAmount = getTotalGiftsAndDiscounts(giftsAndDicounts, 4);
+    _totalGiftsAmountList.add(totalGiftsAmount);
+  }
+
+  void _resetGlobalLists() {
+    _customersList = [];
+    _customerTransactionsList = [];
+    _processedInvoicesList = [];
+    _closedInvoicesList = [];
+    _openInvoicesList = [];
+    _totalDebtList = [];
+    _dueInvoicesList = [];
+    _dueDebtList = [];
+    _averageInvoiceClosingDaysList = [];
+    _invoicesWithProfitList = [];
+    _totalProfitList = [];
+    _giftsAndDiscountsList = [];
+    _totalGiftsAmountList = [];
+  }
 }
