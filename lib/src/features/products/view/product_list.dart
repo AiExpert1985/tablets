@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/products/utils/product_report_utils.dart';
 import 'package:tablets/src/features/products/utils/product_screen_utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
@@ -24,6 +26,7 @@ List<List<List<dynamic>>> _productProcessedTransactionsList = [];
 List<double> _productTotalQuantityList = [];
 List<double> _productTotalProfitsList = [];
 List<double> _productTotalCommissionsList = [];
+List<double> _productTotalPriceList = [];
 
 Future<void> _fetchTransactions(DbRepository transactionProvider) async {
   _transactionsList = await transactionProvider.fetchItemListAsMaps();
@@ -68,22 +71,48 @@ Widget buildProductsList(BuildContext context, WidgetRef ref) {
 }
 
 Widget _buildHeaderRow(BuildContext context) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  double totalStockQuantity = _productTotalQuantityList.reduce((a, b) => a + b);
+  double totalItemPriceWorth = _productTotalPriceList.reduce((a, b) => a + b);
+  return Column(
     children: [
-      const SizedBox(width: 16), // Placeholder for the avatar
-      Expanded(child: _buildHeader(S.of(context).product_code)),
-      Expanded(child: _buildHeader(S.of(context).product_name)),
-      Expanded(child: _buildHeader(S.of(context).product_category)),
-      Expanded(child: _buildHeader(S.of(context).product_salesman_commission)),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const SizedBox(width: 16), // Placeholder for the avatar
+          Expanded(child: _buildHeader(S.of(context).product_code)),
+          Expanded(child: _buildHeader(S.of(context).product_name)),
+          Expanded(child: _buildHeader(S.of(context).product_category)),
+          Expanded(child: _buildHeader(S.of(context).product_salesman_commission)),
+          Visibility(
+              visible: !hideProductBuyingPrice,
+              child: Expanded(child: _buildHeader(S.of(context).product_buying_price))),
+          Expanded(child: _buildHeader(S.of(context).product_sell_whole_price)),
+          Expanded(child: _buildHeader(S.of(context).product_sell_retail_price)),
+          Expanded(child: _buildHeader(S.of(context).product_stock_quantity)),
+          Expanded(child: _buildHeader(S.of(context).product_stock_amount)),
+          Expanded(child: _buildHeader(S.of(context).product_profits)),
+        ],
+      ),
+      VerticalGap.m,
       Visibility(
-          visible: !hideProductBuyingPrice,
-          child: Expanded(child: _buildHeader(S.of(context).product_buying_price))),
-      Expanded(child: _buildHeader(S.of(context).product_sell_whole_price)),
-      Expanded(child: _buildHeader(S.of(context).product_sell_retail_price)),
-      Expanded(child: _buildHeader(S.of(context).product_stock_quantity)),
-      Expanded(child: _buildHeader(S.of(context).product_stock_amount)),
-      Expanded(child: _buildHeader(S.of(context).product_profits)),
+        visible: !hideMainScreenColumnTotals,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Expanded(child: SizedBox()), // Placeholder for the avatar
+            const Expanded(child: SizedBox()),
+            const Expanded(child: SizedBox()),
+            const Expanded(child: SizedBox()),
+            const Expanded(child: SizedBox()),
+            Visibility(visible: !hideProductBuyingPrice, child: const SizedBox(width: 16)),
+            const Expanded(child: SizedBox()),
+            const Expanded(child: SizedBox()),
+            Expanded(child: _buildHeader('(${doubleToStringWithComma(totalStockQuantity)})')),
+            Expanded(child: _buildHeader('(${doubleToStringWithComma(totalItemPriceWorth)})')),
+            const Expanded(child: SizedBox()),
+          ],
+        ),
+      ),
     ],
   );
 }
@@ -116,6 +145,7 @@ Widget _buildDataRow(
   final totalQuantity = _productTotalQuantityList[index];
   final totalItemProfit = _productTotalProfitsList[index]; // profit doesn't include commission
   final profitInvoices = getOnlyProfitInvoices(productTransactions, 5);
+  final totalItemPriceWorth = _productTotalPriceList[index];
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 6.0),
     child: Row(
@@ -144,7 +174,7 @@ Widget _buildDataRow(
             onTap: () => showHistoryReport(context, productTransactions, product.name),
           ),
         ),
-        Expanded(child: _buildDataCell('${(totalQuantity * product.buyingPrice)}')),
+        Expanded(child: _buildDataCell('$totalItemPriceWorth')),
         Expanded(
           child: InkWell(
             child: _buildDataCell('$totalItemProfit'),
@@ -184,47 +214,15 @@ void _processProductTransactions(BuildContext context, List<Map<String, dynamic>
         getProductProcessedTransactions(context, _transactionsList, product);
     _productProcessedTransactionsList.add(productProcessedTransactions);
     final productTotals = getProductTotals(productProcessedTransactions);
-    _productTotalQuantityList.add(productTotals[0]);
-    _productTotalProfitsList.add(productTotals[1]);
-    _productTotalCommissionsList.add(productTotals[2]);
+    final quantity = productTotals[0];
+    final profit = productTotals[1];
+    final commission = productTotals[2];
+    final totalPrice = quantity * product.buyingPrice;
+    _productTotalQuantityList.add(quantity);
+    _productTotalProfitsList.add(profit);
+    _productTotalCommissionsList.add(commission);
+    _productTotalPriceList.add(totalPrice);
   }
-  //   // if customer has initial credit, it should be added to the tansactions, so, we add
-  //   // it here and give it transaction type 'initialCredit'
-  //   if (customer.initialCredit > 0) {
-  //     customerTransactions.add(Transaction(
-  //       dbRef: 'na',
-  //       name: customer.name,
-  //       imageUrls: ['na'],
-  //       number: 1000001,
-  //       date: customer.initialDate,
-  //       currency: 'na',
-  //       transactionType: TransactionType.initialCredit.name,
-  //       totalAmount: customer.initialCredit,
-  //     ).toMap());
-  //   }
-  //   final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
-  //   _processedInvoicesList.add(processedInvoices);
-  //   final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
-  //   _invoicesWithProfitList.add(invoicesWithProfit);
-  //   final totalProfit = getTotalProfit(invoicesWithProfit, 5);
-  //   _totalProfitList.add(totalProfit);
-  //   final closedInvoices = getClosedInvoices(context, processedInvoices, 5);
-  //   _closedInvoicesList.add(closedInvoices);
-  //   final averageClosingDays = calculateAverageClosingDays(closedInvoices, 6);
-  //   _averageInvoiceClosingDaysList.add(averageClosingDays);
-  //   final openInvoices = getOpenInvoices(context, processedInvoices, 5);
-  //   _openInvoicesList.add(openInvoices);
-  //   final totalDebt = getTotalDebt(openInvoices, 7);
-  //   _totalDebtList.add(totalDebt);
-  //   final dueInvoices = getDueInvoices(context, openInvoices, 5);
-  //   _dueInvoicesList.add(dueInvoices);
-  //   final dueDebt = getDueDebt(dueInvoices, 7);
-  //   _dueDebtList.add(dueDebt);
-  //   final giftsAndDicounts = getGiftsAndDiscounts(context, customerTransactions);
-  //   _giftsAndDiscountsList.add(giftsAndDicounts);
-  //   final totalGiftsAmount = getTotalGiftsAndDiscounts(giftsAndDicounts, 4);
-  //   _totalGiftsAmountList.add(totalGiftsAmount);
-  // }
 }
 
 void _resetGlobalLists() {
@@ -233,4 +231,5 @@ void _resetGlobalLists() {
   _productTotalQuantityList = [];
   _productTotalProfitsList = [];
   _productTotalCommissionsList = [];
+  _productTotalPriceList = [];
 }
