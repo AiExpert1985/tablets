@@ -8,7 +8,7 @@ import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/common/widgets/form_fields/main_screen_list_cells.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
-import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
 import 'package:tablets/src/features/customers/utils/customer_report_utils.dart';
 import 'package:tablets/src/features/customers/utils/process_customer_invoices.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';

@@ -5,7 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/features/customers/controllers/customer_drawer_provider.dart';
-import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
 
 class CustomerFloatingButtons extends ConsumerWidget {

@@ -9,7 +9,7 @@ import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
-import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
 import 'package:tablets/src/features/regions/repository/region_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 

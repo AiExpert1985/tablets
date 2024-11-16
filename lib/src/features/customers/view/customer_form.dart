@@ -10,6 +10,7 @@ import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/view/customer_form_fields.dart';
+import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
 
 class CustomerForm extends ConsumerWidget {
   const CustomerForm({this.isEditMode = false, super.key});
