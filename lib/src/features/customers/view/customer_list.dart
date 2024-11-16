@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
-import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
@@ -16,7 +15,6 @@ import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/customers/utils/customer_screen_utils.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -89,16 +87,15 @@ Widget _buildListHeaders(BuildContext context) {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          buildMainScreenPlaceholder(width: 20),
-          Expanded(child: buildMainScreenCell(S.of(context).customer)),
-          Expanded(child: buildMainScreenCell(S.of(context).salesman_selection)),
-          Expanded(child: buildMainScreenCell(S.of(context).current_debt)),
-          Expanded(child: buildMainScreenCell(S.of(context).num_open_invoice)),
-          Expanded(child: buildMainScreenCell(S.of(context).due_debt_amount)),
-          Expanded(child: buildMainScreenCell(S.of(context).average_invoice_closing_duration)),
-          if (!hideCustomerProfit)
-            Expanded(child: buildMainScreenCell(S.of(context).customer_invoice_profit)),
-          Expanded(child: buildMainScreenCell(S.of(context).customer_gifts_and_discounts)),
+          buildMainScreenPlaceholder(width: 20, isExpanded: false),
+          buildMainScreenHeaderCell(S.of(context).customer),
+          buildMainScreenHeaderCell(S.of(context).salesman_selection),
+          buildMainScreenHeaderCell(S.of(context).current_debt),
+          buildMainScreenHeaderCell(S.of(context).num_open_invoice),
+          buildMainScreenHeaderCell(S.of(context).due_debt_amount),
+          buildMainScreenHeaderCell(S.of(context).average_invoice_closing_duration),
+          if (!hideCustomerProfit) buildMainScreenHeaderCell(S.of(context).customer_invoice_profit),
+          buildMainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
         ],
       ),
       VerticalGap.m,
@@ -128,64 +125,47 @@ Widget _buildDataRow(
   final giftsAndDiscounts = _giftsAndDiscountsList[index];
   final totalGiftsAmount = _totalGiftsAmountList[index];
   final matchingList = customerMatching(customerTransactions, customer, context);
-  bool isValidCustomer = _isValidCustomer(dueDebt, totalDebt, customer);
-  Color color = isValidCustomer ? Colors.black87 : Colors.red;
+  bool inValidCustomer = _inValidCustomer(dueDebt, totalDebt, customer);
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 6.0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        InkWell(
-          child: const CircleAvatar(
-            radius: 15,
-            foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
-          ),
-          onTap: () =>
-              _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer),
+        buildMainScreenEditButton(defaultImageUrl,
+            () => _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer)),
+        buildMainScreenTextCell(customer.name, isWarning: inValidCustomer),
+        buildMainScreenTextCell(customer.salesman, isWarning: inValidCustomer),
+        buildMainScreenClickableCell(
+          totalDebt,
+          () => showCustomerMatchingReport(context, matchingList, customer.name),
+          isWarning: inValidCustomer,
         ),
-        Expanded(child: _buildDataCell(customer.name, color)),
-        Expanded(child: _buildDataCell(customer.salesman, color)),
-        Expanded(
-          child: InkWell(
-            child: _buildDataCell(numberToText(totalDebt), color),
-            onTap: () => showCustomerMatchingReport(context, matchingList, customer.name),
-          ),
+        buildMainScreenClickableCell(
+          '$numOpenInvoices ($numDueInvoices)',
+          () => showInvoicesReport(context, openInvoices, '${customer.name}  ( $numOpenInvoices )'),
+          isWarning: inValidCustomer,
         ),
-        Expanded(
-          child: InkWell(
-            child: _buildDataCell('$numOpenInvoices ($numDueInvoices)', color),
-            onTap: () =>
-                showInvoicesReport(context, openInvoices, '${customer.name}  ( $numOpenInvoices )'),
-          ),
+        buildMainScreenClickableCell(
+          dueDebt,
+          () => showInvoicesReport(context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
+          isWarning: inValidCustomer,
         ),
-        Expanded(
-          child: InkWell(
-            child: _buildDataCell('$dueDebt', color),
-            onTap: () =>
-                showInvoicesReport(context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
-          ),
+        buildMainScreenClickableCell(
+          invoiceAverageClosingDays,
+          () => showInvoicesReport(
+              context, closedInvoices, '${customer.name}  ( $invoiceAverageClosingDays )'),
+          isWarning: inValidCustomer,
         ),
-        Expanded(
-          child: InkWell(
-            child: _buildDataCell('$invoiceAverageClosingDays', color),
-            onTap: () => showInvoicesReport(
-                context, closedInvoices, '${customer.name}  ( $invoiceAverageClosingDays )'),
+        if (!hideCustomerProfit)
+          buildMainScreenClickableCell(
+            profit,
+            () => showProfitReport(context, invoiceWithProfit, customer.name),
+            isWarning: inValidCustomer,
           ),
-        ),
-        Visibility(
-          visible: !hideCustomerProfit,
-          child: Expanded(
-            child: InkWell(
-              child: _buildDataCell('$profit', color),
-              onTap: () => showProfitReport(context, invoiceWithProfit, customer.name),
-            ),
-          ),
-        ),
-        Expanded(
-          child: InkWell(
-            child: _buildDataCell('$totalGiftsAmount', color),
-            onTap: () => showGiftsReport(context, giftsAndDiscounts, customer.name),
-          ),
+        buildMainScreenClickableCell(
+          totalGiftsAmount,
+          () => showGiftsReport(context, giftsAndDiscounts, customer.name),
+          isWarning: inValidCustomer,
         ),
       ],
     ),
@@ -214,25 +194,16 @@ Widget _buildHeaderTotalsRow(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      buildMainScreenPlaceholder(width: 20),
-      Expanded(child: buildMainScreenPlaceholder()),
-      Expanded(child: buildMainScreenPlaceholder()),
-      Expanded(child: buildMainScreenCell(totalDebtSum, isColumnTotal: true)),
-      Expanded(child: buildMainScreenCell('$totalOpenInvoices ($totalDueInvoices)')),
-      Expanded(child: buildMainScreenCell(totalDueDebtSum, isColumnTotal: true)),
-      Expanded(child: buildMainScreenCell('($averageClosingDays ${S.of(context).days} )')),
-      if (!hideCustomerProfit)
-        Expanded(child: buildMainScreenCell(totalProfitSum, isColumnTotal: true)),
-      Expanded(child: buildMainScreenCell(totalGifts, isColumnTotal: true)),
+      buildMainScreenPlaceholder(width: 20, isExpanded: false),
+      buildMainScreenPlaceholder(),
+      buildMainScreenPlaceholder(),
+      buildMainScreenHeaderCell(totalDebtSum, isColumnTotal: true),
+      buildMainScreenHeaderCell('$totalOpenInvoices ($totalDueInvoices)'),
+      buildMainScreenHeaderCell(totalDueDebtSum, isColumnTotal: true),
+      buildMainScreenHeaderCell('($averageClosingDays ${S.of(context).days} )'),
+      if (!hideCustomerProfit) buildMainScreenHeaderCell(totalProfitSum, isColumnTotal: true),
+      buildMainScreenHeaderCell(totalGifts, isColumnTotal: true),
     ],
-  );
-}
-
-Widget _buildDataCell(String text, Color color) {
-  return Text(
-    text,
-    textAlign: TextAlign.center,
-    style: TextStyle(fontSize: 16, color: color),
   );
 }
 
@@ -242,8 +213,8 @@ Future<void> _fetchTransactions(DbRepository transactionProvider) async {
 
 // we stop transactions if customer either exceeded limit of debt, or has dueDebt
 // which is transactions that are not closed within allowed time (for example 20 days)
-bool _isValidCustomer(double dueDebt, double totalDebt, Customer customer) {
-  return totalDebt < customer.creditLimit || dueDebt < 0;
+bool _inValidCustomer(double dueDebt, double totalDebt, Customer customer) {
+  return totalDebt > customer.creditLimit || dueDebt > 0;
 }
 
 void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
