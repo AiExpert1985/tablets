@@ -6,6 +6,7 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
+import 'package:tablets/src/common/widgets/form_fields/build_screen_column_cell.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
@@ -55,9 +56,9 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildHeaderRow(context),
+            _buildListHeaders(context),
             const Divider(),
-            _buildDataRows(context, customers, formDataNotifier, imagePickerNotifier)
+            _buildListData(context, customers, formDataNotifier, imagePickerNotifier)
           ],
         ),
       );
@@ -65,7 +66,7 @@ Widget buildCustomerList(BuildContext context, WidgetRef ref) {
   );
 }
 
-Widget _buildDataRows(BuildContext context, List<Map<String, dynamic>> customers,
+Widget _buildListData(BuildContext context, List<Map<String, dynamic>> customers,
     ItemFormData formDataNotifier, ImageSliderNotifier imagePickerNotifier) {
   return Expanded(
     child: ListView.builder(
@@ -82,67 +83,27 @@ Widget _buildDataRows(BuildContext context, List<Map<String, dynamic>> customers
   );
 }
 
-Widget _buildHeaderRow(BuildContext context) {
-  int totalOpenInvoices = _openInvoicesList
-      .expand((innerList) => innerList) // Flatten the second level
-      .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
-      .length;
-  int totalDueInvoices = _dueInvoicesList
-      .expand((innerList) => innerList) // Flatten the second level
-      .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
-      .length;
-  double totalDebtSum = _totalDebtList.reduce((a, b) => a + b);
-  double totalDueDebtSum = _dueDebtList.reduce((a, b) => a + b);
-  double totalProfitSum = _totalProfitList.reduce((a, b) => a + b);
-  double totalGifts = _totalGiftsAmountList.reduce((a, b) => a + b);
-
-  double averageClosingDays = _averageInvoiceClosingDaysList.isNotEmpty
-      ? _averageInvoiceClosingDaysList.reduce((a, b) => a + b) /
-          _averageInvoiceClosingDaysList.length
-      : 0.0;
-
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildHeader(''),
-            Expanded(child: _buildHeader(S.of(context).customer)),
-            Expanded(child: _buildHeader(S.of(context).salesman_selection)),
-            Expanded(child: _buildHeader(S.of(context).current_debt)),
-            Expanded(child: _buildHeader(S.of(context).num_open_invoice)),
-            Expanded(child: _buildHeader(S.of(context).due_debt_amount)),
-            Expanded(child: _buildHeader(S.of(context).average_invoice_closing_duration)),
-            Visibility(
-                visible: !hideCustomerProfit,
-                child: Expanded(child: _buildHeader(S.of(context).customer_invoice_profit))),
-            Expanded(child: _buildHeader(S.of(context).customer_gifts_and_discounts)),
-          ],
-        ),
-        VerticalGap.m,
-        Visibility(
-          visible: !hideMainScreenColumnTotals,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const SizedBox(), // Placeholder for the first column
-              const Expanded(child: SizedBox()), // Placeholder for the second column
-              const Expanded(child: SizedBox()), // Placeholder for the third column
-              Expanded(child: _buildHeader('($totalDebtSum)')),
-              Expanded(child: _buildHeader('$totalOpenInvoices ($totalDueInvoices)')),
-              Expanded(child: _buildHeader('($totalDueDebtSum)')),
-              Expanded(child: _buildHeader('($averageClosingDays ${S.of(context).days} )')),
-              Visibility(
-                  visible: !hideCustomerProfit,
-                  child: Expanded(child: _buildHeader('($totalProfitSum)'))),
-              Expanded(child: _buildHeader('($totalGifts)')), // Placeholder
-            ],
-          ),
-        ),
-      ],
-    ),
+Widget _buildListHeaders(BuildContext context) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          buildMainScreenPlaceholder(width: 20),
+          Expanded(child: buildMainScreenCell(S.of(context).customer)),
+          Expanded(child: buildMainScreenCell(S.of(context).salesman_selection)),
+          Expanded(child: buildMainScreenCell(S.of(context).current_debt)),
+          Expanded(child: buildMainScreenCell(S.of(context).num_open_invoice)),
+          Expanded(child: buildMainScreenCell(S.of(context).due_debt_amount)),
+          Expanded(child: buildMainScreenCell(S.of(context).average_invoice_closing_duration)),
+          if (!hideCustomerProfit)
+            Expanded(child: buildMainScreenCell(S.of(context).customer_invoice_profit)),
+          Expanded(child: buildMainScreenCell(S.of(context).customer_gifts_and_discounts)),
+        ],
+      ),
+      VerticalGap.m,
+      if (!hideMainScreenColumnTotals) _buildHeaderTotalsRow(context)
+    ],
   );
 }
 
@@ -171,67 +132,99 @@ Widget _buildDataRow(
   Color color = isValidCustomer ? Colors.black87 : Colors.red;
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 6.0),
-    child: Column(
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            InkWell(
-              child: const CircleAvatar(
-                radius: 15,
-                foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
-              ),
-              onTap: () =>
-                  _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer),
+        InkWell(
+          child: const CircleAvatar(
+            radius: 15,
+            foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
+          ),
+          onTap: () =>
+              _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer),
+        ),
+        Expanded(child: _buildDataCell(customer.name, color)),
+        Expanded(child: _buildDataCell(customer.salesman, color)),
+        Expanded(
+          child: InkWell(
+            child: _buildDataCell(numberToText(totalDebt), color),
+            onTap: () => showCustomerMatchingReport(context, matchingList, customer.name),
+          ),
+        ),
+        Expanded(
+          child: InkWell(
+            child: _buildDataCell('$numOpenInvoices ($numDueInvoices)', color),
+            onTap: () =>
+                showInvoicesReport(context, openInvoices, '${customer.name}  ( $numOpenInvoices )'),
+          ),
+        ),
+        Expanded(
+          child: InkWell(
+            child: _buildDataCell('$dueDebt', color),
+            onTap: () =>
+                showInvoicesReport(context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
+          ),
+        ),
+        Expanded(
+          child: InkWell(
+            child: _buildDataCell('$invoiceAverageClosingDays', color),
+            onTap: () => showInvoicesReport(
+                context, closedInvoices, '${customer.name}  ( $invoiceAverageClosingDays )'),
+          ),
+        ),
+        Visibility(
+          visible: !hideCustomerProfit,
+          child: Expanded(
+            child: InkWell(
+              child: _buildDataCell('$profit', color),
+              onTap: () => showProfitReport(context, invoiceWithProfit, customer.name),
             ),
-            Expanded(child: _buildDataCell(customer.name, color)),
-            Expanded(child: _buildDataCell(customer.salesman, color)),
-            Expanded(
-              child: InkWell(
-                child: _buildDataCell(numberToText(totalDebt), color),
-                onTap: () => showCustomerMatchingReport(context, matchingList, customer.name),
-              ),
-            ),
-            Expanded(
-              child: InkWell(
-                child: _buildDataCell('$numOpenInvoices ($numDueInvoices)', color),
-                onTap: () => showInvoicesReport(
-                    context, openInvoices, '${customer.name}  ( $numOpenInvoices )'),
-              ),
-            ),
-            Expanded(
-              child: InkWell(
-                child: _buildDataCell('$dueDebt', color),
-                onTap: () => showInvoicesReport(
-                    context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
-              ),
-            ),
-            Expanded(
-              child: InkWell(
-                child: _buildDataCell('$invoiceAverageClosingDays', color),
-                onTap: () => showInvoicesReport(
-                    context, closedInvoices, '${customer.name}  ( $invoiceAverageClosingDays )'),
-              ),
-            ),
-            Visibility(
-              visible: !hideCustomerProfit,
-              child: Expanded(
-                child: InkWell(
-                  child: _buildDataCell('$profit', color),
-                  onTap: () => showProfitReport(context, invoiceWithProfit, customer.name),
-                ),
-              ),
-            ),
-            Expanded(
-              child: InkWell(
-                child: _buildDataCell('$totalGiftsAmount', color),
-                onTap: () => showGiftsReport(context, giftsAndDiscounts, customer.name),
-              ),
-            ),
-          ],
+          ),
+        ),
+        Expanded(
+          child: InkWell(
+            child: _buildDataCell('$totalGiftsAmount', color),
+            onTap: () => showGiftsReport(context, giftsAndDiscounts, customer.name),
+          ),
         ),
       ],
     ),
+  );
+}
+
+Widget _buildHeaderTotalsRow(BuildContext context) {
+  int totalOpenInvoices = _openInvoicesList
+      .expand((innerList) => innerList) // Flatten the second level
+      .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
+      .length;
+  int totalDueInvoices = _dueInvoicesList
+      .expand((innerList) => innerList) // Flatten the second level
+      .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
+      .length;
+  double totalDebtSum = _totalDebtList.reduce((a, b) => a + b);
+  double totalDueDebtSum = _dueDebtList.reduce((a, b) => a + b);
+  double totalProfitSum = _totalProfitList.reduce((a, b) => a + b);
+  double totalGifts = _totalGiftsAmountList.reduce((a, b) => a + b);
+
+  double averageClosingDays = _averageInvoiceClosingDaysList.isNotEmpty
+      ? _averageInvoiceClosingDaysList.reduce((a, b) => a + b) /
+          _averageInvoiceClosingDaysList.length
+      : 0.0;
+
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      buildMainScreenPlaceholder(width: 20),
+      Expanded(child: buildMainScreenPlaceholder()),
+      Expanded(child: buildMainScreenPlaceholder()),
+      Expanded(child: buildMainScreenCell(totalDebtSum, isColumnTotal: true)),
+      Expanded(child: buildMainScreenCell('$totalOpenInvoices ($totalDueInvoices)')),
+      Expanded(child: buildMainScreenCell(totalDueDebtSum, isColumnTotal: true)),
+      Expanded(child: buildMainScreenCell('($averageClosingDays ${S.of(context).days} )')),
+      if (!hideCustomerProfit)
+        Expanded(child: buildMainScreenCell(totalProfitSum, isColumnTotal: true)),
+      Expanded(child: buildMainScreenCell(totalGifts, isColumnTotal: true)),
+    ],
   );
 }
 
@@ -240,17 +233,6 @@ Widget _buildDataCell(String text, Color color) {
     text,
     textAlign: TextAlign.center,
     style: TextStyle(fontSize: 16, color: color),
-  );
-}
-
-Widget _buildHeader(String text) {
-  return Text(
-    text,
-    textAlign: TextAlign.center,
-    style: const TextStyle(
-      fontSize: 18,
-      fontWeight: FontWeight.bold,
-    ),
   );
 }
 
@@ -280,46 +262,50 @@ void _processCustomerTransactions(BuildContext context, List<Map<String, dynamic
   _resetGlobalLists();
   for (var customerData in customers) {
     final customer = Customer.fromMap(customerData);
-    _customersList.add(customer);
-    final customerTransactions = getCustomerTransactions(_transactionsList, customer.dbRef);
-    _customerTransactionsList.add(customerTransactions);
-    // if customer has initial credit, it should be added to the tansactions, so, we add
-    // it here and give it transaction type 'initialCredit'
-    if (customer.initialCredit > 0) {
-      customerTransactions.add(Transaction(
-        dbRef: 'na',
-        name: customer.name,
-        imageUrls: ['na'],
-        number: 1000001,
-        date: customer.initialDate,
-        currency: 'na',
-        transactionType: TransactionType.initialCredit.name,
-        totalAmount: customer.initialCredit,
-      ).toMap());
-    }
-    final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
-    _processedInvoicesList.add(processedInvoices);
-    final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
-    _invoicesWithProfitList.add(invoicesWithProfit);
-    final totalProfit = getTotalProfit(invoicesWithProfit, 5);
-    _totalProfitList.add(totalProfit);
-    final closedInvoices = getClosedInvoices(context, processedInvoices, 5);
-    _closedInvoicesList.add(closedInvoices);
-    final averageClosingDays = calculateAverageClosingDays(closedInvoices, 6);
-    _averageInvoiceClosingDaysList.add(averageClosingDays);
-    final openInvoices = getOpenInvoices(context, processedInvoices, 5);
-    _openInvoicesList.add(openInvoices);
-    final totalDebt = getTotalDebt(openInvoices, 7);
-    _totalDebtList.add(totalDebt);
-    final dueInvoices = getDueInvoices(context, openInvoices, 5);
-    _dueInvoicesList.add(dueInvoices);
-    final dueDebt = getDueDebt(dueInvoices, 7);
-    _dueDebtList.add(dueDebt);
-    final giftsAndDicounts = getGiftsAndDiscounts(context, customerTransactions);
-    _giftsAndDiscountsList.add(giftsAndDicounts);
-    final totalGiftsAmount = getTotalGiftsAndDiscounts(giftsAndDicounts, 4);
-    _totalGiftsAmountList.add(totalGiftsAmount);
+    _updateGlobalLists(context, customer);
   }
+}
+
+void _updateGlobalLists(BuildContext context, Customer customer) {
+  _customersList.add(customer);
+  final customerTransactions = getCustomerTransactions(_transactionsList, customer.dbRef);
+  _customerTransactionsList.add(customerTransactions);
+  // if customer has initial credit, it should be added to the tansactions, so, we add
+  // it here and give it transaction type 'initialCredit'
+  if (customer.initialCredit > 0) {
+    customerTransactions.add(Transaction(
+      dbRef: 'na',
+      name: customer.name,
+      imageUrls: ['na'],
+      number: 1000001,
+      date: customer.initialDate,
+      currency: 'na',
+      transactionType: TransactionType.initialCredit.name,
+      totalAmount: customer.initialCredit,
+    ).toMap());
+  }
+  final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
+  _processedInvoicesList.add(processedInvoices);
+  final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
+  _invoicesWithProfitList.add(invoicesWithProfit);
+  final totalProfit = getTotalProfit(invoicesWithProfit, 5);
+  _totalProfitList.add(totalProfit);
+  final closedInvoices = getClosedInvoices(context, processedInvoices, 5);
+  _closedInvoicesList.add(closedInvoices);
+  final averageClosingDays = calculateAverageClosingDays(closedInvoices, 6);
+  _averageInvoiceClosingDaysList.add(averageClosingDays);
+  final openInvoices = getOpenInvoices(context, processedInvoices, 5);
+  _openInvoicesList.add(openInvoices);
+  final totalDebt = getTotalDebt(openInvoices, 7);
+  _totalDebtList.add(totalDebt);
+  final dueInvoices = getDueInvoices(context, openInvoices, 5);
+  _dueInvoicesList.add(dueInvoices);
+  final dueDebt = getDueDebt(dueInvoices, 7);
+  _dueDebtList.add(dueDebt);
+  final giftsAndDicounts = getGiftsAndDiscounts(context, customerTransactions);
+  _giftsAndDiscountsList.add(giftsAndDicounts);
+  final totalGiftsAmount = getTotalGiftsAndDiscounts(giftsAndDicounts, 4);
+  _totalGiftsAmountList.add(totalGiftsAmount);
 }
 
 void _resetGlobalLists() {

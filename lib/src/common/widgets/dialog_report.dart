@@ -104,13 +104,15 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           ],
         ),
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildListTitles(),
-          _buildDataList(),
-          if (widget.sumIndex != null) _buildSumDisplay(),
-        ],
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildListTitles(),
+            _buildDataList(),
+            if (widget.sumIndex != null) _buildSumDisplay(),
+          ],
+        ),
       ),
       actions: _buildButtons(),
     );

@@ -57,7 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "damagedItems": MessageLookupByLibrary.simpleMessage("مواد تالفة"),
         "date_picker_hint":
             MessageLookupByLibrary.simpleMessage("اختيار التاريخ"),
-        "days": MessageLookupByLibrary.simpleMessage("ايام"),
+        "days": MessageLookupByLibrary.simpleMessage("يوم"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات"),
         "db_error_deleting_doc": MessageLookupByLibrary.simpleMessage(
