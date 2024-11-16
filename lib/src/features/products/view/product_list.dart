@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/features/products/utils/product_report_utils.dart';
 import 'package:tablets/src/features/products/utils/product_screen_utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
@@ -115,8 +114,8 @@ Widget _buildDataRow(
   Product product = _productsList[index];
   final productTransactions = _productProcessedTransactionsList[index];
   final totalQuantity = _productTotalQuantityList[index];
-  tempPrint(product.name);
-  tempPrint(product.code);
+  final totalItemProfit = _productTotalProfitsList[index]; // profit doesn't include commission
+  final profitInvoices = getOnlyProfitInvoices(productTransactions, 5);
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 6.0),
     child: Row(
@@ -146,7 +145,12 @@ Widget _buildDataRow(
           ),
         ),
         Expanded(child: _buildDataCell('${(totalQuantity * product.buyingPrice)}')),
-        Expanded(child: _buildDataCell('TODO')),
+        Expanded(
+          child: InkWell(
+            child: _buildDataCell('$totalItemProfit'),
+            onTap: () => showProfitReport(context, profitInvoices, product.name),
+          ),
+        ),
       ],
     ),
   );

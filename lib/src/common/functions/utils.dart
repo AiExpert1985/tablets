@@ -166,3 +166,35 @@ List<List<dynamic>> sortByDate(List<List<dynamic>> list, int dateIndex) {
   });
   return list;
 }
+
+// return a copy of the original list after removing one or more specific indices from the list
+List<List<dynamic>> removeIndicesFromInnerLists(
+    List<List<dynamic>> data, List<int> indicesToRemove) {
+  List<List<dynamic>> result = [];
+  indicesToRemove.sort((a, b) => b.compareTo(a));
+  for (var innerList in data) {
+    List<dynamic> newInnerList = List.from(innerList);
+    for (int index in indicesToRemove) {
+      if (index >= 0 && index < newInnerList.length) {
+        newInnerList.removeAt(index);
+      }
+    }
+    result.add(newInnerList);
+  }
+  return result;
+}
+
+// return a copy of the original list after removing last x number of indices from the list
+List<List<dynamic>> trimLastXIndicesFromInnerLists(List<List<dynamic>> data, int x) {
+  List<List<dynamic>> result = [];
+  for (var innerList in data) {
+    List<dynamic> newInnerList = List.from(innerList);
+    if (x > 0) {
+      if (x < newInnerList.length) {
+        newInnerList = newInnerList.sublist(0, newInnerList.length - x);
+      }
+    }
+    result.add(newInnerList);
+  }
+  return result;
+}

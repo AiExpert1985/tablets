@@ -52,6 +52,7 @@ List<List<dynamic>> getProductProcessedTransactions(
         totalQuantity += item['giftQuantity'] as int;
       } else if (type == TransactionType.damagedItems.name) {
         totalQuantity -= item['soldQuantity'] as int;
+        totalProfit -= (item['soldQuantity'] ?? 0) * (item['buyingPrice'] ?? 0);
       } else {
         continue;
       }
@@ -80,4 +81,15 @@ List<dynamic> getProductTotals(List<List<dynamic>> productTransactions) {
     totalSalesmanCommission += transaction[6];
   }
   return [totalQuantity, totalProfit, totalSalesmanCommission];
+}
+
+List<List<dynamic>> getOnlyProfitInvoices(
+    List<List<dynamic>> processedTransactions, int profitIndex) {
+  List<List<dynamic>> result = [];
+  for (var innerList in processedTransactions) {
+    if (innerList.length > profitIndex && innerList[profitIndex] != 0) {
+      result.add(List.from(innerList));
+    }
+  }
+  return result;
 }
