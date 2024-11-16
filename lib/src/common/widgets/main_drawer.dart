@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
@@ -14,34 +15,34 @@ Widget buildMainDrawer(BuildContext context, StateController<String> pageTitleNo
             child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(children: [
-                  _buildMainDrawerButton(context, pageTitleNotifier,
+                  MainDrawerButton(
                       iconName: 'transactions',
                       title: S.of(context).transactions,
                       routeName: AppRoute.transactions.name),
                   VerticalGap.m,
-                  _buildMainDrawerButton(context, pageTitleNotifier,
+                  MainDrawerButton(
                       iconName: 'customers',
                       title: S.of(context).customers,
                       routeName: AppRoute.customers.name),
                   VerticalGap.m,
-                  _buildMainDrawerButton(context, pageTitleNotifier,
+                  MainDrawerButton(
                       iconName: 'vendors',
                       title: S.of(context).vendors,
                       routeName: AppRoute.vendors.name),
                   VerticalGap.m,
-                  _buildMainDrawerButton(context, pageTitleNotifier,
+                  MainDrawerButton(
                       iconName: 'salesman',
                       title: S.of(context).salesmen,
                       routeName: AppRoute.salesman.name),
                   VerticalGap.m,
-                  _buildMainDrawerButton(context, pageTitleNotifier,
+                  MainDrawerButton(
                       iconName: 'products',
                       title: S.of(context).products,
                       routeName: AppRoute.products.name),
                   VerticalGap.m,
                   _buildSettingsButton(context, pageTitleNotifier),
                   PushWidgets.toEnd,
-                  _buildMainDrawerButton(context, pageTitleNotifier,
+                  MainDrawerButton(
                       iconName: 'pending_transactions',
                       title: S.of(context).pending_transactions,
                       routeName: AppRoute.pendingTransactions.name),
@@ -78,20 +79,33 @@ Widget _buildDrawerHeader(BuildContext context) {
           ])));
 }
 
-Widget _buildMainDrawerButton(BuildContext context, StateController<String> pageTitleNotifier,
-    {required iconName, required title, required routeName}) {
-  return ListTile(
-      leading: Image.asset(
-        'assets/icons/side_drawer/$iconName.png',
-        width: 30,
-        fit: BoxFit.scaleDown,
-      ),
-      title: Text(title),
-      onTap: () {
-        pageTitleNotifier.state = title;
-        Navigator.of(context).pop();
-        context.goNamed(routeName);
-      });
+class MainDrawerButton extends ConsumerWidget {
+  final String iconName;
+  final String title;
+  final String routeName;
+
+  const MainDrawerButton({
+    super.key,
+    required this.iconName,
+    required this.title,
+    required this.routeName,
+  });
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    return ListTile(
+        leading: Image.asset(
+          'assets/icons/side_drawer/$iconName.png',
+          width: 30,
+          fit: BoxFit.scaleDown,
+        ),
+        title: Text(title),
+        onTap: () {
+          pageTitleNotifier.state = title;
+          Navigator.of(context).pop();
+          context.goNamed(routeName);
+        });
+  }
 }
 
 Widget _buildSettingsButton(BuildContext context, StateController<String> pageTitleNotifier) {
