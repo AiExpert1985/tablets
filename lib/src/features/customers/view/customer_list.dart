@@ -5,7 +5,7 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
-import 'package:tablets/src/common/widgets/form_fields/build_screen_column_cell.dart';
+import 'package:tablets/src/common/widgets/form_fields/main_screen_list_cells.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
@@ -87,15 +87,15 @@ Widget _buildListHeaders(BuildContext context) {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          buildMainScreenPlaceholder(width: 20, isExpanded: false),
-          buildMainScreenHeaderCell(S.of(context).customer),
-          buildMainScreenHeaderCell(S.of(context).salesman_selection),
-          buildMainScreenHeaderCell(S.of(context).current_debt),
-          buildMainScreenHeaderCell(S.of(context).num_open_invoice),
-          buildMainScreenHeaderCell(S.of(context).due_debt_amount),
-          buildMainScreenHeaderCell(S.of(context).average_invoice_closing_duration),
-          if (!hideCustomerProfit) buildMainScreenHeaderCell(S.of(context).customer_invoice_profit),
-          buildMainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
+          const MainScreenPlaceholder(width: 20, isExpanded: false),
+          MainScreenHeaderCell(S.of(context).customer),
+          MainScreenHeaderCell(S.of(context).salesman_selection),
+          MainScreenHeaderCell(S.of(context).current_debt),
+          MainScreenHeaderCell(S.of(context).num_open_invoice),
+          MainScreenHeaderCell(S.of(context).due_debt_amount),
+          MainScreenHeaderCell(S.of(context).average_invoice_closing_duration),
+          if (!hideCustomerProfit) MainScreenHeaderCell(S.of(context).customer_invoice_profit),
+          MainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
         ],
       ),
       VerticalGap.m,
@@ -131,38 +131,38 @@ Widget _buildDataRow(
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        buildMainScreenEditButton(defaultImageUrl,
+        MainScreenEditButton(defaultImageUrl,
             () => _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer)),
-        buildMainScreenTextCell(customer.name, isWarning: inValidCustomer),
-        buildMainScreenTextCell(customer.salesman, isWarning: inValidCustomer),
-        buildMainScreenClickableCell(
+        MainScreenTextCell(customer.name, isWarning: inValidCustomer),
+        MainScreenTextCell(customer.salesman, isWarning: inValidCustomer),
+        MainScreenClickableCell(
           totalDebt,
           () => showCustomerMatchingReport(context, matchingList, customer.name),
           isWarning: inValidCustomer,
         ),
-        buildMainScreenClickableCell(
+        MainScreenClickableCell(
           '$numOpenInvoices ($numDueInvoices)',
           () => showInvoicesReport(context, openInvoices, '${customer.name}  ( $numOpenInvoices )'),
           isWarning: inValidCustomer,
         ),
-        buildMainScreenClickableCell(
+        MainScreenClickableCell(
           dueDebt,
           () => showInvoicesReport(context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
           isWarning: inValidCustomer,
         ),
-        buildMainScreenClickableCell(
+        MainScreenClickableCell(
           invoiceAverageClosingDays,
           () => showInvoicesReport(
               context, closedInvoices, '${customer.name}  ( $invoiceAverageClosingDays )'),
           isWarning: inValidCustomer,
         ),
         if (!hideCustomerProfit)
-          buildMainScreenClickableCell(
+          MainScreenClickableCell(
             profit,
             () => showProfitReport(context, invoiceWithProfit, customer.name),
             isWarning: inValidCustomer,
           ),
-        buildMainScreenClickableCell(
+        MainScreenClickableCell(
           totalGiftsAmount,
           () => showGiftsReport(context, giftsAndDiscounts, customer.name),
           isWarning: inValidCustomer,
@@ -194,15 +194,15 @@ Widget _buildHeaderTotalsRow(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      buildMainScreenPlaceholder(width: 20, isExpanded: false),
-      buildMainScreenPlaceholder(),
-      buildMainScreenPlaceholder(),
-      buildMainScreenHeaderCell(totalDebtSum, isColumnTotal: true),
-      buildMainScreenHeaderCell('$totalOpenInvoices ($totalDueInvoices)'),
-      buildMainScreenHeaderCell(totalDueDebtSum, isColumnTotal: true),
-      buildMainScreenHeaderCell('($averageClosingDays ${S.of(context).days} )'),
-      if (!hideCustomerProfit) buildMainScreenHeaderCell(totalProfitSum, isColumnTotal: true),
-      buildMainScreenHeaderCell(totalGifts, isColumnTotal: true),
+      const MainScreenPlaceholder(width: 20, isExpanded: false),
+      const MainScreenPlaceholder(),
+      const MainScreenPlaceholder(),
+      MainScreenHeaderCell(totalDebtSum, isColumnTotal: true),
+      MainScreenHeaderCell('$totalOpenInvoices ($totalDueInvoices)'),
+      MainScreenHeaderCell(totalDueDebtSum, isColumnTotal: true),
+      MainScreenHeaderCell('($averageClosingDays ${S.of(context).days} )'),
+      if (!hideCustomerProfit) MainScreenHeaderCell(totalProfitSum, isColumnTotal: true),
+      MainScreenHeaderCell(totalGifts, isColumnTotal: true),
     ],
   );
 }
