@@ -185,5 +185,6 @@
     "customer_gifts_and_discounts": "خصومات و هدايا",
     "days": "يوم",
     "product_profits": "ارباح المادة",
-    "damagedItems": "مواد تالفة"
+    "damagedItems": "مواد تالفة",
+    "reload_page": "اعادة تحميل الصفحة"
 }

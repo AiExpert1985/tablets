@@ -202,6 +202,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "receipt_type": MessageLookupByLibrary.simpleMessage("نوع التسديد"),
         "region_name": MessageLookupByLibrary.simpleMessage("اسم المنطقة"),
         "regions": MessageLookupByLibrary.simpleMessage("المناطق"),
+        "reload_page":
+            MessageLookupByLibrary.simpleMessage("اعادة تحميل الصفحة"),
         "remaining_amount":
             MessageLookupByLibrary.simpleMessage("المتبقى من القائمة"),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),

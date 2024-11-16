@@ -1919,6 +1919,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Reload page`
+  String get reload_page {
+    return Intl.message(
+      'Reload page',
+      name: 'reload_page',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class MainDrawer extends ConsumerWidget {
@@ -20,23 +22,17 @@ class MainDrawer extends ConsumerWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                   child: Column(children: [
-                    MainDrawerButton(
-                      'transactions',
-                      S.of(context).transactions,
-                      () => _goToPage(
-                        context,
-                        pageTitleNotifier,
-                        AppRoute.transactions.name,
-                        S.of(context).transactions,
-                      ),
-                    ),
+                    MainDrawerButton('transactions', S.of(context).transactions, () {
+                      Navigator.of(context).pop();
+                      pageTitleNotifier.state = S.of(context).transactions;
+                      context.goNamed(AppRoute.transactions.name);
+                    }),
                     VerticalGap.l,
-                    MainDrawerButton(
-                      'customers',
-                      S.of(context).customers,
-                      () => _goToPage(context, pageTitleNotifier, AppRoute.customers.name,
-                          S.of(context).customers),
-                    ),
+                    MainDrawerButton('customers', S.of(context).customers, () {
+                      Navigator.of(context).pop();
+                      pageTitleNotifier.state = S.of(context).customers;
+                      context.goNamed(AppRoute.customers.name);
+                    }),
                     VerticalGap.l,
                     MainDrawerButton(
                       'vendors',
@@ -45,42 +41,46 @@ class MainDrawer extends ConsumerWidget {
                           context, pageTitleNotifier, AppRoute.vendors.name, S.of(context).vendors),
                     ),
                     VerticalGap.l,
-                    MainDrawerButton(
-                      'salesman',
-                      S.of(context).salesmen,
-                      () => _goToPage(context, pageTitleNotifier, AppRoute.salesman.name,
-                          S.of(context).salesmen),
-                    ),
+                    MainDrawerButton('salesman', S.of(context).salesmen, () {
+                      Navigator.of(context).pop();
+                      pageTitleNotifier.state = S.of(context).salesmen;
+                      context.goNamed(AppRoute.salesman.name);
+                    }),
                     VerticalGap.l,
-                    MainDrawerButton(
-                      'products',
-                      S.of(context).products,
-                      () => _goToPage(context, pageTitleNotifier, AppRoute.products.name,
-                          S.of(context).products),
-                    ),
+                    MainDrawerButton('products', S.of(context).products, () async {
+                      pageTitleNotifier.state = S.of(context).products;
+                      final productData =
+                          await ref.read(productRepositoryProvider).fetchItemListAsMaps();
+                      final productDbCache = ref.read(productDbCacheProvider.notifier);
+                      productDbCache.setData(productData);
+                      if (context.mounted) {
+                        context.goNamed(AppRoute.products.name);
+                        Navigator.of(context).pop();
+                      }
+                    }),
                     VerticalGap.l,
                     MainDrawerButton(
                       'settings',
                       S.of(context).settings,
-                      () => _showSettingDialog(context),
+                      () {
+                        Navigator.of(context).pop();
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext ctx) => const SettingsDialog());
+                      },
                     ),
                     const Spacer(),
                     MainDrawerButton(
                       'pending_transactions',
                       S.of(context).pending_transactions,
-                      () => _goToPage(context, pageTitleNotifier, AppRoute.pendingTransactions.name,
-                          S.of(context).pending_transactions),
+                      () {
+                        Navigator.of(context).pop();
+                        pageTitleNotifier.state = S.of(context).pending_transactions;
+                        context.goNamed(AppRoute.pendingTransactions.name);
+                      },
                     ),
                   ])))
         ]));
-  }
-
-  void _showSettingDialog(BuildContext context) {
-    Navigator.of(context).pop();
-    showDialog(
-      context: context,
-      builder: (BuildContext ctx) => const SettingsDialog(),
-    );
   }
 
   void _goToPage(BuildContext context, StateController<String> pageTitleNotifier, String routeName,

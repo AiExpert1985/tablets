@@ -185,5 +185,6 @@
     "customer_gifts_and_discounts": "Customer gifts and discounts",
     "days": "Days",
     "product_profits": "Product profits",
-    "damagedItems": "Damaged items"
+    "damagedItems": "Damaged items",
+    "reload_page": "Reload page"
 }

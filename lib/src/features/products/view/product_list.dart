@@ -6,16 +6,14 @@ import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/utils/product_report_utils.dart';
 import 'package:tablets/src/features/products/utils/product_screen_utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/settings.dart';
-import 'package:tablets/src/common/widgets/async_value_widget.dart';
-import 'package:tablets/src/features/products/controllers/product_filtered_list_provider.dart';
-import 'package:tablets/src/features/products/controllers/product_filter_controller_provider.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
-import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/view/product_form.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_form_data_notifier.dart';
@@ -47,27 +45,41 @@ Widget buildProductsList(BuildContext context, WidgetRef ref) {
   final imagePicker = ref.read(imagePickerProvider.notifier);
   final transactionProvider = ref.read(transactionRepositoryProvider);
   _fetchTransactions(transactionProvider);
-  final productStream = ref.watch(productStreamProvider);
-  final filterIsOn = ref.watch(productFilterSwitchProvider);
-  final productsListValue =
-      filterIsOn ? ref.read(productFilteredListProvider).getFilteredList() : productStream;
+  final productDbCache = ref.read(productDbCacheProvider.notifier);
+  final products = productDbCache.data;
+  ref.watch(productDbCacheProvider);
 
-  return AsyncValueWidget<List<Map<String, dynamic>>>(
-    value: productsListValue,
-    data: (products) {
-      _processProductTransactions(context, products);
-      return Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            _buildHeaderRow(context),
-            const Divider(), // Divider to separate header from the list
-            _buildDataRows(context, products, formDataNotifier, imagePicker),
-          ],
-        ),
-      );
-    },
-  );
+  _processProductTransactions(context, products);
+  Widget screenWidget = products.isNotEmpty
+      ? Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _buildHeaderRow(context),
+              const Divider(), // Divider to separate header from the list
+              _buildDataRows(context, products, formDataNotifier, imagePicker),
+            ],
+          ),
+        )
+      : Center(
+          child: SizedBox(
+            height: 80,
+            width: 320,
+            child: TextButton.icon(
+              onPressed: () async {
+                final productData = await ref.read(productRepositoryProvider).fetchItemListAsMaps();
+                final productDbCache = ref.read(productDbCacheProvider.notifier);
+                productDbCache.setData(productData);
+              },
+              icon: const Icon(Icons.refresh),
+              label: Text(
+                S.of(context).reload_page,
+                style: const TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
+        );
+  return screenWidget;
 }
 
 Widget _buildHeaderRow(BuildContext context) {

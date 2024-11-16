@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductMirrorNotifier extends StateNotifier<List<Map<String, dynamic>>> {
-  ProductMirrorNotifier() : super([]);
+class ProductBbCache extends StateNotifier<List<Map<String, dynamic>>> {
+  ProductBbCache() : super([]);
 
   void addData(Map<String, dynamic> newData) {
     state = [...state, newData]; // Create a new list with the new data
@@ -28,7 +28,7 @@ class ProductMirrorNotifier extends StateNotifier<List<Map<String, dynamic>>> {
   List<Map<String, dynamic>> get data => state;
 }
 
-final productDbMirrorProvider =
-    StateNotifierProvider<ProductMirrorNotifier, List<Map<String, dynamic>>>((ref) {
-  return ProductMirrorNotifier();
+final productDbCacheProvider =
+    StateNotifierProvider<ProductBbCache, List<Map<String, dynamic>>>((ref) {
+  return ProductBbCache();
 });

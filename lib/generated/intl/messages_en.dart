@@ -209,6 +209,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "receipt_type": MessageLookupByLibrary.simpleMessage("ٌReceipt type"),
         "region_name": MessageLookupByLibrary.simpleMessage("Region name"),
         "regions": MessageLookupByLibrary.simpleMessage("Regions"),
+        "reload_page": MessageLookupByLibrary.simpleMessage("Reload page"),
         "remaining_amount":
             MessageLookupByLibrary.simpleMessage("Remaining amount"),
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
