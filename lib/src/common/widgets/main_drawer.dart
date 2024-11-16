@@ -18,7 +18,7 @@ class MainDrawer extends ConsumerWidget {
           const MainDrawerHeader(),
           Expanded(
               child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                   child: Column(children: [
                     MainDrawerButton(
                       'transactions',
@@ -30,41 +30,41 @@ class MainDrawer extends ConsumerWidget {
                         S.of(context).transactions,
                       ),
                     ),
-                    VerticalGap.m,
+                    VerticalGap.l,
                     MainDrawerButton(
                       'customers',
                       S.of(context).customers,
                       () => _goToPage(context, pageTitleNotifier, AppRoute.customers.name,
                           S.of(context).customers),
                     ),
-                    VerticalGap.m,
+                    VerticalGap.l,
                     MainDrawerButton(
                       'vendors',
                       S.of(context).vendors,
                       () => _goToPage(
                           context, pageTitleNotifier, AppRoute.vendors.name, S.of(context).vendors),
                     ),
-                    VerticalGap.m,
+                    VerticalGap.l,
                     MainDrawerButton(
                       'salesman',
                       S.of(context).salesmen,
                       () => _goToPage(context, pageTitleNotifier, AppRoute.salesman.name,
                           S.of(context).salesmen),
                     ),
-                    VerticalGap.m,
+                    VerticalGap.l,
                     MainDrawerButton(
                       'products',
                       S.of(context).products,
                       () => _goToPage(context, pageTitleNotifier, AppRoute.products.name,
                           S.of(context).products),
                     ),
-                    VerticalGap.m,
+                    VerticalGap.l,
                     MainDrawerButton(
                       'settings',
                       S.of(context).settings,
                       () => _showSettingDialog(context),
                     ),
-                    PushWidgets.toEnd,
+                    const Spacer(),
                     MainDrawerButton(
                       'pending_transactions',
                       S.of(context).pending_transactions,
