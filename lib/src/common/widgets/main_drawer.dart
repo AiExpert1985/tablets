@@ -10,7 +10,7 @@ Widget buildMainDrawer(BuildContext context, StateController<String> pageTitleNo
   return Drawer(
       width: 250,
       child: Column(children: [
-        _buildDrawerHeader(context),
+        const MainDrawerHeader(),
         Expanded(
             child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -40,7 +40,11 @@ Widget buildMainDrawer(BuildContext context, StateController<String> pageTitleNo
                       title: S.of(context).products,
                       routeName: AppRoute.products.name),
                   VerticalGap.m,
-                  _buildSettingsButton(context, pageTitleNotifier),
+                  MainDrawerButton(
+                    iconName: 'settings',
+                    title: S.of(context).settings,
+                    isSettingButton: true,
+                  ),
                   PushWidgets.toEnd,
                   MainDrawerButton(
                       iconName: 'pending_transactions',
@@ -50,45 +54,52 @@ Widget buildMainDrawer(BuildContext context, StateController<String> pageTitleNo
       ]));
 }
 
-Widget _buildDrawerHeader(BuildContext context) {
-  return SizedBox(
-      height: 250,
-      child: DrawerHeader(
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primary.withOpacity(0.7),
-              ],
+class MainDrawerHeader extends StatelessWidget {
+  const MainDrawerHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        height: 250,
+        child: DrawerHeader(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                ],
+              ),
             ),
-          ),
-          child: Column(children: [
-            SizedBox(
-              // margin: const EdgeInsets.all(10),
-              width: double.infinity,
-              height: 200, // here I used width intentionally
-              child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
-            ),
-            // Text(
-            //   S.of(context).slogan,
-            //   style: const TextStyle(fontSize: 14, color: Colors.white),
-            // ),
-          ])));
+            child: Column(children: [
+              SizedBox(
+                // margin: const EdgeInsets.all(10),
+                width: double.infinity,
+                height: 200, // here I used width intentionally
+                child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
+              ),
+              // Text(
+              //   S.of(context).slogan,
+              //   style: const TextStyle(fontSize: 14, color: Colors.white),
+              // ),
+            ])));
+  }
 }
 
 class MainDrawerButton extends ConsumerWidget {
   final String iconName;
   final String title;
-  final String routeName;
+  final String? routeName;
+  final bool isSettingButton;
 
   const MainDrawerButton({
     super.key,
     required this.iconName,
     required this.title,
-    required this.routeName,
+    this.routeName,
+    this.isSettingButton = false,
   });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -101,79 +112,75 @@ class MainDrawerButton extends ConsumerWidget {
         ),
         title: Text(title),
         onTap: () {
-          pageTitleNotifier.state = title;
           Navigator.of(context).pop();
-          context.goNamed(routeName);
+          if (isSettingButton) {
+            showDialog(
+              context: context,
+              builder: (BuildContext ctx) => const SettingButtonsDialog(),
+            );
+          } else {
+            pageTitleNotifier.state = title;
+            context.goNamed(routeName!);
+          }
         });
   }
 }
 
-Widget _buildSettingsButton(BuildContext context, StateController<String> pageTitleNotifier) {
-  final title = S.of(context).settings;
-  return ListTile(
-      leading: Image.asset(
-        'assets/icons/side_drawer/settings.png',
-        width: 30,
-        fit: BoxFit.scaleDown,
-      ),
-      title: Text(title),
-      onTap: () {
-        Navigator.of(context).pop();
-        showDialog(
-            context: context,
-            builder: (BuildContext ctx) => _showSettingDialog(context, pageTitleNotifier));
-      });
-}
+class SettingButtonsDialog extends ConsumerWidget {
+  const SettingButtonsDialog({super.key});
 
-Widget _showSettingDialog(BuildContext context, StateController<String> pageTitleNotifier) {
-  final List<String> names = [
-    S.of(context).categories,
-    S.of(context).regions,
-    S.of(context).settings,
-  ];
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    final List<String> names = [
+      S.of(context).categories,
+      S.of(context).regions,
+      S.of(context).settings,
+    ];
 
-  final List<String> routes = [
-    AppRoute.categories.name,
-    AppRoute.regions.name,
-    AppRoute.settings.name
-  ];
+    final List<String> routes = [
+      AppRoute.categories.name,
+      AppRoute.regions.name,
+      AppRoute.settings.name
+    ];
 
-  return AlertDialog(
-    alignment: Alignment.center,
-    scrollable: true,
-    content: Container(
-      padding: const EdgeInsets.all(25),
-      width: 300,
-      height: 500,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 1, // Number of columns
-          childAspectRatio: 1.7, // Aspect ratio of each card
-        ),
-        itemCount: names.length,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              pageTitleNotifier.state = names[index];
-              Navigator.of(context).pop();
-              context.goNamed(routes[index]);
-            },
-            child: Card(
-              elevation: 4,
-              margin: const EdgeInsets.all(16),
-              child: SizedBox(
-                height: 40, // Reduced height for the card
-                child: Center(
-                  child: Text(
-                    names[index], // Use the corresponding name
-                    style: const TextStyle(fontSize: 18),
+    return AlertDialog(
+      alignment: Alignment.center,
+      scrollable: true,
+      content: Container(
+        padding: const EdgeInsets.all(25),
+        width: 300,
+        height: 500,
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 1, // Number of columns
+            childAspectRatio: 1.7, // Aspect ratio of each card
+          ),
+          itemCount: names.length,
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () {
+                pageTitleNotifier.state = names[index];
+                Navigator.of(context).pop();
+                context.goNamed(routes[index]);
+              },
+              child: Card(
+                elevation: 4,
+                margin: const EdgeInsets.all(16),
+                child: SizedBox(
+                  height: 40, // Reduced height for the card
+                  child: Center(
+                    child: Text(
+                      names[index], // Use the corresponding name
+                      style: const TextStyle(fontSize: 18),
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
