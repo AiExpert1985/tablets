@@ -5,7 +5,7 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
-import 'package:tablets/src/common/widgets/form_fields/main_screen_list_cells.dart';
+import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filter_controller_.dart';
 import 'package:tablets/src/features/customers/controllers/customer_filtered_list.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';

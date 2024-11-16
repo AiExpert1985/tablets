@@ -13,12 +13,12 @@ import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/features/products/controllers/product_filtered_list_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_filter_controller_provider.dart';
-import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/products/view/product_form.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
+import 'package:tablets/src/features/products/controllers/product_form_data_notifier.dart';
 
 List<Map<String, dynamic>> _transactionsList = [];
 List<Product> _productsList = [];

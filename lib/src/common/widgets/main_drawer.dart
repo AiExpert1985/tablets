@@ -6,52 +6,89 @@ import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
-Widget buildMainDrawer(BuildContext context, StateController<String> pageTitleNotifier) {
-  return Drawer(
-      width: 250,
-      child: Column(children: [
-        const MainDrawerHeader(),
-        Expanded(
-            child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(children: [
-                  MainDrawerButton(
-                      iconName: 'transactions',
-                      title: S.of(context).transactions,
-                      routeName: AppRoute.transactions.name),
-                  VerticalGap.m,
-                  MainDrawerButton(
-                      iconName: 'customers',
-                      title: S.of(context).customers,
-                      routeName: AppRoute.customers.name),
-                  VerticalGap.m,
-                  MainDrawerButton(
-                      iconName: 'vendors',
-                      title: S.of(context).vendors,
-                      routeName: AppRoute.vendors.name),
-                  VerticalGap.m,
-                  MainDrawerButton(
-                      iconName: 'salesman',
-                      title: S.of(context).salesmen,
-                      routeName: AppRoute.salesman.name),
-                  VerticalGap.m,
-                  MainDrawerButton(
-                      iconName: 'products',
-                      title: S.of(context).products,
-                      routeName: AppRoute.products.name),
-                  VerticalGap.m,
-                  MainDrawerButton(
-                    iconName: 'settings',
-                    title: S.of(context).settings,
-                    isSettingButton: true,
-                  ),
-                  PushWidgets.toEnd,
-                  MainDrawerButton(
-                      iconName: 'pending_transactions',
-                      title: S.of(context).pending_transactions,
-                      routeName: AppRoute.pendingTransactions.name),
-                ])))
-      ]));
+class MainDrawer extends ConsumerWidget {
+  const MainDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    return Drawer(
+        width: 250,
+        child: Column(children: [
+          const MainDrawerHeader(),
+          Expanded(
+              child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(children: [
+                    MainDrawerButton(
+                      'transactions',
+                      S.of(context).transactions,
+                      () => _goToPage(
+                        context,
+                        pageTitleNotifier,
+                        AppRoute.transactions.name,
+                        S.of(context).transactions,
+                      ),
+                    ),
+                    VerticalGap.m,
+                    MainDrawerButton(
+                      'customers',
+                      S.of(context).customers,
+                      () => _goToPage(context, pageTitleNotifier, AppRoute.customers.name,
+                          S.of(context).customers),
+                    ),
+                    VerticalGap.m,
+                    MainDrawerButton(
+                      'vendors',
+                      S.of(context).vendors,
+                      () => _goToPage(
+                          context, pageTitleNotifier, AppRoute.vendors.name, S.of(context).vendors),
+                    ),
+                    VerticalGap.m,
+                    MainDrawerButton(
+                      'salesman',
+                      S.of(context).salesmen,
+                      () => _goToPage(context, pageTitleNotifier, AppRoute.salesman.name,
+                          S.of(context).salesmen),
+                    ),
+                    VerticalGap.m,
+                    MainDrawerButton(
+                      'products',
+                      S.of(context).products,
+                      () => _goToPage(context, pageTitleNotifier, AppRoute.products.name,
+                          S.of(context).products),
+                    ),
+                    VerticalGap.m,
+                    MainDrawerButton(
+                      'settings',
+                      S.of(context).settings,
+                      () => _showSettingDialog(context),
+                    ),
+                    PushWidgets.toEnd,
+                    MainDrawerButton(
+                      'pending_transactions',
+                      S.of(context).pending_transactions,
+                      () => _goToPage(context, pageTitleNotifier, AppRoute.pendingTransactions.name,
+                          S.of(context).pending_transactions),
+                    ),
+                  ])))
+        ]));
+  }
+
+  void _showSettingDialog(BuildContext context) {
+    Navigator.of(context).pop();
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => const SettingsDialog(),
+    );
+  }
+
+  void _goToPage(BuildContext context, StateController<String> pageTitleNotifier, String routeName,
+      String title) {
+    Navigator.of(context).pop();
+    pageTitleNotifier.state = title;
+    context.goNamed(routeName);
+  }
 }
 
 class MainDrawerHeader extends StatelessWidget {
@@ -91,19 +128,17 @@ class MainDrawerHeader extends StatelessWidget {
 class MainDrawerButton extends ConsumerWidget {
   final String iconName;
   final String title;
-  final String? routeName;
-  final bool isSettingButton;
+  final VoidCallback onTap;
 
-  const MainDrawerButton({
+  const MainDrawerButton(
+    this.iconName,
+    this.title,
+    this.onTap, {
     super.key,
-    required this.iconName,
-    required this.title,
-    this.routeName,
-    this.isSettingButton = false,
   });
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     return ListTile(
         leading: Image.asset(
           'assets/icons/side_drawer/$iconName.png',
@@ -111,23 +146,12 @@ class MainDrawerButton extends ConsumerWidget {
           fit: BoxFit.scaleDown,
         ),
         title: Text(title),
-        onTap: () {
-          Navigator.of(context).pop();
-          if (isSettingButton) {
-            showDialog(
-              context: context,
-              builder: (BuildContext ctx) => const SettingButtonsDialog(),
-            );
-          } else {
-            pageTitleNotifier.state = title;
-            context.goNamed(routeName!);
-          }
-        });
+        onTap: onTap);
   }
 }
 
-class SettingButtonsDialog extends ConsumerWidget {
-  const SettingButtonsDialog({super.key});
+class SettingsDialog extends ConsumerWidget {
+  const SettingsDialog({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

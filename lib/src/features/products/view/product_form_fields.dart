@@ -9,7 +9,7 @@ import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
-import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
+import 'package:tablets/src/features/products/controllers/product_form_data_notifier.dart';
 
 class ProductFormFields extends ConsumerWidget {
   const ProductFormFields({super.key, this.editMode = false});

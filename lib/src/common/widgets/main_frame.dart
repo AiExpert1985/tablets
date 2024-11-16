@@ -16,7 +16,6 @@ class AppScreenFrame extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pageTitle = ref.watch(pageTitleProvider);
-    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, 65.0), // Height of the AppBar
@@ -45,7 +44,7 @@ class AppScreenFrame extends ConsumerWidget {
           ),
         ),
       ),
-      drawer: buildMainDrawer(context, pageTitleNotifier),
+      drawer: const MainDrawer(),
       body: Container(
         padding: const EdgeInsets.all(30),
         child: screenBody,

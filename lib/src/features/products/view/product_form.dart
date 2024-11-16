@@ -10,6 +10,7 @@ import 'package:tablets/src/features/products/controllers/product_form_controlle
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/view/product_form_fields.dart';
+import 'package:tablets/src/features/products/controllers/product_form_data_notifier.dart';
 
 class ProductForm extends ConsumerWidget {
   const ProductForm({this.isEditMode = false, super.key});
