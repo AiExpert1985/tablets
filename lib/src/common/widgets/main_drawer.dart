@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
@@ -49,10 +50,13 @@ class MainDrawer extends ConsumerWidget {
                     VerticalGap.l,
                     MainDrawerButton('products', S.of(context).products, () async {
                       pageTitleNotifier.state = S.of(context).products;
-                      final productData =
-                          await ref.read(productRepositoryProvider).fetchItemListAsMaps();
                       final productDbCache = ref.read(productDbCacheProvider.notifier);
-                      productDbCache.setData(productData);
+                      if (productDbCache.data.isEmpty) {
+                        tempPrint('load products from db');
+                        final productData =
+                            await ref.read(productRepositoryProvider).fetchItemListAsMaps();
+                        productDbCache.setData(productData);
+                      }
                       if (context.mounted) {
                         context.goNamed(AppRoute.products.name);
                         Navigator.of(context).pop();
