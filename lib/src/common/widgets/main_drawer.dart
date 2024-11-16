@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/features/customers/controllers/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
@@ -29,10 +30,18 @@ class MainDrawer extends ConsumerWidget {
                       context.goNamed(AppRoute.transactions.name);
                     }),
                     VerticalGap.l,
-                    MainDrawerButton('customers', S.of(context).customers, () {
-                      Navigator.of(context).pop();
+                    MainDrawerButton('customers', S.of(context).customers, () async {
                       pageTitleNotifier.state = S.of(context).customers;
-                      context.goNamed(AppRoute.customers.name);
+                      final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+                      if (customerDbCache.data.isEmpty) {
+                        final customerData =
+                            await ref.read(customerRepositoryProvider).fetchItemListAsMaps();
+                        customerDbCache.setData(customerData);
+                      }
+                      if (context.mounted) {
+                        context.goNamed(AppRoute.customers.name);
+                        Navigator.of(context).pop();
+                      }
                     }),
                     VerticalGap.l,
                     MainDrawerButton(
@@ -51,8 +60,10 @@ class MainDrawer extends ConsumerWidget {
                     MainDrawerButton('products', S.of(context).products, () async {
                       pageTitleNotifier.state = S.of(context).products;
                       final productDbCache = ref.read(productDbCacheProvider.notifier);
+                      // we only load data from database (firebase) once, that means, whenever a
+                      // change happened to products (add, update, delete), we update the cache and
+                      // database with same data, so there will be no ned to fetch from database
                       if (productDbCache.data.isEmpty) {
-                        tempPrint('load products from db');
                         final productData =
                             await ref.read(productRepositoryProvider).fetchItemListAsMaps();
                         productDbCache.setData(productData);

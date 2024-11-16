@@ -34,7 +34,7 @@ class StatementForm extends ConsumerWidget {
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
     final vendorRepository = ref.read(vendorRepositoryProvider);
-    final productRepository = ref.read(productRepositoryProvider);
+    final productRepository = ref.read(customerRepositoryProvider);
     final counterPartyRepository = isGift ? customerRepository : vendorRepository;
     ref.watch(transactionFormDataProvider);
 

@@ -47,7 +47,7 @@ Widget buildProductsList(BuildContext context, WidgetRef ref) {
   _fetchTransactions(transactionProvider);
   final productDbCache = ref.read(productDbCacheProvider.notifier);
   final products = productDbCache.data;
-  ref.watch(productDbCacheProvider);
+  ref.watch(productDbCacheProvider); // important for reload button
 
   _processProductTransactions(context, products);
   Widget screenWidget = products.isNotEmpty
