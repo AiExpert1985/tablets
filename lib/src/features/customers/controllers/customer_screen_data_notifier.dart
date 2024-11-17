@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 
 /// columnsSummary is the a map that contains the summary (sum or average) of each desired column in the
 /// main screen, some columns don't have summary
@@ -13,10 +14,13 @@ class ScreenDataNotifier extends StateNotifier<Map<String, dynamic>> {
       ...state,
       'data': data,
     };
+    updateSummary();
   }
 
-  void calculateSummary(
-      List<Map<String, Map<String, dynamic>>> data, Map<String, Map<String, dynamic>> summary) {
+  void updateSummary() {
+    final data = [...state['data']];
+    final summary = {...state['summary'] as Map};
+    tempPrint('summary before $summary');
     Map<String, num> totalSums = {};
     for (var entry in data) {
       entry.forEach((propertyName, propertyDetails) {
@@ -38,11 +42,29 @@ class ScreenDataNotifier extends StateNotifier<Map<String, dynamic>> {
         summary[propertyName]!['average'] = totalSums[propertyName]! / data.length;
       }
     }
+    tempPrint('summary after $summary');
+    // state = {
+    //   ...state,
+    //   'summary': summary,
+    // };
   }
 
-  List<Map<String, dynamic>> get data => state['data'];
+  List<dynamic> get data => state['data'];
 
-  Map<String, dynamic> get summary => state['summary'];
+  Map get summary => state['summary'];
+
+  void reset() => state = {};
+
+  void initialize(Map<String, dynamic> summaryType) {
+    Map<String, Map<String, dynamic>> summary = {};
+    summaryType.forEach((property, type) {
+      summary[property] = {'type': type, 'value': 0};
+    });
+    state = {
+      ...state,
+      'summary': summary,
+    };
+  }
 }
 
 final customerScreenDataProvider = StateNotifierProvider<ScreenDataNotifier, Map<String, dynamic>>(

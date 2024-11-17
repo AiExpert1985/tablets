@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
@@ -9,6 +8,7 @@ import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/common/widgets/reload_page_button.dart';
 import 'package:tablets/src/features/customers/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/customers/utils/customer_map_keys.dart';
@@ -18,6 +18,8 @@ import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class CustomerList extends ConsumerWidget {
@@ -25,10 +27,10 @@ class CustomerList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customers = ref.read(customerDbCacheProvider.notifier).data;
-    ref.watch(customerDbCacheProvider); // important for reload button
-    // ref.watch(customerScreenDataProvider); // important for updating UI when do filtering
-    Widget screenWidget = customers.isNotEmpty
+    final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
+    final screenData = screenDataNotifier.data;
+    ref.watch(customerScreenDataProvider);
+    Widget screenWidget = screenData.isNotEmpty
         ? const Padding(
             padding: EdgeInsets.all(16),
             child: Column(
@@ -89,7 +91,7 @@ class ListHeaders extends StatelessWidget {
             MainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
           ],
         ),
-        // VerticalGap.m,
+        VerticalGap.m,
         // if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
       ],
     );
@@ -219,6 +221,7 @@ void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
   ).whenComplete(imagePicker.close);
 }
 
+/// perform same functionality as CustomersButton in the main drawer
 class ReLoadCustomerScreenButton extends ConsumerWidget {
   const ReLoadCustomerScreenButton({super.key});
 
@@ -226,9 +229,33 @@ class ReLoadCustomerScreenButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ReLoadScreenButton(
       () async {
-        final customerData = await ref.read(customerRepositoryProvider).fetchItemListAsMaps();
         final customerDbCache = ref.read(customerDbCacheProvider.notifier);
-        customerDbCache.setData(customerData);
+        if (customerDbCache.data.isEmpty) {
+          final customerData = await ref.read(customerRepositoryProvider).fetchItemListAsMaps();
+          customerDbCache.setData(customerData);
+        }
+        final transactionDbCach = ref.read(transactionDbCacheProvider.notifier);
+        if (transactionDbCach.data.isEmpty) {
+          final transactionData =
+              await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
+          transactionDbCach.setData(transactionData);
+        }
+        final screenController = ref.read(customerScreenControllerProvider);
+        final customers = customerDbCache.data;
+        if (context.mounted) {
+          screenController.processCustomerTransactions(context, customers);
+        }
+        Map<String, dynamic> summaryTypes = {
+          totalDebtKey: 'sum',
+          openInvoicesKey: 'sum',
+          dueInvoicesKey: 'sum',
+          dueDebtKey: 'sum',
+          avgClosingDaysKey: 'avg',
+          invoicesProfitKey: 'sum',
+          giftsKey: 'sum',
+        };
+        final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
+        screenDataNotifier.initialize(summaryTypes);
         if (context.mounted) {
           context.goNamed(AppRoute.customers.name);
         }

@@ -6,7 +6,9 @@ import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/customers/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
+import 'package:tablets/src/features/customers/utils/customer_map_keys.dart';
 import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
@@ -23,6 +25,7 @@ class CustomersButton extends ConsumerWidget {
     return MainDrawerButton('customers', S.of(context).customers, () async {
       // set page title in the main top bar
       pageTitleNotifier.state = S.of(context).customers;
+
       // set the values in the customer cache
       // note that we only load data from database (firebase) once, that means, whenever a
       // change happened to products (add, update, delete), we update the cache and
@@ -50,6 +53,17 @@ class CustomersButton extends ConsumerWidget {
       if (context.mounted) {
         screenController.processCustomerTransactions(context, customers);
       }
+      Map<String, dynamic> summaryTypes = {
+        totalDebtKey: 'sum',
+        openInvoicesKey: 'sum',
+        dueInvoicesKey: 'sum',
+        dueDebtKey: 'sum',
+        avgClosingDaysKey: 'avg',
+        invoicesProfitKey: 'sum',
+        giftsKey: 'sum',
+      };
+      final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
+      screenDataNotifier.initialize(summaryTypes);
     });
   }
 }
