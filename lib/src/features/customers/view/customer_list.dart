@@ -9,112 +9,32 @@ import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/common/widgets/reload_page_button.dart';
 import 'package:tablets/src/features/customers/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
+import 'package:tablets/src/features/customers/utils/customer_map_keys.dart';
 import 'package:tablets/src/features/customers/utils/customer_report_utils.dart';
-import 'package:tablets/src/features/customers/utils/process_customer_invoices.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
-import 'package:tablets/src/features/customers/utils/customer_screen_utils.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
-
-List<Map<String, dynamic>> _transactionsList = [];
-List<Customer> _customersList = [];
-List<List<Map<String, dynamic>>> _customerTransactionsList = [];
-List<List<List<dynamic>>> _processedInvoicesList = [];
-List<List<List<dynamic>>> _closedInvoicesList = [];
-List<List<List<dynamic>>> _openInvoicesList = [];
-List<double> _totalDebtList = [];
-List<List<List<dynamic>>> _dueInvoicesList = [];
-List<double> _dueDebtList = [];
-List<int> _averageInvoiceClosingDaysList = [];
-List<List<List<dynamic>>> _invoicesWithProfitList = [];
-List<double> _totalProfitList = [];
-List<List<List<dynamic>>> _giftsAndDiscountsList = [];
-List<double> _totalGiftsAmountList = [];
-
-void _processCustomerTransactions(BuildContext context, List<Map<String, dynamic>> customers) {
-  _resetGlobalLists();
-  for (var customerData in customers) {
-    final customer = Customer.fromMap(customerData);
-    _updateGlobalLists(context, customer);
-  }
-}
-
-void _updateGlobalLists(BuildContext context, Customer customer) {
-  _customersList.add(customer);
-  final customerTransactions = getCustomerTransactions(_transactionsList, customer.dbRef);
-  _customerTransactionsList.add(customerTransactions);
-  // if customer has initial credit, it should be added to the tansactions, so, we add
-  // it here and give it transaction type 'initialCredit'
-  if (customer.initialCredit > 0) {
-    customerTransactions.add(Transaction(
-      dbRef: 'na',
-      name: customer.name,
-      imageUrls: ['na'],
-      number: 1000001,
-      date: customer.initialDate,
-      currency: 'na',
-      transactionType: TransactionType.initialCredit.name,
-      totalAmount: customer.initialCredit,
-    ).toMap());
-  }
-  final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
-  _processedInvoicesList.add(processedInvoices);
-  final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
-  _invoicesWithProfitList.add(invoicesWithProfit);
-  final totalProfit = getTotalProfit(invoicesWithProfit, 5);
-  _totalProfitList.add(totalProfit);
-  final closedInvoices = getClosedInvoices(context, processedInvoices, 5);
-  _closedInvoicesList.add(closedInvoices);
-  final averageClosingDays = calculateAverageClosingDays(closedInvoices, 6);
-  _averageInvoiceClosingDaysList.add(averageClosingDays);
-  final openInvoices = getOpenInvoices(context, processedInvoices, 5);
-  _openInvoicesList.add(openInvoices);
-  final totalDebt = getTotalDebt(openInvoices, 7);
-  _totalDebtList.add(totalDebt);
-  final dueInvoices = getDueInvoices(context, openInvoices, 5);
-  _dueInvoicesList.add(dueInvoices);
-  final dueDebt = getDueDebt(dueInvoices, 7);
-  _dueDebtList.add(dueDebt);
-  final giftsAndDicounts = getGiftsAndDiscounts(context, customerTransactions);
-  _giftsAndDiscountsList.add(giftsAndDicounts);
-  final totalGiftsAmount = getTotalGiftsAndDiscounts(giftsAndDicounts, 4);
-  _totalGiftsAmountList.add(totalGiftsAmount);
-}
-
-void _resetGlobalLists() {
-  _customersList = [];
-  _customerTransactionsList = [];
-  _processedInvoicesList = [];
-  _closedInvoicesList = [];
-  _openInvoicesList = [];
-  _totalDebtList = [];
-  _dueInvoicesList = [];
-  _dueDebtList = [];
-  _averageInvoiceClosingDaysList = [];
-  _invoicesWithProfitList = [];
-  _totalProfitList = [];
-  _giftsAndDiscountsList = [];
-  _totalGiftsAmountList = [];
-}
 
 class CustomerList extends ConsumerWidget {
   const CustomerList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final screenController = ref.read(customerScreenControllerProvider);
     final transactionProvider = ref.read(transactionRepositoryProvider);
     _fetchTransactions(transactionProvider);
     final customerDbCache = ref.read(customerDbCacheProvider.notifier);
     final customers = customerDbCache.data;
     ref.watch(customerDbCacheProvider); // important for reload button
 
-    _processCustomerTransactions(context, customers);
+    screenController.processCustomerTransactions(context, customers);
     Widget screenWidget = customers.isNotEmpty
         ? Padding(
             padding: const EdgeInsets.all(16),
@@ -180,23 +100,24 @@ class DataRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
+    final screenData = screenDataNotifier.data[index];
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
     final formDataNotifier = ref.read(customerFormDataProvider.notifier);
-    final customer = _customersList[index];
-    final customerTransactions = _customerTransactionsList[index];
-    final closedInvoices = _closedInvoicesList[index];
-    final invoiceAverageClosingDays = _averageInvoiceClosingDaysList[index];
-    final openInvoices = _openInvoicesList[index];
-    final numOpenInvoices = openInvoices.length;
-    final dueInvoices = _dueInvoicesList[index];
+    final customer = screenData[customerKey]!['value'] as Customer;
+    final invoiceAverageClosingDays = screenData[avgClosingDaysKey]!['value'] as int;
+    final closedInvoices = screenData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
+    final numOpenInvoices = screenData[openInvoicesKey]!['value'] as int;
+    final openInvoices = screenData[openInvoicesKey]!['details'] as List<List<dynamic>>;
+    final dueInvoices = screenData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
     final numDueInvoices = dueInvoices.length;
-    final totalDebt = _totalDebtList[index];
-    final dueDebt = _dueDebtList[index];
-    final invoiceWithProfit = _invoicesWithProfitList[index];
-    final profit = _totalProfitList[index];
-    final giftsAndDiscounts = _giftsAndDiscountsList[index];
-    final totalGiftsAmount = _totalGiftsAmountList[index];
-    final matchingList = customerMatching(customerTransactions, customer, context);
+    final totalDebt = screenData[totalDebtKey]!['value'] as double;
+    final matchingList = screenData[totalDebtKey]!['details'] as List<List<dynamic>>;
+    final dueDebt = screenData[avgClosingDaysKey]!['value'];
+    final invoiceWithProfit = screenData[invoicesProfitKey]!['details'] as List<List<dynamic>>;
+    final profit = screenData[invoicesProfitKey]!['value'] as double;
+    final giftTransactions = screenData[giftsKey]!['details'] as List<List<dynamic>>;
+    final totalGiftsAmount = screenData[giftsKey]!['value'] as double;
     bool inValidCustomer = _inValidCustomer(dueDebt, totalDebt, customer);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -239,7 +160,7 @@ class DataRow extends ConsumerWidget {
             ),
           MainScreenClickableCell(
             totalGiftsAmount,
-            () => showGiftsReport(context, giftsAndDiscounts, customer.name),
+            () => showGiftsReport(context, giftTransactions, customer.name),
             isWarning: inValidCustomer,
           ),
         ],
