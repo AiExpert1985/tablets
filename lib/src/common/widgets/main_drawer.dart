@@ -5,10 +5,54 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/customers/controllers/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
+
+class CustomersButton extends ConsumerWidget {
+  const CustomersButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    // create a button that is used in the main side bar
+    return MainDrawerButton('customers', S.of(context).customers, () async {
+      // set page title in the main top bar
+      pageTitleNotifier.state = S.of(context).customers;
+      // set the values in the customer cache
+      // note that we only load data from database (firebase) once, that means, whenever a
+      // change happened to products (add, update, delete), we update the cache and
+      // database with same data, so there will be no ned to fetch from database
+      final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+      if (customerDbCache.data.isEmpty) {
+        final customerData = await ref.read(customerRepositoryProvider).fetchItemListAsMaps();
+        customerDbCache.setData(customerData);
+      }
+      // also set other features cache that going to be used if they are not set by their feature
+      final transactionDbCach = ref.read(transactionDbCacheProvider.notifier);
+      if (transactionDbCach.data.isEmpty) {
+        final transactionData = await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
+        transactionDbCach.setData(transactionData);
+      }
+
+      if (context.mounted) {
+        context.goNamed(AppRoute.customers.name);
+        Navigator.of(context).pop();
+      }
+      // finally, we use the screenController wich internally updates the screenDataNotifier that
+      //will be used by the screen List widget (which will display UI to the user)
+      final screenController = ref.read(customerScreenControllerProvider);
+      final customers = customerDbCache.data;
+      if (context.mounted) {
+        screenController.processCustomerTransactions(context, customers);
+      }
+    });
+  }
+}
 
 class MainDrawer extends ConsumerWidget {
   const MainDrawer({super.key});
@@ -30,19 +74,7 @@ class MainDrawer extends ConsumerWidget {
                       context.goNamed(AppRoute.transactions.name);
                     }),
                     VerticalGap.l,
-                    MainDrawerButton('customers', S.of(context).customers, () async {
-                      pageTitleNotifier.state = S.of(context).customers;
-                      final customerDbCache = ref.read(customerDbCacheProvider.notifier);
-                      if (customerDbCache.data.isEmpty) {
-                        final customerData =
-                            await ref.read(customerRepositoryProvider).fetchItemListAsMaps();
-                        customerDbCache.setData(customerData);
-                      }
-                      if (context.mounted) {
-                        context.goNamed(AppRoute.customers.name);
-                        Navigator.of(context).pop();
-                      }
-                    }),
+                    const CustomersButton(),
                     VerticalGap.l,
                     MainDrawerButton(
                       'vendors',

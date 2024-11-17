@@ -13,8 +13,8 @@ class ReLoadScreenButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Center(
       child: SizedBox(
-        height: 80,
-        width: 320,
+        height: 60,
+        width: 200,
         child: TextButton.icon(
           onPressed: onPress,
           icon: const Icon(Icons.refresh),

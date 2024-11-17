@@ -5,7 +5,6 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart' as transaction;
-import 'package:tablets/src/features/customers/utils/customer_screen_utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -19,11 +18,9 @@ import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dar
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
-import 'package:tablets/src/features/customers/utils/process_customer_invoices.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
@@ -52,31 +49,34 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
 
   // returns a color based on customer current debt
   bool isValidCustomer(Customer selectedCustomer, ItemFormData formDataNotifier) {
-    final customerTransactions =
-        getCustomerTransactions(widget.allTransactions!, selectedCustomer.dbRef);
-    // if customer has initial credit, it should be added to the tansactions, so, we add
-    // it here and give it transaction type 'initialCredit'
-    if (selectedCustomer.initialCredit > 0) {
-      customerTransactions.add(transaction.Transaction(
-        dbRef: 'na',
-        name: selectedCustomer.name,
-        imageUrls: ['na'],
-        number: 1000001,
-        date: selectedCustomer.initialDate,
-        currency: 'na',
-        transactionType: TransactionType.initialCredit.name,
-        totalAmount: selectedCustomer.initialCredit,
-      ).toMap());
-    }
-    final processedInvoices =
-        getCustomerProcessedInvoices(context, customerTransactions, selectedCustomer);
-    final openInvoices = getOpenInvoices(context, processedInvoices, 5);
-    final totalDebt = getTotalDebt(openInvoices, 7);
-    final dueInvoices = getDueInvoices(context, openInvoices, 5);
-    final dueDebt = getDueDebt(dueInvoices, 7);
-    final creditLimit = selectedCustomer.creditLimit;
-    final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
-    return totalAfterCurrentTransaction < creditLimit && dueDebt <= 0;
+    return true;
+    // TODO above is a temp solution, later I need to uncomment below code after fixing issues
+    // TODO happened after updating to screenDataNotifier
+    // final customerTransactions =
+    //     getCustomerTransactions(widget.allTransactions!, selectedCustomer.dbRef);
+    // // if customer has initial credit, it should be added to the tansactions, so, we add
+    // // it here and give it transaction type 'initialCredit'
+    // if (selectedCustomer.initialCredit > 0) {
+    //   customerTransactions.add(transaction.Transaction(
+    //     dbRef: 'na',
+    //     name: selectedCustomer.name,
+    //     imageUrls: ['na'],
+    //     number: 1000001,
+    //     date: selectedCustomer.initialDate,
+    //     currency: 'na',
+    //     transactionType: TransactionType.initialCredit.name,
+    //     totalAmount: selectedCustomer.initialCredit,
+    //   ).toMap());
+    // }
+    // final processedInvoices =
+    //     getCustomerProcessedInvoices(context, customerTransactions, selectedCustomer);
+    // final openInvoices = getOpenInvoices(context, processedInvoices, 5);
+    // final totalDebt = getTotalDebt(openInvoices, 7);
+    // final dueInvoices = getDueInvoices(context, openInvoices, 5);
+    // final dueDebt = getDueDebt(dueInvoices, 7);
+    // final creditLimit = selectedCustomer.creditLimit;
+    // final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
+    // return totalAfterCurrentTransaction < creditLimit && dueDebt <= 0;
   }
 
   @override

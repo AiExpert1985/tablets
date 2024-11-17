@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/classes/db_repository.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
@@ -9,7 +9,6 @@ import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/common/widgets/reload_page_button.dart';
 import 'package:tablets/src/features/customers/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/customers/utils/customer_map_keys.dart';
@@ -19,7 +18,6 @@ import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class CustomerList extends ConsumerWidget {
@@ -27,19 +25,18 @@ class CustomerList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final screenController = ref.read(customerScreenControllerProvider);
-    final transactionProvider = ref.read(transactionRepositoryProvider);
-    _fetchTransactions(transactionProvider);
-    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
-    final customers = customerDbCache.data;
+    final customers = ref.read(customerDbCacheProvider.notifier).data;
     ref.watch(customerDbCacheProvider); // important for reload button
-
-    screenController.processCustomerTransactions(context, customers);
+    // ref.watch(customerScreenDataProvider); // important for updating UI when do filtering
     Widget screenWidget = customers.isNotEmpty
-        ? Padding(
-            padding: const EdgeInsets.all(16),
+        ? const Padding(
+            padding: EdgeInsets.all(16),
             child: Column(
-              children: [const ListHeaders(), const Divider(), ListData(customers)],
+              children: [
+                ListHeaders(),
+                Divider(),
+                ListData(),
+              ],
             ),
           )
         : const ReLoadCustomerScreenButton();
@@ -48,17 +45,22 @@ class CustomerList extends ConsumerWidget {
 }
 
 class ListData extends ConsumerWidget {
-  const ListData(this.customers, {super.key});
-  final List<Map<String, dynamic>> customers;
+  const ListData({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
+    final screenData = screenDataNotifier.data;
     return Expanded(
       child: ListView.builder(
-        itemCount: customers.length,
+        itemCount: screenData.length,
         itemBuilder: (ctx, index) {
+          final customerData = screenData[index];
           return Column(
-            children: [DataRow(index), const Divider(thickness: 0.2, color: Colors.grey)],
+            children: [
+              DataRow(customerData),
+              const Divider(thickness: 0.2, color: Colors.grey),
+            ],
           );
         },
       ),
@@ -87,37 +89,35 @@ class ListHeaders extends StatelessWidget {
             MainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
           ],
         ),
-        VerticalGap.m,
-        if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
+        // VerticalGap.m,
+        // if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
       ],
     );
   }
 }
 
 class DataRow extends ConsumerWidget {
-  const DataRow(this.index, {super.key});
-  final int index;
+  const DataRow(this.rowData, {super.key});
+  final Map<String, dynamic> rowData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
-    final screenData = screenDataNotifier.data[index];
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
     final formDataNotifier = ref.read(customerFormDataProvider.notifier);
-    final customer = screenData[customerKey]!['value'] as Customer;
-    final invoiceAverageClosingDays = screenData[avgClosingDaysKey]!['value'] as int;
-    final closedInvoices = screenData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
-    final numOpenInvoices = screenData[openInvoicesKey]!['value'] as int;
-    final openInvoices = screenData[openInvoicesKey]!['details'] as List<List<dynamic>>;
-    final dueInvoices = screenData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
+    final customer = rowData[customerKey]!['value'] as Customer;
+    final invoiceAverageClosingDays = rowData[avgClosingDaysKey]!['value'] as int;
+    final closedInvoices = rowData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
+    final numOpenInvoices = rowData[openInvoicesKey]!['value'] as int;
+    final openInvoices = rowData[openInvoicesKey]!['details'] as List<List<dynamic>>;
+    final dueInvoices = rowData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
     final numDueInvoices = dueInvoices.length;
-    final totalDebt = screenData[totalDebtKey]!['value'] as double;
-    final matchingList = screenData[totalDebtKey]!['details'] as List<List<dynamic>>;
-    final dueDebt = screenData[avgClosingDaysKey]!['value'];
-    final invoiceWithProfit = screenData[invoicesProfitKey]!['details'] as List<List<dynamic>>;
-    final profit = screenData[invoicesProfitKey]!['value'] as double;
-    final giftTransactions = screenData[giftsKey]!['details'] as List<List<dynamic>>;
-    final totalGiftsAmount = screenData[giftsKey]!['value'] as double;
+    final totalDebt = rowData[totalDebtKey]!['value'] as double;
+    final matchingList = rowData[totalDebtKey]!['details'] as List<List<dynamic>>;
+    final dueDebt = rowData[avgClosingDaysKey]!['value'];
+    final invoiceWithProfit = rowData[invoicesProfitKey]!['details'] as List<List<dynamic>>;
+    final profit = rowData[invoicesProfitKey]!['value'] as double;
+    final giftTransactions = rowData[giftsKey]!['details'] as List<List<dynamic>>;
+    final totalGiftsAmount = rowData[giftsKey]!['value'] as double;
     bool inValidCustomer = _inValidCustomer(dueDebt, totalDebt, customer);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -174,23 +174,15 @@ class HeaderTotalsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    int totalOpenInvoices = _openInvoicesList
-        .expand((innerList) => innerList) // Flatten the second level
-        .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
-        .length;
-    int totalDueInvoices = _dueInvoicesList
-        .expand((innerList) => innerList) // Flatten the second level
-        .where((mostInnerList) => mostInnerList.isNotEmpty) // Filter non-empty lists
-        .length;
-    double totalDebtSum = _totalDebtList.reduce((a, b) => a + b);
-    double totalDueDebtSum = _dueDebtList.reduce((a, b) => a + b);
-    double totalProfitSum = _totalProfitList.reduce((a, b) => a + b);
-    double totalGifts = _totalGiftsAmountList.reduce((a, b) => a + b);
-
-    double averageClosingDays = _averageInvoiceClosingDaysList.isNotEmpty
-        ? _averageInvoiceClosingDaysList.reduce((a, b) => a + b) /
-            _averageInvoiceClosingDaysList.length
-        : 0.0;
+    final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
+    final summary = screenDataNotifier.summary;
+    int openInvoices = summary[openInvoicesKey];
+    int dueInvoices = summary[dueInvoicesKey];
+    double totalDebt = summary[totalDebtKey];
+    double dueDebt = summary[dueDebtKey];
+    double profit = summary[invoicesProfitKey];
+    double gifts = summary[giftsKey];
+    double averageClosingDays = summary[avgClosingDaysKey];
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -198,19 +190,15 @@ class HeaderTotalsRow extends ConsumerWidget {
         const MainScreenPlaceholder(width: 20, isExpanded: false),
         const MainScreenPlaceholder(),
         const MainScreenPlaceholder(),
-        MainScreenHeaderCell(totalDebtSum, isColumnTotal: true),
-        MainScreenHeaderCell('$totalOpenInvoices ($totalDueInvoices)'),
-        MainScreenHeaderCell(totalDueDebtSum, isColumnTotal: true),
+        MainScreenHeaderCell(totalDebt, isColumnTotal: true),
+        MainScreenHeaderCell('$openInvoices ($dueInvoices)'),
+        MainScreenHeaderCell(dueDebt, isColumnTotal: true),
         MainScreenHeaderCell('($averageClosingDays ${S.of(context).days} )'),
-        if (!hideCustomerProfit) MainScreenHeaderCell(totalProfitSum, isColumnTotal: true),
-        MainScreenHeaderCell(totalGifts, isColumnTotal: true),
+        if (!hideCustomerProfit) MainScreenHeaderCell(profit, isColumnTotal: true),
+        MainScreenHeaderCell(gifts, isColumnTotal: true),
       ],
     );
   }
-}
-
-Future<void> _fetchTransactions(DbRepository transactionProvider) async {
-  _transactionsList = await transactionProvider.fetchItemListAsMaps();
 }
 
 // we stop transactions if customer either exceeded limit of debt, or has dueDebt

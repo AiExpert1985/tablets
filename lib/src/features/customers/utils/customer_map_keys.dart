@@ -7,4 +7,4 @@ const dueInvoicesKey = 'dueInvoices';
 const dueDebtKey = 'dueDebt';
 const avgClosingDaysKey = 'avgClosingDays';
 const invoicesProfitKey = 'invoicesProfit';
-const giftsKey = 'giftsKey';
+const giftsKey = 'gifts';
