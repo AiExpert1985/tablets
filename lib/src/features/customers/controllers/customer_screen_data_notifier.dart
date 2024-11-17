@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 
 /// columnsSummary is the a map that contains the summary (sum or average) of each desired column in the
 /// main screen, some columns don't have summary
@@ -20,7 +19,6 @@ class ScreenDataNotifier extends StateNotifier<Map<String, dynamic>> {
   void updateSummary() {
     final data = [...state['data']];
     final summary = {...state['summary'] as Map};
-    tempPrint('summary before $summary');
     Map<String, num> totalSums = {};
     for (var entry in data) {
       entry.forEach((propertyName, propertyDetails) {
@@ -42,11 +40,10 @@ class ScreenDataNotifier extends StateNotifier<Map<String, dynamic>> {
         summary[propertyName]!['average'] = totalSums[propertyName]! / data.length;
       }
     }
-    tempPrint('summary after $summary');
-    // state = {
-    //   ...state,
-    //   'summary': summary,
-    // };
+    state = {
+      ...state,
+      'summary': summary,
+    };
   }
 
   List<dynamic> get data => state['data'];

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -29,7 +28,6 @@ class CustomerList extends ConsumerWidget {
     final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
     final screenData = screenDataNotifier.data;
     ref.watch(customerScreenDataProvider);
-    tempPrint(screenDataNotifier.data);
     Widget screenWidget = screenData.isNotEmpty
         ? const Padding(
             padding: EdgeInsets.all(16),
