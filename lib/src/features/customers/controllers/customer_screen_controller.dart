@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
@@ -65,7 +66,7 @@ class CustomerScreenController {
       newDataRow[avgClosingDaysKey] = {'value': averageClosingDays, 'details': closedInvoices};
       final dueInvoices = getDueInvoices(context, openInvoices, 5);
       final dueDebt = getDueDebt(dueInvoices, 7);
-      newDataRow[avgClosingDaysKey] = {'value': dueDebt, 'details': dueInvoices};
+      newDataRow[dueDebtKey] = {'value': dueDebt, 'details': dueInvoices};
       final giftTransactions = getGiftsAndDiscounts(context, customerTransactions);
       final totalGiftsAmount = getTotalGiftsAndDiscounts(giftTransactions, 4);
       newDataRow[giftsKey] = {'value': totalGiftsAmount, 'details': giftTransactions};
