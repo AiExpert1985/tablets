@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart' as transaction;
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
@@ -48,45 +50,44 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
   Customer? customer;
 
   // returns a color based on customer current debt
-  bool isValidCustomer(Customer selectedCustomer, ItemFormData formDataNotifier) {
-    return true;
-    // TODO above is a temp solution, later I need to uncomment below code after fixing issues
-    // TODO happened after updating to screenDataNotifier
-    // final customerTransactions =
-    //     getCustomerTransactions(widget.allTransactions!, selectedCustomer.dbRef);
-    // // if customer has initial credit, it should be added to the tansactions, so, we add
-    // // it here and give it transaction type 'initialCredit'
-    // if (selectedCustomer.initialCredit > 0) {
-    //   customerTransactions.add(transaction.Transaction(
-    //     dbRef: 'na',
-    //     name: selectedCustomer.name,
-    //     imageUrls: ['na'],
-    //     number: 1000001,
-    //     date: selectedCustomer.initialDate,
-    //     currency: 'na',
-    //     transactionType: TransactionType.initialCredit.name,
-    //     totalAmount: selectedCustomer.initialCredit,
-    //   ).toMap());
-    // }
-    // final processedInvoices =
-    //     getCustomerProcessedInvoices(context, customerTransactions, selectedCustomer);
-    // final openInvoices = getOpenInvoices(context, processedInvoices, 5);
-    // final totalDebt = getTotalDebt(openInvoices, 7);
-    // final dueInvoices = getDueInvoices(context, openInvoices, 5);
-    // final dueDebt = getDueDebt(dueInvoices, 7);
-    // final creditLimit = selectedCustomer.creditLimit;
-    // final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
-    // return totalAfterCurrentTransaction < creditLimit && dueDebt <= 0;
+  bool isValidCustomer(Customer selectedCustomer, ItemFormData formDataNotifier,
+      CustomerScreenController customerScreenController) {
+    final customerTransactions = customerScreenController.getCustomerTransactions(
+        widget.allTransactions!, selectedCustomer.dbRef);
+    // if customer has initial credit, it should be added to the tansactions, so, we add
+    // it here and give it transaction type 'initialCredit'
+    if (selectedCustomer.initialCredit > 0) {
+      customerTransactions.add(transaction.Transaction(
+        dbRef: 'na',
+        name: selectedCustomer.name,
+        imageUrls: ['na'],
+        number: 1000001,
+        date: selectedCustomer.initialDate,
+        currency: 'na',
+        transactionType: TransactionType.initialCredit.name,
+        totalAmount: selectedCustomer.initialCredit,
+      ).toMap());
+    }
+    final processedInvoices =
+        getCustomerProcessedInvoices(context, customerTransactions, selectedCustomer);
+    final openInvoices = customerScreenController.getOpenInvoices(context, processedInvoices, 5);
+    final totalDebt = customerScreenController.getTotalDebt(openInvoices, 7);
+    final dueInvoices = customerScreenController.getDueInvoices(context, openInvoices, 5);
+    final dueDebt = customerScreenController.getDueDebt(dueInvoices, 7);
+    final creditLimit = selectedCustomer.creditLimit;
+    final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
+    return totalAfterCurrentTransaction < creditLimit && dueDebt <= 0;
   }
 
   @override
   Widget build(BuildContext context) {
+    final customerScreenController = ref.read(customerScreenControllerProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
     final vendorRepository = ref.read(vendorRepositoryProvider);
-    final productRepository = ref.read(customerRepositoryProvider);
+    final productRepository = ref.read(productRepositoryProvider);
     final counterPartyRepository = widget.isVendor ? vendorRepository : customerRepository;
     final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
     ref.watch(transactionFormDataProvider);
@@ -101,7 +102,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
             buildFormTitle(widget.title),
             VerticalGap.xl,
             _buildFirstRow(context, formDataNotifier, counterPartyRepository, salesmanRepository,
-                widget.isVendor, backgroundColorNotifier),
+                widget.isVendor, backgroundColorNotifier, customerScreenController),
             VerticalGap.m,
             _buildSecondRow(context, formDataNotifier, textEditingNotifier),
             VerticalGap.m,
@@ -114,8 +115,8 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
             buildItemList(context, formDataNotifier, textEditingNotifier, productRepository,
                 widget.hideGifts, false),
             VerticalGap.xxl,
-            _buildTotalsRow(
-                context, formDataNotifier, textEditingNotifier, backgroundColorNotifier),
+            _buildTotalsRow(context, formDataNotifier, textEditingNotifier, backgroundColorNotifier,
+                customerScreenController),
           ],
         ),
       ),
@@ -123,12 +124,14 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
   }
 
   Widget _buildFirstRow(
-      BuildContext context,
-      ItemFormData formDataNotifier,
-      DbRepository repository,
-      DbRepository salesmanRepository,
-      bool isVendor,
-      StateController<Color> backgroundColorNotifier) {
+    BuildContext context,
+    ItemFormData formDataNotifier,
+    DbRepository repository,
+    DbRepository salesmanRepository,
+    bool isVendor,
+    StateController<Color> backgroundColorNotifier,
+    CustomerScreenController customerScreenController,
+  ) {
     return Row(
       children: [
         DropDownWithSearchFormField(
@@ -152,7 +155,8 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
               return;
             }
             customer = Customer.fromMap(item);
-            final validCustomer = isValidCustomer(customer!, formDataNotifier);
+            final validCustomer =
+                isValidCustomer(customer!, formDataNotifier, customerScreenController);
             final invoiceColor =
                 validCustomer ? Colors.white : const Color.fromARGB(255, 245, 187, 184);
             backgroundColorNotifier.state = invoiceColor;
@@ -293,8 +297,13 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
     );
   }
 
-  Widget _buildTotalsRow(BuildContext context, ItemFormData formDataNotifier,
-      TextControllerNotifier textEditingNotifier, StateController<Color> backgroundColorNotifier) {
+  Widget _buildTotalsRow(
+    BuildContext context,
+    ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier,
+    StateController<Color> backgroundColorNotifier,
+    CustomerScreenController customerScreenController,
+  ) {
     return SizedBox(
         width: customerInvoiceFormWidth * 0.6,
         child: Row(
@@ -315,7 +324,8 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
                     widget.transactionType != TransactionType.customerInvoice.name) {
                   return;
                 }
-                final validCustomer = isValidCustomer(customer!, formDataNotifier);
+                final validCustomer =
+                    isValidCustomer(customer!, formDataNotifier, customerScreenController);
                 final invoiceColor =
                     validCustomer ? Colors.white : const Color.fromARGB(255, 248, 177, 177);
                 backgroundColorNotifier.state = invoiceColor;
