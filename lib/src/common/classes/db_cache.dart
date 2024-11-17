@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// list of map mirrors the collections in firebase database
 class DbCache extends StateNotifier<List<Map<String, dynamic>>> {
   DbCache() : super([]);
 

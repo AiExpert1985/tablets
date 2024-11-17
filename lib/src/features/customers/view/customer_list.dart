@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/src/common/functions/db_cache_inialization.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/common/widgets/reload_page_button.dart';
-import 'package:tablets/src/features/customers/controllers/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
-import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/customers/utils/customer_map_keys.dart';
 import 'package:tablets/src/features/customers/utils/customer_report_utils.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
@@ -18,8 +18,7 @@ import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
-import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
+
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class CustomerList extends ConsumerWidget {
@@ -30,6 +29,7 @@ class CustomerList extends ConsumerWidget {
     final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
     final screenData = screenDataNotifier.data;
     ref.watch(customerScreenDataProvider);
+    // tempPrint(screenData);
     Widget screenWidget = screenData.isNotEmpty
         ? const Padding(
             padding: EdgeInsets.all(16),
@@ -229,33 +229,19 @@ class ReLoadCustomerScreenButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ReLoadScreenButton(
       () async {
-        final customerDbCache = ref.read(customerDbCacheProvider.notifier);
-        if (customerDbCache.data.isEmpty) {
-          final customerData = await ref.read(customerRepositoryProvider).fetchItemListAsMaps();
-          customerDbCache.setData(customerData);
-        }
-        final transactionDbCach = ref.read(transactionDbCacheProvider.notifier);
-        if (transactionDbCach.data.isEmpty) {
-          final transactionData =
-              await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
-          transactionDbCach.setData(transactionData);
-        }
-        final screenController = ref.read(customerScreenControllerProvider);
-        final customers = customerDbCache.data;
+        await initializeCustomerDbCache(context, ref);
         if (context.mounted) {
-          screenController.processCustomerTransactions(context, customers);
+          // initialized related transactionDbCache
+          await initializeTransactionDbCache(context, ref);
         }
-        Map<String, dynamic> summaryTypes = {
-          totalDebtKey: 'sum',
-          openInvoicesKey: 'sum',
-          dueInvoicesKey: 'sum',
-          dueDebtKey: 'sum',
-          avgClosingDaysKey: 'avg',
-          invoicesProfitKey: 'sum',
-          giftsKey: 'sum',
-        };
-        final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
-        screenDataNotifier.initialize(summaryTypes);
+        if (context.mounted) {
+          await initializeScreenDataNotifier(context, ref);
+        }
+        // set page title in the main top bar
+        final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+        if (context.mounted) {
+          pageTitleNotifier.state = S.of(context).customers;
+        }
         if (context.mounted) {
           context.goNamed(AppRoute.customers.name);
         }
