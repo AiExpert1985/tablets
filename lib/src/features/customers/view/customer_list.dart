@@ -109,11 +109,11 @@ class DataRow extends ConsumerWidget {
     final closedInvoices = rowData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
     final numOpenInvoices = rowData[openInvoicesKey]!['value'] as int;
     final openInvoices = rowData[openInvoicesKey]!['details'] as List<List<dynamic>>;
-    final dueInvoices = rowData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
+    final dueInvoices = rowData[dueDebtKey]!['details'] as List<List<dynamic>>;
     final numDueInvoices = dueInvoices.length;
     final totalDebt = rowData[totalDebtKey]!['value'] as double;
     final matchingList = rowData[totalDebtKey]!['details'] as List<List<dynamic>>;
-    final dueDebt = rowData[avgClosingDaysKey]!['value'];
+    final dueDebt = rowData[dueDebtKey]!['value'];
     final invoiceWithProfit = rowData[invoicesProfitKey]!['details'] as List<List<dynamic>>;
     final profit = rowData[invoicesProfitKey]!['value'] as double;
     final giftTransactions = rowData[giftsKey]!['details'] as List<List<dynamic>>;
