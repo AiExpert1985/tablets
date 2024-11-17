@@ -10,11 +10,11 @@ import 'package:tablets/src/features/transactions/controllers/transaction_db_cac
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
 //! Important note
-// setting the values in the dbCache is done only once for each feature
-// when we load data from database (firebase) for the first time, that means, whenever a
-// change happened to a feature (add, update, delete), we update the cache and
-// database with same data (whether create, update or delete), so there will be no need to fetch
-//from database again
+//! setting the values in the dbCache is done only once for each feature
+//! when we load data from database (firebase) for the first time, that means, whenever a
+//! change happened to a feature (add, update, delete), we update the cache and
+//! database with same data (whether create, update or delete), so there will be no need to fetch
+//! from database again
 
 Future<void> initializeCustomerDbCache(BuildContext context, WidgetRef ref) async {
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
@@ -27,7 +27,6 @@ Future<void> initializeCustomerDbCache(BuildContext context, WidgetRef ref) asyn
 Future<void> initializeTransactionDbCache(BuildContext context, WidgetRef ref) async {
   final transactionDbCach = ref.read(transactionDbCacheProvider.notifier);
   if (transactionDbCach.data.isEmpty) {
-    tempPrint('transaction is empty');
     final transactionData = await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
     transactionDbCach.setData(transactionData);
   }

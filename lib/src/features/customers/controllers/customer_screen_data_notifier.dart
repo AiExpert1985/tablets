@@ -20,7 +20,7 @@ class ScreenDataNotifier extends StateNotifier<Map<String, dynamic>> {
   void updateSummary() {
     final data = [...state['data']];
     final summary = {...state['summary'] as Map};
-    // tempPrint('summary before $summary');
+    tempPrint('summary before $summary');
     Map<String, num> totalSums = {};
     for (var entry in data) {
       entry.forEach((propertyName, propertyDetails) {
@@ -32,7 +32,7 @@ class ScreenDataNotifier extends StateNotifier<Map<String, dynamic>> {
             summary[propertyName]!['value'] = (value as num) + (dataValue as num);
           } else if (type == 'avg') {
             totalSums[propertyName] = (totalSums[propertyName] ?? 0) + (dataValue as num);
-            // summary[propertyName]!['value'] = totalSums[propertyName];
+            summary[propertyName]!['value'] = totalSums[propertyName];
           }
         }
       });
@@ -42,7 +42,7 @@ class ScreenDataNotifier extends StateNotifier<Map<String, dynamic>> {
         summary[propertyName]!['average'] = totalSums[propertyName]! / data.length;
       }
     }
-    // tempPrint('summary after $summary');
+    tempPrint('summary after $summary');
     // state = {
     //   ...state,
     //   'summary': summary,

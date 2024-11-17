@@ -29,7 +29,7 @@ class CustomerList extends ConsumerWidget {
     final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
     final screenData = screenDataNotifier.data;
     ref.watch(customerScreenDataProvider);
-    // tempPrint(screenData);
+    tempPrint(screenDataNotifier.data);
     Widget screenWidget = screenData.isNotEmpty
         ? const Padding(
             padding: EdgeInsets.all(16),
@@ -92,7 +92,7 @@ class ListHeaders extends StatelessWidget {
           ],
         ),
         VerticalGap.m,
-        // if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
+        if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
       ],
     );
   }
@@ -178,13 +178,13 @@ class HeaderTotalsRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
     final summary = screenDataNotifier.summary;
-    int openInvoices = summary[openInvoicesKey];
-    int dueInvoices = summary[dueInvoicesKey];
-    double totalDebt = summary[totalDebtKey];
-    double dueDebt = summary[dueDebtKey];
-    double profit = summary[invoicesProfitKey];
-    double gifts = summary[giftsKey];
-    double averageClosingDays = summary[avgClosingDaysKey];
+    int openInvoices = summary[openInvoicesKey]['value'];
+    int dueInvoices = summary[dueInvoicesKey]['value'];
+    double totalDebt = summary[totalDebtKey]['value'];
+    double dueDebt = summary[dueDebtKey]['value'];
+    double profit = summary[invoicesProfitKey]['value'];
+    double gifts = summary[giftsKey]['value'];
+    double averageClosingDays = summary[avgClosingDaysKey]['value'];
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
