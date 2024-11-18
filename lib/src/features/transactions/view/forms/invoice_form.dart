@@ -48,8 +48,11 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
   // which is used for changing background color
   Customer? customer;
 
-  // returns a color based on customer current debt
-  bool isValidCustomer(Customer selectedCustomer, ItemFormData formDataNotifier,
+  // this method is different from the method that checks validation inside customer screen
+  // becasuse here it checks customer validity plus the Invoice amount, so even if his is valid
+  // as a customer but with this invoice amount he exceeds the debt limit, then it will return
+  // that this transaction is invalid
+  bool isValidTransactin(Customer selectedCustomer, ItemFormData formDataNotifier,
       CustomerScreenController customerScreenController) {
     final customerTransactions =
         customerScreenController.getCustomerTransactions(selectedCustomer.dbRef);
@@ -154,7 +157,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
             }
             customer = Customer.fromMap(item);
             final validCustomer =
-                isValidCustomer(customer!, formDataNotifier, customerScreenController);
+                isValidTransactin(customer!, formDataNotifier, customerScreenController);
             final invoiceColor =
                 validCustomer ? Colors.white : const Color.fromARGB(255, 245, 187, 184);
             backgroundColorNotifier.state = invoiceColor;
@@ -322,7 +325,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
                   return;
                 }
                 final validCustomer =
-                    isValidCustomer(customer!, formDataNotifier, customerScreenController);
+                    isValidTransactin(customer!, formDataNotifier, customerScreenController);
                 final invoiceColor =
                     validCustomer ? Colors.white : const Color.fromARGB(255, 248, 177, 177);
                 backgroundColorNotifier.state = invoiceColor;

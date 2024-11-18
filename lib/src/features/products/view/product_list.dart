@@ -69,7 +69,7 @@ Widget buildProductsList(BuildContext context, WidgetRef ref) {
               onPressed: () async {
                 final productData = await ref.read(productRepositoryProvider).fetchItemListAsMaps();
                 final productDbCache = ref.read(productDbCacheProvider.notifier);
-                productDbCache.setData(productData);
+                productDbCache.set(productData);
               },
               icon: const Icon(Icons.refresh),
               label: Text(

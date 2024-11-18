@@ -83,7 +83,7 @@ class MainDrawer extends ConsumerWidget {
                       if (productDbCache.data.isEmpty) {
                         final productData =
                             await ref.read(productRepositoryProvider).fetchItemListAsMaps();
-                        productDbCache.setData(productData);
+                        productDbCache.set(productData);
                       }
                       if (context.mounted) {
                         context.goNamed(AppRoute.products.name);

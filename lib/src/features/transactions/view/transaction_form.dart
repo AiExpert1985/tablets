@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
@@ -11,6 +12,7 @@ import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/view/forms/expenditure_form.dart';
@@ -72,13 +74,15 @@ class TransactionForm extends ConsumerWidget {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
     final backgroundColor = ref.watch(backgroundColorProvider);
+    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
 
     ref.watch(imagePickerProvider);
     return FormFrame(
       backgroundColor: backgroundColor,
       formKey: formController.formKey,
       fields: _getFormWidget(context, transactionType),
-      buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier),
+      buttons: _actionButtons(
+          context, formController, formDataNotifier, formImagesNotifier, transactionDbCache),
       width: transactionFormDimenssions[transactionType]['width'],
       height: transactionFormDimenssions[transactionType]['height'],
     );
@@ -89,11 +93,16 @@ class TransactionForm extends ConsumerWidget {
     ItemFormController formController,
     ItemFormData formDataNotifier,
     ImageSliderNotifier formImagesNotifier,
+    DbCache transactionDbCache,
   ) {
+    final transaction = formDataNotifier.data;
     return [
       IconButton(
         onPressed: () {
           _onSavePressed(context, formController, formDataNotifier, formImagesNotifier);
+          // update the bdCache (database mirror) so that we don't need to fetch data from db
+          final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
+          transactionDbCache.update(transaction, operationType);
         },
         icon: const SaveIcon(),
       ),
@@ -103,8 +112,12 @@ class TransactionForm extends ConsumerWidget {
       // ),
       if (isEditMode)
         IconButton(
-          onPressed: () =>
-              _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController),
+          onPressed: () {
+            _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController);
+            // update the bdCache (database mirror) so that we don't need to fetch data from db
+            const operationType = DbCacheOperationTypes.delete;
+            transactionDbCache.update(transaction, operationType);
+          },
           icon: const DeleteIcon(),
         ),
     ];

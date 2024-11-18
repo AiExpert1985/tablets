@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
@@ -20,19 +20,15 @@ const invoicesProfitKey = 'invoicesProfit';
 const giftsKey = 'gifts';
 
 final customerScreenControllerProvider = Provider<CustomerScreenController>((ref) {
-  final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
-  final transactionDataNotifier = ref.read(transactionDbCacheProvider.notifier);
-  final allTransactionData = transactionDataNotifier.data;
-  return CustomerScreenController(screenDataNotifier, allTransactionData);
+  final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+  return CustomerScreenController(transactionDbCache);
 });
 
 class CustomerScreenController {
   CustomerScreenController(
-    this._screenDataNotifier,
-    this._allTransactions,
+    this._transactionDbCache,
   );
-  final ScreenDataNotifier _screenDataNotifier;
-  final List<Map<String, dynamic>> _allTransactions;
+  final DbCache _transactionDbCache;
 
   Map<String, dynamic> createCustomerScreenData(
       BuildContext context, Map<String, dynamic> customerData) {
@@ -77,18 +73,6 @@ class CustomerScreenController {
     return newDataRow;
   }
 
-  /// go through the customer transactions, and create screen data (data will be displayed in
-  /// customer screen) and load the created data (dataRows and columnSummary) to
-  /// customerScreenDataNotifier which will be accessed by screen widget
-  void processCustomerTransactions(BuildContext context, List<Map<String, dynamic>> customers) {
-    List<Map<String, dynamic>> dataRows = [];
-    for (var customerData in customers) {
-      final newDataRow = createCustomerScreenData(context, customerData);
-      dataRows.add(newDataRow);
-    }
-    _screenDataNotifier.setRowData(dataRows);
-  }
-
   /// takes dataRows and returns a map of summaries for desired properties
   /// sumProperties are properties that will store sum
   /// avgProperties are properties that avgProperties are properties that will store average
@@ -108,8 +92,9 @@ class CustomerScreenController {
 
   List<Map<String, dynamic>> getCustomerTransactions(String dbRef) {
     // Filter transactions for the given database reference
+    final allTransactions = _transactionDbCache.data;
     List<Map<String, dynamic>> customerTransactions =
-        _allTransactions.where((item) => item['nameDbRef'] == dbRef).toList();
+        allTransactions.where((item) => item['nameDbRef'] == dbRef).toList();
 
     // Sort the transactions in descending order based on the transaction date
     return customerTransactions

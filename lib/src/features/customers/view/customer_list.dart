@@ -8,7 +8,6 @@ import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
 import 'package:tablets/src/features/customers/controllers/customer_report_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
@@ -23,7 +22,6 @@ class CustomerList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dbCache = ref.read(customerDbCacheProvider.notifier);
     final dbData = dbCache.data;
-    ref.watch(customerScreenDataProvider);
     Widget screenWidget = dbData.isNotEmpty
         ? const Padding(
             padding: EdgeInsets.all(16),
@@ -165,38 +163,6 @@ class DataRow extends ConsumerWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class HeaderTotalsRow extends ConsumerWidget {
-  const HeaderTotalsRow({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
-    final summary = screenDataNotifier.summary;
-    int openInvoices = summary[openInvoicesKey]['value'];
-    int dueInvoices = summary[dueInvoicesKey]['value'];
-    double totalDebt = summary[totalDebtKey]['value'];
-    double dueDebt = summary[dueDebtKey]['value'];
-    double profit = summary[invoicesProfitKey]['value'];
-    double gifts = summary[giftsKey]['value'];
-    double averageClosingDays = summary[avgClosingDaysKey]['value'];
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const MainScreenPlaceholder(width: 20, isExpanded: false),
-        const MainScreenPlaceholder(),
-        const MainScreenPlaceholder(),
-        MainScreenHeaderCell(totalDebt, isColumnTotal: true),
-        MainScreenHeaderCell('$openInvoices ($dueInvoices)'),
-        MainScreenHeaderCell(dueDebt, isColumnTotal: true),
-        MainScreenHeaderCell('($averageClosingDays ${S.of(context).days} )'),
-        if (!hideCustomerProfit) MainScreenHeaderCell(profit, isColumnTotal: true),
-        MainScreenHeaderCell(gifts, isColumnTotal: true),
-      ],
     );
   }
 }
