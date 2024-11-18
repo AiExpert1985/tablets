@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/features/categories/view/category_main_screen.dart';
 import 'package:tablets/src/features/customers/view/customer_main_screen.dart';
 import 'package:tablets/src/features/pending_transactions/pending_transactions.dart';
@@ -60,7 +61,7 @@ final goRouterProvider = Provider<GoRouter>(
         GoRoute(
           path: '/home',
           name: AppRoute.home.name,
-          builder: (BuildContext context, GoRouterState state) => const TransactionsScreen(),
+          builder: (BuildContext context, GoRouterState state) => const HomeScreen(),
         ),
         GoRoute(
           path: '/login',

@@ -4,10 +4,20 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
-import 'package:tablets/src/features/customers/utils/customer_map_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
+
+const customerKey = 'customer';
+const customerNameKey = 'name';
+const customerSalesmanKey = 'salesman';
+const totalDebtKey = 'totalDebt';
+const openInvoicesKey = 'openInvoices';
+const dueInvoicesKey = 'dueInvoices';
+const dueDebtKey = 'dueDebt';
+const avgClosingDaysKey = 'avgClosingDays';
+const invoicesProfitKey = 'invoicesProfit';
+const giftsKey = 'gifts';
 
 final customerScreenControllerProvider = Provider<CustomerScreenController>((ref) {
   final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
@@ -24,51 +34,56 @@ class CustomerScreenController {
   final ScreenDataNotifier _screenDataNotifier;
   final List<Map<String, dynamic>> _allTransactions;
 
+  Map<String, dynamic> createCustomerScreenData(
+      BuildContext context, Map<String, dynamic> customerData) {
+    final customer = Customer.fromMap(customerData);
+    Map<String, dynamic> newDataRow = {};
+    newDataRow[customerKey] = {'value': customer};
+    newDataRow[customerNameKey] = {'value': customer.name};
+    newDataRow[customerSalesmanKey] = {'value': customer.salesman};
+    final customerTransactions = getCustomerTransactions(_allTransactions, customer.dbRef);
+    // if customer has initial credit, it should be added to the tansactions, so, we add
+    // it here and give it transaction type 'initialCredit'
+    if (customer.initialCredit > 0) {
+      customerTransactions.add(Transaction(
+        dbRef: 'na',
+        name: customer.name,
+        imageUrls: ['na'],
+        number: 1000001,
+        date: customer.initialDate,
+        currency: 'na',
+        transactionType: TransactionType.initialCredit.name,
+        totalAmount: customer.initialCredit,
+      ).toMap());
+    }
+    final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
+    final openInvoices = getOpenInvoices(context, processedInvoices, 5);
+    newDataRow[openInvoicesKey] = {'value': openInvoices.length, 'details': openInvoices};
+    final matchingList = customerMatching(customerTransactions, customer, context);
+    final totalDebt = getTotalDebt(matchingList, 4);
+    newDataRow[totalDebtKey] = {'value': totalDebt, 'details': matchingList};
+    final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
+    final totalProfit = getTotalProfit(invoicesWithProfit, 5);
+    newDataRow[invoicesProfitKey] = {'value': totalProfit, 'details': invoicesWithProfit};
+    final closedInvoices = getClosedInvoices(context, processedInvoices, 5);
+    final averageClosingDays = calculateAverageClosingDays(closedInvoices, 6);
+    newDataRow[avgClosingDaysKey] = {'value': averageClosingDays, 'details': closedInvoices};
+    final dueInvoices = getDueInvoices(context, openInvoices, 5);
+    final dueDebt = getDueDebt(dueInvoices, 7);
+    newDataRow[dueDebtKey] = {'value': dueDebt, 'details': dueInvoices};
+    final giftTransactions = getGiftsAndDiscounts(context, customerTransactions);
+    final totalGiftsAmount = getTotalGiftsAndDiscounts(giftTransactions, 4);
+    newDataRow[giftsKey] = {'value': totalGiftsAmount, 'details': giftTransactions};
+    return newDataRow;
+  }
+
   /// go through the customer transactions, and create screen data (data will be displayed in
   /// customer screen) and load the created data (dataRows and columnSummary) to
   /// customerScreenDataNotifier which will be accessed by screen widget
   void processCustomerTransactions(BuildContext context, List<Map<String, dynamic>> customers) {
     List<Map<String, dynamic>> dataRows = [];
     for (var customerData in customers) {
-      final customer = Customer.fromMap(customerData);
-      Map<String, dynamic> newDataRow = {};
-      newDataRow[customerKey] = {'value': customer};
-      newDataRow[nameKey] = {'value': customer.name};
-      newDataRow[salesmanKey] = {'value': customer.salesman};
-      final customerTransactions = getCustomerTransactions(_allTransactions, customer.dbRef);
-      // if customer has initial credit, it should be added to the tansactions, so, we add
-      // it here and give it transaction type 'initialCredit'
-      if (customer.initialCredit > 0) {
-        customerTransactions.add(Transaction(
-          dbRef: 'na',
-          name: customer.name,
-          imageUrls: ['na'],
-          number: 1000001,
-          date: customer.initialDate,
-          currency: 'na',
-          transactionType: TransactionType.initialCredit.name,
-          totalAmount: customer.initialCredit,
-        ).toMap());
-      }
-      final processedInvoices =
-          getCustomerProcessedInvoices(context, customerTransactions, customer);
-      final openInvoices = getOpenInvoices(context, processedInvoices, 5);
-      newDataRow[openInvoicesKey] = {'value': openInvoices.length, 'details': openInvoices};
-      final matchingList = customerMatching(customerTransactions, customer, context);
-      final totalDebt = getTotalDebt(matchingList, 4);
-      newDataRow[totalDebtKey] = {'value': totalDebt, 'details': matchingList};
-      final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
-      final totalProfit = getTotalProfit(invoicesWithProfit, 5);
-      newDataRow[invoicesProfitKey] = {'value': totalProfit, 'details': invoicesWithProfit};
-      final closedInvoices = getClosedInvoices(context, processedInvoices, 5);
-      final averageClosingDays = calculateAverageClosingDays(closedInvoices, 6);
-      newDataRow[avgClosingDaysKey] = {'value': averageClosingDays, 'details': closedInvoices};
-      final dueInvoices = getDueInvoices(context, openInvoices, 5);
-      final dueDebt = getDueDebt(dueInvoices, 7);
-      newDataRow[dueDebtKey] = {'value': dueDebt, 'details': dueInvoices};
-      final giftTransactions = getGiftsAndDiscounts(context, customerTransactions);
-      final totalGiftsAmount = getTotalGiftsAndDiscounts(giftTransactions, 4);
-      newDataRow[giftsKey] = {'value': totalGiftsAmount, 'details': giftTransactions};
+      final newDataRow = createCustomerScreenData(context, customerData);
       dataRows.add(newDataRow);
     }
     _screenDataNotifier.setRowData(dataRows);

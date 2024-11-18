@@ -21,9 +21,11 @@ class CustomersButton extends ConsumerWidget {
         // initialized related transactionDbCache
         await initializeTransactionDbCache(context, ref);
       }
-      if (context.mounted) {
-        await initializeScreenDataNotifier(context, ref);
-      }
+      //TODO I stopped using screenDataNotifier because the ideas of creating all screen data
+      // TODO at once is slow, maybe in future I find way to improve that
+      // if (context.mounted) {
+      //   await initializeScreenDataNotifier(context, ref);
+      // }
       // set page title in the main top bar
       final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {

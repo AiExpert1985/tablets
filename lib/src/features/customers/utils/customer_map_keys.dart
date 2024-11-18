@@ -1,10 +1,1 @@
-const customerKey = 'customer';
-const nameKey = 'name';
-const salesmanKey = 'salesman';
-const totalDebtKey = 'totalDebt';
-const openInvoicesKey = 'openInvoices';
-const dueInvoicesKey = 'dueInvoices';
-const dueDebtKey = 'dueDebt';
-const avgClosingDaysKey = 'avgClosingDays';
-const invoicesProfitKey = 'invoicesProfit';
-const giftsKey = 'gifts';
+

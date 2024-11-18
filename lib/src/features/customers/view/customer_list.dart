@@ -1,34 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
-import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
-import 'package:tablets/src/common/widgets/reload_page_button.dart';
+import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
+import 'package:tablets/src/features/customers/controllers/customer_report_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
-import 'package:tablets/src/features/customers/utils/customer_map_keys.dart';
-import 'package:tablets/src/features/customers/utils/customer_report_utils.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/values/constants.dart';
 
-import 'package:tablets/src/routers/go_router_provider.dart';
-
 class CustomerList extends ConsumerWidget {
   const CustomerList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
-    final screenData = screenDataNotifier.data;
+    final dbCache = ref.read(customerDbCacheProvider.notifier);
+    final dbData = dbCache.data;
     ref.watch(customerScreenDataProvider);
-    Widget screenWidget = screenData.isNotEmpty
+    Widget screenWidget = dbData.isNotEmpty
         ? const Padding(
             padding: EdgeInsets.all(16),
             child: Column(
@@ -39,7 +35,7 @@ class CustomerList extends ConsumerWidget {
               ],
             ),
           )
-        : const ReLoadCustomerScreenButton();
+        : const HomeScreenGreeting();
     return screenWidget;
   }
 }
@@ -49,13 +45,13 @@ class ListData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
-    final screenData = screenDataNotifier.data;
+    final dbCache = ref.read(customerDbCacheProvider.notifier);
+    final dbData = dbCache.data;
     return Expanded(
       child: ListView.builder(
-        itemCount: screenData.length,
+        itemCount: dbData.length,
         itemBuilder: (ctx, index) {
-          final customerData = screenData[index];
+          final customerData = dbData[index];
           return Column(
             children: [
               DataRow(customerData),
@@ -90,20 +86,23 @@ class ListHeaders extends StatelessWidget {
           ],
         ),
         VerticalGap.m,
-        if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
+        // if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
       ],
     );
   }
 }
 
 class DataRow extends ConsumerWidget {
-  const DataRow(this.rowData, {super.key});
-  final Map<String, dynamic> rowData;
+  const DataRow(this.customerData, {super.key});
+  final Map<String, dynamic> customerData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final reportController = ref.read(customerReportControllerProvider);
+    final screenController = ref.read(customerScreenControllerProvider);
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
     final formDataNotifier = ref.read(customerFormDataProvider.notifier);
+    final rowData = screenController.createCustomerScreenData(context, customerData);
     final customer = rowData[customerKey]!['value'] as Customer;
     final invoiceAverageClosingDays = rowData[avgClosingDaysKey]!['value'] as int;
     final closedInvoices = rowData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
@@ -132,35 +131,36 @@ class DataRow extends ConsumerWidget {
           MainScreenTextCell(customer.salesman, isWarning: inValidCustomer),
           MainScreenClickableCell(
             totalDebt,
-            () => showCustomerMatchingReport(context, matchingList, customer.name),
+            () => reportController.showCustomerMatchingReport(context, matchingList, customer.name),
             isWarning: inValidCustomer,
           ),
           MainScreenClickableCell(
             '$numOpenInvoices ($numDueInvoices)',
-            () =>
-                showInvoicesReport(context, openInvoices, '${customer.name}  ( $numOpenInvoices )'),
+            () => reportController.showInvoicesReport(
+                context, openInvoices, '${customer.name}  ( $numOpenInvoices )'),
             isWarning: inValidCustomer,
           ),
           MainScreenClickableCell(
             dueDebt,
-            () => showInvoicesReport(context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
+            () => reportController.showInvoicesReport(
+                context, dueInvoices, '${customer.name}  ( $numDueInvoices )'),
             isWarning: inValidCustomer,
           ),
           MainScreenClickableCell(
             invoiceAverageClosingDays,
-            () => showInvoicesReport(
+            () => reportController.showInvoicesReport(
                 context, closedInvoices, '${customer.name}  ( $invoiceAverageClosingDays )'),
             isWarning: inValidCustomer,
           ),
           if (!hideCustomerProfit)
             MainScreenClickableCell(
               profit,
-              () => showProfitReport(context, invoiceWithProfit, customer.name),
+              () => reportController.showProfitReport(context, invoiceWithProfit, customer.name),
               isWarning: inValidCustomer,
             ),
           MainScreenClickableCell(
             totalGiftsAmount,
-            () => showGiftsReport(context, giftTransactions, customer.name),
+            () => reportController.showGiftsReport(context, giftTransactions, customer.name),
             isWarning: inValidCustomer,
           ),
         ],
@@ -217,33 +217,4 @@ void _showEditCustomerForm(BuildContext context, ItemFormData formDataNotifier,
       isEditMode: true,
     ),
   ).whenComplete(imagePicker.close);
-}
-
-/// perform same functionality as CustomersButton in the main drawer
-class ReLoadCustomerScreenButton extends ConsumerWidget {
-  const ReLoadCustomerScreenButton({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ReLoadScreenButton(
-      () async {
-        await initializeCustomerDbCache(context, ref);
-        if (context.mounted) {
-          // initialized related transactionDbCache
-          await initializeTransactionDbCache(context, ref);
-        }
-        if (context.mounted) {
-          await initializeScreenDataNotifier(context, ref);
-        }
-        // set page title in the main top bar
-        final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
-        if (context.mounted) {
-          pageTitleNotifier.state = S.of(context).customers;
-        }
-        if (context.mounted) {
-          context.goNamed(AppRoute.customers.name);
-        }
-      },
-    );
-  }
 }
