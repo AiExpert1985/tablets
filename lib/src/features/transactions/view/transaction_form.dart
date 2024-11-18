@@ -19,11 +19,10 @@ import 'package:tablets/src/features/transactions/view/forms/receipt_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/statement_form.dart';
 
 class TransactionForm extends ConsumerWidget {
-  const TransactionForm(this.isEditMode, this.transactionType, this.allTransactions, {super.key});
+  const TransactionForm(this.isEditMode, this.transactionType, {super.key});
   final bool isEditMode; // used by formController to decide whether to save or update in db
   final String transactionType;
   // used to validate wether customer can buy new invoice (if he didn't exceed limits)
-  final List<Map<String, dynamic>> allTransactions;
 
   Widget _getFormWidget(BuildContext context, String transactionType) {
     final titles = {

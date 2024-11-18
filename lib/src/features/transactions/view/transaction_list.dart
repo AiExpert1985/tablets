@@ -111,7 +111,6 @@ class TransactionsList extends ConsumerWidget {
                   imagePickerNotifier,
                   formDataNotifier,
                   textEditingNotifier,
-                  allTransactions,
                   backgroundColorNofifier,
                   transaction: transaction,
                   formType: transaction.transactionType,

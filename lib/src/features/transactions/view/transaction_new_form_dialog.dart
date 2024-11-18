@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form_utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
@@ -15,7 +14,6 @@ class TransactionTypeSelection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transactionsProvider = ref.read(transactionRepositoryProvider);
     final group = {
       'customer': {
         'names': [
@@ -81,14 +79,12 @@ class TransactionTypeSelection extends ConsumerWidget {
             return GestureDetector(
               onTap: () async {
                 Navigator.of(context).pop();
-                final transactions = await transactionsProvider.fetchItemListAsMaps();
                 if (context.mounted) {
                   TransactionShowFormUtils.showForm(
                     context,
                     imagePickerNotifier,
                     formDataNotifier,
                     textEditingNotifier,
-                    transactions,
                     backgroundColorNofifier,
                     formType: formTypes[index], // Use the corresponding form type
                   );
