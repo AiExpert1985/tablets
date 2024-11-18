@@ -57,8 +57,6 @@ class DbCache extends StateNotifier<List<Map<String, dynamic>>> {
 
   /// returns the index of the item passed, if not found or there is an error, it returns -1
   int _getItemIndex(Map<String, dynamic> newData) {
-    tempPrint(state[0]);
-    tempPrint(newData);
     if (!(state[0].containsKey('dbRef') && newData.containsKey('dbRef'))) {
       errorPrint('the key dbRef is not found in one of the maps');
       return -1;

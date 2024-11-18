@@ -84,7 +84,7 @@ class CustomerForm extends ConsumerWidget {
     ItemFormController formController,
     DbCache customerDbCache,
   ) async {
-    bool? confiramtion = await showDeleteConfirmationDialog(
+    final confiramtion = await showDeleteConfirmationDialog(
         context: context, message: formDataNotifier.data['name']);
     if (confiramtion != null) {
       final formData = formDataNotifier.data;

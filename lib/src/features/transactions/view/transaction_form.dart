@@ -128,11 +128,12 @@ class TransactionForm extends ConsumerWidget {
     formController.submitData();
     final formData = formDataNotifier.data;
     final imageUrls = formImagesNotifier.saveChanges();
+    final itemData = {...formData, 'imageUrls': imageUrls};
     final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
     formController.saveItemToDb(context, transaction, isEditMode);
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
-    transactionDbCache.update(formData, operationType);
+    transactionDbCache.update(itemData, operationType);
   }
 
   Future<void> _onDeletePressed(
@@ -141,17 +142,19 @@ class TransactionForm extends ConsumerWidget {
       ImageSliderNotifier formImagesNotifier,
       ItemFormController formController,
       DbCache transactionDbCache) async {
-    final message = translateDbTextToScreenText(context, formDataNotifier.data['name']);
-    final confirmation = await showDeleteConfirmationDialog(context: context, message: message);
+    final confirmation = await showDeleteConfirmationDialog(
+        context: context, message: formDataNotifier.data['name']);
     final formData = formDataNotifier.data;
     if (confirmation != null) {
       final imageUrls = formImagesNotifier.saveChanges();
-      final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
-      // ignore: use_build_context_synchronously
-      formController.deleteItemFromDb(context, transaction);
-      // // update the bdCache (database mirror) so that we don't need to fetch data from db
-      // const operationType = DbCacheOperationTypes.delete;
-      // transactionDbCache.update(formData, operationType);
+      final itemData = {...formData, 'imageUrls': imageUrls};
+      final transaction = Transaction.fromMap(itemData);
+      if (context.mounted) {
+        formController.deleteItemFromDb(context, transaction);
+      }
+      // update the bdCache (database mirror) so that we don't need to fetch data from db
+      const operationType = DbCacheOperationTypes.delete;
+      transactionDbCache.update(itemData, operationType);
     }
   }
 }
