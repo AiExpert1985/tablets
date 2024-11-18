@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/classes/item_form_controller.dart';
+import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -38,45 +40,63 @@ class CustomerForm extends ConsumerWidget {
       ),
       buttons: [
         IconButton(
-          onPressed: () {
-            if (!formController.validateData()) return;
-            formController.submitData();
-            final formData = formDataNotifier.data;
-            final imageUrls = formImagesNotifier.saveChanges();
-            final itemData = {...formData, 'imageUrls': imageUrls};
-            final customer = Customer.fromMap(itemData);
-            formController.saveItemToDb(context, customer, isEditMode);
-            // update the bdCache (database mirror) so that we don't need to fetch data from db
-            final operationType =
-                isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
-            customerDbCache.update(itemData, operationType);
-          },
+          onPressed: () => _onSavePress(
+              context, formDataNotifier, formImagesNotifier, formController, customerDbCache),
           icon: const SaveIcon(),
         ),
-        // IconButton(
-        //   onPressed: () => Navigator.of(context).pop(),
-        //   icon: const CancelIcon(),
-        // ),
         Visibility(
           visible: isEditMode,
           child: IconButton(
-              onPressed: () async {
-                bool? confiramtion = await showDeleteConfirmationDialog(
-                    context: context, message: formDataNotifier.data['name']);
-                if (confiramtion != null) {
-                  final formData = formDataNotifier.data;
-                  final imageUrls = formImagesNotifier.saveChanges();
-                  final itemData = {...formData, 'imageUrls': imageUrls};
-                  final customer = Customer.fromMap(itemData);
-                  // ignore: use_build_context_synchronously
-                  formController.deleteItemFromDb(context, customer);
-                }
-              },
-              icon: const DeleteIcon()),
+            onPressed: () => _onDeletePressed(
+                context, formDataNotifier, formImagesNotifier, formController, customerDbCache),
+            icon: const DeleteIcon(),
+          ),
         )
       ],
       width: customerFormWidth,
       height: customerFormHeight,
     );
+  }
+
+  void _onSavePress(
+    BuildContext context,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+    ItemFormController formController,
+    DbCache customerDbCache,
+  ) {
+    if (!formController.validateData()) return;
+    formController.submitData();
+    final formData = formDataNotifier.data;
+    final imageUrls = formImagesNotifier.saveChanges();
+    final itemData = {...formData, 'imageUrls': imageUrls};
+    final customer = Customer.fromMap(itemData);
+    formController.saveItemToDb(context, customer, isEditMode);
+    // update the bdCache (database mirror) so that we don't need to fetch data from db
+    final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
+    customerDbCache.update(itemData, operationType);
+  }
+
+  void _onDeletePressed(
+    BuildContext context,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+    ItemFormController formController,
+    DbCache customerDbCache,
+  ) async {
+    bool? confiramtion = await showDeleteConfirmationDialog(
+        context: context, message: formDataNotifier.data['name']);
+    if (confiramtion != null) {
+      final formData = formDataNotifier.data;
+      final imageUrls = formImagesNotifier.saveChanges();
+      final itemData = {...formData, 'imageUrls': imageUrls};
+      final customer = Customer.fromMap(itemData);
+      if (context.mounted) {
+        formController.deleteItemFromDb(context, customer);
+      }
+      // update the dbCache (database mirror) so that we don't need to fetch data from db
+      const operationType = DbCacheOperationTypes.delete;
+      customerDbCache.update(itemData, operationType);
+    }
   }
 }
