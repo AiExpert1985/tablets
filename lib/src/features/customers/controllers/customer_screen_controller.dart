@@ -22,8 +22,8 @@ const giftsKey = 'gifts';
 final customerScreenControllerProvider = Provider<CustomerScreenController>((ref) {
   final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
   final transactionDataNotifier = ref.read(transactionDbCacheProvider.notifier);
-  final transactionData = transactionDataNotifier.data;
-  return CustomerScreenController(screenDataNotifier, transactionData);
+  final allTransactionData = transactionDataNotifier.data;
+  return CustomerScreenController(screenDataNotifier, allTransactionData);
 });
 
 class CustomerScreenController {
@@ -41,7 +41,7 @@ class CustomerScreenController {
     newDataRow[customerKey] = {'value': customer};
     newDataRow[customerNameKey] = {'value': customer.name};
     newDataRow[customerSalesmanKey] = {'value': customer.salesman};
-    final customerTransactions = getCustomerTransactions(_allTransactions, customer.dbRef);
+    final customerTransactions = getCustomerTransactions(customer.dbRef);
     // if customer has initial credit, it should be added to the tansactions, so, we add
     // it here and give it transaction type 'initialCredit'
     if (customer.initialCredit > 0) {
@@ -106,11 +106,10 @@ class CustomerScreenController {
     return result;
   }
 
-  List<Map<String, dynamic>> getCustomerTransactions(
-      List<Map<String, dynamic>> transactions, String dbRef) {
+  List<Map<String, dynamic>> getCustomerTransactions(String dbRef) {
     // Filter transactions for the given database reference
     List<Map<String, dynamic>> customerTransactions =
-        transactions.where((item) => item['nameDbRef'] == dbRef).toList();
+        _allTransactions.where((item) => item['nameDbRef'] == dbRef).toList();
 
     // Sort the transactions in descending order based on the transaction date
     return customerTransactions

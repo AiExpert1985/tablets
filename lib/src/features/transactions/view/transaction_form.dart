@@ -38,8 +38,7 @@ class TransactionForm extends ConsumerWidget {
       TransactionType.damagedItems.name: S.of(context).transaction_type_damaged_items,
     };
     if (transactionType == TransactionType.customerInvoice.name) {
-      return InvoiceForm(titles[transactionType]!, transactionType,
-          allTransactions: allTransactions, hideGifts: false);
+      return InvoiceForm(titles[transactionType]!, transactionType, hideGifts: false);
     }
     if (transactionType == TransactionType.vendorInvoice.name) {
       return InvoiceForm(titles[transactionType]!, transactionType, isVendor: true);

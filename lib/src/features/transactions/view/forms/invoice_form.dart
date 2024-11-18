@@ -6,6 +6,7 @@ import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart' as transaction;
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
@@ -32,12 +33,11 @@ import 'package:tablets/src/features/vendors/repository/vendor_repository_provid
 // because ConsumerWidget doen't allow declaring non final variables like customer
 class InvoiceForm extends ConsumerStatefulWidget {
   const InvoiceForm(this.title, this.transactionType,
-      {this.allTransactions, this.isVendor = false, this.hideGifts = true, super.key});
+      {this.isVendor = false, this.hideGifts = true, super.key});
 
   final String title;
   final bool hideGifts;
   final bool isVendor;
-  final List<Map<String, dynamic>>? allTransactions;
   final String transactionType;
 
   @override
@@ -52,8 +52,8 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
   // returns a color based on customer current debt
   bool isValidCustomer(Customer selectedCustomer, ItemFormData formDataNotifier,
       CustomerScreenController customerScreenController) {
-    final customerTransactions = customerScreenController.getCustomerTransactions(
-        widget.allTransactions!, selectedCustomer.dbRef);
+    final customerTransactions =
+        customerScreenController.getCustomerTransactions(selectedCustomer.dbRef);
     // if customer has initial credit, it should be added to the tansactions, so, we add
     // it here and give it transaction type 'initialCredit'
     if (selectedCustomer.initialCredit > 0) {
@@ -150,8 +150,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
             formDataNotifier.updateProperties(properties);
             // check wether customer exceeded the debt or time limits
             // below applies only for customer invoices not any other transaction
-            if (widget.transactionType != TransactionType.customerInvoice.name ||
-                widget.allTransactions == null) {
+            if (widget.transactionType != TransactionType.customerInvoice.name) {
               return;
             }
             customer = Customer.fromMap(item);
@@ -320,7 +319,6 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
                 // check wether customer exceeded the debt or time limits
                 // below applies only for customer invoices not any other transaction
                 if (customer == null ||
-                    widget.allTransactions == null ||
                     widget.transactionType != TransactionType.customerInvoice.name) {
                   return;
                 }
