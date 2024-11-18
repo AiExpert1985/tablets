@@ -9,16 +9,8 @@ class ProductsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppScreenFrame(
-      screenBody: Stack(
-        children: [
-          buildProductsList(context, ref),
-          const Positioned(
-            bottom: 0,
-            left: 0,
-            child: ProductFloatingButtons(),
-          )
-        ],
-      ),
+      buildProductsList(context, ref),
+      buttonsWidget: const ProductFloatingButtons(),
     );
   }
 }

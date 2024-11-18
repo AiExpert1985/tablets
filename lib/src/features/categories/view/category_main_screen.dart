@@ -9,16 +9,8 @@ class CategoriesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return const AppScreenFrame(
-      screenBody: Stack(
-        children: [
-          CategoriesGrid(),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: CategoryFloatingButtons(),
-          )
-        ],
-      ),
+      CategoriesGrid(),
+      buttonsWidget: CategoryFloatingButtons(),
     );
   }
 }

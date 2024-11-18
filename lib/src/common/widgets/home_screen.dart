@@ -7,7 +7,7 @@ class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const AppScreenFrame(screenBody: HomeScreenGreeting());
+    return const AppScreenFrame(HomeScreenGreeting());
   }
 }
 

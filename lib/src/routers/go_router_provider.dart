@@ -9,10 +9,10 @@ import 'package:tablets/src/features/pending_transactions/pending_transactions.d
 import 'package:tablets/src/features/products/view/product_main_screen.dart';
 import 'package:tablets/src/features/gps_locations/presentation/sales_men_live_location_screen.dart';
 import 'package:tablets/src/features/regions/view/regions_main_screen.dart';
-import 'package:tablets/src/features/salesmen/view/salesman_main_screen.dart';
+import 'package:tablets/src/features/salesmen/view/salesman_screen.dart';
 import 'package:tablets/src/features/settings/view/settings_main_screen.dart';
-import 'package:tablets/src/features/transactions/view/transaction_main_screen.dart';
-import 'package:tablets/src/features/vendors/view/vendor_main_screen.dart';
+import 'package:tablets/src/features/transactions/view/transaction_screen.dart';
+import 'package:tablets/src/features/vendors/view/vendor_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/view/login_screen.dart';
 import 'package:tablets/src/routers/not_found_screen.dart';

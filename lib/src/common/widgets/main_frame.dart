@@ -7,11 +7,9 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_drawer.dart';
 
 class AppScreenFrame extends ConsumerWidget {
-  const AppScreenFrame({
-    super.key,
-    required this.screenBody,
-  });
-  final Widget screenBody;
+  const AppScreenFrame(this.listWidget, {this.buttonsWidget, super.key});
+  final Widget listWidget;
+  final Widget? buttonsWidget;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,8 +45,28 @@ class AppScreenFrame extends ConsumerWidget {
       drawer: const MainDrawer(),
       body: Container(
         padding: const EdgeInsets.all(30),
-        child: screenBody,
+        child: MainScreenBody(listWidget, buttonsWidget),
       ),
+    );
+  }
+}
+
+class MainScreenBody extends ConsumerWidget {
+  const MainScreenBody(this.listWidget, this.buttonsWidget, {super.key});
+  final Widget listWidget;
+  final Widget? buttonsWidget;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Stack(
+      children: [
+        listWidget,
+        if (buttonsWidget != null)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: buttonsWidget!,
+          )
+      ],
     );
   }
 }

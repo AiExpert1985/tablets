@@ -8,9 +8,7 @@ class SalesmenLiveLocationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return const AppScreenFrame(
-      screenBody: Center(
-        child: Text('Salesmen Bills'),
-      ),
+      Text('Salesmen Bills'),
     );
   }
 }
