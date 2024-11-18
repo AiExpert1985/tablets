@@ -2,18 +2,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/common/widgets/async_value_widget.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_filter_controller_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_filtered_list_provider.dart';
+import 'package:tablets/src/common/widgets/home_screen.dart';
+import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form_utils.dart';
 
 class TransactionsList extends ConsumerWidget {
@@ -21,76 +19,86 @@ class TransactionsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
-    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final transactionStream = ref.watch(transactionStreamProvider);
-    final filterIsOn = ref.watch(transactionFilterSwitchProvider);
-    final transactionsListValue = filterIsOn
-        ? ref.read(transactionFilteredListProvider).getFilteredList()
-        : transactionStream;
-    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+    final dbCache = ref.read(transactionDbCacheProvider.notifier);
+    final dbData = dbCache.data;
+    dbData.sort((a, b) {
+      DateTime dateA = a['date'].toDate();
+      DateTime dateB = b['date'].toDate();
+      return dateB.compareTo(dateA);
+    });
+    ref.watch(transactionDbCacheProvider);
 
-    return AsyncValueWidget<List<Map<String, dynamic>>>(
-      value: transactionsListValue,
-      data: (allTransactions) {
-        allTransactions.sort((a, b) {
-          DateTime dateA = a['date'].toDate();
-          DateTime dateB = b['date'].toDate();
-          return dateB.compareTo(dateA);
-        });
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
+    Widget screenWidget = dbData.isNotEmpty
+        ? const Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                ListHeaders(),
+                Divider(),
+                ListData(),
+              ],
+            ),
+          )
+        : const HomeScreenGreeting();
+    return screenWidget;
+  }
+}
+
+class ListData extends ConsumerWidget {
+  const ListData({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dbCache = ref.read(transactionDbCacheProvider.notifier);
+    final dbData = dbCache.data;
+    ref.watch(transactionDbCacheProvider);
+    return Expanded(
+      child: ListView.builder(
+        itemCount: dbData.length,
+        itemBuilder: (ctx, index) {
+          final transactionData = dbData[index];
+          return Column(
             children: [
-              _buildHeaderRow(context),
-              const SizedBox(height: 19),
-              _buildHorizontalLine(), // Add some space between header and data
-              Expanded(
-                child: ListView.builder(
-                  itemCount: allTransactions.length,
-                  itemBuilder: (context, index) {
-                    final transaction = Transaction.fromMap(allTransactions[index]);
-                    return _buildDataRow(
-                        transaction,
-                        context,
-                        imagePickerNotifier,
-                        formDataNotifier,
-                        textEditingNotifier,
-                        allTransactions,
-                        backgroundColorNofifier);
-                  },
-                ),
-              ),
+              DataRow(transactionData),
+              const Divider(thickness: 0.2, color: Colors.grey),
             ],
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
+}
 
-  Widget _buildHeaderRow(BuildContext context) {
+class ListHeaders extends StatelessWidget {
+  const ListHeaders({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const SizedBox(width: 16), // Placeholder for the avatar
-        Expanded(child: _buildHeader(S.of(context).transaction_type)),
-        Expanded(child: _buildHeader(S.of(context).transaction_date)),
-        Expanded(child: _buildHeader(S.of(context).transaction_name)),
-        Expanded(child: _buildHeader(S.of(context).transaction_number)),
-        Expanded(child: _buildHeader(S.of(context).transaction_amount)),
+        const MainScreenPlaceholder(width: 20, isExpanded: false),
+        MainScreenHeaderCell(S.of(context).transaction_type),
+        MainScreenHeaderCell(S.of(context).transaction_date),
+        MainScreenHeaderCell(S.of(context).transaction_name),
+        MainScreenHeaderCell(S.of(context).transaction_number),
+        MainScreenHeaderCell(S.of(context).transaction_amount),
       ],
     );
   }
+}
 
-  Widget _buildDataRow(
-      Transaction transaction,
-      BuildContext context,
-      ImageSliderNotifier imagePickerNotifier,
-      ItemFormData formDataNotifier,
-      TextControllerNotifier textEditingNotifier,
-      List<Map<String, dynamic>> allTransactions,
-      StateController<Color> backgroundColorNofifier) {
+class DataRow extends ConsumerWidget {
+  const DataRow(this.transactionData, {super.key});
+  final Map<String, dynamic> transactionData;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final transaction = Transaction.fromMap(transactionData);
+    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
     final transactionTypeScreenName =
         translateDbTextToScreenText(context, transaction.transactionType);
 
@@ -117,43 +125,14 @@ class TransactionsList extends ConsumerWidget {
                 );
               },
             ),
-            Expanded(child: _buildDataCell(transactionTypeScreenName)),
-            Expanded(child: _buildDataCell(formatDate(transaction.date))),
-            Expanded(child: _buildDataCell(transaction.name)),
-            Expanded(child: _buildDataCell(transaction.number.toString())),
-            Expanded(child: _buildDataCell(transaction.totalAmount.toString())),
+            MainScreenTextCell(transactionTypeScreenName),
+            MainScreenTextCell(transaction.date),
+            MainScreenTextCell(transaction.name),
+            MainScreenTextCell(transaction.number),
+            MainScreenTextCell(transaction.totalAmount),
           ],
         ),
-        const SizedBox(height: 4), // Space between row and divider
-        _buildHorizontalLine()
       ],
-    );
-  }
-
-  Widget _buildDataCell(String text) {
-    return Text(
-      text,
-      textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 16),
-    );
-  }
-
-  Widget _buildHeader(String text) {
-    return Text(
-      text,
-      textAlign: TextAlign.center,
-      style: const TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-
-  Widget _buildHorizontalLine() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      height: 1, // Height of the divider
-      color: Colors.grey[300], // Light gray color
     );
   }
 }

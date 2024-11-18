@@ -33,6 +33,25 @@ class CustomersButton extends ConsumerWidget {
   }
 }
 
+class TransactionsButton extends ConsumerWidget {
+  const TransactionsButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MainDrawerButton('transactions', S.of(context).transactions, () async {
+      await initializeTransactionDbCache(context, ref);
+      final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+      if (context.mounted) {
+        pageTitleNotifier.state = S.of(context).transactions;
+      }
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        context.goNamed(AppRoute.transactions.name);
+      }
+    });
+  }
+}
+
 class MainDrawer extends ConsumerWidget {
   const MainDrawer({super.key});
 
@@ -47,11 +66,7 @@ class MainDrawer extends ConsumerWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                   child: Column(children: [
-                    MainDrawerButton('transactions', S.of(context).transactions, () {
-                      Navigator.of(context).pop();
-                      pageTitleNotifier.state = S.of(context).transactions;
-                      context.goNamed(AppRoute.transactions.name);
-                    }),
+                    const TransactionsButton(),
                     VerticalGap.l,
                     const CustomersButton(),
                     VerticalGap.l,

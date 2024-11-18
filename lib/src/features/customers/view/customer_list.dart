@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
-import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
@@ -69,24 +68,18 @@ class ListHeaders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const MainScreenPlaceholder(width: 20, isExpanded: false),
-            MainScreenHeaderCell(S.of(context).customer),
-            MainScreenHeaderCell(S.of(context).salesman_selection),
-            MainScreenHeaderCell(S.of(context).current_debt),
-            MainScreenHeaderCell(S.of(context).num_open_invoice),
-            MainScreenHeaderCell(S.of(context).due_debt_amount),
-            MainScreenHeaderCell(S.of(context).average_invoice_closing_duration),
-            if (!hideCustomerProfit) MainScreenHeaderCell(S.of(context).customer_invoice_profit),
-            MainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
-          ],
-        ),
-        VerticalGap.m,
-        // if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
+        const MainScreenPlaceholder(width: 20, isExpanded: false),
+        MainScreenHeaderCell(S.of(context).customer),
+        MainScreenHeaderCell(S.of(context).salesman_selection),
+        MainScreenHeaderCell(S.of(context).current_debt),
+        MainScreenHeaderCell(S.of(context).num_open_invoice),
+        MainScreenHeaderCell(S.of(context).due_debt_amount),
+        MainScreenHeaderCell(S.of(context).average_invoice_closing_duration),
+        if (!hideCustomerProfit) MainScreenHeaderCell(S.of(context).customer_invoice_profit),
+        MainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
       ],
     );
   }
@@ -124,9 +117,9 @@ class DataRow extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           MainScreenEditButton(
-              defaultImageUrl,
-              () =>
-                  _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer)),
+            defaultImageUrl,
+            () => _showEditCustomerForm(context, formDataNotifier, imagePickerNotifier, customer),
+          ),
           MainScreenTextCell(customer.name, isWarning: inValidCustomer),
           MainScreenTextCell(customer.salesman, isWarning: inValidCustomer),
           MainScreenClickableCell(
