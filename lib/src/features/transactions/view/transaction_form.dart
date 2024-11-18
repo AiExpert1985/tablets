@@ -95,14 +95,11 @@ class TransactionForm extends ConsumerWidget {
     ImageSliderNotifier formImagesNotifier,
     DbCache transactionDbCache,
   ) {
-    final transaction = formDataNotifier.data;
     return [
       IconButton(
         onPressed: () {
-          _onSavePressed(context, formController, formDataNotifier, formImagesNotifier);
-          // update the bdCache (database mirror) so that we don't need to fetch data from db
-          final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
-          transactionDbCache.update(transaction, operationType);
+          _onSavePressed(
+              context, formController, formDataNotifier, formImagesNotifier, transactionDbCache);
         },
         icon: const SaveIcon(),
       ),
@@ -113,35 +110,48 @@ class TransactionForm extends ConsumerWidget {
       if (isEditMode)
         IconButton(
           onPressed: () {
-            _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController);
-            // update the bdCache (database mirror) so that we don't need to fetch data from db
-            const operationType = DbCacheOperationTypes.delete;
-            transactionDbCache.update(transaction, operationType);
+            _onDeletePressed(
+                context, formDataNotifier, formImagesNotifier, formController, transactionDbCache);
           },
           icon: const DeleteIcon(),
         ),
     ];
   }
 
-  void _onSavePressed(BuildContext context, ItemFormController formController,
-      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier) {
+  void _onSavePressed(
+      BuildContext context,
+      ItemFormController formController,
+      ItemFormData formDataNotifier,
+      ImageSliderNotifier formImagesNotifier,
+      DbCache transactionDbCache) {
     if (!formController.validateData()) return;
     formController.submitData();
-    final updateFormData = formDataNotifier.data;
+    final formData = formDataNotifier.data;
     final imageUrls = formImagesNotifier.saveChanges();
-    final transaction = Transaction.fromMap({...updateFormData, 'imageUrls': imageUrls});
+    final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
     formController.saveItemToDb(context, transaction, isEditMode);
+    // update the bdCache (database mirror) so that we don't need to fetch data from db
+    final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
+    transactionDbCache.update(formData, operationType);
   }
 
-  Future<void> _onDeletePressed(BuildContext context, ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier, ItemFormController formController) async {
+  Future<void> _onDeletePressed(
+      BuildContext context,
+      ItemFormData formDataNotifier,
+      ImageSliderNotifier formImagesNotifier,
+      ItemFormController formController,
+      DbCache transactionDbCache) async {
     final message = translateDbTextToScreenText(context, formDataNotifier.data['name']);
     final confirmation = await showDeleteConfirmationDialog(context: context, message: message);
+    final formData = formDataNotifier.data;
     if (confirmation != null) {
       final imageUrls = formImagesNotifier.saveChanges();
-      final transaction = Transaction.fromMap({...formDataNotifier.data, 'imageUrls': imageUrls});
+      final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
       // ignore: use_build_context_synchronously
       formController.deleteItemFromDb(context, transaction);
+      // // update the bdCache (database mirror) so that we don't need to fetch data from db
+      // const operationType = DbCacheOperationTypes.delete;
+      // transactionDbCache.update(formData, operationType);
     }
   }
 }

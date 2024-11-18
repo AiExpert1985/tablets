@@ -46,6 +46,7 @@ class ListData extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dbCache = ref.read(customerDbCacheProvider.notifier);
     final dbData = dbCache.data;
+    ref.watch(customerDbCacheProvider);
     return Expanded(
       child: ListView.builder(
         itemCount: dbData.length,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -9,6 +10,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/view/customer_form_fields.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
 
@@ -21,6 +23,7 @@ class CustomerForm extends ConsumerWidget {
     final formController = ref.watch(customerFormControllerProvider);
     final formDataNotifier = ref.read(customerFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
     ref.watch(imagePickerProvider);
     return FormFrame(
       formKey: formController.formKey,
@@ -38,10 +41,15 @@ class CustomerForm extends ConsumerWidget {
           onPressed: () {
             if (!formController.validateData()) return;
             formController.submitData();
-            final updateFormData = formDataNotifier.data;
+            final formData = formDataNotifier.data;
             final imageUrls = formImagesNotifier.saveChanges();
-            final customer = Customer.fromMap({...updateFormData, 'imageUrls': imageUrls});
+            final itemData = {...formData, 'imageUrls': imageUrls};
+            final customer = Customer.fromMap(itemData);
             formController.saveItemToDb(context, customer, isEditMode);
+            // update the bdCache (database mirror) so that we don't need to fetch data from db
+            final operationType =
+                isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
+            customerDbCache.update(itemData, operationType);
           },
           icon: const SaveIcon(),
         ),
@@ -56,9 +64,10 @@ class CustomerForm extends ConsumerWidget {
                 bool? confiramtion = await showDeleteConfirmationDialog(
                     context: context, message: formDataNotifier.data['name']);
                 if (confiramtion != null) {
-                  final updateFormData = formDataNotifier.data;
+                  final formData = formDataNotifier.data;
                   final imageUrls = formImagesNotifier.saveChanges();
-                  final customer = Customer.fromMap({...updateFormData, 'imageUrls': imageUrls});
+                  final itemData = {...formData, 'imageUrls': imageUrls};
+                  final customer = Customer.fromMap(itemData);
                   // ignore: use_build_context_synchronously
                   formController.deleteItemFromDb(context, customer);
                 }
