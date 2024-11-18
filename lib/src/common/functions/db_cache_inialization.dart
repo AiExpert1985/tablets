@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/testing.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
@@ -19,8 +18,7 @@ Future<void> initializeCustomerDbCache(BuildContext context, WidgetRef ref) asyn
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
   if (customerDbCache.data.isEmpty) {
     final customerData = await ref.read(customerRepositoryProvider).fetchItemListAsMaps();
-    // customerDbCache.setData(customerData);
-    customerDbCache.setData(createDuplicates(customerData, 10000));
+    customerDbCache.setData(customerData);
   }
 }
 
@@ -28,8 +26,7 @@ Future<void> initializeTransactionDbCache(BuildContext context, WidgetRef ref) a
   final transactionDbCach = ref.read(transactionDbCacheProvider.notifier);
   if (transactionDbCach.data.isEmpty) {
     final transactionData = await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
-    // transactionDbCach.setData(transactionData);
-    transactionDbCach.setData(createDuplicates(transactionData, 100));
+    transactionDbCach.setData(transactionData);
   }
 }
 
