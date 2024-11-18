@@ -156,7 +156,7 @@ String doubleToStringWithComma(double value, {int? numDecimalPlaces}) {
 }
 
 // order a list of lists based on date, from latest to oldest
-List<List<dynamic>> sortByDate(List<List<dynamic>> list, int dateIndex) {
+List<List<dynamic>> sortListOfListsByDate(List<List<dynamic>> list, int dateIndex) {
   list.sort((a, b) {
     final dateA = a[dateIndex] is Timestamp
         ? a[dateIndex].toDate()
@@ -165,6 +165,14 @@ List<List<dynamic>> sortByDate(List<List<dynamic>> list, int dateIndex) {
     return dateB.compareTo(dateA); // Descending order
   });
   return list;
+}
+
+void sortListOfMapsByDate(List<Map<String, dynamic>> list, String dateKey) {
+  list.sort((a, b) {
+    DateTime dateA = a[dateKey] is! DateTime ? a[dateKey].toDate() : a[dateKey];
+    DateTime dateB = b[dateKey] is! DateTime ? b[dateKey].toDate() : b[dateKey];
+    return dateB.compareTo(dateA);
+  });
 }
 
 // return a copy of the original list after removing one or more specific indices from the list

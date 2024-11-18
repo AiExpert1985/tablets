@@ -30,54 +30,6 @@ class TransactionsScreen extends ConsumerWidget {
   }
 }
 
-class TransactionsFloatingButtons extends ConsumerWidget {
-  const TransactionsFloatingButtons({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final drawerController = ref.watch(transactionDrawerControllerProvider);
-    const iconsColor = Color.fromARGB(255, 126, 106, 211);
-    return SpeedDial(
-      direction: SpeedDialDirection.up,
-      switchLabelPosition: false,
-      animatedIcon: AnimatedIcons.menu_close,
-      spaceBetweenChildren: 10,
-      animatedIconTheme: const IconThemeData(size: 28.0),
-      visible: true,
-      curve: Curves.bounceInOut,
-      children: [
-        SpeedDialChild(
-            child: const Icon(Icons.pie_chart, color: Colors.white),
-            backgroundColor: iconsColor,
-            onTap: () async {
-              final allTransactions =
-                  await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
-              if (context.mounted) {
-                drawerController.showReports(context, allTransactions);
-              }
-            }),
-        SpeedDialChild(
-          child: const Icon(Icons.search, color: Colors.white),
-          backgroundColor: iconsColor,
-          onTap: () => drawerController.showSearchForm(context),
-        ),
-        SpeedDialChild(
-          child: const Icon(Icons.add, color: Colors.white),
-          backgroundColor: iconsColor,
-          onTap: () {
-            // reset background color when form is closed
-            ref.read(backgroundColorProvider.notifier).state = Colors.white;
-            showDialog(
-              context: context,
-              builder: (BuildContext ctx) => const TransactionGroupSelection(),
-            ).whenComplete(() {});
-          },
-        ),
-      ],
-    );
-  }
-}
-
 class TransactionsList extends ConsumerWidget {
   const TransactionsList({super.key});
 
@@ -85,11 +37,7 @@ class TransactionsList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     final dbData = dbCache.data;
-    dbData.sort((a, b) {
-      DateTime dateA = a['date'] is! DateTime ? a['date'].toDate() : a['date'];
-      DateTime dateB = b['date'] is! DateTime ? b['date'].toDate() : b['date'];
-      return dateB.compareTo(dateA);
-    });
+    sortListOfMapsByDate(dbData, 'date');
     ref.watch(transactionDbCacheProvider);
 
     Widget screenWidget = dbData.isNotEmpty
@@ -195,6 +143,54 @@ class DataRow extends ConsumerWidget {
             MainScreenTextCell(transaction.number),
             MainScreenTextCell(transaction.totalAmount),
           ],
+        ),
+      ],
+    );
+  }
+}
+
+class TransactionsFloatingButtons extends ConsumerWidget {
+  const TransactionsFloatingButtons({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final drawerController = ref.watch(transactionDrawerControllerProvider);
+    const iconsColor = Color.fromARGB(255, 126, 106, 211);
+    return SpeedDial(
+      direction: SpeedDialDirection.up,
+      switchLabelPosition: false,
+      animatedIcon: AnimatedIcons.menu_close,
+      spaceBetweenChildren: 10,
+      animatedIconTheme: const IconThemeData(size: 28.0),
+      visible: true,
+      curve: Curves.bounceInOut,
+      children: [
+        SpeedDialChild(
+            child: const Icon(Icons.pie_chart, color: Colors.white),
+            backgroundColor: iconsColor,
+            onTap: () async {
+              final allTransactions =
+                  await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
+              if (context.mounted) {
+                drawerController.showReports(context, allTransactions);
+              }
+            }),
+        SpeedDialChild(
+          child: const Icon(Icons.search, color: Colors.white),
+          backgroundColor: iconsColor,
+          onTap: () => drawerController.showSearchForm(context),
+        ),
+        SpeedDialChild(
+          child: const Icon(Icons.add, color: Colors.white),
+          backgroundColor: iconsColor,
+          onTap: () {
+            // reset background color when form is closed
+            ref.read(backgroundColorProvider.notifier).state = Colors.white;
+            showDialog(
+              context: context,
+              builder: (BuildContext ctx) => const TransactionGroupSelection(),
+            ).whenComplete(() {});
+          },
         ),
       ],
     );

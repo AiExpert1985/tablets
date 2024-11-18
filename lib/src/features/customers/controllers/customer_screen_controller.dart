@@ -96,13 +96,8 @@ class CustomerScreenController {
     List<Map<String, dynamic>> customerTransactions =
         allTransactions.where((item) => item['nameDbRef'] == dbRef).toList();
 
-    // Sort the transactions in descending order based on the transaction date
-    return customerTransactions
-      ..sort((a, b) {
-        final dateA = a['date'];
-        final dateB = b['date'];
-        return dateB.compareTo(dateA);
-      });
+    sortListOfMapsByDate(customerTransactions, 'date');
+    return customerTransactions;
   }
 
   List<List<dynamic>> customerMatching(
@@ -246,7 +241,7 @@ class CustomerScreenController {
       }
     }
 
-    return sortByDate(giftsAndDiscounts, 3);
+    return sortListOfListsByDate(giftsAndDiscounts, 3);
   }
 
   double getTotalGiftsAndDiscounts(List<List<dynamic>> giftsList, int amountIndex) {
@@ -376,5 +371,5 @@ List<List<dynamic>> getCustomerProcessedInvoices(
       invoice.profit,
     ]);
   }
-  return sortByDate(invoicesStatus, 2);
+  return sortListOfListsByDate(invoicesStatus, 2);
 }

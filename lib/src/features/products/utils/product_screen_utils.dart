@@ -68,7 +68,7 @@ List<List<dynamic>> getProductProcessedTransactions(
       result.add(transactionDetails);
     }
   }
-  return sortByDate(result, 3);
+  return sortListOfListsByDate(result, 3);
 }
 
 List<dynamic> getProductTotals(List<List<dynamic>> productTransactions) {
