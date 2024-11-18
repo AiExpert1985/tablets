@@ -22,6 +22,7 @@ class CustomerList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dbCache = ref.read(customerDbCacheProvider.notifier);
     final dbData = dbCache.data;
+    ref.watch(customerDbCacheProvider);
     Widget screenWidget = dbData.isNotEmpty
         ? const Padding(
             padding: EdgeInsets.all(16),

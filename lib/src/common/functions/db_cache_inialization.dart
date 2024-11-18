@@ -27,28 +27,3 @@ Future<void> initializeTransactionDbCache(BuildContext context, WidgetRef ref) a
     transactionDbCach.set(transactionData);
   }
 }
-
-// /// set properties & types of summary
-// /// do the calculations (using screenControllerProvider) and use them to create the data
-// Future<void> initializeScreenDataNotifier(BuildContext context, WidgetRef ref) async {
-//   Map<String, dynamic> summaryTypes = {
-//     totalDebtKey: 'sum',
-//     openInvoicesKey: 'sum',
-//     dueInvoicesKey: 'sum',
-//     dueDebtKey: 'sum',
-//     avgClosingDaysKey: 'avg',
-//     invoicesProfitKey: 'sum',
-//     giftsKey: 'sum',
-//   };
-//   final screenDataNotifier = ref.read(customerScreenDataProvider.notifier);
-//   if (screenDataNotifier.data.isNotEmpty) return;
-//   screenDataNotifier.initialize(summaryTypes);
-//   // finally, we use the screenController wich internally updates the screenDataNotifier that
-//   //will be used by the screen List widget (which will display UI to the user)
-//   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
-//   final customers = customerDbCache.data;
-//   final screenController = ref.read(customerScreenControllerProvider);
-//   if (context.mounted) {
-//     screenController.processCustomerTransactions(context, customers);
-//   }
-// }

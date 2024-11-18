@@ -4,16 +4,19 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 enum DbCacheOperationTypes { add, edit, delete }
 
 /// list of map mirrors the collections in firebase database
+/// this cache is only created once for each feature at the time app started
+/// then it will be updated using features form (add, update, delete), so there will
+/// be no need to reload data from database (firestore) again until next app started
 class DbCache extends StateNotifier<List<Map<String, dynamic>>> {
   DbCache() : super([]);
 
   /// add one entery to the existing dbCache list
   void _addData(Map<String, dynamic> newData) {
-    state = [...state, newData]; // Create a new list with the new data
+    state = [...state, newData];
   }
 
   /// update the data of one entery in the existing dbCache list
-  void _editData(int index, Map<String, dynamic> newData) {
+  void _updateData(int index, Map<String, dynamic> newData) {
     if (index >= 0 && index < state.length) {
       final stateCopy = [...state];
       stateCopy[index] = newData;
@@ -32,7 +35,7 @@ class DbCache extends StateNotifier<List<Map<String, dynamic>>> {
 
   /// set the whole dbCache
   void set(List<Map<String, dynamic>> newData) {
-    state = [...newData];
+    state = newData;
   }
 
   /// update dbCache list, it includes all kind of updates (add, edit, delete)
@@ -44,7 +47,7 @@ class DbCache extends StateNotifier<List<Map<String, dynamic>>> {
     final index = _getItemIndex(newData);
     if (index == -1) return;
     if (operationType == DbCacheOperationTypes.edit) {
-      _editData(index, newData);
+      _updateData(index, newData);
     } else if (operationType == DbCacheOperationTypes.delete) {
       _removeData(index);
     } else {

@@ -16,17 +16,11 @@ class CustomersButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MainDrawerButton('customers', S.of(context).customers, () async {
-      await initializeCustomerDbCache(context, ref);
+      //  we need related transactionDbCache, we make sure it is inialized
+      await initializeTransactionDbCache(context, ref);
       if (context.mounted) {
-        // initialized related transactionDbCache
-        await initializeTransactionDbCache(context, ref);
+        await initializeCustomerDbCache(context, ref);
       }
-      //TODO I stopped using screenDataNotifier because the ideas of creating all screen data
-      // TODO at once is slow, maybe in future I find way to improve that
-      // if (context.mounted) {
-      //   await initializeScreenDataNotifier(context, ref);
-      // }
-      // set page title in the main top bar
       final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).customers;
