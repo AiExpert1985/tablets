@@ -120,7 +120,11 @@ class ProductsButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MainDrawerButton('products', S.of(context).products, () async {
-      await initializeProductsDbCache(context, ref);
+      //  we need related transactionDbCache, we make sure it is inialized
+      await initializeTransactionDbCache(context, ref);
+      if (context.mounted) {
+        await initializeProductsDbCache(context, ref);
+      }
       final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).products;

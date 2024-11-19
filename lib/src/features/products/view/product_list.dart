@@ -86,12 +86,10 @@ class ListHeaders extends StatelessWidget {
         MainScreenHeaderCell(S.of(context).product_code),
         MainScreenHeaderCell(S.of(context).product_name),
         MainScreenHeaderCell(S.of(context).product_category),
-        MainScreenHeaderCell(S.of(context).transaction_number),
         MainScreenHeaderCell(S.of(context).product_salesman_commission),
         Visibility(
             visible: !hideProductBuyingPrice,
             child: MainScreenHeaderCell(S.of(context).product_buying_price)),
-        MainScreenHeaderCell(S.of(context).transaction_type),
         MainScreenHeaderCell(S.of(context).product_sell_whole_price),
         MainScreenHeaderCell(S.of(context).product_sell_retail_price),
         MainScreenHeaderCell(S.of(context).product_stock_quantity),
