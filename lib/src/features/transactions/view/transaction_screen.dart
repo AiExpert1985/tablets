@@ -6,7 +6,6 @@ import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_drawer_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_group_selection.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
@@ -107,10 +106,7 @@ class DataRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transaction = Transaction.fromMap(transactionData);
-    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
-    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+
     final transactionTypeScreenName =
         translateDbTextToScreenText(context, transaction.transactionType);
 
@@ -119,24 +115,8 @@ class DataRow extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            InkWell(
-              child: const CircleAvatar(
-                radius: 15,
-                foregroundImage: CachedNetworkImageProvider(defaultImageUrl),
-              ),
-              onTap: () {
-                backgroundColorNofifier.state = Colors.white;
-                TransactionShowFormUtils.showForm(
-                  context,
-                  imagePickerNotifier,
-                  formDataNotifier,
-                  textEditingNotifier,
-                  backgroundColorNofifier,
-                  transaction: transaction,
-                  formType: transaction.transactionType,
-                );
-              },
-            ),
+            MainScreenEditButton(
+                defaultImageUrl, () => _showEditTransactionForm(context, ref, transaction)),
             MainScreenTextCell(transactionTypeScreenName),
             MainScreenTextCell(transaction.date),
             MainScreenTextCell(transaction.name),
@@ -147,6 +127,23 @@ class DataRow extends ConsumerWidget {
       ],
     );
   }
+}
+
+_showEditTransactionForm(BuildContext context, WidgetRef ref, Transaction transaction) {
+  final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+  final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+  final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+  final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+  backgroundColorNofifier.state = Colors.white;
+  TransactionShowFormUtils.showForm(
+    context,
+    imagePickerNotifier,
+    formDataNotifier,
+    textEditingNotifier,
+    backgroundColorNofifier,
+    transaction: transaction,
+    formType: transaction.transactionType,
+  );
 }
 
 class TransactionsFloatingButtons extends ConsumerWidget {

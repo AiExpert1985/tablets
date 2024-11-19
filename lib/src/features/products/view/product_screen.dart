@@ -1,37 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/products/view/product_list.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
-import 'package:tablets/src/common/values/settings.dart';
-import 'package:tablets/src/features/customers/controllers/customer_drawer_provider.dart';
-import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
-import 'package:tablets/src/features/customers/view/customer_form.dart';
+import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
+import 'package:tablets/src/features/products/controllers/product_form_data_notifier.dart';
+import 'package:tablets/src/features/products/view/product_form.dart';
 
-class CustomerFloatingButtons extends ConsumerWidget {
-  const CustomerFloatingButtons({super.key});
+class ProductsScreen extends ConsumerWidget {
+  const ProductsScreen({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const AppScreenFrame(
+      ProductsList(),
+      buttonsWidget: ProductFloatingButtons(),
+    );
+  }
+}
 
-  void showAddCustomerForm(BuildContext context, WidgetRef ref) {
-    final formDataNotifier = ref.read(customerFormDataProvider.notifier);
-    formDataNotifier.initialize();
-    formDataNotifier.updateProperties({
-      'initialDate': DateTime.now(),
-      'initialCredit': 0,
-      'sellingPriceType': S.of(context).selling_price_type_whole,
-      'creditLimit': maxDebtAmount,
-      'paymentDurationLimit': maxDebtDuration,
-    });
+class ProductFloatingButtons extends ConsumerWidget {
+  const ProductFloatingButtons({super.key});
+
+  void showAddProductForm(BuildContext context, WidgetRef ref) {
+    ref.read(productFormDataProvider.notifier).initialize();
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize();
     showDialog(
       context: context,
-      builder: (BuildContext ctx) => const CustomerForm(),
+      builder: (BuildContext ctx) => const ProductForm(),
     ).whenComplete(imagePicker.close);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final drawerController = ref.watch(customerDrawerControllerProvider);
+    final drawerController = ref.watch(productsDrawerControllerProvider);
     const iconsColor = Color.fromARGB(255, 126, 106, 211);
     return SpeedDial(
       direction: SpeedDialDirection.up,
@@ -55,7 +58,7 @@ class CustomerFloatingButtons extends ConsumerWidget {
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,
-          onTap: () => showAddCustomerForm(context, ref),
+          onTap: () => showAddProductForm(context, ref),
         ),
       ],
     );

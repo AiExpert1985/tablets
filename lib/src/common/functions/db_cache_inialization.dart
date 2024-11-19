@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
+import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
@@ -25,5 +27,13 @@ Future<void> initializeTransactionDbCache(BuildContext context, WidgetRef ref) a
   if (transactionDbCach.data.isEmpty) {
     final transactionData = await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
     transactionDbCach.set(transactionData);
+  }
+}
+
+Future<void> initializeProductsDbCache(BuildContext context, WidgetRef ref) async {
+  final productDbCach = ref.read(productDbCacheProvider.notifier);
+  if (productDbCach.data.isEmpty) {
+    final productData = await ref.read(productRepositoryProvider).fetchItemListAsMaps();
+    productDbCach.set(productData);
   }
 }

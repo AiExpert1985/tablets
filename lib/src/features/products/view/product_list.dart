@@ -1,37 +1,21 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/classes/db_repository.dart';
-import 'package:tablets/src/common/classes/item_form_data.dart';
-import 'package:tablets/src/common/functions/utils.dart';
-import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/widgets/home_screen.dart';
+import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
-import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
+import 'package:tablets/src/features/products/controllers/product_form_data_notifier.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/features/products/utils/product_report_utils.dart';
-import 'package:tablets/src/features/products/utils/product_screen_utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/features/products/model/product.dart';
-import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/features/products/view/product_form.dart';
-import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
-import 'package:tablets/src/features/products/controllers/product_form_data_notifier.dart';
 
-List<Map<String, dynamic>> _transactionsList = [];
-List<Product> _productsList = [];
-List<List<List<dynamic>>> _productProcessedTransactionsList = [];
-List<double> _productTotalQuantityList = [];
-List<double> _productTotalProfitsList = [];
-List<double> _productTotalCommissionsList = [];
-List<double> _productTotalPriceList = [];
-
-Future<void> _fetchTransactions(DbRepository transactionProvider) async {
-  _transactionsList = await transactionProvider.fetchItemListAsMaps();
-}
-
-void showEditProductForm(BuildContext context, Product product, ItemFormData formDataNotifier,
-    ImageSliderNotifier imagePickerNotifier) {
+void _showEditProductForm(BuildContext context, WidgetRef ref, Product product) {
+  final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+  final formDataNotifier = ref.read(productFormDataProvider.notifier);
   formDataNotifier.initialize(initialData: product.toMap());
   imagePickerNotifier.initialize(urls: product.imageUrls);
   showDialog(
@@ -40,208 +24,122 @@ void showEditProductForm(BuildContext context, Product product, ItemFormData for
   ).whenComplete(imagePickerNotifier.close);
 }
 
-Widget buildProductsList(BuildContext context, WidgetRef ref) {
-  final formDataNotifier = ref.read(productFormDataProvider.notifier);
-  final imagePicker = ref.read(imagePickerProvider.notifier);
-  final transactionProvider = ref.read(transactionRepositoryProvider);
-  _fetchTransactions(transactionProvider);
-  final productDbCache = ref.read(productDbCacheProvider.notifier);
-  final products = productDbCache.data;
-  ref.watch(productDbCacheProvider); // important for reload button
+class ProductsList extends ConsumerWidget {
+  const ProductsList({super.key});
 
-  _processProductTransactions(context, products);
-  Widget screenWidget = products.isNotEmpty
-      ? Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              _buildHeaderRow(context),
-              const Divider(), // Divider to separate header from the list
-              _buildDataRows(context, products, formDataNotifier, imagePicker),
-            ],
-          ),
-        )
-      : Center(
-          child: SizedBox(
-            height: 80,
-            width: 320,
-            child: TextButton.icon(
-              onPressed: () async {
-                final productData = await ref.read(productRepositoryProvider).fetchItemListAsMaps();
-                final productDbCache = ref.read(productDbCacheProvider.notifier);
-                productDbCache.set(productData);
-              },
-              icon: const Icon(Icons.refresh),
-              label: Text(
-                S.of(context).reload_page,
-                style: const TextStyle(fontSize: 20),
-              ),
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dbCache = ref.read(productDbCacheProvider.notifier);
+    final dbData = dbCache.data;
+    ref.watch(productDbCacheProvider);
+
+    Widget screenWidget = dbData.isNotEmpty
+        ? const Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                ListHeaders(),
+                Divider(),
+                ListData(),
+              ],
             ),
-          ),
-        );
-  return screenWidget;
-}
-
-Widget _buildHeaderRow(BuildContext context) {
-  double totalStockQuantity = _productTotalQuantityList.reduce((a, b) => a + b);
-  double totalItemPriceWorth = _productTotalPriceList.reduce((a, b) => a + b);
-  return Column(
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const SizedBox(width: 16), // Placeholder for the avatar
-          Expanded(child: _buildHeader(S.of(context).product_code)),
-          Expanded(child: _buildHeader(S.of(context).product_name)),
-          Expanded(child: _buildHeader(S.of(context).product_category)),
-          Expanded(child: _buildHeader(S.of(context).product_salesman_commission)),
-          Visibility(
-              visible: !hideProductBuyingPrice,
-              child: Expanded(child: _buildHeader(S.of(context).product_buying_price))),
-          Expanded(child: _buildHeader(S.of(context).product_sell_whole_price)),
-          Expanded(child: _buildHeader(S.of(context).product_sell_retail_price)),
-          Expanded(child: _buildHeader(S.of(context).product_stock_quantity)),
-          Expanded(child: _buildHeader(S.of(context).product_stock_amount)),
-          Expanded(child: _buildHeader(S.of(context).product_profits)),
-        ],
-      ),
-      VerticalGap.m,
-      Visibility(
-        visible: !hideMainScreenColumnTotals,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Expanded(child: SizedBox()), // Placeholder for the avatar
-            const Expanded(child: SizedBox()),
-            const Expanded(child: SizedBox()),
-            const Expanded(child: SizedBox()),
-            const Expanded(child: SizedBox()),
-            Visibility(visible: !hideProductBuyingPrice, child: const SizedBox(width: 16)),
-            const Expanded(child: SizedBox()),
-            const Expanded(child: SizedBox()),
-            Expanded(child: _buildHeader('(${doubleToStringWithComma(totalStockQuantity)})')),
-            Expanded(child: _buildHeader('(${doubleToStringWithComma(totalItemPriceWorth)})')),
-            const Expanded(child: SizedBox()),
-          ],
-        ),
-      ),
-    ],
-  );
-}
-
-Widget _buildDataRows(BuildContext context, List<Map<String, dynamic>> products,
-    ItemFormData formDataNotifier, ImageSliderNotifier imagePickerNotifier) {
-  return Expanded(
-    child: ListView.builder(
-      itemCount: products.length,
-      itemBuilder: (ctx, index) {
-        return Column(
-          children: [
-            _buildDataRow(ctx, index, imagePickerNotifier, formDataNotifier),
-            const Divider(thickness: 0.3),
-          ],
-        );
-      },
-    ),
-  );
-}
-
-Widget _buildDataRow(
-  BuildContext context,
-  int index,
-  ImageSliderNotifier imagePickerNotifier,
-  ItemFormData formDataNotifier,
-) {
-  Product product = _productsList[index];
-  final productTransactions = _productProcessedTransactionsList[index];
-  final totalQuantity = _productTotalQuantityList[index];
-  final totalItemProfit = _productTotalProfitsList[index]; // profit doesn't include commission
-  final profitInvoices = getOnlyProfitInvoices(productTransactions, 5);
-  final totalItemPriceWorth = _productTotalPriceList[index];
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        InkWell(
-          child: const CircleAvatar(
-            radius: 15,
-            foregroundImage: CachedNetworkImageProvider(constants.defaultImageUrl),
-          ),
-          onTap: () => showEditProductForm(context, product, formDataNotifier, imagePickerNotifier),
-        ),
-        Expanded(child: _buildDataCell('${product.code}')),
-        Expanded(child: _buildDataCell(product.name)),
-        Expanded(child: _buildDataCell(product.category)),
-        Expanded(child: _buildDataCell('${product.salesmanCommission}')),
-        Visibility(
-          visible: !hideProductBuyingPrice,
-          child: Expanded(child: _buildDataCell('${product.buyingPrice}')),
-        ),
-        Expanded(child: _buildDataCell('${product.sellWholePrice}')),
-        Expanded(child: _buildDataCell('${product.sellRetailPrice}')),
-        Expanded(
-          child: InkWell(
-            child: _buildDataCell('$totalQuantity'),
-            onTap: () => showHistoryReport(context, productTransactions, product.name),
-          ),
-        ),
-        Expanded(child: _buildDataCell('$totalItemPriceWorth')),
-        Expanded(
-          child: InkWell(
-            child: _buildDataCell('$totalItemProfit'),
-            onTap: () => showProfitReport(context, profitInvoices, product.name),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _buildHeader(String text) {
-  return Text(
-    text,
-    textAlign: TextAlign.center,
-    style: const TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-    ),
-  );
-}
-
-Widget _buildDataCell(String text) {
-  return Text(
-    text,
-    textAlign: TextAlign.center,
-    style: const TextStyle(fontSize: 16),
-  );
-}
-
-void _processProductTransactions(BuildContext context, List<Map<String, dynamic>> products) {
-  _resetGlobalLists();
-  for (var productData in products) {
-    final product = Product.fromMap(productData);
-    _productsList.add(product);
-    final productProcessedTransactions =
-        getProductProcessedTransactions(context, _transactionsList, product);
-    _productProcessedTransactionsList.add(productProcessedTransactions);
-    final productTotals = getProductTotals(productProcessedTransactions);
-    final quantity = productTotals[0];
-    final profit = productTotals[1];
-    final commission = productTotals[2];
-    final totalPrice = quantity * product.buyingPrice;
-    _productTotalQuantityList.add(quantity);
-    _productTotalProfitsList.add(profit);
-    _productTotalCommissionsList.add(commission);
-    _productTotalPriceList.add(totalPrice);
+          )
+        : const HomeScreenGreeting();
+    return screenWidget;
   }
 }
 
-void _resetGlobalLists() {
-  _productsList = [];
-  _productProcessedTransactionsList = [];
-  _productTotalQuantityList = [];
-  _productTotalProfitsList = [];
-  _productTotalCommissionsList = [];
-  _productTotalPriceList = [];
+class ListData extends ConsumerWidget {
+  const ListData({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dbCache = ref.read(productDbCacheProvider.notifier);
+    final dbData = dbCache.data;
+    ref.watch(productDbCacheProvider);
+    return Expanded(
+      child: ListView.builder(
+        itemCount: dbData.length,
+        itemBuilder: (ctx, index) {
+          final productData = dbData[index];
+          return Column(
+            children: [
+              DataRow(productData),
+              const Divider(thickness: 0.2, color: Colors.grey),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ListHeaders extends StatelessWidget {
+  const ListHeaders({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const MainScreenPlaceholder(width: 20, isExpanded: false),
+        MainScreenHeaderCell(S.of(context).product_code),
+        MainScreenHeaderCell(S.of(context).product_name),
+        MainScreenHeaderCell(S.of(context).product_category),
+        MainScreenHeaderCell(S.of(context).transaction_number),
+        MainScreenHeaderCell(S.of(context).product_salesman_commission),
+        Visibility(
+            visible: !hideProductBuyingPrice,
+            child: MainScreenHeaderCell(S.of(context).product_buying_price)),
+        MainScreenHeaderCell(S.of(context).transaction_type),
+        MainScreenHeaderCell(S.of(context).product_sell_whole_price),
+        MainScreenHeaderCell(S.of(context).product_sell_retail_price),
+        MainScreenHeaderCell(S.of(context).product_stock_quantity),
+        MainScreenHeaderCell(S.of(context).product_stock_amount),
+        MainScreenHeaderCell(S.of(context).product_profits),
+      ],
+    );
+  }
+}
+
+class DataRow extends ConsumerWidget {
+  const DataRow(this.productData, {super.key});
+  final Map<String, dynamic> productData;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final product = Product.fromMap(productData);
+    final screenController = ref.read(productScreenControllerProvider);
+    final rowData = screenController.createProductScreenData(context, product);
+    final productTransactions = rowData[quantityKey]!['details'] as List<List<dynamic>>;
+    final totalQuantity = rowData[quantityKey]!['value'] as double;
+    // profit doesn't include salesman commission
+    final totalItemProfit = rowData[profitKey]!['value'] as double;
+    final profitInvoices = rowData[profitKey]!['details'] as List<List<dynamic>>;
+    final totalItemPriceWorth = totalQuantity * product.buyingPrice;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          MainScreenEditButton(defaultImageUrl, () => _showEditProductForm(context, ref, product)),
+          MainScreenTextCell('${product.code}'),
+          MainScreenTextCell(product.name),
+          MainScreenTextCell(product.category),
+          MainScreenTextCell('${product.salesmanCommission}'),
+          Visibility(
+            visible: !hideProductBuyingPrice,
+            child: MainScreenTextCell('${product.buyingPrice}'),
+          ),
+          MainScreenTextCell('${product.sellWholePrice}'),
+          MainScreenTextCell('${product.sellRetailPrice}'),
+          MainScreenClickableCell('$totalQuantity',
+              () => showHistoryReport(context, productTransactions, product.name)),
+          MainScreenTextCell('$totalItemPriceWorth'),
+          MainScreenClickableCell(
+              ('$totalItemProfit'), () => showProfitReport(context, profitInvoices, product.name)),
+        ],
+      ),
+    );
+  }
 }
