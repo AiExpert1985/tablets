@@ -112,17 +112,20 @@ class DataRow extends ConsumerWidget {
 
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            MainScreenEditButton(
-                defaultImageUrl, () => _showEditTransactionForm(context, ref, transaction)),
-            MainScreenTextCell(transactionTypeScreenName),
-            MainScreenTextCell(transaction.date),
-            MainScreenTextCell(transaction.name),
-            MainScreenTextCell(transaction.number),
-            MainScreenTextCell(transaction.totalAmount),
-          ],
+        Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              MainScreenEditButton(
+                  defaultImageUrl, () => _showEditTransactionForm(context, ref, transaction)),
+              MainScreenTextCell(transactionTypeScreenName),
+              MainScreenTextCell(transaction.date),
+              MainScreenTextCell(transaction.name),
+              MainScreenTextCell(transaction.number),
+              MainScreenTextCell(transaction.totalAmount),
+            ],
+          ),
         ),
       ],
     );

@@ -117,7 +117,7 @@ class DataRow extends ConsumerWidget {
     final profitInvoices = rowData[profitKey]!['details'] as List<List<dynamic>>;
     final totalItemPriceWorth = totalQuantity * product.buyingPrice;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

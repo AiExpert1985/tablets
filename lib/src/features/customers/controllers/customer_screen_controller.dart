@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/classes/screen_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 
-const customerKey = 'customer';
+const customerDbRefKey = 'dbRef';
 const customerNameKey = 'name';
 const customerSalesmanKey = 'salesman';
 const totalDebtKey = 'totalDebt';
@@ -18,25 +20,28 @@ const dueDebtKey = 'dueDebt';
 const avgClosingDaysKey = 'avgClosingDays';
 const invoicesProfitKey = 'invoicesProfit';
 const giftsKey = 'gifts';
+const inValidKey = 'inValid';
 
 final customerScreenControllerProvider = Provider<CustomerScreenController>((ref) {
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
-  return CustomerScreenController(transactionDbCache);
+  final screenDataProvider = ref.read(customerScreenDataProvider);
+  return CustomerScreenController(screenDataProvider, transactionDbCache);
 });
 
 class CustomerScreenController {
   CustomerScreenController(
+    this._screenDataProvider,
     this._transactionDbCache,
   );
+  final ScreenData _screenDataProvider;
   final DbCache _transactionDbCache;
 
-  Map<String, dynamic> createCustomerScreenData(
-      BuildContext context, Map<String, dynamic> customerData) {
+  void createCustomerScreenData(BuildContext context, Map<String, dynamic> customerData) {
     final customer = Customer.fromMap(customerData);
     Map<String, dynamic> newDataRow = {};
-    newDataRow[customerKey] = {'value': customer};
-    newDataRow[customerNameKey] = {'value': customer.name};
-    newDataRow[customerSalesmanKey] = {'value': customer.salesman};
+    newDataRow[customerDbRefKey] = {'value': customer.dbRef, 'details': null};
+    newDataRow[customerNameKey] = {'value': customer.name, 'details': null};
+    newDataRow[customerSalesmanKey] = {'value': customer.salesman, 'details': null};
     final customerTransactions = getCustomerTransactions(customer.dbRef);
     // if customer has initial credit, it should be added to the tansactions, so, we add
     // it here and give it transaction type 'initialCredit'
@@ -70,7 +75,15 @@ class CustomerScreenController {
     final giftTransactions = getGiftsAndDiscounts(context, customerTransactions);
     final totalGiftsAmount = getTotalGiftsAndDiscounts(giftTransactions, 4);
     newDataRow[giftsKey] = {'value': totalGiftsAmount, 'details': giftTransactions};
-    return newDataRow;
+    bool inValidCustomer = _inValidCustomer(dueDebt, totalDebt, customer);
+    newDataRow[inValidKey] = {'value': inValidCustomer, 'details': null};
+    _screenDataProvider.addData(newDataRow);
+  }
+
+  // we stop transactions if customer either exceeded limit of debt, or has dueDebt
+// which is transactions that are not closed within allowed time (for example 20 days)
+  bool _inValidCustomer(double dueDebt, double totalDebt, Customer customer) {
+    return totalDebt > customer.creditLimit || dueDebt > 0;
   }
 
   /// takes dataRows and returns a map of summaries for desired properties

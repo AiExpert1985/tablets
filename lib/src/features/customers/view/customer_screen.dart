@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -7,6 +8,7 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/features/customers/controllers/customer_drawer_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
@@ -104,26 +106,32 @@ class DataRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final customer = Customer.fromMap(customerData);
     final reportController = ref.read(customerReportControllerProvider);
     final screenController = ref.read(customerScreenControllerProvider);
-    final rowData = screenController.createCustomerScreenData(context, customerData);
-    final customer = Customer.fromMap(customerData);
-    final invoiceAverageClosingDays = rowData[avgClosingDaysKey]!['value'] as int;
-    final closedInvoices = rowData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
-    final numOpenInvoices = rowData[openInvoicesKey]!['value'] as int;
-    final openInvoices = rowData[openInvoicesKey]!['details'] as List<List<dynamic>>;
-    final dueInvoices = rowData[dueDebtKey]!['details'] as List<List<dynamic>>;
+    screenController.createCustomerScreenData(context, customerData);
+    final screenDataProvider = ref.read(customerScreenDataProvider);
+    final customerScreenData = screenDataProvider.getCustomerData(customer.dbRef);
+    // tempPrint(screenDataProvider.getData());
+    // return const Text('hi');
+    final invoiceAverageClosingDays = customerScreenData[avgClosingDaysKey]!['value'] as int;
+    final closedInvoices = customerScreenData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
+    final numOpenInvoices = customerScreenData[openInvoicesKey]!['value'] as int;
+    final openInvoices = customerScreenData[openInvoicesKey]!['details'] as List<List<dynamic>>;
+    final dueInvoices = customerScreenData[dueDebtKey]!['details'] as List<List<dynamic>>;
     final numDueInvoices = dueInvoices.length;
-    final totalDebt = rowData[totalDebtKey]!['value'] as double;
-    final matchingList = rowData[totalDebtKey]!['details'] as List<List<dynamic>>;
-    final dueDebt = rowData[dueDebtKey]!['value'];
-    final invoiceWithProfit = rowData[invoicesProfitKey]!['details'] as List<List<dynamic>>;
-    final profit = rowData[invoicesProfitKey]!['value'] as double;
-    final giftTransactions = rowData[giftsKey]!['details'] as List<List<dynamic>>;
-    final totalGiftsAmount = rowData[giftsKey]!['value'] as double;
-    bool inValidCustomer = _inValidCustomer(dueDebt, totalDebt, customer);
+    final totalDebt = customerScreenData[totalDebtKey]!['value'] as double;
+    final matchingList = customerScreenData[totalDebtKey]!['details'] as List<List<dynamic>>;
+    final dueDebt = customerScreenData[dueDebtKey]!['value'];
+    final invoiceWithProfit =
+        customerScreenData[invoicesProfitKey]!['details'] as List<List<dynamic>>;
+    final profit = customerScreenData[invoicesProfitKey]!['value'] as double;
+    final giftTransactions = customerScreenData[giftsKey]!['details'] as List<List<dynamic>>;
+    final totalGiftsAmount = customerScreenData[giftsKey]!['value'] as double;
+    final inValidCustomer = customerScreenData[inValidKey]!['value'] as bool;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -168,12 +176,6 @@ class DataRow extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  // we stop transactions if customer either exceeded limit of debt, or has dueDebt
-// which is transactions that are not closed within allowed time (for example 20 days)
-  bool _inValidCustomer(double dueDebt, double totalDebt, Customer customer) {
-    return totalDebt > customer.creditLimit || dueDebt > 0;
   }
 
   void _showEditCustomerForm(BuildContext context, WidgetRef ref, Customer customer) {
