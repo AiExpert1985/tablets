@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -8,7 +7,7 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/features/customers/controllers/customer_drawer_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_provider.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
@@ -112,23 +111,20 @@ class DataRow extends ConsumerWidget {
     screenController.createCustomerScreenData(context, customerData);
     final screenDataProvider = ref.read(customerScreenDataProvider);
     final customerScreenData = screenDataProvider.getCustomerData(customer.dbRef);
-    // tempPrint(screenDataProvider.getData());
-    // return const Text('hi');
-    final invoiceAverageClosingDays = customerScreenData[avgClosingDaysKey]!['value'] as int;
-    final closedInvoices = customerScreenData[avgClosingDaysKey]!['details'] as List<List<dynamic>>;
-    final numOpenInvoices = customerScreenData[openInvoicesKey]!['value'] as int;
-    final openInvoices = customerScreenData[openInvoicesKey]!['details'] as List<List<dynamic>>;
-    final dueInvoices = customerScreenData[dueDebtKey]!['details'] as List<List<dynamic>>;
-    final numDueInvoices = dueInvoices.length;
-    final totalDebt = customerScreenData[totalDebtKey]!['value'] as double;
-    final matchingList = customerScreenData[totalDebtKey]!['details'] as List<List<dynamic>>;
-    final dueDebt = customerScreenData[dueDebtKey]!['value'];
-    final invoiceWithProfit =
-        customerScreenData[invoicesProfitKey]!['details'] as List<List<dynamic>>;
-    final profit = customerScreenData[invoicesProfitKey]!['value'] as double;
-    final giftTransactions = customerScreenData[giftsKey]!['details'] as List<List<dynamic>>;
-    final totalGiftsAmount = customerScreenData[giftsKey]!['value'] as double;
-    final inValidCustomer = customerScreenData[inValidKey]!['value'] as bool;
+    final invoiceAverageClosingDays = customerScreenData[avgClosingDaysKey] as int;
+    final closedInvoices = customerScreenData[avgClosingDaysDetailsKey] as List<List<dynamic>>;
+    final numOpenInvoices = customerScreenData[openInvoicesKey] as int;
+    final openInvoices = customerScreenData[openInvoicesDetailsKey] as List<List<dynamic>>;
+    final dueInvoices = customerScreenData[dueDebtDetailsKey] as List<List<dynamic>>;
+    final numDueInvoices = customerScreenData[dueInvoicesKey] as int;
+    final totalDebt = customerScreenData[totalDebtKey] as double;
+    final matchingList = customerScreenData[totalDebtDetailsKey] as List<List<dynamic>>;
+    final dueDebt = customerScreenData[dueDebtKey];
+    final invoiceWithProfit = customerScreenData[invoicesProfitDetailsKey] as List<List<dynamic>>;
+    final profit = customerScreenData[invoicesProfitKey] as double;
+    final giftTransactions = customerScreenData[giftsDetailsKey] as List<List<dynamic>>;
+    final totalGiftsAmount = customerScreenData[giftsKey] as double;
+    final inValidCustomer = customerScreenData[inValidKey] as bool;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),

@@ -5,7 +5,7 @@ import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/screen_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
@@ -14,12 +14,18 @@ const customerDbRefKey = 'dbRef';
 const customerNameKey = 'name';
 const customerSalesmanKey = 'salesman';
 const totalDebtKey = 'totalDebt';
+const totalDebtDetailsKey = 'totalDebtDetails';
 const openInvoicesKey = 'openInvoices';
+const openInvoicesDetailsKey = 'openInvoicesDetails';
 const dueInvoicesKey = 'dueInvoices';
 const dueDebtKey = 'dueDebt';
+const dueDebtDetailsKey = 'dueDebtDetails';
 const avgClosingDaysKey = 'avgClosingDays';
+const avgClosingDaysDetailsKey = 'avgClosingDaysDetails';
 const invoicesProfitKey = 'invoicesProfit';
+const invoicesProfitDetailsKey = 'invoicesProfitDetails';
 const giftsKey = 'gifts';
+const giftsDetailsKey = 'giftsDetails';
 const inValidKey = 'inValid';
 
 final customerScreenControllerProvider = Provider<CustomerScreenController>((ref) {
@@ -38,10 +44,6 @@ class CustomerScreenController {
 
   void createCustomerScreenData(BuildContext context, Map<String, dynamic> customerData) {
     final customer = Customer.fromMap(customerData);
-    Map<String, dynamic> newDataRow = {};
-    newDataRow[customerDbRefKey] = {'value': customer.dbRef, 'details': null};
-    newDataRow[customerNameKey] = {'value': customer.name, 'details': null};
-    newDataRow[customerSalesmanKey] = {'value': customer.salesman, 'details': null};
     final customerTransactions = getCustomerTransactions(customer.dbRef);
     // if customer has initial credit, it should be added to the tansactions, so, we add
     // it here and give it transaction type 'initialCredit'
@@ -59,24 +61,38 @@ class CustomerScreenController {
     }
     final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
     final openInvoices = getOpenInvoices(context, processedInvoices, 5);
-    newDataRow[openInvoicesKey] = {'value': openInvoices.length, 'details': openInvoices};
     final matchingList = customerMatching(customerTransactions, customer, context);
     final totalDebt = getTotalDebt(matchingList, 4);
-    newDataRow[totalDebtKey] = {'value': totalDebt, 'details': matchingList};
     final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
     final totalProfit = getTotalProfit(invoicesWithProfit, 5);
-    newDataRow[invoicesProfitKey] = {'value': totalProfit, 'details': invoicesWithProfit};
     final closedInvoices = getClosedInvoices(context, processedInvoices, 5);
     final averageClosingDays = calculateAverageClosingDays(closedInvoices, 6);
-    newDataRow[avgClosingDaysKey] = {'value': averageClosingDays, 'details': closedInvoices};
     final dueInvoices = getDueInvoices(context, openInvoices, 5);
+    final numDueInvoices = dueInvoices.length;
     final dueDebt = getDueDebt(dueInvoices, 7);
-    newDataRow[dueDebtKey] = {'value': dueDebt, 'details': dueInvoices};
     final giftTransactions = getGiftsAndDiscounts(context, customerTransactions);
     final totalGiftsAmount = getTotalGiftsAndDiscounts(giftTransactions, 4);
-    newDataRow[giftsKey] = {'value': totalGiftsAmount, 'details': giftTransactions};
     bool inValidCustomer = _inValidCustomer(dueDebt, totalDebt, customer);
-    newDataRow[inValidKey] = {'value': inValidCustomer, 'details': null};
+
+    Map<String, dynamic> newDataRow = {
+      openInvoicesKey: openInvoices.length,
+      openInvoicesDetailsKey: openInvoices,
+      dueInvoicesKey: numDueInvoices,
+      totalDebtKey: totalDebt,
+      totalDebtDetailsKey: matchingList,
+      invoicesProfitKey: totalProfit,
+      invoicesProfitDetailsKey: invoicesWithProfit,
+      avgClosingDaysKey: averageClosingDays,
+      avgClosingDaysDetailsKey: closedInvoices,
+      dueDebtKey: dueDebt,
+      dueDebtDetailsKey: dueInvoices,
+      giftsKey: totalGiftsAmount,
+      giftsDetailsKey: giftTransactions,
+      inValidKey: inValidCustomer,
+      customerDbRefKey: customer.dbRef,
+      customerNameKey: customer.name,
+      customerSalesmanKey: customer.salesman,
+    };
     _screenDataProvider.addData(newDataRow);
   }
 
