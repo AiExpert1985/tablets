@@ -25,7 +25,7 @@ class CustomerForm extends ConsumerWidget {
     final formController = ref.watch(customerFormControllerProvider);
     final formDataNotifier = ref.read(customerFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
-    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+    final dbCache = ref.read(customerDbCacheProvider.notifier);
     ref.watch(imagePickerProvider);
     return FormFrame(
       formKey: formController.formKey,
@@ -40,15 +40,15 @@ class CustomerForm extends ConsumerWidget {
       ),
       buttons: [
         IconButton(
-          onPressed: () => _onSavePress(
-              context, formDataNotifier, formImagesNotifier, formController, customerDbCache),
+          onPressed: () =>
+              _onSavePress(context, formDataNotifier, formImagesNotifier, formController, dbCache),
           icon: const SaveIcon(),
         ),
         Visibility(
           visible: isEditMode,
           child: IconButton(
             onPressed: () => _onDeletePressed(
-                context, formDataNotifier, formImagesNotifier, formController, customerDbCache),
+                context, formDataNotifier, formImagesNotifier, formController, dbCache),
             icon: const DeleteIcon(),
           ),
         )
@@ -63,7 +63,7 @@ class CustomerForm extends ConsumerWidget {
     ItemFormData formDataNotifier,
     ImageSliderNotifier formImagesNotifier,
     ItemFormController formController,
-    DbCache customerDbCache,
+    DbCache dbCache,
   ) {
     if (!formController.validateData()) return;
     formController.submitData();
@@ -74,7 +74,7 @@ class CustomerForm extends ConsumerWidget {
     formController.saveItemToDb(context, customer, isEditMode);
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
-    customerDbCache.update(itemData, operationType);
+    dbCache.update(itemData, operationType);
   }
 
   void _onDeletePressed(
@@ -82,7 +82,7 @@ class CustomerForm extends ConsumerWidget {
     ItemFormData formDataNotifier,
     ImageSliderNotifier formImagesNotifier,
     ItemFormController formController,
-    DbCache customerDbCache,
+    DbCache dbCache,
   ) async {
     final confiramtion = await showDeleteConfirmationDialog(
         context: context, message: formDataNotifier.data['name']);
@@ -96,7 +96,7 @@ class CustomerForm extends ConsumerWidget {
       }
       // update the dbCache (database mirror) so that we don't need to fetch data from db
       const operationType = DbCacheOperationTypes.delete;
-      customerDbCache.update(itemData, operationType);
+      dbCache.update(itemData, operationType);
     }
   }
 }

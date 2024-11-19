@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/classes/item_form_controller.dart';
+import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/products/model/product.dart';
@@ -21,6 +25,7 @@ class ProductForm extends ConsumerWidget {
     final formController = ref.watch(productFormControllerProvider);
     final formDataNotifier = ref.read(productFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    final dbCache = ref.read(productDbCacheProvider.notifier);
     ref.watch(imagePickerProvider);
     return FormFrame(
       formKey: formController.formKey,
@@ -35,41 +40,72 @@ class ProductForm extends ConsumerWidget {
           ],
         ),
       ),
-      buttons: [
-        IconButton(
-          onPressed: () {
-            if (!formController.validateData()) return;
-            formController.submitData();
-            final updateFormData = formDataNotifier.data;
-            final imageUrls = formImagesNotifier.saveChanges();
-            final product = Product.fromMap({...updateFormData, 'imageUrls': imageUrls});
-            formController.saveItemToDb(context, product, isEditMode);
-          },
-          icon: const SaveIcon(),
-        ),
-        // IconButton(
-        //   onPressed: () => Navigator.of(context).pop(),
-        //   icon: const CancelIcon(),
-        // ),
-        Visibility(
-          visible: isEditMode,
-          child: IconButton(
-              onPressed: () async {
-                bool? confiramtion = await showDeleteConfirmationDialog(
-                    context: context, message: formDataNotifier.data['name']);
-                if (confiramtion != null) {
-                  final updateFormData = formDataNotifier.data;
-                  final imageUrls = formImagesNotifier.saveChanges();
-                  final product = Product.fromMap({...updateFormData, 'imageUrls': imageUrls});
-                  // ignore: use_build_context_synchronously
-                  formController.deleteItemFromDb(context, product);
-                }
-              },
-              icon: const DeleteIcon()),
-        )
-      ],
+      buttons:
+          _actionButtons(context, formController, formDataNotifier, formImagesNotifier, dbCache),
       width: productFormWidth,
       height: productFormHeight,
     );
+  }
+
+  List<Widget> _actionButtons(
+    BuildContext context,
+    ItemFormController formController,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+    DbCache transactionDbCache,
+  ) {
+    return [
+      IconButton(
+        onPressed: () {
+          _onSavePressed(
+              context, formController, formDataNotifier, formImagesNotifier, transactionDbCache);
+        },
+        icon: const SaveIcon(),
+      ),
+      if (isEditMode)
+        IconButton(
+          onPressed: () {
+            _onDeletePressed(
+                context, formDataNotifier, formImagesNotifier, formController, transactionDbCache);
+          },
+          icon: const DeleteIcon(),
+        ),
+    ];
+  }
+
+  void _onSavePressed(BuildContext context, ItemFormController formController,
+      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier, DbCache dbCache) {
+    if (!formController.validateData()) return;
+    formController.submitData();
+    final formData = formDataNotifier.data;
+    final imageUrls = formImagesNotifier.saveChanges();
+    final itemData = {...formData, 'imageUrls': imageUrls};
+    final product = Product.fromMap({...formData, 'imageUrls': imageUrls});
+    formController.saveItemToDb(context, product, isEditMode);
+    // update the bdCache (database mirror) so that we don't need to fetch data from db
+    final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
+    dbCache.update(itemData, operationType);
+  }
+
+  Future<void> _onDeletePressed(
+      BuildContext context,
+      ItemFormData formDataNotifier,
+      ImageSliderNotifier formImagesNotifier,
+      ItemFormController formController,
+      DbCache dbCache) async {
+    final confirmation = await showDeleteConfirmationDialog(
+        context: context, message: formDataNotifier.data['name']);
+    final formData = formDataNotifier.data;
+    if (confirmation != null) {
+      final imageUrls = formImagesNotifier.saveChanges();
+      final itemData = {...formData, 'imageUrls': imageUrls};
+      final product = Product.fromMap(itemData);
+      if (context.mounted) {
+        formController.deleteItemFromDb(context, product);
+      }
+      // update the bdCache (database mirror) so that we don't need to fetch data from db
+      const operationType = DbCacheOperationTypes.delete;
+      dbCache.update(itemData, operationType);
+    }
   }
 }

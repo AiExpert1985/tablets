@@ -73,15 +73,15 @@ class TransactionForm extends ConsumerWidget {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
     final backgroundColor = ref.watch(backgroundColorProvider);
-    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+    final dbCache = ref.read(transactionDbCacheProvider.notifier);
 
     ref.watch(imagePickerProvider);
     return FormFrame(
       backgroundColor: backgroundColor,
       formKey: formController.formKey,
       fields: _getFormWidget(context, transactionType),
-      buttons: _actionButtons(
-          context, formController, formDataNotifier, formImagesNotifier, transactionDbCache),
+      buttons:
+          _actionButtons(context, formController, formDataNotifier, formImagesNotifier, dbCache),
       width: transactionFormDimenssions[transactionType]['width'],
       height: transactionFormDimenssions[transactionType]['height'],
     );
