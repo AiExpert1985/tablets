@@ -321,12 +321,15 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       }
     }
     return _buildRowContrainer(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(S.of(context).total, style: const TextStyle(fontSize: 18)),
-          Text(doubleToStringWithComma(sum), style: const TextStyle(fontSize: 18))
-        ],
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(S.of(context).total, style: const TextStyle(fontSize: 18)),
+            Text(doubleToStringWithComma(sum), style: const TextStyle(fontSize: 18))
+          ],
+        ),
       ),
     );
   }

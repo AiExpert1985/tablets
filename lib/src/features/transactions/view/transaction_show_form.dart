@@ -9,7 +9,7 @@ import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
-class TransactionShowFormUtils {
+class TransactionShowForm {
   static void showForm(
     BuildContext context,
     ImageSliderNotifier imagePickerNotifier,
@@ -54,6 +54,8 @@ class TransactionShowFormUtils {
       totalAmountKey: 0,
       totalWeightKey: 0,
       subTotalAmountKey: 0,
+      transactionTotalProfitKey: 0,
+      itemSalesmanTotalCommissionKey: 0,
       nameKey: null,
       salesmanKey: null,
       numberKey: null,

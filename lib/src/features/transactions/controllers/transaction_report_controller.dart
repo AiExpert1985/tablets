@@ -2,6 +2,7 @@ import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/dialog_report.dart';
@@ -15,6 +16,20 @@ final transactionReportControllerProvider = Provider<TransactionReportController
 class TransactionReportController {
   TransactionReportController();
 
+  final Map<String, List<String>> _dailyIncomeFilters = {
+    'subtract': [TransactionType.vendorReceipt.name, TransactionType.expenditures.name],
+    'add': [TransactionType.customerReceipt.name]
+  };
+  final Map<String, List<String>> _monthlyProfitFilters = {
+    'subtract': [
+      TransactionType.gifts.name,
+      TransactionType.expenditures.name,
+      TransactionType.damagedItems.name,
+      TransactionType.customerReturn.name,
+    ],
+    'add': [TransactionType.customerInvoice.name],
+  };
+
   Widget buildReportWidgets(
     BuildContext context,
     List<Map<String, dynamic>> transactions,
@@ -22,8 +37,11 @@ class TransactionReportController {
   ) {
     final title = S.of(context).transaction_reports;
     final buttons = [
-      _buildDailyIncomeButton(context, transactions, drawerController),
-      _buildProfitButton(context, transactions, drawerController),
+      _buildReportButton(context, transactions, drawerController, _dailyIncomeFilters,
+          S.of(context).daily_income_report),
+      _buildReportButton(context, transactions, drawerController, _monthlyProfitFilters,
+          S.of(context).monthly_profit_report,
+          isProfitReport: true),
     ];
     return ReportColumn(
       title: title,
@@ -32,69 +50,63 @@ class TransactionReportController {
   }
 
 // returns [type, date, number, name, amount, salesman]
-  List<List<dynamic>> _getIncomeTransactions(
-      BuildContext context, List<Map<String, dynamic>> allTransactions) {
+  List<List<dynamic>> _getProcessedTransactions(
+      BuildContext context,
+      List<Map<String, dynamic>> allTransactions,
+      Map<String, List<String>> filters,
+      isProfitReport) {
     List<List<dynamic>> incomeTransactions = [];
     for (var trans in allTransactions) {
       final transaction = Transaction.fromMap(trans);
       final type = transaction.transactionType;
-      if (type == TransactionType.customerReceipt.name) {
+      final addFilters = filters['add'] ?? [];
+      final subtractFilters = filters['subtract'] ?? [];
+      final salesman = transaction.salesman ?? '';
+      if (addFilters.contains(type)) {
         incomeTransactions.add([
           transaction,
           translateDbTextToScreenText(context, type),
           transaction.date,
           transaction.number,
           transaction.name,
-          transaction.totalAmount,
-          transaction.salesman
+          salesman,
+          isProfitReport ? transaction.transactionTotalProfit : transaction.totalAmount,
         ]);
-      } else if (type == TransactionType.vendorReceipt.name ||
-          type == TransactionType.expenditures.name) {
+      } else if (subtractFilters.contains(type)) {
         incomeTransactions.add([
           transaction,
           translateDbTextToScreenText(context, type),
           transaction.date,
           transaction.number,
           transaction.name,
-          -transaction.totalAmount,
-          ''
+          salesman,
+          isProfitReport ? -transaction.transactionTotalProfit : -transaction.totalAmount,
         ]);
       }
     }
     return incomeTransactions;
   }
 
-  List<String> _getTransactionIncomeReportTitles(BuildContext context) {
+  List<String> _getReportTitles(BuildContext context) {
     return [
       S.of(context).transaction_type,
       S.of(context).transaction_date,
       S.of(context).transaction_number,
       S.of(context).transaction_name,
-      S.of(context).transaction_amount,
-      S.of(context).transaction_salesman
+      S.of(context).transaction_salesman,
+      S.of(context).amount,
     ];
   }
 
-  List<String> _getTransactionTypeDropList(BuildContext context) {
-    return [
-      translateDbTextToScreenText(context, TransactionType.customerInvoice.name),
-      translateDbTextToScreenText(context, TransactionType.customerReceipt.name),
-      translateDbTextToScreenText(context, TransactionType.customerReturn.name),
-      translateDbTextToScreenText(context, TransactionType.vendorInvoice.name),
-      translateDbTextToScreenText(context, TransactionType.vendorReceipt.name),
-      translateDbTextToScreenText(context, TransactionType.vendorReturn.name),
-      translateDbTextToScreenText(context, TransactionType.gifts.name),
-      translateDbTextToScreenText(context, TransactionType.expenditures.name),
-    ];
-  }
-
-  Widget _buildDailyIncomeButton(BuildContext context, List<Map<String, dynamic>> allTransactions,
-      AnyDrawerController drawerController) {
-    List<List<dynamic>> incomeTransactions = _getIncomeTransactions(context, allTransactions);
-    List<String> reportTitles = _getTransactionIncomeReportTitles(context);
-    List<String> transactionTypeDropdown = _getTransactionTypeDropList(context);
+  Widget _buildReportButton(BuildContext context, List<Map<String, dynamic>> allTransactions,
+      AnyDrawerController drawerController, Map<String, List<String>> filters, String title,
+      {bool isProfitReport = false}) {
+    List<List<dynamic>> incomeTransactions =
+        _getProcessedTransactions(context, allTransactions, filters, isProfitReport);
+    List<String> reportTitles = _getReportTitles(context);
+    List<String> transactionTypeDropdown = getTransactionTypeDropList(context);
     return InkWell(
-      child: ReportButton(S.of(context).daily_income_report),
+      child: ReportButton(title),
       onTap: () {
         // Close the drawer when the button is tapped
         drawerController.close();
@@ -103,25 +115,14 @@ class TransactionReportController {
           context,
           reportTitles,
           incomeTransactions,
-          title: S.of(context).daily_income,
+          title: title,
           dateIndex: 2,
-          sumIndex: 5,
+          sumIndex: 6,
           dropdownList: transactionTypeDropdown,
           dropdownLabel: S.of(context).transaction_type,
           dropdownIndex: 1,
           useOriginalTransaction: true,
         );
-      },
-    );
-  }
-
-  Widget _buildProfitButton(BuildContext context, List<Map<String, dynamic>> allTransactions,
-      AnyDrawerController drawerController) {
-    return InkWell(
-      child: ReportButton(S.of(context).monthly_profit_report),
-      onTap: () {
-        // Close the drawer when the button is tapped
-        drawerController.close();
       },
     );
   }

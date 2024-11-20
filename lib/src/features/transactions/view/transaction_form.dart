@@ -57,10 +57,10 @@ class TransactionForm extends ConsumerWidget {
       return ReceiptForm(titles[transactionType]!, isVendor: true);
     }
     if (transactionType == TransactionType.gifts.name) {
-      return StatementForm(titles[transactionType]!, isGift: true);
+      return StatementForm(titles[transactionType]!, transactionType, isGift: true);
     }
     if (transactionType == TransactionType.damagedItems.name) {
-      return StatementForm(titles[transactionType]!);
+      return StatementForm(titles[transactionType]!, transactionType);
     }
     if (transactionType == TransactionType.expenditures.name) {
       return ExpenditureForm(titles[transactionType]!);

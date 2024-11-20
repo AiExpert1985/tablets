@@ -96,7 +96,10 @@ class ExpenditureForm extends ConsumerWidget {
             formDataNotifier.updateProperties({subTotalAmountKey: value});
             final discount = formDataNotifier.getProperty(discountKey);
             final totalAmount = value - discount;
-            final updatedProperties = {totalAmountKey: totalAmount};
+            final updatedProperties = {
+              totalAmountKey: totalAmount,
+              transactionTotalProfitKey: totalAmount
+            };
             formDataNotifier.updateProperties(updatedProperties);
             textEditingNotifier.updateControllers(updatedProperties);
           },

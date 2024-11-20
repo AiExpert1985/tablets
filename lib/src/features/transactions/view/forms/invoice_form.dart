@@ -2,12 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/classes/db_repository.dart';
-import 'package:tablets/src/common/classes/item_form_data.dart';
-import 'package:tablets/src/common/classes/screen_data.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_provider.dart';
-import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -24,14 +20,12 @@ import 'package:tablets/src/features/customers/repository/customer_repository_pr
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_utils_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
 
-// I used ConsumerStatefulWidget because I find no other way to define customer global variable
-// which I used for coloring the background of the invoice when debt exceeds limits
-// because ConsumerWidget doen't allow declaring non final variables like customer
-class InvoiceForm extends ConsumerStatefulWidget {
+class InvoiceForm extends ConsumerWidget {
   const InvoiceForm(this.title, this.transactionType,
       {this.isVendor = false, this.hideGifts = true, super.key});
 
@@ -41,45 +35,7 @@ class InvoiceForm extends ConsumerStatefulWidget {
   final String transactionType;
 
   @override
-  ConsumerState<InvoiceForm> createState() => _InvoiceFormState();
-}
-
-class _InvoiceFormState extends ConsumerState<InvoiceForm> {
-  // customer is only used for calculation of exceeded debt
-  // which is used for changing background color
-  Customer? customer;
-
-  // this method is different from the method that checks validation inside customer screen
-  // becasuse here it checks customer validity plus the Invoice amount, so even if his is valid
-  // as a customer but with this invoice amount he exceeds the debt limit, then it will return
-  // that this transaction is invalid
-  bool inValidTransaction(
-    Customer selectedCustomer,
-    ItemFormData formDataNotifier,
-    CustomerScreenController customerScreenController,
-    ScreenData customerScreenDataProvider,
-  ) {
-    customerScreenController.createCustomerScreenData(context, selectedCustomer.toMap());
-    final customerScreenData = customerScreenDataProvider.getItemData(selectedCustomer.dbRef);
-    final creditLimit = selectedCustomer.creditLimit;
-    final totalDebt = customerScreenData[totalDebtKey];
-    final dueDebt = customerScreenData[dueDebtKey];
-    final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
-    return totalAfterCurrentTransaction > creditLimit && dueDebt > 0;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final customerScreenController = ref.read(customerScreenControllerProvider);
-    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-    final salesmanRepository = ref.read(salesmanRepositoryProvider);
-    final customerRepository = ref.read(customerRepositoryProvider);
-    final vendorRepository = ref.read(vendorRepositoryProvider);
-    final productRepository = ref.read(productRepositoryProvider);
-    final counterPartyRepository = widget.isVendor ? vendorRepository : customerRepository;
-    final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
-    final customerScreenData = ref.read(customerScreenDataProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
@@ -89,47 +45,45 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildFormTitle(widget.title),
+            buildFormTitle(title),
             VerticalGap.xl,
-            _buildFirstRow(
-                context,
-                formDataNotifier,
-                counterPartyRepository,
-                salesmanRepository,
-                widget.isVendor,
-                backgroundColorNotifier,
-                customerScreenController,
-                customerScreenData),
+            FirstRow(isVendor, transactionType),
             VerticalGap.m,
-            _buildSecondRow(context, formDataNotifier, textEditingNotifier),
+            SecondRow(transactionType),
             VerticalGap.m,
-            _buildThirdRow(context, formDataNotifier),
+            const ThirdRow(),
             VerticalGap.m,
-            _buildForthRow(context, formDataNotifier),
+            const ForthRow(),
             VerticalGap.m,
-            _buildFifthRow(context, formDataNotifier),
+            const FifthRow(),
             VerticalGap.m,
-            buildItemList(context, formDataNotifier, textEditingNotifier, productRepository,
-                widget.hideGifts, false),
+            ItemsList(hideGifts, false, transactionType),
             VerticalGap.xxl,
-            _buildTotalsRow(context, formDataNotifier, textEditingNotifier, backgroundColorNotifier,
-                customerScreenController, customerScreenData),
+            TotalsRow(transactionType),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildFirstRow(
-    BuildContext context,
-    ItemFormData formDataNotifier,
-    DbRepository repository,
-    DbRepository salesmanRepository,
-    bool isVendor,
-    StateController<Color> backgroundColorNotifier,
-    CustomerScreenController customerScreenController,
-    ScreenData customerScreenData,
-  ) {
+class FirstRow extends ConsumerWidget {
+  const FirstRow(this.isVendor, this.transactionType, {super.key});
+
+  final bool isVendor;
+  final String transactionType;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final customerRepository = ref.read(customerRepositoryProvider);
+    final vendorRepository = ref.read(vendorRepositoryProvider);
+    final repository = isVendor ? vendorRepository : customerRepository;
+    final transactionUtils = ref.read(transactionUtilsControllerProvider);
+    final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
+    final customerScreenData = ref.read(customerScreenDataProvider);
+    final salesmanRepository = ref.read(salesmanRepositoryProvider);
+    final customerScreenController = ref.read(customerScreenControllerProvider);
     return Row(
       children: [
         DropDownWithSearchFormField(
@@ -148,12 +102,14 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
             formDataNotifier.updateProperties(properties);
             // check wether customer exceeded the debt or time limits
             // below applies only for customer invoices not any other transaction
-            if (widget.transactionType != TransactionType.customerInvoice.name) {
+            if (transactionType != TransactionType.customerInvoice.name) {
               return;
             }
-            customer = Customer.fromMap(item);
-            final inValidCustomer = inValidTransaction(
-                customer!, formDataNotifier, customerScreenController, customerScreenData);
+            final customer = Customer.fromMap(item);
+            // the value is used by other Widgets so we update it in the provider
+            transactionUtils.customer = customer;
+            final inValidCustomer = transactionUtils.inValidTransaction(
+                context, customer, formDataNotifier, customerScreenController, customerScreenData);
             final invoiceColor =
                 inValidCustomer ? const Color.fromARGB(255, 245, 187, 184) : Colors.white;
             backgroundColorNotifier.state = invoiceColor;
@@ -173,9 +129,16 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
       ],
     );
   }
+}
 
-  Widget _buildSecondRow(BuildContext context, ItemFormData formDataNotifier,
-      TextControllerNotifier textEditingNotifier) {
+class SecondRow extends ConsumerWidget {
+  const SecondRow(this.transactionType, {super.key});
+  final String transactionType;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final transactionUtils = ref.read(transactionUtilsControllerProvider);
     return Row(
       children: [
         DropDownListFormField(
@@ -204,7 +167,8 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
             final itemsTotalProfit = formDataNotifier.getProperty(itemsTotalProfitKey) ?? 0;
             final salesmanTransactionComssion =
                 formDataNotifier.getProperty(salesmanTransactionComssionKey) ?? 0;
-            final transactionTotalProfit = itemsTotalProfit - value - salesmanTransactionComssion;
+            double transactionTotalProfit = transactionUtils.getTransactionProfit(formDataNotifier,
+                transactionType, itemsTotalProfit, value, salesmanTransactionComssion);
             final updatedProperties = {
               transactionTotalProfitKey: transactionTotalProfit,
               totalAmountKey: totalAmount,
@@ -216,8 +180,13 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
       ],
     );
   }
+}
 
-  Widget _buildThirdRow(BuildContext context, ItemFormData formDataNotifier) {
+class ThirdRow extends ConsumerWidget {
+  const ThirdRow({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     return Row(
       children: [
         FormInputField(
@@ -256,8 +225,13 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
       ],
     );
   }
+}
 
-  Widget _buildForthRow(BuildContext context, ItemFormData formDataNotifier) {
+class ForthRow extends ConsumerWidget {
+  const ForthRow({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     return Row(
       children: [
         FormInputField(
@@ -273,8 +247,13 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
       ],
     );
   }
+}
 
-  Widget _buildFifthRow(BuildContext context, ItemFormData formDataNotifier) {
+class FifthRow extends ConsumerWidget {
+  const FifthRow({super.key});
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     return Visibility(
       visible: !settings.hideTransactionAmountAsText,
       child: Row(
@@ -293,15 +272,19 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
       ),
     );
   }
+}
 
-  Widget _buildTotalsRow(
-    BuildContext context,
-    ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingNotifier,
-    StateController<Color> backgroundColorNotifier,
-    CustomerScreenController customerScreenController,
-    ScreenData customerScreenData,
-  ) {
+class TotalsRow extends ConsumerWidget {
+  const TotalsRow(this.transactionType, {super.key});
+  final String transactionType;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final customerScreenController = ref.read(customerScreenControllerProvider);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
+    final customerScreenData = ref.read(customerScreenDataProvider);
+    final transactionUtils = ref.read(transactionUtilsControllerProvider);
     return SizedBox(
         width: customerInvoiceFormWidth * 0.6,
         child: Row(
@@ -317,12 +300,16 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
                 formDataNotifier.updateProperties({totalAmountKey: value});
                 // check wether customer exceeded the debt or time limits
                 // below applies only for customer invoices not any other transaction
-                if (customer == null ||
-                    widget.transactionType != TransactionType.customerInvoice.name) {
+                if (transactionUtils.customer == null ||
+                    transactionType != TransactionType.customerInvoice.name) {
                   return;
                 }
-                final inValidCustomer = inValidTransaction(
-                    customer!, formDataNotifier, customerScreenController, customerScreenData);
+                final inValidCustomer = transactionUtils.inValidTransaction(
+                    context,
+                    transactionUtils.customer!,
+                    formDataNotifier,
+                    customerScreenController,
+                    customerScreenData);
                 final invoiceColor =
                     inValidCustomer ? const Color.fromARGB(255, 248, 177, 177) : Colors.white;
                 backgroundColorNotifier.state = invoiceColor;

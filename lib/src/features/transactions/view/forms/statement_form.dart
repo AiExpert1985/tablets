@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
-import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
@@ -21,19 +20,18 @@ import 'package:tablets/src/features/vendors/repository/vendor_repository_provid
 
 // used for gifts and damages items
 class StatementForm extends ConsumerWidget {
-  const StatementForm(this.title, {this.isGift = false, super.key});
+  const StatementForm(this.title, this.transactionType, {this.isGift = false, super.key});
 
   final String title;
   final bool isGift;
+  final String transactionType;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerRepository = ref.read(customerRepositoryProvider);
     final vendorRepository = ref.read(vendorRepositoryProvider);
-    final productRepository = ref.read(customerRepositoryProvider);
     final counterPartyRepository = isGift ? customerRepository : vendorRepository;
     ref.watch(transactionFormDataProvider);
 
@@ -54,8 +52,7 @@ class StatementForm extends ConsumerWidget {
             VerticalGap.m,
             _buildFourthRow(context, formDataNotifier),
             VerticalGap.m,
-            buildItemList(
-                context, formDataNotifier, textEditingNotifier, productRepository, true, true),
+            ItemsList(true, true, transactionType),
           ],
         ),
       ),

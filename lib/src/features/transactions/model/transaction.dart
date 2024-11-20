@@ -37,11 +37,11 @@ class Transaction implements BaseItem {
   double? subTotalAmount;
   String? salesmanDbRef;
   String? sellingPriceType;
-  double? transactionTotalProfit;
-  double?
-      itemsTotalProfit; // the difference between selling price & buying price for all items sold
+  // all transaction must have profit, even if it is zero (for receipts, returns, ... etc)
+  double transactionTotalProfit;
+  // the difference between selling price & buying price for all items sold
+  double? itemsTotalProfit;
   double? salesmanTransactionComssion;
-
   double totalAmount;
   Transaction({
     //required for all classes (BaseItem implementation)
@@ -66,7 +66,7 @@ class Transaction implements BaseItem {
     required this.totalAmount, // after discount
     this.salesmanDbRef,
     this.sellingPriceType, // retail or whole, item prices depends on it
-    this.transactionTotalProfit,
+    required this.transactionTotalProfit,
     this.itemsTotalProfit,
     this.salesmanTransactionComssion,
   });

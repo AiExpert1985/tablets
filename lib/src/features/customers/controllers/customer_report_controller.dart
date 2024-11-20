@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/utils.dart';
-import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/widgets/dialog_report.dart';
 
 final customerReportControllerProvider = Provider<CustomerReportController>((ref) {
@@ -14,7 +13,7 @@ class CustomerReportController {
 
   void showCustomerMatchingReport(
       BuildContext context, List<List<dynamic>> transactionList, String title) {
-    final selectionList = _getTransactionTypeDropList(context);
+    final selectionList = getTransactionTypeDropList(context);
     showReportDialog(context, _getCustomerMatchingReportTitles(context), transactionList,
         dateIndex: 3,
         title: title,
@@ -105,16 +104,6 @@ class CustomerReportController {
       S.of(context).transaction_type,
       S.of(context).transaction_date,
       S.of(context).customer_gifts_and_discounts,
-    ];
-  }
-
-  List<String> _getTransactionTypeDropList(BuildContext context) {
-    return [
-      translateDbTextToScreenText(context, TransactionType.customerInvoice.name),
-      translateDbTextToScreenText(context, TransactionType.customerReceipt.name),
-      translateDbTextToScreenText(context, TransactionType.customerReturn.name),
-      translateDbTextToScreenText(context, TransactionType.gifts.name),
-      S.of(context).initialAmount
     ];
   }
 

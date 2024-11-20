@@ -97,6 +97,7 @@ class CustomerScreenController {
       currency: 'na',
       transactionType: TransactionType.initialCredit.name,
       totalAmount: customer.initialCredit,
+      transactionTotalProfit: 0,
     ).toMap();
   }
 
@@ -252,7 +253,7 @@ class CustomerScreenController {
           transaction.number,
           translateDbTextToScreenText(context, transaction.transactionType),
           transaction.date,
-          -(transaction.transactionTotalProfit ?? 0),
+          -transaction.transactionTotalProfit,
         ]);
       } else if (transactionMap['transactionType'] == TransactionType.customerInvoice.name) {
         final transaction = Transaction.fromMap(transactionMap);
@@ -339,7 +340,7 @@ List<InvoiceInfo> processTransactions(List<Map<String, dynamic>> transactions) {
     remainingAmount = invoice.totalAmount;
     usedReceipts = [];
     DateTime lastReceiptDate = invoice.date; // Initialize to the invoice date
-    final profit = invoice.transactionTotalProfit ?? 0;
+    final profit = invoice.transactionTotalProfit;
     while (remainingAmount > 0 && receiptIndex < receipts.length) {
       var receipt = receipts[receiptIndex];
       if (receipt.totalAmount > 0) {

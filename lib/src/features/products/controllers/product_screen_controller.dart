@@ -102,15 +102,15 @@ class ProductScreenController {
   /// calculation of product qunaity
   Transaction _createInitialQuantityTransaction(Product product) {
     return Transaction(
-      dbRef: 'na',
-      name: 'na',
-      imageUrls: ['na'],
-      number: 1000001,
-      date: product.initialDate,
-      currency: 'na',
-      transactionType: TransactionType.initialCredit.name,
-      totalAmount: product.initialQuantity as double,
-    );
+        dbRef: 'na',
+        name: 'na',
+        imageUrls: ['na'],
+        number: 1000001,
+        date: product.initialDate,
+        currency: 'na',
+        transactionType: TransactionType.initialCredit.name,
+        totalAmount: product.initialQuantity as double,
+        transactionTotalProfit: 0);
   }
 
   List<dynamic> _getProductTotals(List<List<dynamic>> productTransactions) {

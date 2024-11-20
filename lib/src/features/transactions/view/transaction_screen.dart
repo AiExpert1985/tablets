@@ -6,7 +6,7 @@ import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_drawer_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
-import 'package:tablets/src/features/transactions/view/transaction_group_selection.dart';
+import 'package:tablets/src/features/transactions/view/transaction_from_selection_dialog.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
@@ -16,7 +16,7 @@ import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'package:tablets/src/features/transactions/view/transaction_show_form_utils.dart';
+import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
 
 class TransactionsScreen extends ConsumerWidget {
   const TransactionsScreen({super.key});
@@ -138,7 +138,7 @@ _showEditTransactionForm(BuildContext context, WidgetRef ref, Transaction transa
   final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
   final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
   backgroundColorNofifier.state = Colors.white;
-  TransactionShowFormUtils.showForm(
+  TransactionShowForm.showForm(
     context,
     imagePickerNotifier,
     formDataNotifier,
