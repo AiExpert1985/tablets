@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form_utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 
 class TransactionTypeSelection extends ConsumerWidget {
   const TransactionTypeSelection(this.groupName, {super.key});

@@ -10,9 +10,9 @@ import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 
 class ExpenditureForm extends ConsumerWidget {
   const ExpenditureForm(this.title, {super.key});

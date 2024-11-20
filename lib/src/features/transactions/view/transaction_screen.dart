@@ -4,6 +4,7 @@ import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_drawer_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_group_selection.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -14,7 +15,6 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form_utils.dart';
 
