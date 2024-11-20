@@ -5,6 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/dialog_report.dart';
+import 'package:tablets/src/common/widgets/report_button.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 
 final transactionReportControllerProvider = Provider<TransactionReportController>((ref) {
@@ -89,7 +90,7 @@ class TransactionReportController {
     List<String> reportTitles = _getTransactionIncomeReportTitles(context);
     List<String> transactionTypeDropdown = _getTransactionTypeDropList(context);
     return InkWell(
-      child: Text(S.of(context).daily_income),
+      child: ReportButton(S.of(context).daily_income_report),
       onTap: () {
         // Close the drawer when the button is tapped
         drawerController.close();

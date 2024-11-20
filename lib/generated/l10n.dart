@@ -1700,6 +1700,16 @@ class S {
     );
   }
 
+  /// `Daily income report`
+  String get daily_income_report {
+    return Intl.message(
+      'Daily income report',
+      name: 'daily_income_report',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `To date`
   String get to_date {
     return Intl.message(
