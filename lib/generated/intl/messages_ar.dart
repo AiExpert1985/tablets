@@ -144,6 +144,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "later_debt": MessageLookupByLibrary.simpleMessage("الدين بعد"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
+        "monthly_profit":
+            MessageLookupByLibrary.simpleMessage("الارباح الشهرية"),
+        "monthly_profit_report":
+            MessageLookupByLibrary.simpleMessage("تقرير الارباح الشهرية"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "no": MessageLookupByLibrary.simpleMessage("لا"),
         "notes": MessageLookupByLibrary.simpleMessage("الملاحظات"),
@@ -278,6 +282,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("اجل"),
         "transaction_payment_type":
             MessageLookupByLibrary.simpleMessage("طريقة الدفع"),
+        "transaction_reports":
+            MessageLookupByLibrary.simpleMessage("تقارير  التعاملات"),
         "transaction_salesman": MessageLookupByLibrary.simpleMessage("المندوب"),
         "transaction_subTotal_amount":
             MessageLookupByLibrary.simpleMessage("المبلغ المسدد"),

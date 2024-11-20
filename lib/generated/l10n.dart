@@ -1710,6 +1710,26 @@ class S {
     );
   }
 
+  /// `Monthly profit`
+  String get monthly_profit {
+    return Intl.message(
+      'Monthly profit',
+      name: 'monthly_profit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly profit report`
+  String get monthly_profit_report {
+    return Intl.message(
+      'Monthly profit report',
+      name: 'monthly_profit_report',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `To date`
   String get to_date {
     return Intl.message(
@@ -1935,6 +1955,16 @@ class S {
     return Intl.message(
       'Reload page',
       name: 'reload_page',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction reports`
+  String get transaction_reports {
+    return Intl.message(
+      'Transaction reports',
+      name: 'transaction_reports',
       desc: '',
       args: [],
     );

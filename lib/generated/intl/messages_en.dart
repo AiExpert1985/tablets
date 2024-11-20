@@ -147,6 +147,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "later_debt": MessageLookupByLibrary.simpleMessage("Later debt"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
+        "monthly_profit":
+            MessageLookupByLibrary.simpleMessage("Monthly profit"),
+        "monthly_profit_report":
+            MessageLookupByLibrary.simpleMessage("Monthly profit report"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "no": MessageLookupByLibrary.simpleMessage("No"),
         "notes": MessageLookupByLibrary.simpleMessage("Notes"),
@@ -282,6 +286,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Credit"),
         "transaction_payment_type":
             MessageLookupByLibrary.simpleMessage("Payment type"),
+        "transaction_reports":
+            MessageLookupByLibrary.simpleMessage("Transaction reports"),
         "transaction_salesman":
             MessageLookupByLibrary.simpleMessage("Salesman"),
         "transaction_subTotal_amount":

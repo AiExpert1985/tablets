@@ -5,7 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/dialog_report.dart';
-import 'package:tablets/src/common/widgets/report_button.dart';
+import 'package:tablets/src/common/widgets/report_widgets.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 
 final transactionReportControllerProvider = Provider<TransactionReportController>((ref) {
@@ -20,10 +20,14 @@ class TransactionReportController {
     List<Map<String, dynamic>> transactions,
     AnyDrawerController drawerController,
   ) {
-    return Center(
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        _buildDailyIncome(context, transactions, drawerController),
-      ]),
+    final title = S.of(context).transaction_reports;
+    final buttons = [
+      _buildDailyIncomeButton(context, transactions, drawerController),
+      _buildProfitButton(context, transactions, drawerController),
+    ];
+    return ReportColumn(
+      title: title,
+      buttons: buttons,
     );
   }
 
@@ -84,7 +88,7 @@ class TransactionReportController {
     ];
   }
 
-  Widget _buildDailyIncome(BuildContext context, List<Map<String, dynamic>> allTransactions,
+  Widget _buildDailyIncomeButton(BuildContext context, List<Map<String, dynamic>> allTransactions,
       AnyDrawerController drawerController) {
     List<List<dynamic>> incomeTransactions = _getIncomeTransactions(context, allTransactions);
     List<String> reportTitles = _getTransactionIncomeReportTitles(context);
@@ -107,6 +111,17 @@ class TransactionReportController {
           dropdownIndex: 1,
           useOriginalTransaction: true,
         );
+      },
+    );
+  }
+
+  Widget _buildProfitButton(BuildContext context, List<Map<String, dynamic>> allTransactions,
+      AnyDrawerController drawerController) {
+    return InkWell(
+      child: ReportButton(S.of(context).monthly_profit_report),
+      onTap: () {
+        // Close the drawer when the button is tapped
+        drawerController.close();
       },
     );
   }

@@ -165,6 +165,8 @@
     "share": "Share",
     "daily_income": "Daily income",
     "daily_income_report": "Daily income report",
+    "monthly_profit": "Monthly profit",
+    "monthly_profit_report": "Monthly profit report",
     "to_date": "To date",
     "notes": "Notes",
     "product_buying_price": "Buying price",
@@ -187,5 +189,6 @@
     "days": "Days",
     "product_profits": "Product profits",
     "damagedItems": "Damaged items",
-    "reload_page": "Reload page"
+    "reload_page": "Reload page",
+    "transaction_reports": "Transaction reports"
 }

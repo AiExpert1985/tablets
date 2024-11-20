@@ -165,6 +165,8 @@
     "share": "ارسال",
     "daily_income": "الوارد اليومي",
     "daily_income_report": "تقرير الوارد اليومي",
+    "monthly_profit": "الارباح الشهرية",
+    "monthly_profit_report": "تقرير الارباح الشهرية",
     "to_date": "الى تاريخ",
     "notes": "الملاحظات",
     "product_buying_price": "سعر الشراء",
@@ -187,5 +189,6 @@
     "days": "يوم",
     "product_profits": "ارباح المادة",
     "damagedItems": "مواد تالفة",
-    "reload_page": "اعادة تحميل الصفحة"
+    "reload_page": "اعادة تحميل الصفحة",
+    "transaction_reports": "تقارير  التعاملات"
 }
