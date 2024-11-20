@@ -27,6 +27,7 @@ List<List<dynamic>> _getIncomeTransactions(
     final type = transaction.transactionType;
     if (type == TransactionType.customerReceipt.name) {
       incomeTransactions.add([
+        transaction,
         translateDbTextToScreenText(context, type),
         transaction.date,
         transaction.number,
@@ -37,6 +38,7 @@ List<List<dynamic>> _getIncomeTransactions(
     } else if (type == TransactionType.vendorReceipt.name ||
         type == TransactionType.expenditures.name) {
       incomeTransactions.add([
+        transaction,
         translateDbTextToScreenText(context, type),
         transaction.date,
         transaction.number,
@@ -89,11 +91,12 @@ Widget _buildDailyIncome(BuildContext context, List<Map<String, dynamic>> allTra
         reportTitles,
         incomeTransactions,
         title: S.of(context).daily_income,
-        dateIndex: 1,
-        sumIndex: 4,
+        dateIndex: 2,
+        sumIndex: 5,
         dropdownList: transactionTypeDropdown,
         dropdownLabel: S.of(context).transaction_type,
-        dropdownIndex: 0,
+        dropdownIndex: 1,
+        useOriginalTransaction: true,
       );
     },
   );

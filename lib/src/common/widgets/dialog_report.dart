@@ -267,18 +267,21 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         separatorBuilder: (context, index) => const Divider(thickness: 0.2, color: Colors.grey),
         itemBuilder: (context, index) {
           final data = filteredList[index];
-          return InkWell(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: _buildDataRow(data),
-            ),
-            onTap: () {
-              if (widget.useOriginalTransaction) {
-                // if useOriginalTransaction the, first item is alway the orginal transaction
-                showReadOnlyTransaction(context, data[0]);
-              }
-            },
-          );
+          Widget displayedWidget = widget.useOriginalTransaction
+              ? InkWell(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: _buildDataRow(data),
+                  ),
+                  onTap: () {
+                    if (widget.useOriginalTransaction) {
+                      // if useOriginalTransaction the, first item is alway the orginal transaction
+                      showReadOnlyTransaction(context, data[0]);
+                    }
+                  },
+                )
+              : _buildDataRow(data);
+          return displayedWidget;
         },
       ),
     );
