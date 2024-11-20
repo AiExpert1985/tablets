@@ -22,9 +22,13 @@ class TransactionsScreen extends ConsumerWidget {
   const TransactionsScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const AppScreenFrame(
-      TransactionsList(),
-      buttonsWidget: TransactionsFloatingButtons(),
+    // I need to read and watch db for one reason, which is hiding floating buttons when
+    // page is accessed by refresh and not throught the side bar
+    final dbCache = ref.read(transactionDbCacheProvider.notifier).data;
+    ref.watch(transactionDbCacheProvider);
+    return AppScreenFrame(
+      const TransactionsList(),
+      buttonsWidget: dbCache.isEmpty ? null : const TransactionsFloatingButtons(),
     );
   }
 }

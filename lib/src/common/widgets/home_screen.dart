@@ -22,13 +22,20 @@ class HomeScreenGreeting extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Center(
-      child: SizedBox(
-        height: 80,
-        width: 320,
-        child: Text(
-          S.of(context).greeting,
-          style: const TextStyle(fontSize: 20),
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            // margin: const EdgeInsets.all(10),
+            width: double.infinity,
+            height: 200, // here I used width intentionally
+            child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
+          ),
+          Text(
+            S.of(context).greeting,
+            style: const TextStyle(fontSize: 20),
+          ),
+        ],
       ),
     );
   }

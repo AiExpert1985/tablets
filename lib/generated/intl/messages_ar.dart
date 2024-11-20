@@ -93,7 +93,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("العودة الى الصفحة الرئيسية"),
         "gps_x": MessageLookupByLibrary.simpleMessage("احداثيات الطول"),
         "gps_y": MessageLookupByLibrary.simpleMessage("احداثيات العرض"),
-        "greeting": MessageLookupByLibrary.simpleMessage("مرحباً"),
+        "greeting":
+            MessageLookupByLibrary.simpleMessage("مرحبا بك في نظام الواح"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("لدي حساب في البرنامج"),
         "include_total_as_text":
