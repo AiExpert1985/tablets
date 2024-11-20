@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/classes/screen_data.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/transactions/model/transaction.dart' as transaction;
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -52,33 +53,19 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
   // becasuse here it checks customer validity plus the Invoice amount, so even if his is valid
   // as a customer but with this invoice amount he exceeds the debt limit, then it will return
   // that this transaction is invalid
-  bool isValidTransactin(Customer selectedCustomer, ItemFormData formDataNotifier,
-      CustomerScreenController customerScreenController) {
-    final customerTransactions =
-        customerScreenController.getCustomerTransactions(selectedCustomer.dbRef);
-    // if customer has initial credit, it should be added to the tansactions, so, we add
-    // it here and give it transaction type 'initialCredit'
-    if (selectedCustomer.initialCredit > 0) {
-      customerTransactions.add(transaction.Transaction(
-        dbRef: 'na',
-        name: selectedCustomer.name,
-        imageUrls: ['na'],
-        number: 1000001,
-        date: selectedCustomer.initialDate,
-        currency: 'na',
-        transactionType: TransactionType.initialCredit.name,
-        totalAmount: selectedCustomer.initialCredit,
-      ).toMap());
-    }
-    final processedInvoices =
-        getCustomerProcessedInvoices(context, customerTransactions, selectedCustomer);
-    final openInvoices = customerScreenController.getOpenInvoices(context, processedInvoices, 5);
-    final totalDebt = customerScreenController.getTotalDebt(openInvoices, 7);
-    final dueInvoices = customerScreenController.getDueInvoices(context, openInvoices, 5);
-    final dueDebt = customerScreenController.getDueDebt(dueInvoices, 7);
+  bool inValidTransaction(
+    Customer selectedCustomer,
+    ItemFormData formDataNotifier,
+    CustomerScreenController customerScreenController,
+    ScreenData customerScreenDataProvider,
+  ) {
+    customerScreenController.createCustomerScreenData(context, selectedCustomer.toMap());
+    final customerScreenData = customerScreenDataProvider.getItemData(selectedCustomer.dbRef);
     final creditLimit = selectedCustomer.creditLimit;
+    final totalDebt = customerScreenData[totalDebtKey];
+    final dueDebt = customerScreenData[dueDebtKey];
     final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
-    return totalAfterCurrentTransaction < creditLimit && dueDebt <= 0;
+    return totalAfterCurrentTransaction > creditLimit && dueDebt > 0;
   }
 
   @override
@@ -92,6 +79,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
     final productRepository = ref.read(productRepositoryProvider);
     final counterPartyRepository = widget.isVendor ? vendorRepository : customerRepository;
     final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
+    final customerScreenData = ref.read(customerScreenDataProvider);
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
@@ -103,8 +91,15 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
           children: [
             buildFormTitle(widget.title),
             VerticalGap.xl,
-            _buildFirstRow(context, formDataNotifier, counterPartyRepository, salesmanRepository,
-                widget.isVendor, backgroundColorNotifier, customerScreenController),
+            _buildFirstRow(
+                context,
+                formDataNotifier,
+                counterPartyRepository,
+                salesmanRepository,
+                widget.isVendor,
+                backgroundColorNotifier,
+                customerScreenController,
+                customerScreenData),
             VerticalGap.m,
             _buildSecondRow(context, formDataNotifier, textEditingNotifier),
             VerticalGap.m,
@@ -118,7 +113,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
                 widget.hideGifts, false),
             VerticalGap.xxl,
             _buildTotalsRow(context, formDataNotifier, textEditingNotifier, backgroundColorNotifier,
-                customerScreenController),
+                customerScreenController, customerScreenData),
           ],
         ),
       ),
@@ -133,6 +128,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
     bool isVendor,
     StateController<Color> backgroundColorNotifier,
     CustomerScreenController customerScreenController,
+    ScreenData customerScreenData,
   ) {
     return Row(
       children: [
@@ -156,10 +152,10 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
               return;
             }
             customer = Customer.fromMap(item);
-            final validCustomer =
-                isValidTransactin(customer!, formDataNotifier, customerScreenController);
+            final inValidCustomer = inValidTransaction(
+                customer!, formDataNotifier, customerScreenController, customerScreenData);
             final invoiceColor =
-                validCustomer ? Colors.white : const Color.fromARGB(255, 245, 187, 184);
+                inValidCustomer ? const Color.fromARGB(255, 245, 187, 184) : Colors.white;
             backgroundColorNotifier.state = invoiceColor;
           },
         ),
@@ -304,6 +300,7 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
     TextControllerNotifier textEditingNotifier,
     StateController<Color> backgroundColorNotifier,
     CustomerScreenController customerScreenController,
+    ScreenData customerScreenData,
   ) {
     return SizedBox(
         width: customerInvoiceFormWidth * 0.6,
@@ -324,10 +321,10 @@ class _InvoiceFormState extends ConsumerState<InvoiceForm> {
                     widget.transactionType != TransactionType.customerInvoice.name) {
                   return;
                 }
-                final validCustomer =
-                    isValidTransactin(customer!, formDataNotifier, customerScreenController);
+                final inValidCustomer = inValidTransaction(
+                    customer!, formDataNotifier, customerScreenController, customerScreenData);
                 final invoiceColor =
-                    validCustomer ? Colors.white : const Color.fromARGB(255, 248, 177, 177);
+                    inValidCustomer ? const Color.fromARGB(255, 248, 177, 177) : Colors.white;
                 backgroundColorNotifier.state = invoiceColor;
               },
             ),

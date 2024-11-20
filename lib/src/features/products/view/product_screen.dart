@@ -5,6 +5,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_form_data_notifier.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_data_provider.dart';
 import 'package:tablets/src/features/products/view/product_form.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -109,13 +110,15 @@ class DataRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final product = Product.fromMap(productData);
     final screenController = ref.read(productScreenControllerProvider);
-    final rowData = screenController.createProductScreenData(context, product);
-    final productTransactions = rowData[quantityKey]!['details'] as List<List<dynamic>>;
-    final totalQuantity = rowData[quantityKey]!['value'] as double;
+    screenController.createProductScreenData(context, product);
+    final screenDataProvider = ref.read(productScreenDataProvider);
+    final productScreenData = screenDataProvider.getItemData(product.dbRef);
+    final totalQuantity = productScreenData[quantityKey] as double;
+    final productTransactions = productScreenData[quantityDetailsKey] as List<List<dynamic>>;
     // profit doesn't include salesman commission
-    final totalItemProfit = rowData[profitKey]!['value'] as double;
-    final profitInvoices = rowData[profitKey]!['details'] as List<List<dynamic>>;
-    final totalItemPriceWorth = totalQuantity * product.buyingPrice;
+    final totalItemProfit = productScreenData[profitKey] as double;
+    final profitInvoices = productScreenData[profitDetailsKey] as List<List<dynamic>>;
+    final totalStockPrice = productScreenData[totalStockPriceKey] as double;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: Row(
@@ -131,7 +134,7 @@ class DataRow extends ConsumerWidget {
           MainScreenTextCell('${product.sellRetailPrice}'),
           MainScreenClickableCell('$totalQuantity',
               () => showHistoryReport(context, productTransactions, product.name)),
-          MainScreenTextCell('$totalItemPriceWorth'),
+          MainScreenTextCell('$totalStockPrice'),
           MainScreenClickableCell(
               ('$totalItemProfit'), () => showProfitReport(context, profitInvoices, product.name)),
         ],

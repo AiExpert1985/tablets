@@ -110,7 +110,7 @@ class DataRow extends ConsumerWidget {
     final screenController = ref.read(customerScreenControllerProvider);
     screenController.createCustomerScreenData(context, customerData);
     final screenDataProvider = ref.read(customerScreenDataProvider);
-    final customerScreenData = screenDataProvider.getCustomerData(customer.dbRef);
+    final customerScreenData = screenDataProvider.getItemData(customer.dbRef);
     final invoiceAverageClosingDays = customerScreenData[avgClosingDaysKey] as int;
     final closedInvoices = customerScreenData[avgClosingDaysDetailsKey] as List<List<dynamic>>;
     final numOpenInvoices = customerScreenData[openInvoicesKey] as int;

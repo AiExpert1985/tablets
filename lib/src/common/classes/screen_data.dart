@@ -1,5 +1,3 @@
-import 'package:tablets/src/common/functions/debug_print.dart';
-
 class ScreenData {
   ScreenData(this.screenData);
   final List<Map<String, dynamic>> screenData;
@@ -7,7 +5,6 @@ class ScreenData {
   // each newData added must have a key 'dbRef'
   void addData(Map<String, dynamic> newData) {
     if (!newData.containsKey('dbRef')) {
-      errorPrint('data does not contain dbRef key');
       return;
     }
     String dbRef = newData['dbRef'];
@@ -23,7 +20,7 @@ class ScreenData {
 
   List<Map<String, dynamic>> getData() => screenData;
 
-  Map<String, dynamic> getCustomerData(String dbRefValue) {
+  Map<String, dynamic> getItemData(String dbRefValue) {
     return screenData.firstWhere((item) => item['dbRef'] == dbRefValue, orElse: () => {});
   }
 

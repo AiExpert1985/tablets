@@ -45,33 +45,22 @@ class CustomerScreenController {
   void createCustomerScreenData(BuildContext context, Map<String, dynamic> customerData) {
     final customer = Customer.fromMap(customerData);
     final customerTransactions = getCustomerTransactions(customer.dbRef);
-    // if customer has initial credit, it should be added to the tansactions, so, we add
-    // it here and give it transaction type 'initialCredit'
     if (customer.initialCredit > 0) {
-      customerTransactions.add(Transaction(
-        dbRef: 'na',
-        name: customer.name,
-        imageUrls: ['na'],
-        number: 1000001,
-        date: customer.initialDate,
-        currency: 'na',
-        transactionType: TransactionType.initialCredit.name,
-        totalAmount: customer.initialCredit,
-      ).toMap());
+      customerTransactions.add(_createInitialDebtTransaction(customer));
     }
     final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
-    final openInvoices = getOpenInvoices(context, processedInvoices, 5);
+    final openInvoices = _getOpenInvoices(context, processedInvoices, 5);
     final matchingList = customerMatching(customerTransactions, customer, context);
-    final totalDebt = getTotalDebt(matchingList, 4);
-    final invoicesWithProfit = getInvoicesWithProfit(processedInvoices);
-    final totalProfit = getTotalProfit(invoicesWithProfit, 5);
-    final closedInvoices = getClosedInvoices(context, processedInvoices, 5);
-    final averageClosingDays = calculateAverageClosingDays(closedInvoices, 6);
-    final dueInvoices = getDueInvoices(context, openInvoices, 5);
+    final totalDebt = _getTotalDebt(matchingList, 4);
+    final invoicesWithProfit = _getInvoicesWithProfit(processedInvoices);
+    final totalProfit = _getTotalProfit(invoicesWithProfit, 5);
+    final closedInvoices = _getClosedInvoices(context, processedInvoices, 5);
+    final averageClosingDays = _calculateAverageClosingDays(closedInvoices, 6);
+    final dueInvoices = _getDueInvoices(context, openInvoices, 5);
     final numDueInvoices = dueInvoices.length;
-    final dueDebt = getDueDebt(dueInvoices, 7);
-    final giftTransactions = getGiftsAndDiscounts(context, customerTransactions);
-    final totalGiftsAmount = getTotalGiftsAndDiscounts(giftTransactions, 4);
+    final dueDebt = _getDueDebt(dueInvoices, 7);
+    final giftTransactions = _getGiftsAndDiscounts(context, customerTransactions);
+    final totalGiftsAmount = _getTotalGiftsAndDiscounts(giftTransactions, 4);
     bool inValidCustomer = _inValidCustomer(dueDebt, totalDebt, customer);
 
     Map<String, dynamic> newDataRow = {
@@ -96,8 +85,23 @@ class CustomerScreenController {
     _screenDataProvider.addData(newDataRow);
   }
 
-  // we stop transactions if customer either exceeded limit of debt, or has dueDebt
-// which is transactions that are not closed within allowed time (for example 20 days)
+  /// creates a temp transaction using customer initial debt, the transaction is used in the
+  /// calculation of customer debt
+  Map<String, dynamic> _createInitialDebtTransaction(Customer customer) {
+    return Transaction(
+      dbRef: 'na',
+      name: customer.name,
+      imageUrls: ['na'],
+      number: 1000001,
+      date: customer.initialDate,
+      currency: 'na',
+      transactionType: TransactionType.initialCredit.name,
+      totalAmount: customer.initialCredit,
+    ).toMap();
+  }
+
+  /// we stop transactions if customer either exceeded limit of debt, or has dueDebt
+  /// which is transactions that are not closed within allowed time (for example 20 days)
   bool _inValidCustomer(double dueDebt, double totalDebt, Customer customer) {
     return totalDebt > customer.creditLimit || dueDebt > 0;
   }
@@ -154,7 +158,7 @@ class CustomerScreenController {
     return matchingTransactions.reversed.toList();
   }
 
-  List<List<dynamic>> getOpenInvoices(
+  List<List<dynamic>> _getOpenInvoices(
       BuildContext context, List<List<dynamic>> processedInvoices, int statusIndex) {
     if (processedInvoices.isEmpty) return [];
     String openStatus = S.of(context).invoice_status_open;
@@ -169,14 +173,14 @@ class CustomerScreenController {
     return openInvoicesWithoutProfit;
   }
 
-  List<List<dynamic>> getDueInvoices(
+  List<List<dynamic>> _getDueInvoices(
       BuildContext context, List<List<dynamic>> openInvoicesWithoutProfit, int statusIndex) {
     if (openInvoicesWithoutProfit.isEmpty) return [];
     String dueStatus = S.of(context).invoice_status_due;
     return openInvoicesWithoutProfit.where((item) => item[statusIndex] == dueStatus).toList();
   }
 
-  List<List<dynamic>> getClosedInvoices(
+  List<List<dynamic>> _getClosedInvoices(
       BuildContext context, List<List<dynamic>> processedInvoices, int statusIndex) {
     if (processedInvoices.isEmpty) return [];
     String closedStatus = S.of(context).invoice_status_closed;
@@ -189,17 +193,17 @@ class CustomerScreenController {
     return closedInvoicesWithoutProfit;
   }
 
-  double getTotalDebt(List<List<dynamic>> matchingList, int amountIndex) {
+  double _getTotalDebt(List<List<dynamic>> matchingList, int amountIndex) {
     if (matchingList.isEmpty) return 0;
     return matchingList.map((item) => item[amountIndex] as double).reduce((a, b) => a + b);
   }
 
-  double getDueDebt(List<List<dynamic>> dueInvoices, int amountIndex) {
+  double _getDueDebt(List<List<dynamic>> dueInvoices, int amountIndex) {
     if (dueInvoices.isEmpty) return 0;
     return dueInvoices.map((item) => item[amountIndex] as double).reduce((a, b) => a + b);
   }
 
-  List<List<dynamic>> getInvoicesWithProfit(List<List<dynamic>> processedInvoices) {
+  List<List<dynamic>> _getInvoicesWithProfit(List<List<dynamic>> processedInvoices) {
     List<int> skippedIndexes = [4, 6, 7];
     List<List<dynamic>> invoicesWithProfit = [];
     for (var invoice in processedInvoices) {
@@ -214,12 +218,12 @@ class CustomerScreenController {
     return invoicesWithProfit;
   }
 
-  double getTotalProfit(List<List<dynamic>> invoicesWithProfit, int profitIndex) {
+  double _getTotalProfit(List<List<dynamic>> invoicesWithProfit, int profitIndex) {
     if (invoicesWithProfit.isEmpty) return 0;
     return invoicesWithProfit.map((item) => item[profitIndex] as double).reduce((a, b) => a + b);
   }
 
-  int calculateAverageClosingDays(List<List<dynamic>> processedInvoices, int daysIndex) {
+  int _calculateAverageClosingDays(List<List<dynamic>> processedInvoices, int daysIndex) {
     List<double> values = processedInvoices
         .where((innerList) => innerList.length > daysIndex && innerList[daysIndex] is num)
         .map((innerList) => innerList[daysIndex] as double)
@@ -237,7 +241,7 @@ class CustomerScreenController {
 // filter transactions and keep only gifts and customerInvoices that contains a discount
 // or gift items and return it in a list of lists, where each list contains
 // [Transaction, num, type, date, amount]
-  List<List<dynamic>> getGiftsAndDiscounts(
+  List<List<dynamic>> _getGiftsAndDiscounts(
       BuildContext context, List<Map<String, dynamic>> customerTransactions) {
     List<List<dynamic>> giftsAndDiscounts = [];
     for (var transactionMap in customerTransactions) {
@@ -273,7 +277,7 @@ class CustomerScreenController {
     return sortListOfListsByDate(giftsAndDiscounts, 3);
   }
 
-  double getTotalGiftsAndDiscounts(List<List<dynamic>> giftsList, int amountIndex) {
+  double _getTotalGiftsAndDiscounts(List<List<dynamic>> giftsList, int amountIndex) {
     if (giftsList.isEmpty) return 0;
     return giftsList.map((item) => item[amountIndex] as double).reduce((a, b) => a + b);
   }

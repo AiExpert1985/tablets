@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/classes/screen_data.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_data_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:flutter/material.dart';
@@ -7,37 +9,34 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 
+const productDbRefKey = 'dbRef';
 const quantityKey = 'quantity';
+const quantityDetailsKey = 'quantityDetails';
 const profitKey = 'profit';
+const profitDetailsKey = 'profitDetails';
+const totalStockPriceKey = 'itemTotalStockPrice';
 
 final productScreenControllerProvider = Provider<ProductScreenController>((ref) {
+  final screenDataProvider = ref.read(productScreenDataProvider);
   final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
-  return ProductScreenController(transactionsDbCache);
+  return ProductScreenController(screenDataProvider, transactionsDbCache);
 });
 
 class ProductScreenController {
   ProductScreenController(
+    this._screenDataProvider,
     this._transactionsDbCache,
   );
+  final ScreenData _screenDataProvider;
   final DbCache _transactionsDbCache;
 
-// create a list of lists, where each resulting list contains transaction info
-// [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
-  Map<String, dynamic> createProductScreenData(BuildContext context, Product product) {
-    Map<String, dynamic> newDataRow = {};
-    List<List<dynamic>> productTransactions = [];
+  /// create a list of lists, where each resulting list contains transaction info
+  /// [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
+  void createProductScreenData(BuildContext context, Product product) {
+    List<List<dynamic>> productProcessedTransactions = [];
     if (product.initialQuantity > 0) {
-      final initialTransaction = Transaction(
-        dbRef: 'na',
-        name: 'na',
-        imageUrls: ['na'],
-        number: 1000001,
-        date: product.initialDate,
-        currency: 'na',
-        transactionType: TransactionType.initialCredit.name,
-        totalAmount: product.initialQuantity as double,
-      );
-      productTransactions.add([
+      final initialTransaction = _createInitialQuantityTransaction(product);
+      productProcessedTransactions.add([
         initialTransaction,
         translateDbTextToScreenText(context, TransactionType.initialCredit.name),
         '',
@@ -83,18 +82,38 @@ class ProductScreenController {
           totalProfit,
           totalSalesmanCommission
         ];
-        productTransactions.add(transactionDetails);
+        productProcessedTransactions.add(transactionDetails);
       }
     }
-    sortListOfListsByDate(productTransactions, 3);
-    final productTotals = getProductTotals(productTransactions);
-    final profitableInvoices = getOnlyProfitInvoices(productTransactions, 5);
-    newDataRow[quantityKey] = {'value': productTotals[0], 'details': productTransactions};
-    newDataRow[profitKey] = {'value': productTotals[1], 'details': profitableInvoices};
-    return newDataRow;
+    sortListOfListsByDate(productProcessedTransactions, 3);
+    final productTotals = _getProductTotals(productProcessedTransactions);
+    Map<String, dynamic> newDataRow = {
+      productDbRefKey: product.dbRef,
+      quantityKey: productTotals[0],
+      quantityDetailsKey: productProcessedTransactions,
+      profitKey: productTotals[1],
+      profitDetailsKey: _getOnlyProfitInvoices(productProcessedTransactions, 5),
+      totalStockPriceKey: productTotals[0] * product.buyingPrice,
+    };
+    _screenDataProvider.addData(newDataRow);
   }
 
-  List<dynamic> getProductTotals(List<List<dynamic>> productTransactions) {
+  /// creates a temp transaction using product initial quantity, the transaction is used in the
+  /// calculation of product qunaity
+  Transaction _createInitialQuantityTransaction(Product product) {
+    return Transaction(
+      dbRef: 'na',
+      name: 'na',
+      imageUrls: ['na'],
+      number: 1000001,
+      date: product.initialDate,
+      currency: 'na',
+      transactionType: TransactionType.initialCredit.name,
+      totalAmount: product.initialQuantity as double,
+    );
+  }
+
+  List<dynamic> _getProductTotals(List<List<dynamic>> productTransactions) {
     int totalQuantity = 0;
     double totalProfit = 0.0;
     double totalSalesmanCommission = 0.0;
@@ -106,7 +125,7 @@ class ProductScreenController {
     return [totalQuantity, totalProfit, totalSalesmanCommission];
   }
 
-  List<List<dynamic>> getOnlyProfitInvoices(
+  List<List<dynamic>> _getOnlyProfitInvoices(
       List<List<dynamic>> processedTransactions, int profitIndex) {
     List<List<dynamic>> result = [];
     for (var innerList in processedTransactions) {
