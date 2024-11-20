@@ -2,9 +2,12 @@ import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/features/products/view/product_drawer_filters.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_reports_util.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_report_controller.dart';
 
 class TransactionDrawer {
+  TransactionDrawer(this._reportController);
+
+  final TransactionReportController _reportController;
   final AnyDrawerController drawerController = AnyDrawerController();
 
   void showSearchForm(BuildContext context) {
@@ -35,7 +38,7 @@ class TransactionDrawer {
     showDrawer(
       context,
       builder: (context) {
-        return buildReportWidgets(context, allTransactions, drawerController);
+        return _reportController.buildReportWidgets(context, allTransactions, drawerController);
       },
       config: const DrawerConfig(
         side: DrawerSide.left,
@@ -53,5 +56,6 @@ class TransactionDrawer {
 }
 
 final transactionDrawerControllerProvider = Provider<TransactionDrawer>((ref) {
-  return TransactionDrawer();
+  final reportController = ref.read(transactionReportControllerProvider);
+  return TransactionDrawer(reportController);
 });

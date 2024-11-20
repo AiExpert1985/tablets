@@ -5,6 +5,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_form_data_notifier.dart';
+import 'package:tablets/src/features/products/controllers/product_report_controller.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_data_provider.dart';
 import 'package:tablets/src/features/products/view/product_form.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -13,7 +14,6 @@ import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
-import 'package:tablets/src/features/products/utils/product_report_utils.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 
@@ -119,6 +119,7 @@ class DataRow extends ConsumerWidget {
     final totalItemProfit = productScreenData[profitKey] as double;
     final profitInvoices = productScreenData[profitDetailsKey] as List<List<dynamic>>;
     final totalStockPrice = productScreenData[totalStockPriceKey] as double;
+    final reportController = ref.read(productReportControllerProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: Row(
@@ -133,10 +134,10 @@ class DataRow extends ConsumerWidget {
           MainScreenTextCell('${product.sellWholePrice}'),
           MainScreenTextCell('${product.sellRetailPrice}'),
           MainScreenClickableCell('$totalQuantity',
-              () => showHistoryReport(context, productTransactions, product.name)),
+              () => reportController.showHistoryReport(context, productTransactions, product.name)),
           MainScreenTextCell('$totalStockPrice'),
-          MainScreenClickableCell(
-              ('$totalItemProfit'), () => showProfitReport(context, profitInvoices, product.name)),
+          MainScreenClickableCell(('$totalItemProfit'),
+              () => reportController.showProfitReport(context, profitInvoices, product.name)),
         ],
       ),
     );
