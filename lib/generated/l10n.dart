@@ -1969,6 +1969,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Printing transactions`
+  String get printing_transactions {
+    return Intl.message(
+      'Printing transactions',
+      name: 'printing_transactions',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

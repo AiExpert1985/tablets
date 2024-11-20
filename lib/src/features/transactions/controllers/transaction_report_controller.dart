@@ -29,6 +29,21 @@ class TransactionReportController {
     ],
     'add': [TransactionType.customerInvoice.name],
   };
+  final Map<String, List<String>> _printTransactionsFilters = {
+    'subtract': [
+      TransactionType.gifts.name,
+      TransactionType.expenditures.name,
+      TransactionType.damagedItems.name,
+      TransactionType.vendorReceipt.name,
+      TransactionType.vendorReturn.name,
+      TransactionType.customerInvoice.name,
+    ],
+    'add': [
+      TransactionType.vendorInvoice.name,
+      TransactionType.customerReturn.name,
+      TransactionType.customerReceipt.name,
+    ]
+  };
 
   Widget buildReportWidgets(
     BuildContext context,
@@ -42,6 +57,9 @@ class TransactionReportController {
       _buildReportButton(context, transactions, drawerController, _monthlyProfitFilters,
           S.of(context).monthly_profit_report,
           isProfitReport: true),
+      _buildReportButton(context, transactions, drawerController, _printTransactionsFilters,
+          S.of(context).printing_transactions,
+          includeNotes: true)
     ];
     return ReportColumn(
       title: title,
@@ -54,8 +72,9 @@ class TransactionReportController {
       BuildContext context,
       List<Map<String, dynamic>> allTransactions,
       Map<String, List<String>> filters,
-      isProfitReport) {
-    List<List<dynamic>> incomeTransactions = [];
+      bool isProfitReport,
+      bool includeNotes) {
+    List<List<dynamic>> processedTransactions = [];
     for (var trans in allTransactions) {
       final transaction = Transaction.fromMap(trans);
       final type = transaction.transactionType;
@@ -63,7 +82,7 @@ class TransactionReportController {
       final subtractFilters = filters['subtract'] ?? [];
       final salesman = transaction.salesman ?? '';
       if (addFilters.contains(type)) {
-        incomeTransactions.add([
+        processedTransactions.add([
           transaction,
           translateDbTextToScreenText(context, type),
           transaction.date,
@@ -71,9 +90,10 @@ class TransactionReportController {
           transaction.name,
           salesman,
           isProfitReport ? transaction.transactionTotalProfit : transaction.totalAmount,
+          transaction.notes,
         ]);
       } else if (subtractFilters.contains(type)) {
-        incomeTransactions.add([
+        processedTransactions.add([
           transaction,
           translateDbTextToScreenText(context, type),
           transaction.date,
@@ -81,29 +101,34 @@ class TransactionReportController {
           transaction.name,
           salesman,
           isProfitReport ? -transaction.transactionTotalProfit : -transaction.totalAmount,
+          transaction.notes,
         ]);
       }
     }
-    return incomeTransactions;
+    if (!includeNotes) processedTransactions.removeLast();
+    return processedTransactions;
   }
 
-  List<String> _getReportTitles(BuildContext context) {
-    return [
+  List<String> _getReportTitles(BuildContext context, bool includeNotes) {
+    final titles = [
       S.of(context).transaction_type,
       S.of(context).transaction_date,
       S.of(context).transaction_number,
       S.of(context).transaction_name,
       S.of(context).transaction_salesman,
       S.of(context).amount,
+      S.of(context).notes,
     ];
+    if (!includeNotes) titles.removeLast();
+    return titles;
   }
 
   Widget _buildReportButton(BuildContext context, List<Map<String, dynamic>> allTransactions,
       AnyDrawerController drawerController, Map<String, List<String>> filters, String title,
-      {bool isProfitReport = false}) {
+      {bool isProfitReport = false, bool includeNotes = false}) {
     List<List<dynamic>> incomeTransactions =
-        _getProcessedTransactions(context, allTransactions, filters, isProfitReport);
-    List<String> reportTitles = _getReportTitles(context);
+        _getProcessedTransactions(context, allTransactions, filters, isProfitReport, includeNotes);
+    List<String> reportTitles = _getReportTitles(context, includeNotes);
     List<String> transactionTypeDropdown = getTransactionTypeDropList(context);
     return InkWell(
       child: ReportButton(title),

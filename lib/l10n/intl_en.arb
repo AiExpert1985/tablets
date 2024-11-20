@@ -190,5 +190,6 @@
     "product_profits": "Product profits",
     "damagedItems": "Damaged items",
     "reload_page": "Reload page",
-    "transaction_reports": "Transaction reports"
+    "transaction_reports": "Transaction reports",
+    "printing_transactions": "Printing transactions"
 }

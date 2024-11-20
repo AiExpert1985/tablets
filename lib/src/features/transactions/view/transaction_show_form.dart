@@ -60,7 +60,7 @@ class TransactionShowForm {
       salesmanKey: null,
       numberKey: null,
       totalAsTextKey: null,
-      notesKey: null,
+      notesKey: "",
     });
     formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem);
   }

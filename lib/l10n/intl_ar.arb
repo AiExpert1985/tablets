@@ -190,5 +190,6 @@
     "product_profits": "ارباح المادة",
     "damagedItems": "مواد تالفة",
     "reload_page": "اعادة تحميل الصفحة",
-    "transaction_reports": "تقارير  التعاملات"
+    "transaction_reports": "تقارير  التعاملات",
+    "printing_transactions": "طباعة التعاملات"
 }
