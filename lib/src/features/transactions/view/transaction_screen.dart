@@ -14,7 +14,7 @@ import 'package:tablets/src/common/providers/text_editing_controllers_provider.d
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
 

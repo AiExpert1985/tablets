@@ -9,7 +9,7 @@ import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
-import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
+import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/products/model/product.dart';

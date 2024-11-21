@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/screen_data.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_data_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:tablets/src/common/functions/utils.dart';

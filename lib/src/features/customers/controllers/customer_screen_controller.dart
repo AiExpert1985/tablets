@@ -6,7 +6,7 @@ import 'package:tablets/src/common/classes/screen_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 
@@ -50,7 +50,7 @@ class CustomerScreenController {
     }
     final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
     final openInvoices = _getOpenInvoices(context, processedInvoices, 5);
-    final matchingList = customerMatching(customerTransactions, customer, context);
+    final matchingList = customerMatching(customerTransactions, context);
     final totalDebt = _getTotalDebt(matchingList, 4);
     final invoicesWithProfit = _getInvoicesWithProfit(processedInvoices);
     final totalProfit = _getTotalProfit(invoicesWithProfit, 5);
@@ -135,7 +135,7 @@ class CustomerScreenController {
   }
 
   List<List<dynamic>> customerMatching(
-      List<Map<String, dynamic>> customerTransactions, Customer customer, BuildContext context) {
+      List<Map<String, dynamic>> customerTransactions, BuildContext context) {
     List<List<dynamic>> matchingTransactions = [];
     for (int i = customerTransactions.length - 1; i >= 0; i--) {
       final transaction = Transaction.fromMap(customerTransactions[i]);

@@ -12,63 +12,36 @@ class MainDrawer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
-    return Drawer(
-        width: 250,
-        child: Column(children: [
-          const MainDrawerHeader(),
+    return const Drawer(
+      width: 250,
+      child: Column(
+        children: [
+          MainDrawerHeader(),
           Expanded(
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                  child: Column(children: [
-                    const TransactionsButton(),
-                    VerticalGap.l,
-                    const CustomersButton(),
-                    VerticalGap.l,
-                    MainDrawerButton(
-                      'vendors',
-                      S.of(context).vendors,
-                      () => _goToPage(
-                          context, pageTitleNotifier, AppRoute.vendors.name, S.of(context).vendors),
-                    ),
-                    VerticalGap.l,
-                    MainDrawerButton('salesman', S.of(context).salesmen, () {
-                      Navigator.of(context).pop();
-                      pageTitleNotifier.state = S.of(context).salesmen;
-                      context.goNamed(AppRoute.salesman.name);
-                    }),
-                    VerticalGap.l,
-                    const ProductsButton(),
-                    VerticalGap.l,
-                    MainDrawerButton(
-                      'settings',
-                      S.of(context).settings,
-                      () {
-                        Navigator.of(context).pop();
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext ctx) => const SettingsDialog());
-                      },
-                    ),
-                    const Spacer(),
-                    MainDrawerButton(
-                      'pending_transactions',
-                      S.of(context).pending_transactions,
-                      () {
-                        Navigator.of(context).pop();
-                        pageTitleNotifier.state = S.of(context).pending_transactions;
-                        context.goNamed(AppRoute.pendingTransactions.name);
-                      },
-                    ),
-                  ])))
-        ]));
-  }
-
-  void _goToPage(BuildContext context, StateController<String> pageTitleNotifier, String routeName,
-      String title) {
-    Navigator.of(context).pop();
-    pageTitleNotifier.state = title;
-    context.goNamed(routeName);
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+              child: Column(
+                children: [
+                  TransactionsButton(),
+                  VerticalGap.l,
+                  CustomersButton(),
+                  VerticalGap.l,
+                  VendorsButton(),
+                  VerticalGap.l,
+                  SalesmenButton(),
+                  VerticalGap.l,
+                  ProductsButton(),
+                  VerticalGap.l,
+                  SettingsButton(),
+                  Spacer(),
+                  PendingsButton(),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -90,6 +63,86 @@ class CustomersButton extends ConsumerWidget {
       if (context.mounted) {
         Navigator.of(context).pop();
         context.goNamed(AppRoute.customers.name);
+      }
+    });
+  }
+}
+
+class PendingsButton extends ConsumerWidget {
+  const PendingsButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    return MainDrawerButton(
+      'pending_transactions',
+      S.of(context).pending_transactions,
+      () {
+        Navigator.of(context).pop();
+        pageTitleNotifier.state = S.of(context).pending_transactions;
+        context.goNamed(AppRoute.pendingTransactions.name);
+      },
+    );
+  }
+}
+
+class SettingsButton extends ConsumerWidget {
+  const SettingsButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MainDrawerButton(
+      'settings',
+      S.of(context).settings,
+      () {
+        Navigator.of(context).pop();
+        showDialog(context: context, builder: (BuildContext ctx) => const SettingsDialog());
+      },
+    );
+  }
+}
+
+class SalesmenButton extends ConsumerWidget {
+  const SalesmenButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MainDrawerButton('salesman', S.of(context).salesmen, () async {
+      //  we need related transactionDbCache, we make sure it is inialized
+      await initializeTransactionDbCache(context, ref);
+      if (context.mounted) {
+        await initializeSalesmanDbCache(context, ref);
+      }
+      final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+      if (context.mounted) {
+        pageTitleNotifier.state = S.of(context).salesmen;
+      }
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        context.goNamed(AppRoute.salesman.name);
+      }
+    });
+  }
+}
+
+class VendorsButton extends ConsumerWidget {
+  const VendorsButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MainDrawerButton('vendors', S.of(context).vendors, () async {
+      //  we need related transactionDbCache, we make sure it is inialized
+      await initializeTransactionDbCache(context, ref);
+      if (context.mounted) {
+        await initializeVendorDbCache(context, ref);
+      }
+      final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+      if (context.mounted) {
+        pageTitleNotifier.state = S.of(context).vendors;
+      }
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        context.goNamed(AppRoute.vendors.name);
       }
     });
   }

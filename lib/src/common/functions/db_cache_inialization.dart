@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/products/controllers/product_db_cache_provider.dart';
+import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
+import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider.dart';
+import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
 
 //! Important note
 //! setting the values in the dbCache is done only once for each feature
@@ -35,5 +39,21 @@ Future<void> initializeProductsDbCache(BuildContext context, WidgetRef ref) asyn
   if (productDbCach.data.isEmpty) {
     final productData = await ref.read(productRepositoryProvider).fetchItemListAsMaps();
     productDbCach.set(productData);
+  }
+}
+
+Future<void> initializeVendorDbCache(BuildContext context, WidgetRef ref) async {
+  final vendorDbCach = ref.read(vendorDbCacheProvider.notifier);
+  if (vendorDbCach.data.isEmpty) {
+    final vendorData = await ref.read(vendorRepositoryProvider).fetchItemListAsMaps();
+    vendorDbCach.set(vendorData);
+  }
+}
+
+Future<void> initializeSalesmanDbCache(BuildContext context, WidgetRef ref) async {
+  final salesmanDbCach = ref.read(salesmanDbCacheProvider.notifier);
+  if (salesmanDbCach.data.isEmpty) {
+    final salesmanData = await ref.read(salesmanRepositoryProvider).fetchItemListAsMaps();
+    salesmanDbCach.set(salesmanData);
   }
 }
