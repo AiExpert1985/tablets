@@ -5,6 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class MainDrawer extends ConsumerWidget {
@@ -45,6 +46,32 @@ class MainDrawer extends ConsumerWidget {
   }
 }
 
+// class CustomersButton extends ConsumerWidget {
+//   const CustomersButton({super.key});
+
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     return MainDrawerButton('customers', S.of(context).customers, () async {
+//       //  we need related transactionDbCache, we make sure it is inialized
+//       await initializeTransactionDbCache(context, ref);
+//       if (context.mounted) {
+//         await initializeCustomerDbCache(context, ref);
+//       }
+//       final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+//       if (context.mounted) {
+//         pageTitleNotifier.state = S.of(context).customers;
+//       }
+//       // if (context.mounted) {
+//       //   final testClass = TestCustomerScreenPerformance(context, ref);
+//       //   testClass.run(10000);
+//       // }
+//       if (context.mounted) {
+//         Navigator.of(context).pop();
+//         context.goNamed(AppRoute.customers.name);
+//       }
+//     });
+//   }
+// }
 class CustomersButton extends ConsumerWidget {
   const CustomersButton({super.key});
 
@@ -59,6 +86,10 @@ class CustomersButton extends ConsumerWidget {
       final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).customers;
+      }
+      final customerScreenController = ref.read(customerScreenControllerProvider);
+      if (context.mounted) {
+        customerScreenController.setAllCustomersScreenData(context);
       }
       // if (context.mounted) {
       //   final testClass = TestCustomerScreenPerformance(context, ref);

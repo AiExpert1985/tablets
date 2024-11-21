@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -7,10 +8,9 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/features/customers/controllers/customer_drawer_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_data_provider.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/view/customer_form.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
-import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/features/customers/controllers/customer_report_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
@@ -37,22 +37,17 @@ class CustomerList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dbCache = ref.read(customerDbCacheProvider.notifier);
-    final dbData = dbCache.data;
-    ref.watch(customerDbCacheProvider);
-    Widget screenWidget = dbData.isNotEmpty
-        ? const Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              children: [
-                ListHeaders(),
-                Divider(),
-                ListData(),
-              ],
-            ),
-          )
-        : const HomeScreenGreeting();
-    return screenWidget;
+    ref.watch(customerScreenDataNotifier);
+    return const Padding(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        children: [
+          ListHeaders(),
+          Divider(),
+          ListData(),
+        ],
+      ),
+    );
   }
 }
 
@@ -61,17 +56,17 @@ class ListData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dbCache = ref.read(customerDbCacheProvider.notifier);
-    final dbData = dbCache.data;
-    ref.watch(customerDbCacheProvider);
+    final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
+    final screenData = screenDataNotifier.data;
+    ref.watch(customerScreenDataNotifier);
     return Expanded(
       child: ListView.builder(
-        itemCount: dbData.length,
+        itemCount: screenData.length,
         itemBuilder: (ctx, index) {
-          final customerData = dbData[index];
+          final customerScreenData = screenData[index];
           return Column(
             children: [
-              DataRow(customerData),
+              DataRow(customerScreenData),
               const Divider(thickness: 0.2, color: Colors.grey),
             ],
           );
@@ -86,35 +81,72 @@ class ListHeaders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const MainScreenPlaceholder(width: 20, isExpanded: false),
+            MainScreenHeaderCell(S.of(context).customer),
+            MainScreenHeaderCell(S.of(context).salesman_selection),
+            MainScreenHeaderCell(S.of(context).current_debt),
+            MainScreenHeaderCell(S.of(context).num_open_invoice),
+            MainScreenHeaderCell(S.of(context).due_debt_amount),
+            MainScreenHeaderCell(S.of(context).average_invoice_closing_duration),
+            if (!hideCustomerProfit) MainScreenHeaderCell(S.of(context).customer_invoice_profit),
+            MainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
+          ],
+        ),
+        VerticalGap.m,
+        if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
+      ],
+    );
+  }
+}
+
+class HeaderTotalsRow extends ConsumerWidget {
+  const HeaderTotalsRow({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
+    final summary = screenDataNotifier.summary;
+    int openInvoices = summary[openInvoicesKey]['value'];
+    int dueInvoices = summary[dueInvoicesKey]['value'];
+    double totalDebt = summary[totalDebtKey]['value'];
+    double dueDebt = summary[dueDebtKey]['value'];
+    double profit = summary[invoicesProfitKey]['value'];
+    double gifts = summary[giftsKey]['value'];
+    double averageClosingDays = summary[avgClosingDaysKey]['value'].toInt();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const MainScreenPlaceholder(width: 20, isExpanded: false),
-        MainScreenHeaderCell(S.of(context).customer),
-        MainScreenHeaderCell(S.of(context).salesman_selection),
-        MainScreenHeaderCell(S.of(context).current_debt),
-        MainScreenHeaderCell(S.of(context).num_open_invoice),
-        MainScreenHeaderCell(S.of(context).due_debt_amount),
-        MainScreenHeaderCell(S.of(context).average_invoice_closing_duration),
-        if (!hideCustomerProfit) MainScreenHeaderCell(S.of(context).customer_invoice_profit),
-        MainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        MainScreenHeaderCell(totalDebt, isColumnTotal: true),
+        MainScreenHeaderCell('$openInvoices ($dueInvoices)'),
+        MainScreenHeaderCell(dueDebt, isColumnTotal: true),
+        MainScreenHeaderCell('($averageClosingDays ${S.of(context).days} )'),
+        if (!hideCustomerProfit) MainScreenHeaderCell(profit, isColumnTotal: true),
+        MainScreenHeaderCell(gifts, isColumnTotal: true),
       ],
     );
   }
 }
 
 class DataRow extends ConsumerWidget {
-  const DataRow(this.customerData, {super.key});
-  final Map<String, dynamic> customerData;
+  const DataRow(this.customerScreenData, {super.key});
+  final Map<String, dynamic> customerScreenData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customer = Customer.fromMap(customerData);
     final reportController = ref.read(customerReportControllerProvider);
-    final screenController = ref.read(customerScreenControllerProvider);
-    screenController.createCustomerScreenData(context, customerData);
-    final screenDataProvider = ref.read(customerScreenDataProvider);
-    final customerScreenData = screenDataProvider.getItemData(customer.dbRef);
+    final customerRef = customerScreenData[customerDbRefKey];
+    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+    final customerData = customerDbCache.getItemByDbRef(customerRef);
+    final customer = Customer.fromMap(customerData);
     final invoiceAverageClosingDays = customerScreenData[avgClosingDaysKey] as int;
     final closedInvoices = customerScreenData[avgClosingDaysDetailsKey] as List<List<dynamic>>;
     final numOpenInvoices = customerScreenData[openInvoicesKey] as int;

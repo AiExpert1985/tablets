@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
-import 'package:tablets/src/common/classes/screen_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_data_provider.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
@@ -30,19 +31,43 @@ const inValidKey = 'inValid';
 
 final customerScreenControllerProvider = Provider<CustomerScreenController>((ref) {
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
-  final screenDataProvider = ref.read(customerScreenDataProvider);
-  return CustomerScreenController(screenDataProvider, transactionDbCache);
+  final screenDataProvider = ref.read(customerScreenDataNotifier.notifier);
+  final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+  return CustomerScreenController(screenDataProvider, transactionDbCache, customerDbCache);
 });
 
 class CustomerScreenController {
   CustomerScreenController(
-    this._screenDataProvider,
+    this._screenDataNotifier,
     this._transactionDbCache,
+    this._customerDbCache,
   );
-  final ScreenData _screenDataProvider;
+  final ScreenDataNotifier _screenDataNotifier;
   final DbCache _transactionDbCache;
+  final DbCache _customerDbCache;
 
-  void createCustomerScreenData(BuildContext context, Map<String, dynamic> customerData) {
+  void setAllCustomersScreenData(BuildContext context) {
+    final allCustomersData = _customerDbCache.data;
+    List<Map<String, dynamic>> screenData = [];
+    for (var customerData in allCustomersData) {
+      final newRow = createCustomerScreenData(context, customerData);
+      screenData.add(newRow);
+    }
+    Map<String, dynamic> summaryTypes = {
+      totalDebtKey: 'sum',
+      openInvoicesKey: 'sum',
+      dueInvoicesKey: 'sum',
+      dueDebtKey: 'sum',
+      avgClosingDaysKey: 'avg',
+      invoicesProfitKey: 'sum',
+      giftsKey: 'sum',
+    };
+    _screenDataNotifier.initialize(summaryTypes);
+    _screenDataNotifier.set(screenData);
+  }
+
+  Map<String, dynamic> createCustomerScreenData(
+      BuildContext context, Map<String, dynamic> customerData) {
     final customer = Customer.fromMap(customerData);
     final customerTransactions = getCustomerTransactions(customer.dbRef);
     if (customer.initialCredit > 0) {
@@ -82,7 +107,7 @@ class CustomerScreenController {
       customerNameKey: customer.name,
       customerSalesmanKey: customer.salesman,
     };
-    _screenDataProvider.addData(newDataRow);
+    return newDataRow;
   }
 
   /// creates a temp transaction using customer initial debt, the transaction is used in the

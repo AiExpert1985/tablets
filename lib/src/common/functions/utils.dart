@@ -138,7 +138,7 @@ String formatDate(DateTime date) => DateFormat('yyyy/MM/dd').format(date);
 // used to create thousand comma separators for numbers displayed in the UI
 // it can be used with or without decimal places using numDecimalPlaces optional parameter
 String doubleToStringWithComma(double value, {int? numDecimalPlaces}) {
-  String valueString = '';
+  String valueString;
   if (numDecimalPlaces != null) {
     valueString = value.toStringAsFixed(numDecimalPlaces); // Keeping 2 decimal places
   } else {

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_data_provider.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -81,7 +80,7 @@ class FirstRow extends ConsumerWidget {
     final repository = isVendor ? vendorRepository : customerRepository;
     final transactionUtils = ref.read(transactionUtilsControllerProvider);
     final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
-    final customerScreenData = ref.read(customerScreenDataProvider);
+    // final customerScreenData = ref.read(customerScreenDataProvider);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerScreenController = ref.read(customerScreenControllerProvider);
     return Row(
@@ -108,11 +107,11 @@ class FirstRow extends ConsumerWidget {
             final customer = Customer.fromMap(item);
             // the value is used by other Widgets so we update it in the provider
             transactionUtils.customer = customer;
-            final inValidCustomer = transactionUtils.inValidTransaction(
-                context, customer, formDataNotifier, customerScreenController, customerScreenData);
-            final invoiceColor =
-                inValidCustomer ? const Color.fromARGB(255, 245, 187, 184) : Colors.white;
-            backgroundColorNotifier.state = invoiceColor;
+            // final inValidCustomer = transactionUtils.inValidTransaction(
+            //     context, customer, formDataNotifier, customerScreenController, customerScreenData);
+            // final invoiceColor =
+            //     inValidCustomer ? const Color.fromARGB(255, 245, 187, 184) : Colors.white;
+            // backgroundColorNotifier.state = invoiceColor;
           },
         ),
         if (!isVendor) HorizontalGap.l,
@@ -283,7 +282,7 @@ class TotalsRow extends ConsumerWidget {
     final customerScreenController = ref.read(customerScreenControllerProvider);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
-    final customerScreenData = ref.read(customerScreenDataProvider);
+    // final customerScreenData = ref.read(customerScreenDataProvider);
     final transactionUtils = ref.read(transactionUtilsControllerProvider);
     return SizedBox(
         width: customerInvoiceFormWidth * 0.6,
@@ -298,21 +297,21 @@ class TotalsRow extends ConsumerWidget {
               initialValue: formDataNotifier.getProperty(totalAmountKey),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({totalAmountKey: value});
-                // check wether customer exceeded the debt or time limits
-                // below applies only for customer invoices not any other transaction
-                if (transactionUtils.customer == null ||
-                    transactionType != TransactionType.customerInvoice.name) {
-                  return;
-                }
-                final inValidCustomer = transactionUtils.inValidTransaction(
-                    context,
-                    transactionUtils.customer!,
-                    formDataNotifier,
-                    customerScreenController,
-                    customerScreenData);
-                final invoiceColor =
-                    inValidCustomer ? const Color.fromARGB(255, 248, 177, 177) : Colors.white;
-                backgroundColorNotifier.state = invoiceColor;
+                // // check wether customer exceeded the debt or time limits
+                // // below applies only for customer invoices not any other transaction
+                // if (transactionUtils.customer == null ||
+                //     transactionType != TransactionType.customerInvoice.name) {
+                //   return;
+                // }
+                // final inValidCustomer = transactionUtils.inValidTransaction(
+                //     context,
+                //     transactionUtils.customer!,
+                //     formDataNotifier,
+                //     customerScreenController,
+                //     customerScreenData);
+                // final invoiceColor =
+                //     inValidCustomer ? const Color.fromARGB(255, 248, 177, 177) : Colors.white;
+                // backgroundColorNotifier.state = invoiceColor;
               },
             ),
             HorizontalGap.xxl,
