@@ -9,6 +9,8 @@ import 'package:tablets/src/features/transactions/repository/transaction_db_cach
 const salesmanDbRefKey = 'dbRef';
 const salesmanNameKey = 'name';
 const salaryKey = 'salary';
+const customersKey = 'customers';
+const customersDetailsKey = 'customersDetails';
 const salaryDetailsKey = 'salaryDetails';
 const totalDebtKey = 'totalDebt';
 const totalDebtDetailsKey = 'totalDebtDetails';
@@ -43,6 +45,8 @@ class SalesmanScreenController {
       salesmanNameKey: salesman.name,
       salaryKey: 0,
       salaryDetailsKey: [[]],
+      customersKey: 0,
+      customersDetailsKey: [[]],
       totalDebtKey: 0,
       totalDebtDetailsKey: [[]],
       dueDebtKey: 0,

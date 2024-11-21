@@ -137,6 +137,7 @@ class ListHeaders extends StatelessWidget {
         const MainScreenPlaceholder(width: 20, isExpanded: false),
         MainScreenHeaderCell(S.of(context).salesman_name),
         MainScreenHeaderCell(S.of(context).salary),
+        MainScreenHeaderCell(S.of(context).customers),
         MainScreenHeaderCell(S.of(context).current_debt),
         MainScreenHeaderCell(S.of(context).due_debt_amount),
         MainScreenHeaderCell(S.of(context).num_open_invoice),
@@ -162,6 +163,8 @@ class DataRow extends ConsumerWidget {
     final name = screenData[salesmanNameKey] as String;
     final salary = screenData[salaryKey] as double;
     final salaryDetails = screenData[salaryDetailsKey] as List<List<dynamic>>;
+    final numCustomers = screenData[customersKey] as double;
+    final customersList = screenData[customersDetailsKey] as List<List<dynamic>>;
     final totalDebt = screenData[totalDebtKey] as double;
     final customersTotalDebts = screenData[totalDebtDetailsKey] as List<List<dynamic>>;
     final dueDebt = screenData[dueDebtKey] as double;
@@ -184,6 +187,10 @@ class DataRow extends ConsumerWidget {
           MainScreenClickableCell(
             salary,
             () => reportController.showSalaryDetails(context, salaryDetails, name),
+          ),
+          MainScreenClickableCell(
+            numCustomers,
+            () => reportController.showCustomers(context, customersList, name),
           ),
           MainScreenClickableCell(
             totalDebt,

@@ -10,6 +10,7 @@ class SalesmanReportController {
 
   void showSalaryDetails(
       BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
+  void showCustomers(BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
   void showTotalDebts(BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
   void showDueDebts(BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
   void showOpenInvoices(
