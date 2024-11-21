@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -38,16 +39,21 @@ class CustomerList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(customerScreenDataNotifier);
-    return const Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        children: [
-          ListHeaders(),
-          Divider(),
-          ListData(),
-        ],
-      ),
-    );
+    final dbCache = ref.read(customerDbCacheProvider.notifier);
+    final dbData = dbCache.data;
+    Widget screenWidget = dbData.isNotEmpty
+        ? const Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                ListHeaders(),
+                Divider(),
+                ListData(),
+              ],
+            ),
+          )
+        : const HomeScreenGreeting();
+    return screenWidget;
   }
 }
 
@@ -160,7 +166,7 @@ class DataRow extends ConsumerWidget {
     final profit = customerScreenData[invoicesProfitKey] as double;
     final giftTransactions = customerScreenData[giftsDetailsKey] as List<List<dynamic>>;
     final totalGiftsAmount = customerScreenData[giftsKey] as double;
-    final inValidCustomer = customerScreenData[inValidKey] as bool;
+    final inValidCustomer = customerScreenData[inValidUserKey] as bool;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),

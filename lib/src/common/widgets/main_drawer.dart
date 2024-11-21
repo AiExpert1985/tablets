@@ -194,6 +194,13 @@ class TransactionsButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MainDrawerButton('transactions', S.of(context).transactions, () async {
       await initializeTransactionDbCache(context, ref);
+      // initialize related dbCaches
+      if (context.mounted) {
+        await initializeCustomerDbCache(context, ref);
+      }
+      if (context.mounted) {
+        await initializeProductDbCache(context, ref);
+      }
       final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).transactions;
@@ -215,7 +222,7 @@ class ProductsButton extends ConsumerWidget {
       //  we need related transactionDbCache, we make sure it is inialized
       await initializeTransactionDbCache(context, ref);
       if (context.mounted) {
-        await initializeProductsDbCache(context, ref);
+        await initializeProductDbCache(context, ref);
       }
       // if (context.mounted) {
       //   final testClass = TestProductScreenPerformance(context, ref);

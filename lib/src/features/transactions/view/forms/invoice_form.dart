@@ -14,6 +14,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
@@ -80,7 +81,7 @@ class FirstRow extends ConsumerWidget {
     final repository = isVendor ? vendorRepository : customerRepository;
     final transactionUtils = ref.read(transactionUtilsControllerProvider);
     final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
-    // final customerScreenData = ref.read(customerScreenDataProvider);
+    final customerScreenData = ref.read(customerScreenDataNotifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerScreenController = ref.read(customerScreenControllerProvider);
     return Row(
@@ -107,11 +108,11 @@ class FirstRow extends ConsumerWidget {
             final customer = Customer.fromMap(item);
             // the value is used by other Widgets so we update it in the provider
             transactionUtils.customer = customer;
-            // final inValidCustomer = transactionUtils.inValidTransaction(
-            //     context, customer, formDataNotifier, customerScreenController, customerScreenData);
-            // final invoiceColor =
-            //     inValidCustomer ? const Color.fromARGB(255, 245, 187, 184) : Colors.white;
-            // backgroundColorNotifier.state = invoiceColor;
+            final inValidCustomer = transactionUtils.inValidTransaction(
+                context, customer, formDataNotifier, customerScreenController);
+            final invoiceColor =
+                inValidCustomer ? const Color.fromARGB(255, 245, 187, 184) : Colors.white;
+            backgroundColorNotifier.state = invoiceColor;
           },
         ),
         if (!isVendor) HorizontalGap.l,
@@ -297,21 +298,21 @@ class TotalsRow extends ConsumerWidget {
               initialValue: formDataNotifier.getProperty(totalAmountKey),
               onChangedFn: (value) {
                 formDataNotifier.updateProperties({totalAmountKey: value});
-                // // check wether customer exceeded the debt or time limits
-                // // below applies only for customer invoices not any other transaction
-                // if (transactionUtils.customer == null ||
-                //     transactionType != TransactionType.customerInvoice.name) {
-                //   return;
-                // }
-                // final inValidCustomer = transactionUtils.inValidTransaction(
-                //     context,
-                //     transactionUtils.customer!,
-                //     formDataNotifier,
-                //     customerScreenController,
-                //     customerScreenData);
-                // final invoiceColor =
-                //     inValidCustomer ? const Color.fromARGB(255, 248, 177, 177) : Colors.white;
-                // backgroundColorNotifier.state = invoiceColor;
+                // check wether customer exceeded the debt or time limits
+                // below applies only for customer invoices not any other transaction
+                if (transactionUtils.customer == null ||
+                    transactionType != TransactionType.customerInvoice.name) {
+                  return;
+                }
+                final inValidCustomer = transactionUtils.inValidTransaction(
+                  context,
+                  transactionUtils.customer!,
+                  formDataNotifier,
+                  customerScreenController,
+                );
+                final invoiceColor =
+                    inValidCustomer ? const Color.fromARGB(255, 248, 177, 177) : Colors.white;
+                backgroundColorNotifier.state = invoiceColor;
               },
             ),
             HorizontalGap.xxl,

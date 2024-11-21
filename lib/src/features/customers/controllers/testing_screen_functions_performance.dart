@@ -67,6 +67,6 @@ class TestCustomerScreenPerformance {
     CustomerScreenController screenController,
     Map<String, dynamic> customerData,
   ) {
-    screenController.createCustomerScreenData(_context, customerData);
+    screenController.getCustomerScreenData(_context, customerData);
   }
 }

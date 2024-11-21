@@ -34,7 +34,7 @@ Future<void> initializeTransactionDbCache(BuildContext context, WidgetRef ref) a
   }
 }
 
-Future<void> initializeProductsDbCache(BuildContext context, WidgetRef ref) async {
+Future<void> initializeProductDbCache(BuildContext context, WidgetRef ref) async {
   final productDbCach = ref.read(productDbCacheProvider.notifier);
   if (productDbCach.data.isEmpty) {
     final productData = await ref.read(productRepositoryProvider).fetchItemListAsMaps();

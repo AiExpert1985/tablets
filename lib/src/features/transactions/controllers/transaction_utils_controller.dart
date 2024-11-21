@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/classes/screen_data.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
@@ -43,14 +44,13 @@ class TransactionsUtils {
     Customer selectedCustomer,
     ItemFormData formDataNotifier,
     CustomerScreenController customerScreenController,
-    ScreenData customerScreenDataProvider,
   ) {
-    customerScreenController.createCustomerScreenData(context, selectedCustomer.toMap());
-    final customerScreenData = customerScreenDataProvider.getItemData(selectedCustomer.dbRef);
+    final customerScreenData =
+        customerScreenController.getCustomerScreenData(context, selectedCustomer.toMap());
+    if (customerScreenData[inValidUserKey]) return true;
     final creditLimit = selectedCustomer.creditLimit;
     final totalDebt = customerScreenData[totalDebtKey];
-    final dueDebt = customerScreenData[dueDebtKey];
     final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
-    return totalAfterCurrentTransaction > creditLimit || dueDebt > 0;
+    return totalAfterCurrentTransaction > creditLimit;
   }
 }

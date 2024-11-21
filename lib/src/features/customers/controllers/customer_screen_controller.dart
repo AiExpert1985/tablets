@@ -27,7 +27,7 @@ const invoicesProfitKey = 'invoicesProfit';
 const invoicesProfitDetailsKey = 'invoicesProfitDetails';
 const giftsKey = 'gifts';
 const giftsDetailsKey = 'giftsDetails';
-const inValidKey = 'inValid';
+const inValidUserKey = 'inValid';
 
 final customerScreenControllerProvider = Provider<CustomerScreenController>((ref) {
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
@@ -50,7 +50,7 @@ class CustomerScreenController {
     final allCustomersData = _customerDbCache.data;
     List<Map<String, dynamic>> screenData = [];
     for (var customerData in allCustomersData) {
-      final newRow = createCustomerScreenData(context, customerData);
+      final newRow = getCustomerScreenData(context, customerData);
       screenData.add(newRow);
     }
     Map<String, dynamic> summaryTypes = {
@@ -66,7 +66,7 @@ class CustomerScreenController {
     _screenDataNotifier.set(screenData);
   }
 
-  Map<String, dynamic> createCustomerScreenData(
+  Map<String, dynamic> getCustomerScreenData(
       BuildContext context, Map<String, dynamic> customerData) {
     final customer = Customer.fromMap(customerData);
     final customerTransactions = getCustomerTransactions(customer.dbRef);
@@ -102,7 +102,7 @@ class CustomerScreenController {
       dueDebtDetailsKey: dueInvoices,
       giftsKey: totalGiftsAmount,
       giftsDetailsKey: giftTransactions,
-      inValidKey: inValidCustomer,
+      inValidUserKey: inValidCustomer,
       customerDbRefKey: customer.dbRef,
       customerNameKey: customer.name,
       customerSalesmanKey: customer.salesman,

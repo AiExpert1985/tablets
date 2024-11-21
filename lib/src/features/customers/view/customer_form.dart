@@ -11,6 +11,7 @@ import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/view/customer_form_fields.dart';
@@ -25,6 +26,7 @@ class CustomerForm extends ConsumerWidget {
     final formController = ref.watch(customerFormControllerProvider);
     final formDataNotifier = ref.read(customerFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    final screenController = ref.read(customerScreenControllerProvider);
     final dbCache = ref.read(customerDbCacheProvider.notifier);
     ref.watch(imagePickerProvider);
     return FormFrame(
@@ -40,15 +42,15 @@ class CustomerForm extends ConsumerWidget {
       ),
       buttons: [
         IconButton(
-          onPressed: () =>
-              _onSavePress(context, formDataNotifier, formImagesNotifier, formController, dbCache),
+          onPressed: () => _onSavePress(context, formDataNotifier, formImagesNotifier,
+              formController, dbCache, screenController),
           icon: const SaveIcon(),
         ),
         Visibility(
           visible: isEditMode,
           child: IconButton(
-            onPressed: () => _onDeletePressed(
-                context, formDataNotifier, formImagesNotifier, formController, dbCache),
+            onPressed: () => _onDeletePressed(context, formDataNotifier, formImagesNotifier,
+                formController, dbCache, screenController),
             icon: const DeleteIcon(),
           ),
         )
@@ -64,6 +66,7 @@ class CustomerForm extends ConsumerWidget {
     ImageSliderNotifier formImagesNotifier,
     ItemFormController formController,
     DbCache dbCache,
+    CustomerScreenController screenController,
   ) {
     if (!formController.validateData()) return;
     formController.submitData();
@@ -75,6 +78,10 @@ class CustomerForm extends ConsumerWidget {
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
     dbCache.update(itemData, operationType);
+    // redo screenData calculations
+    if (context.mounted) {
+      screenController.setAllCustomersScreenData(context);
+    }
   }
 
   void _onDeletePressed(
@@ -83,6 +90,7 @@ class CustomerForm extends ConsumerWidget {
     ImageSliderNotifier formImagesNotifier,
     ItemFormController formController,
     DbCache dbCache,
+    CustomerScreenController screenController,
   ) async {
     final confiramtion = await showDeleteConfirmationDialog(
         context: context, message: formDataNotifier.data['name']);
@@ -97,6 +105,10 @@ class CustomerForm extends ConsumerWidget {
       // update the dbCache (database mirror) so that we don't need to fetch data from db
       const operationType = DbCacheOperationTypes.delete;
       dbCache.update(itemData, operationType);
+      // redo screenData calculations
+      if (context.mounted) {
+        screenController.setAllCustomersScreenData(context);
+      }
     }
   }
 }

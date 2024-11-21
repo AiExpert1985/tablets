@@ -41,7 +41,7 @@ class TransactionGroupSelection extends ConsumerWidget {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                // Navigator.of(context).pop();
+                Navigator.of(context).pop();
                 showDialog(
                   context: context,
                   builder: (BuildContext ctx) => TransactionTypeSelection(formTypes[index]),
@@ -138,7 +138,7 @@ class TransactionTypeSelection extends ConsumerWidget {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () async {
-                // Navigator.of(context).pop();
+                Navigator.of(context).pop();
                 if (context.mounted) {
                   TransactionShowForm.showForm(
                     context,
