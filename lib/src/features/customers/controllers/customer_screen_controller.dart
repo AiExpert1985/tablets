@@ -50,7 +50,7 @@ class CustomerScreenController {
     }
     final processedInvoices = getCustomerProcessedInvoices(context, customerTransactions, customer);
     final openInvoices = _getOpenInvoices(context, processedInvoices, 5);
-    final matchingList = customerMatching(customerTransactions, context);
+    final matchingList = customerMatching(context, customerTransactions);
     final totalDebt = _getTotalDebt(matchingList, 4);
     final invoicesWithProfit = _getInvoicesWithProfit(processedInvoices);
     final totalProfit = _getTotalProfit(invoicesWithProfit, 5);
@@ -135,7 +135,7 @@ class CustomerScreenController {
   }
 
   List<List<dynamic>> customerMatching(
-      List<Map<String, dynamic>> customerTransactions, BuildContext context) {
+      BuildContext context, List<Map<String, dynamic>> customerTransactions) {
     List<List<dynamic>> matchingTransactions = [];
     for (int i = customerTransactions.length - 1; i >= 0; i--) {
       final transaction = Transaction.fromMap(customerTransactions[i]);

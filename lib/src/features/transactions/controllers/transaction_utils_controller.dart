@@ -51,6 +51,6 @@ class TransactionsUtils {
     final totalDebt = customerScreenData[totalDebtKey];
     final dueDebt = customerScreenData[dueDebtKey];
     final totalAfterCurrentTransaction = totalDebt + formDataNotifier.getProperty(totalAmountKey);
-    return totalAfterCurrentTransaction > creditLimit && dueDebt > 0;
+    return totalAfterCurrentTransaction > creditLimit || dueDebt > 0;
   }
 }
