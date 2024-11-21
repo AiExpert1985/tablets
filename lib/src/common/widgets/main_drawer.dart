@@ -5,7 +5,6 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
-import 'package:tablets/src/features/customers/controllers/testing_screen_functions_performance.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class MainDrawer extends ConsumerWidget {
@@ -62,7 +61,7 @@ class CustomersButton extends ConsumerWidget {
         pageTitleNotifier.state = S.of(context).customers;
       }
       // if (context.mounted) {
-      //   final testClass = TestScreenPerformance(context, ref);
+      //   final testClass = TestCustomerScreenPerformance(context, ref);
       //   testClass.run(10000);
       // }
       if (context.mounted) {
@@ -187,6 +186,10 @@ class ProductsButton extends ConsumerWidget {
       if (context.mounted) {
         await initializeProductsDbCache(context, ref);
       }
+      // if (context.mounted) {
+      //   final testClass = TestProductScreenPerformance(context, ref);
+      //   testClass.run(1000);
+      // }
       final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).products;

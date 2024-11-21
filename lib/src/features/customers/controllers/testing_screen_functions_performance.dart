@@ -7,8 +7,8 @@ import 'package:tablets/src/features/customers/repository/customer_db_cache_prov
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'dart:core';
 
-class TestScreenPerformance {
-  TestScreenPerformance(this._context, this._ref);
+class TestCustomerScreenPerformance {
+  TestCustomerScreenPerformance(this._context, this._ref);
   final WidgetRef _ref;
   final BuildContext _context;
 
