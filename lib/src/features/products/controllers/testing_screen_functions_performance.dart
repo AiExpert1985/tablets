@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
-import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'dart:core';
@@ -21,7 +19,7 @@ class TestProductScreenPerformance {
     final multipliedTransactionData = _createDuplicates(transactionData, transactionMultiple);
     transactionDbCache.set(multipliedTransactionData);
     final avgMatchingDuration = _runtests(multipliedTransactionData, productData);
-    tempPrint('test took $avgMatchingDuration seconds per product');
+    debugPrint('test took $avgMatchingDuration seconds per product');
   }
 
   /// returns a new copy of the list, where Maps are duplicated x number of times
@@ -39,9 +37,9 @@ class TestProductScreenPerformance {
   }
 
   double _runtests(List<Map<String, dynamic>> transactions, List<Map<String, dynamic>> products) {
-    tempPrint('num transactions = ${transactions.length}');
-    tempPrint('num products = ${products.length}');
-    tempPrint('avg num transactions per product = ${transactions.length ~/ products.length}');
+    debugPrint('num transactions = ${transactions.length}');
+    debugPrint('num products = ${products.length}');
+    debugPrint('avg num transactions per product = ${transactions.length ~/ products.length}');
     final screenController = _ref.read(productScreenControllerProvider);
     Stopwatch stopwatch = Stopwatch();
     stopwatch.start();
@@ -57,7 +55,6 @@ class TestProductScreenPerformance {
     ProductScreenController screenController,
     Map<String, dynamic> productData,
   ) {
-    final product = Product.fromMap(productData);
-    screenController.createProductScreenData(_context, product);
+    screenController.getProductScreenData(_context, productData);
   }
 }

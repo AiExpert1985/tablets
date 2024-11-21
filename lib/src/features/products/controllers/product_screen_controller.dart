@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/classes/screen_data.dart';
-import 'package:tablets/src/features/products/controllers/product_screen_data_provider.dart';
+import 'package:tablets/src/common/providers/screen_data_notifier.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_data_notifier.dart';
+import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:flutter/material.dart';
@@ -17,22 +18,41 @@ const profitDetailsKey = 'profitDetails';
 const totalStockPriceKey = 'itemTotalStockPrice';
 
 final productScreenControllerProvider = Provider<ProductScreenController>((ref) {
-  final screenDataProvider = ref.read(productScreenDataProvider);
+  final screenDataNotifier = ref.read(productScreenDataNotifier.notifier);
   final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
-  return ProductScreenController(screenDataProvider, transactionsDbCache);
+  final productDbCache = ref.read(productDbCacheProvider.notifier);
+  return ProductScreenController(screenDataNotifier, transactionsDbCache, productDbCache);
 });
 
 class ProductScreenController {
   ProductScreenController(
-    this._screenDataProvider,
+    this._screenDataNotifier,
     this._transactionsDbCache,
+    this._productDbCache,
   );
-  final ScreenData _screenDataProvider;
+  final ScreenDataNotifier _screenDataNotifier;
   final DbCache _transactionsDbCache;
+  final DbCache _productDbCache;
+
+  void setAllProductsScreenData(BuildContext context) {
+    final allProductsData = _productDbCache.data;
+    List<Map<String, dynamic>> screenData = [];
+    for (var productData in allProductsData) {
+      final newRow = getProductScreenData(context, productData);
+      screenData.add(newRow);
+    }
+    Map<String, dynamic> summaryTypes = {
+      totalStockPriceKey: 'sum',
+    };
+    _screenDataNotifier.initialize(summaryTypes);
+    _screenDataNotifier.set(screenData);
+  }
 
   /// create a list of lists, where each resulting list contains transaction info
   /// [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
-  void createProductScreenData(BuildContext context, Product product) {
+  Map<String, dynamic> getProductScreenData(
+      BuildContext context, Map<String, dynamic> productData) {
+    final product = Product.fromMap(productData);
     List<List<dynamic>> productProcessedTransactions = [];
     if (product.initialQuantity > 0) {
       final initialTransaction = _createInitialQuantityTransaction(product);
@@ -95,7 +115,7 @@ class ProductScreenController {
       profitDetailsKey: _getOnlyProfitInvoices(productProcessedTransactions, 5),
       totalStockPriceKey: productTotals[0] * product.buyingPrice,
     };
-    _screenDataProvider.addData(newDataRow);
+    return newDataRow;
   }
 
   /// creates a temp transaction using product initial quantity, the transaction is used in the

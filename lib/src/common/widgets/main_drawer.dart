@@ -6,6 +6,7 @@ import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class MainDrawer extends ConsumerWidget {
@@ -218,11 +219,15 @@ class ProductsButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final productScreenController = ref.read(productScreenControllerProvider);
     return MainDrawerButton('products', S.of(context).products, () async {
       //  we need related transactionDbCache, we make sure it is inialized
       await initializeTransactionDbCache(context, ref);
       if (context.mounted) {
         await initializeProductDbCache(context, ref);
+      }
+      if (context.mounted) {
+        productScreenController.setAllProductsScreenData(context);
       }
       // if (context.mounted) {
       //   final testClass = TestProductScreenPerformance(context, ref);

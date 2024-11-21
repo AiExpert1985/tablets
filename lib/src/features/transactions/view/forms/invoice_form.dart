@@ -14,7 +14,6 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
@@ -81,7 +80,6 @@ class FirstRow extends ConsumerWidget {
     final repository = isVendor ? vendorRepository : customerRepository;
     final transactionUtils = ref.read(transactionUtilsControllerProvider);
     final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
-    final customerScreenData = ref.read(customerScreenDataNotifier);
     final salesmanRepository = ref.read(salesmanRepositoryProvider);
     final customerScreenController = ref.read(customerScreenControllerProvider);
     return Row(

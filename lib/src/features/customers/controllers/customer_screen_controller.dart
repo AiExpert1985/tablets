@@ -31,9 +31,9 @@ const inValidUserKey = 'inValid';
 
 final customerScreenControllerProvider = Provider<CustomerScreenController>((ref) {
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
-  final screenDataProvider = ref.read(customerScreenDataNotifier.notifier);
+  final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
-  return CustomerScreenController(screenDataProvider, transactionDbCache, customerDbCache);
+  return CustomerScreenController(screenDataNotifier, transactionDbCache, customerDbCache);
 });
 
 class CustomerScreenController {

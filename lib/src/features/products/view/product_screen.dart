@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_form_data_notifier.dart';
 import 'package:tablets/src/features/products/controllers/product_report_controller.dart';
-import 'package:tablets/src/features/products/controllers/product_screen_data_provider.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_data_notifier.dart';
 import 'package:tablets/src/features/products/view/product_form.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -39,7 +40,7 @@ class ProductsList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dbCache = ref.read(productDbCacheProvider.notifier);
     final dbData = dbCache.data;
-    ref.watch(productDbCacheProvider);
+    ref.watch(productScreenDataNotifier);
 
     Widget screenWidget = dbData.isNotEmpty
         ? const Padding(
@@ -62,14 +63,14 @@ class ListData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dbCache = ref.read(productDbCacheProvider.notifier);
-    final dbData = dbCache.data;
-    ref.watch(productDbCacheProvider);
+    final screenDataNotifier = ref.read(productScreenDataNotifier.notifier);
+    final screenData = screenDataNotifier.data;
+    ref.watch(productScreenDataNotifier);
     return Expanded(
       child: ListView.builder(
-        itemCount: dbData.length,
+        itemCount: screenData.length,
         itemBuilder: (ctx, index) {
-          final productData = dbData[index];
+          final productData = screenData[index];
           return Column(
             children: [
               DataRow(productData),
@@ -87,43 +88,76 @@ class ListHeaders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const MainScreenPlaceholder(width: 20, isExpanded: false),
+            MainScreenHeaderCell(S.of(context).product_code),
+            MainScreenHeaderCell(S.of(context).product_name),
+            MainScreenHeaderCell(S.of(context).product_category),
+            MainScreenHeaderCell(S.of(context).product_salesman_commission),
+            if (!hideProductBuyingPrice) MainScreenHeaderCell(S.of(context).product_buying_price),
+            MainScreenHeaderCell(S.of(context).product_sell_whole_price),
+            MainScreenHeaderCell(S.of(context).product_sell_retail_price),
+            MainScreenHeaderCell(S.of(context).product_stock_quantity),
+            MainScreenHeaderCell(S.of(context).product_stock_amount),
+            MainScreenHeaderCell(S.of(context).product_profits),
+          ],
+        ),
+        VerticalGap.m,
+        if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
+      ],
+    );
+  }
+}
+
+class HeaderTotalsRow extends ConsumerWidget {
+  const HeaderTotalsRow({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final screenDataNotifier = ref.read(productScreenDataNotifier.notifier);
+    final summary = screenDataNotifier.summary;
+    double totalStockPrice = summary[totalStockPriceKey]['value'];
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const MainScreenPlaceholder(width: 20, isExpanded: false),
-        MainScreenHeaderCell(S.of(context).product_code),
-        MainScreenHeaderCell(S.of(context).product_name),
-        MainScreenHeaderCell(S.of(context).product_category),
-        MainScreenHeaderCell(S.of(context).product_salesman_commission),
-        if (!hideProductBuyingPrice) MainScreenHeaderCell(S.of(context).product_buying_price),
-        MainScreenHeaderCell(S.of(context).product_sell_whole_price),
-        MainScreenHeaderCell(S.of(context).product_sell_retail_price),
-        MainScreenHeaderCell(S.of(context).product_stock_quantity),
-        MainScreenHeaderCell(S.of(context).product_stock_amount),
-        MainScreenHeaderCell(S.of(context).product_profits),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        MainScreenHeaderCell(totalStockPrice, isColumnTotal: true),
+        const MainScreenPlaceholder(),
       ],
     );
   }
 }
 
 class DataRow extends ConsumerWidget {
-  const DataRow(this.productData, {super.key});
-  final Map<String, dynamic> productData;
+  const DataRow(this.productScreenData, {super.key});
+  final Map<String, dynamic> productScreenData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final product = Product.fromMap(productData);
-    final screenController = ref.read(productScreenControllerProvider);
-    screenController.createProductScreenData(context, product);
-    final screenDataProvider = ref.read(productScreenDataProvider);
-    final productScreenData = screenDataProvider.getItemData(product.dbRef);
+    final reportController = ref.read(productReportControllerProvider);
+    final productRef = productScreenData[productDbRefKey];
+    final productDbCache = ref.read(productDbCacheProvider.notifier);
+    final customerData = productDbCache.getItemByDbRef(productRef);
+    final product = Product.fromMap(customerData);
     final totalQuantity = productScreenData[quantityKey] as double;
     final productTransactions = productScreenData[quantityDetailsKey] as List<List<dynamic>>;
     // profit doesn't include salesman commission
     final totalItemProfit = productScreenData[profitKey] as double;
     final profitInvoices = productScreenData[profitDetailsKey] as List<List<dynamic>>;
     final totalStockPrice = productScreenData[totalStockPriceKey] as double;
-    final reportController = ref.read(productReportControllerProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: Row(

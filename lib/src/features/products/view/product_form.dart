@@ -9,6 +9,7 @@ import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_form_controller.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
@@ -25,6 +26,7 @@ class ProductForm extends ConsumerWidget {
     final formController = ref.watch(productFormControllerProvider);
     final formDataNotifier = ref.read(productFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    final screenController = ref.read(productScreenControllerProvider);
     final dbCache = ref.read(productDbCacheProvider.notifier);
     ref.watch(imagePickerProvider);
     return FormFrame(
@@ -40,8 +42,8 @@ class ProductForm extends ConsumerWidget {
           ],
         ),
       ),
-      buttons:
-          _actionButtons(context, formController, formDataNotifier, formImagesNotifier, dbCache),
+      buttons: _actionButtons(
+          context, formController, formDataNotifier, formImagesNotifier, dbCache, screenController),
       width: productFormWidth,
       height: productFormHeight,
     );
@@ -53,28 +55,35 @@ class ProductForm extends ConsumerWidget {
     ItemFormData formDataNotifier,
     ImageSliderNotifier formImagesNotifier,
     DbCache transactionDbCache,
+    ProductScreenController screenController,
   ) {
     return [
       IconButton(
         onPressed: () {
-          _onSavePressed(
-              context, formController, formDataNotifier, formImagesNotifier, transactionDbCache);
+          _onSavePressed(context, formController, formDataNotifier, formImagesNotifier,
+              transactionDbCache, screenController);
         },
         icon: const SaveIcon(),
       ),
       if (isEditMode)
         IconButton(
           onPressed: () {
-            _onDeletePressed(
-                context, formDataNotifier, formImagesNotifier, formController, transactionDbCache);
+            _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController,
+                transactionDbCache, screenController);
           },
           icon: const DeleteIcon(),
         ),
     ];
   }
 
-  void _onSavePressed(BuildContext context, ItemFormController formController,
-      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier, DbCache dbCache) {
+  void _onSavePressed(
+    BuildContext context,
+    ItemFormController formController,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+    DbCache dbCache,
+    ProductScreenController screenController,
+  ) {
     if (!formController.validateData()) return;
     formController.submitData();
     final formData = formDataNotifier.data;
@@ -85,14 +94,20 @@ class ProductForm extends ConsumerWidget {
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
     dbCache.update(itemData, operationType);
+    // redo screenData calculations
+    if (context.mounted) {
+      screenController.setAllProductsScreenData(context);
+    }
   }
 
   Future<void> _onDeletePressed(
-      BuildContext context,
-      ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier,
-      ItemFormController formController,
-      DbCache dbCache) async {
+    BuildContext context,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+    ItemFormController formController,
+    DbCache dbCache,
+    ProductScreenController screenController,
+  ) async {
     final confirmation = await showDeleteConfirmationDialog(
         context: context, message: formDataNotifier.data['name']);
     final formData = formDataNotifier.data;
@@ -106,6 +121,10 @@ class ProductForm extends ConsumerWidget {
       // update the bdCache (database mirror) so that we don't need to fetch data from db
       const operationType = DbCacheOperationTypes.delete;
       dbCache.update(itemData, operationType);
+      // redo screenData calculations
+      if (context.mounted) {
+        screenController.setAllProductsScreenData(context);
+      }
     }
   }
 }
