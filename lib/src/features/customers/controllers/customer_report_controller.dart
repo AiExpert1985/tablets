@@ -25,8 +25,21 @@ class CustomerReportController {
   }
 
   void showGiftsReport(BuildContext context, List<List<dynamic>> giftsList, String title) {
-    showReportDialog(context, _getGiftsReportTitles(context), giftsList,
-        dateIndex: 3, title: title, sumIndex: 4, useOriginalTransaction: true);
+    showReportDialog(
+      context,
+      _getGiftsReportTitles(context),
+      giftsList,
+      dateIndex: 3,
+      title: title,
+      sumIndex: 4,
+      dropdownIndex: 2,
+      dropdownList: [
+        S.of(context).transaction_type_gifts,
+        S.of(context).transaction_type_customer_invoice
+      ],
+      dropdownLabel: S.of(context).transaction_type,
+      useOriginalTransaction: true,
+    );
   }
 
   void showInvoicesReport(BuildContext context, List<List<dynamic>> invoices, String title) {

@@ -253,7 +253,7 @@ class CustomerScreenController {
           transaction.number,
           translateDbTextToScreenText(context, transaction.transactionType),
           transaction.date,
-          -transaction.transactionTotalProfit,
+          transaction.transactionTotalProfit,
         ]);
       } else if (transactionMap['transactionType'] == TransactionType.customerInvoice.name) {
         final transaction = Transaction.fromMap(transactionMap);
