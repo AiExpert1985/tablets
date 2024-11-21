@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
-import 'package:tablets/src/common/classes/screen_data.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
-import 'package:tablets/src/features/vendors/controllers/vendor_screen_data_provider.dart';
+import 'package:tablets/src/features/vendors/controllers/vendor_screen_data_notifier.dart';
 import 'package:tablets/src/features/vendors/model/vendor.dart';
+import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider.dart';
 
 const vendorDbRefKey = 'dbRef';
 const vendorNameKey = 'name';
@@ -16,20 +17,38 @@ const totalDebtKey = 'totalDebt';
 const totalDebtDetailsKey = 'totalDebtDetails';
 final vendorScreenControllerProvider = Provider<VendorScreenController>((ref) {
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
-  final screenDataProvider = ref.read(vendorScreenDataProvider);
-  return VendorScreenController(screenDataProvider, transactionDbCache);
+  final screenDataNotifier = ref.read(vendorScreenDataNotifier.notifier);
+  final vendorDbCache = ref.read(vendorDbCacheProvider.notifier);
+  return VendorScreenController(screenDataNotifier, transactionDbCache, vendorDbCache);
 });
 
 class VendorScreenController {
   VendorScreenController(
-    this._screenDataProvider,
+    this._screenDataNotifier,
     this._transactionDbCache,
+    this._vendorDbCache,
   );
 
-  final ScreenData _screenDataProvider;
+  final ScreenDataNotifier _screenDataNotifier;
   final DbCache _transactionDbCache;
+  final DbCache _vendorDbCache;
 
-  void createVendorScreenData(BuildContext context, Map<String, dynamic> customerData) {
+  void setAllVendorsScreenData(BuildContext context) {
+    final allVendorsData = _vendorDbCache.data;
+    List<Map<String, dynamic>> screenData = [];
+    for (var vendorData in allVendorsData) {
+      final newRow = getVendorScreenData(context, vendorData);
+      screenData.add(newRow);
+    }
+    Map<String, dynamic> summaryTypes = {
+      totalDebtKey: 'sum',
+    };
+    _screenDataNotifier.initialize(summaryTypes);
+    _screenDataNotifier.set(screenData);
+  }
+
+  Map<String, dynamic> getVendorScreenData(
+      BuildContext context, Map<String, dynamic> customerData) {
     final vendor = Vendor.fromMap(customerData);
     final vendorTransactions = getVendorTransactions(vendor.dbRef);
     if (vendor.initialAmount > 0) {
@@ -44,7 +63,7 @@ class VendorScreenController {
       totalDebtKey: totalDebt,
       totalDebtDetailsKey: matchingList,
     };
-    _screenDataProvider.addData(newDataRow);
+    return newDataRow;
   }
 
   List<Map<String, dynamic>> getVendorTransactions(String dbRef) {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -11,7 +13,7 @@ import 'package:tablets/src/features/vendors/controllers/vendor_drawer_provider.
 import 'package:tablets/src/features/vendors/controllers/vendor_form_controller.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_report_controller.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_screen_controller.dart';
-import 'package:tablets/src/features/vendors/controllers/vendor_screen_data_provider.dart';
+import 'package:tablets/src/features/vendors/controllers/vendor_screen_data_notifier.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider.dart';
 import 'package:tablets/src/features/vendors/view/vendor_form.dart';
 import 'package:tablets/src/features/vendors/model/vendor.dart';
@@ -39,7 +41,7 @@ class VendorList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dbCache = ref.read(vendorDbCacheProvider.notifier);
     final dbData = dbCache.data;
-    ref.watch(vendorDbCacheProvider);
+    ref.watch(vendorScreenDataNotifier);
     Widget screenWidget = dbData.isNotEmpty
         ? const Padding(
             padding: EdgeInsets.all(16),
@@ -61,14 +63,14 @@ class ListData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dbCache = ref.read(vendorDbCacheProvider.notifier);
-    final dbData = dbCache.data;
-    ref.watch(vendorDbCacheProvider);
+    final screenDataNotifier = ref.read(vendorScreenDataNotifier.notifier);
+    final screenData = screenDataNotifier.data;
+    ref.watch(vendorScreenDataNotifier);
     return Expanded(
       child: ListView.builder(
-        itemCount: dbData.length,
+        itemCount: screenData.length,
         itemBuilder: (ctx, index) {
-          final vendorData = dbData[index];
+          final vendorData = screenData[index];
           return Column(
             children: [
               DataRow(vendorData),
@@ -86,34 +88,60 @@ class ListHeaders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const MainScreenPlaceholder(width: 20, isExpanded: false),
+            MainScreenHeaderCell(S.of(context).vendor),
+            MainScreenHeaderCell(S.of(context).phone),
+            MainScreenHeaderCell(S.of(context).current_debt),
+          ],
+        ),
+        VerticalGap.m,
+        if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
+      ],
+    );
+  }
+}
+
+class HeaderTotalsRow extends ConsumerWidget {
+  const HeaderTotalsRow({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final screenDataNotifier = ref.read(vendorScreenDataNotifier.notifier);
+    final summary = screenDataNotifier.summary;
+    double totalDebt = summary[totalDebtKey]['value'];
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const MainScreenPlaceholder(width: 20, isExpanded: false),
-        MainScreenHeaderCell(S.of(context).vendor),
-        MainScreenHeaderCell(S.of(context).phone),
-        MainScreenHeaderCell(S.of(context).current_debt),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        MainScreenHeaderCell(totalDebt, isColumnTotal: true),
       ],
     );
   }
 }
 
 class DataRow extends ConsumerWidget {
-  const DataRow(this.vendorData, {super.key});
-  final Map<String, dynamic> vendorData;
+  const DataRow(this.vendorScreenData, {super.key});
+  final Map<String, dynamic> vendorScreenData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final vendor = Vendor.fromMap(vendorData);
     final reportController = ref.read(vendorReportControllerProvider);
-    final screenController = ref.read(vendorScreenControllerProvider);
-    screenController.createVendorScreenData(context, vendorData);
-    final screenDataProvider = ref.read(vendorScreenDataProvider);
-    final screenData = screenDataProvider.getItemData(vendor.dbRef);
-    final name = screenData[vendorNameKey] as String;
-    final phone = screenData[vendorPhoneKey] as String;
-    final totalDebt = screenData[totalDebtKey] as double;
-    final matchingList = screenData[totalDebtDetailsKey] as List<List<dynamic>>;
+    final productRef = vendorScreenData[vendorDbRefKey];
+    final productDbCache = ref.read(vendorDbCacheProvider.notifier);
+    final customerData = productDbCache.getItemByDbRef(productRef);
+    final vendor = Vendor.fromMap(customerData);
+    final name = vendorScreenData[vendorNameKey] as String;
+    final phone = vendorScreenData[vendorPhoneKey] as String;
+    final totalDebt = vendorScreenData[totalDebtKey] as double;
+    final matchingList = vendorScreenData[totalDebtDetailsKey] as List<List<dynamic>>;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),

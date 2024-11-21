@@ -46,14 +46,12 @@ class CustomerForm extends ConsumerWidget {
               formController, dbCache, screenController),
           icon: const SaveIcon(),
         ),
-        Visibility(
-          visible: isEditMode,
-          child: IconButton(
+        if (isEditMode)
+          IconButton(
             onPressed: () => _onDeletePressed(context, formDataNotifier, formImagesNotifier,
                 formController, dbCache, screenController),
             icon: const DeleteIcon(),
           ),
-        )
       ],
       width: customerFormWidth,
       height: customerFormHeight,
