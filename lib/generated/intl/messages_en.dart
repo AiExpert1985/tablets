@@ -35,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "average_invoice_closing_duration":
             MessageLookupByLibrary.simpleMessage(
                 "Average invoice closing duration"),
+        "basic_salary": MessageLookupByLibrary.simpleMessage("Basic salary"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "categories": MessageLookupByLibrary.simpleMessage("Categories"),
         "category": MessageLookupByLibrary.simpleMessage("Category"),
@@ -221,6 +222,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "remaining_amount":
             MessageLookupByLibrary.simpleMessage("Remaining amount"),
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
+        "salary": MessageLookupByLibrary.simpleMessage("Salary"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("Name"),
         "salesman_selection":
             MessageLookupByLibrary.simpleMessage("Salesman selection"),

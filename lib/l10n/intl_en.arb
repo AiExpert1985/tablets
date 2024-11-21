@@ -191,5 +191,7 @@
     "damagedItems": "Damaged items",
     "reload_page": "Reload page",
     "transaction_reports": "Transaction reports",
-    "printing_transactions": "Printing transactions"
+    "printing_transactions": "Printing transactions",
+    "salary": "Salary",
+    "basic_salary": "Basic salary"
 }

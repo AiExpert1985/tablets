@@ -109,7 +109,11 @@ class SalesmenButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MainDrawerButton('salesman', S.of(context).salesmen, () async {
       //  we need related transactionDbCache, we make sure it is inialized
+      //  and we need related customerDbCache, we make sure it is inialized
       await initializeTransactionDbCache(context, ref);
+      if (context.mounted) {
+        await initializeCustomerDbCache(context, ref);
+      }
       if (context.mounted) {
         await initializeSalesmanDbCache(context, ref);
       }

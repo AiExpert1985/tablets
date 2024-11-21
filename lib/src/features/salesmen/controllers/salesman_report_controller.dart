@@ -1,9 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final vendorReportControllerProvider = Provider<VendorReportController>((ref) {
-  return VendorReportController();
+final salesmanReportControllerProvider = Provider<SalesmanReportController>((ref) {
+  return SalesmanReportController();
 });
 
-class VendorReportController {
-  VendorReportController();
+class SalesmanReportController {
+  SalesmanReportController();
+
+  void showSalaryDetails(
+      BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
+  void showTotalDebts(BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
+  void showDueDebts(BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
+  void showOpenInvoices(
+      BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
+  void showDueInvoices(
+      BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
+  void showProfitTransactions(
+      BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
 }

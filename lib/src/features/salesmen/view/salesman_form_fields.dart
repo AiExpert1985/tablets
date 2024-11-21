@@ -32,6 +32,15 @@ class SalesmanFormFields extends ConsumerWidget {
               formDataNotifier.updateProperties({'phone': value});
             },
           ),
+          FormInputField(
+            dataType: FieldDataType.num,
+            name: 'salary',
+            label: S.of(context).basic_salary,
+            initialValue: formDataNotifier.getProperty('salary'),
+            onChangedFn: (value) {
+              formDataNotifier.updateProperties({'salary': value});
+            },
+          ),
         ],
       ),
     );

@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_drawer_provider.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_form_controller.dart';
+import 'package:tablets/src/features/salesmen/controllers/salesman_report_controller.dart';
+import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
+import 'package:tablets/src/features/salesmen/controllers/salesman_screen_data_provider.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/view/salesman_form.dart';
-import 'package:tablets/src/common/widgets/async_value_widget.dart';
-import 'package:tablets/src/common/widgets/image_titled.dart';
-import 'package:tablets/src/features/salesmen/controllers/salesman_filter_controller_.dart';
-import 'package:tablets/src/features/salesmen/controllers/salesman_filtered_list.dart';
 import 'package:tablets/src/features/salesmen/model/salesman.dart';
-import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 
 class SalesmanScreen extends ConsumerWidget {
   const SalesmanScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const AppScreenFrame(
-      SalesmanGrid(),
-      buttonsWidget: SalesmanFloatingButtons(),
+    // I need to read and watch db for one reason, which is hiding floating buttons when
+    // page is accessed by refresh and not throught the side bar
+    final dbCache = ref.read(salesmanDbCacheProvider.notifier).data;
+    ref.watch(salesmanDbCacheProvider);
+    return AppScreenFrame(
+      const SalesmanList(),
+      buttonsWidget: dbCache.isEmpty ? null : const SalesmanFloatingButtons(),
     );
   }
 }
@@ -70,10 +77,140 @@ class SalesmanFloatingButtons extends ConsumerWidget {
   }
 }
 
-class SalesmanGrid extends ConsumerWidget {
-  const SalesmanGrid({super.key});
+class SalesmanList extends ConsumerWidget {
+  const SalesmanList({super.key});
 
-  void showEditSalesmanForm(BuildContext context, WidgetRef ref, Salesman salesman) {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dbCache = ref.read(salesmanDbCacheProvider.notifier);
+    final dbData = dbCache.data;
+    ref.watch(salesmanDbCacheProvider);
+    Widget screenWidget = dbData.isNotEmpty
+        ? const Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                ListHeaders(),
+                Divider(),
+                ListData(),
+              ],
+            ),
+          )
+        : const HomeScreenGreeting();
+    return screenWidget;
+  }
+}
+
+class ListData extends ConsumerWidget {
+  const ListData({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dbCache = ref.read(salesmanDbCacheProvider.notifier);
+    final dbData = dbCache.data;
+    ref.watch(salesmanDbCacheProvider);
+    return Expanded(
+      child: ListView.builder(
+        itemCount: dbData.length,
+        itemBuilder: (ctx, index) {
+          final vendorData = dbData[index];
+          return Column(
+            children: [
+              DataRow(vendorData),
+              const Divider(thickness: 0.2, color: Colors.grey),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ListHeaders extends StatelessWidget {
+  const ListHeaders({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const MainScreenPlaceholder(width: 20, isExpanded: false),
+        MainScreenHeaderCell(S.of(context).salesman_name),
+        MainScreenHeaderCell(S.of(context).salary),
+        MainScreenHeaderCell(S.of(context).current_debt),
+        MainScreenHeaderCell(S.of(context).due_debt_amount),
+        MainScreenHeaderCell(S.of(context).num_open_invoice),
+        MainScreenHeaderCell(S.of(context).num_due_invoices),
+        MainScreenHeaderCell(S.of(context).invoice_profit),
+      ],
+    );
+  }
+}
+
+class DataRow extends ConsumerWidget {
+  const DataRow(this.salesmanData, {super.key});
+  final Map<String, dynamic> salesmanData;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final salesman = Salesman.fromMap(salesmanData);
+    final reportController = ref.read(salesmanReportControllerProvider);
+    final screenController = ref.read(salesmanScreenControllerProvider);
+    screenController.createSalesmanScreenData(context, salesmanData);
+    final screenDataProvider = ref.read(salesmanScreenDataProvider);
+    final screenData = screenDataProvider.getItemData(salesman.dbRef);
+    final name = screenData[salesmanNameKey] as String;
+    final salary = screenData[salaryKey] as double;
+    final salaryDetails = screenData[salaryDetailsKey] as List<List<dynamic>>;
+    final totalDebt = screenData[totalDebtKey] as double;
+    final customersTotalDebts = screenData[totalDebtDetailsKey] as List<List<dynamic>>;
+    final dueDebt = screenData[dueDebtKey] as double;
+    final customersDueDebts = screenData[dueDebtDetailsKey] as List<List<dynamic>>;
+    final numOpenInvoices = screenData[openInvoicesKey] as int;
+    final openInvoices = screenData[openInvoicesDetailsKey] as List<List<dynamic>>;
+    final numDueInovies = screenData[dueInvoicesKey] as int;
+    final dueInvoices = screenData[dueInvoicesDetailsKey] as List<List<dynamic>>;
+    final profit = screenData[profitKey] as double;
+    final profitTransactions = screenData[profitDetailsKey] as List<List<dynamic>>;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          MainScreenEditButton(
+              defaultImageUrl, () => _showEditSalesmanForm(context, ref, salesman)),
+          MainScreenTextCell(name),
+          MainScreenClickableCell(
+            salary,
+            () => reportController.showSalaryDetails(context, salaryDetails, name),
+          ),
+          MainScreenClickableCell(
+            totalDebt,
+            () => reportController.showTotalDebts(context, customersTotalDebts, name),
+          ),
+          MainScreenClickableCell(
+            dueDebt,
+            () => reportController.showDueDebts(context, customersDueDebts, name),
+          ),
+          MainScreenClickableCell(
+            numOpenInvoices,
+            () => reportController.showOpenInvoices(context, openInvoices, name),
+          ),
+          MainScreenClickableCell(
+            numDueInovies,
+            () => reportController.showDueInvoices(context, dueInvoices, name),
+          ),
+          MainScreenClickableCell(
+            profit,
+            () => reportController.showProfitTransactions(context, profitTransactions, name),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditSalesmanForm(BuildContext context, WidgetRef ref, Salesman salesman) {
     ref.read(salesmanFormDataProvider.notifier).initialize(initialData: salesman.toMap());
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize(urls: salesman.imageUrls);
@@ -83,35 +220,5 @@ class SalesmanGrid extends ConsumerWidget {
         isEditMode: true,
       ),
     ).whenComplete(imagePicker.close);
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final salesmantStream = ref.watch(salesmanStreamProvider);
-    final filterIsOn = ref.watch(salesmanFilterSwitchProvider);
-    final salesmanListValue =
-        filterIsOn ? ref.read(salesmanFilteredListProvider).getFilteredList() : salesmantStream;
-    return AsyncValueWidget<List<Map<String, dynamic>>>(
-      value: salesmanListValue,
-      data: (categories) => GridView.builder(
-        itemCount: categories.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 8,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-        ),
-        itemBuilder: (ctx, index) {
-          final salesman = Salesman.fromMap(categories[index]);
-          return InkWell(
-            hoverColor: const Color.fromARGB(255, 173, 170, 170),
-            onTap: () => showEditSalesmanForm(ctx, ref, salesman),
-            child: TitledImage(
-              imageUrl: salesman.coverImageUrl,
-              title: salesman.name,
-            ),
-          );
-        },
-      ),
-    );
   }
 }

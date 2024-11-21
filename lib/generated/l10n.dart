@@ -1979,6 +1979,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Salary`
+  String get salary {
+    return Intl.message(
+      'Salary',
+      name: 'salary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Basic salary`
+  String get basic_salary {
+    return Intl.message(
+      'Basic salary',
+      name: 'basic_salary',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

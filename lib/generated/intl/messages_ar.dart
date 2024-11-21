@@ -35,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "approve": MessageLookupByLibrary.simpleMessage("موافق"),
         "average_invoice_closing_duration":
             MessageLookupByLibrary.simpleMessage("معدل الاغلاق"),
+        "basic_salary": MessageLookupByLibrary.simpleMessage("الراتب الاسمي"),
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),
@@ -216,6 +217,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "remaining_amount":
             MessageLookupByLibrary.simpleMessage("المتبقى من القائمة"),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),
+        "salary": MessageLookupByLibrary.simpleMessage("الراتب الكلي"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "salesman_selection": MessageLookupByLibrary.simpleMessage("المندوب"),
         "salesmen": MessageLookupByLibrary.simpleMessage("المندوبين"),
