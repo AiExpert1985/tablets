@@ -148,11 +148,11 @@ class ListHeaders extends StatelessWidget {
             MainScreenHeaderCell(S.of(context).current_debt),
             MainScreenHeaderCell(S.of(context).due_debt_amount),
             MainScreenHeaderCell(S.of(context).receipts_number),
-            MainScreenHeaderCell(S.of(context).receipt_amount),
+            MainScreenHeaderCell(S.of(context).receipts_amount),
             MainScreenHeaderCell(S.of(context).invoices_number),
+            MainScreenHeaderCell(S.of(context).invoices_amount),
             MainScreenHeaderCell(S.of(context).num_open_invoice),
             MainScreenHeaderCell(S.of(context).num_due_invoices),
-            MainScreenHeaderCell(S.of(context).invoices_amount),
             MainScreenHeaderCell(S.of(context).returns_number),
             MainScreenHeaderCell(S.of(context).returns_amount),
             MainScreenHeaderCell(S.of(context).profits),
@@ -266,16 +266,16 @@ class DataRow extends ConsumerWidget {
             () => reportController.showTransactionCount(context, invoices, name),
           ),
           MainScreenClickableCell(
+            invoicesAmount,
+            () => reportController.showTransactionSum(context, invoices, name),
+          ),
+          MainScreenClickableCell(
             numOpenInvoices,
             () => reportController.showOpenInvoices(context, openInvoices, name),
           ),
           MainScreenClickableCell(
             numDueInovies,
             () => reportController.showDueInvoices(context, dueInvoices, name),
-          ),
-          MainScreenClickableCell(
-            invoicesAmount,
-            () => reportController.showTransactionSum(context, invoices, name),
           ),
           MainScreenClickableCell(
             numReturns,
