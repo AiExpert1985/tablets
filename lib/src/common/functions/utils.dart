@@ -206,3 +206,14 @@ List<List<dynamic>> trimLastXIndicesFromInnerLists(List<List<dynamic>> data, int
   }
   return result;
 }
+
+///returns the sum of a list of lists for a specific index
+double sumAtIndex(List<List<dynamic>> listOfLists, int index) {
+  double sum = 0;
+  for (var sublist in listOfLists) {
+    if (index < sublist.length) {
+      sum += sublist[index];
+    }
+  }
+  return sum;
+}

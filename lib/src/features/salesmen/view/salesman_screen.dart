@@ -23,13 +23,10 @@ class SalesmanScreen extends ConsumerWidget {
   const SalesmanScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // I need to read and watch db for one reason, which is hiding floating buttons when
-    // page is accessed by refresh and not throught the side bar
-    final dbCache = ref.read(salesmanDbCacheProvider.notifier).data;
     ref.watch(salesmanDbCacheProvider);
-    return AppScreenFrame(
-      const SalesmanList(),
-      buttonsWidget: dbCache.isEmpty ? null : const SalesmanFloatingButtons(),
+    return const AppScreenFrame(
+      SalesmanList(),
+      buttonsWidget: SalesmanFloatingButtons(),
     );
   }
 }
@@ -146,7 +143,7 @@ class ListHeaders extends StatelessWidget {
           children: [
             const MainScreenPlaceholder(width: 20, isExpanded: false),
             MainScreenHeaderCell(S.of(context).salesman_name),
-            MainScreenHeaderCell(S.of(context).salary),
+            MainScreenHeaderCell(S.of(context).commission),
             MainScreenHeaderCell(S.of(context).customers),
             MainScreenHeaderCell(S.of(context).current_debt),
             MainScreenHeaderCell(S.of(context).due_debt_amount),
@@ -208,8 +205,8 @@ class DataRow extends ConsumerWidget {
     final customerData = salesmanDbCache.getItemByDbRef(customerRef);
     final salesman = Salesman.fromMap(customerData);
     final name = salesmanScreenData[salesmanNameKey] as String;
-    final salary = salesmanScreenData[salaryKey] as double;
-    final salaryDetails = salesmanScreenData[salaryDetailsKey] as List<List<dynamic>>;
+    final commission = salesmanScreenData[commissionKey] as double;
+    final commissionDetails = salesmanScreenData[commissionDetailsKey] as List<List<dynamic>>;
     final numCustomers = salesmanScreenData[customersKey] as double;
     final customersList = salesmanScreenData[customersDetailsKey] as List<List<dynamic>>;
     final totalDebt = salesmanScreenData[totalDebtKey] as double;
@@ -223,12 +220,12 @@ class DataRow extends ConsumerWidget {
     final profit = salesmanScreenData[profitKey] as double;
     final profitTransactions = salesmanScreenData[profitDetailsKey] as List<List<dynamic>>;
     final numInvoices = salesmanScreenData[numInvoicesKey] as double;
-    final invoices = salesmanScreenData[numInvoicesDetailsKey] as List<List<dynamic>>;
+    final invoices = salesmanScreenData[invoicesKey] as List<List<dynamic>>;
     final numReceipts = salesmanScreenData[numReceiptsKey] as double;
-    final receipts = salesmanScreenData[numReceiptsDetailsKey] as List<List<dynamic>>;
+    final receipts = salesmanScreenData[receiptsKey] as List<List<dynamic>>;
     final invoicesAmount = salesmanScreenData[invoicesAmountKey] as double;
     final receiptAmount = salesmanScreenData[receiptsAmountKey] as double;
-    final returns = salesmanScreenData[numReturnsDetailsKey] as List<List<dynamic>>;
+    final returns = salesmanScreenData[returnsKey] as List<List<dynamic>>;
     final numReturns = salesmanScreenData[numReturnsKey] as double;
     final returnsAmount = salesmanScreenData[returnsAmountKey] as double;
 
@@ -241,8 +238,8 @@ class DataRow extends ConsumerWidget {
               defaultImageUrl, () => _showEditSalesmanForm(context, ref, salesman)),
           MainScreenTextCell(name),
           MainScreenClickableCell(
-            salary,
-            () => reportController.showSalaryDetails(context, salaryDetails, name),
+            commission,
+            () => reportController.showTransactionSum(context, commissionDetails, name),
           ),
           MainScreenClickableCell(
             numCustomers,
@@ -258,15 +255,15 @@ class DataRow extends ConsumerWidget {
           ),
           MainScreenClickableCell(
             numReceipts,
-            () => reportController.showDueInvoices(context, receipts, name),
+            () => reportController.showTransactionCount(context, receipts, name),
           ),
           MainScreenClickableCell(
             receiptAmount,
-            () => reportController.showDueInvoices(context, receipts, name),
+            () => reportController.showTransactionSum(context, receipts, name),
           ),
           MainScreenClickableCell(
             numInvoices,
-            () => reportController.showDueInvoices(context, invoices, name),
+            () => reportController.showTransactionCount(context, invoices, name),
           ),
           MainScreenClickableCell(
             numOpenInvoices,
@@ -278,15 +275,15 @@ class DataRow extends ConsumerWidget {
           ),
           MainScreenClickableCell(
             invoicesAmount,
-            () => reportController.showDueInvoices(context, invoices, name),
+            () => reportController.showTransactionSum(context, invoices, name),
           ),
           MainScreenClickableCell(
             numReturns,
-            () => reportController.showDueInvoices(context, returns, name),
+            () => reportController.showTransactionCount(context, returns, name),
           ),
           MainScreenClickableCell(
             returnsAmount,
-            () => reportController.showDueInvoices(context, returns, name),
+            () => reportController.showTransactionSum(context, returns, name),
           ),
           MainScreenClickableCell(
             profit,

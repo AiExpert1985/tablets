@@ -24,6 +24,8 @@ void showReportDialog(
   // it will not be displayed in the rows of data, but used to show the orginal transaction
   // as a read only dialog when the row is pressed.
   bool useOriginalTransaction = false,
+  // if isCount, means we take count, not sum
+  bool isCount = false,
 }) {
   showDialog(
     context: context,
@@ -39,7 +41,8 @@ void showReportDialog(
           dropdownList: dropdownList,
           dropdownLabel: dropdownLabel,
           sumIndex: sumIndex,
-          useOriginalTransaction: useOriginalTransaction);
+          useOriginalTransaction: useOriginalTransaction,
+          isCount: isCount);
     },
   );
 }
@@ -56,6 +59,7 @@ class _DateFilterDialog extends StatefulWidget {
   final String? dropdownLabel;
   final int? sumIndex;
   final bool useOriginalTransaction;
+  final bool isCount;
 
   const _DateFilterDialog({
     required this.width,
@@ -69,6 +73,7 @@ class _DateFilterDialog extends StatefulWidget {
     this.dropdownLabel,
     this.sumIndex,
     required this.useOriginalTransaction,
+    required this.isCount,
   });
 
   @override
@@ -111,6 +116,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
             _buildListTitles(),
             _buildDataList(),
             if (widget.sumIndex != null) _buildSumDisplay(),
+            if (widget.isCount) _buildCountDisplay(),
           ],
         ),
       ),
@@ -322,12 +328,29 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     }
     return _buildRowContrainer(
       Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+        padding: const EdgeInsets.symmetric(horizontal: 70.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(S.of(context).total, style: const TextStyle(fontSize: 18)),
             Text(doubleToStringWithComma(sum), style: const TextStyle(fontSize: 18))
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCountDisplay() {
+    int count = filteredList.length;
+
+    return _buildRowContrainer(
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 70.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(S.of(context).count, style: const TextStyle(fontSize: 18)),
+            Text(doubleToStringWithComma(count.toDouble()), style: const TextStyle(fontSize: 18))
           ],
         ),
       ),

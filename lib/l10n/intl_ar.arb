@@ -201,5 +201,7 @@
     "receipts_number": "عدد الوصولات",
     "receipts_amount": "مبلغ الوصولات",
     "returns_number": "عدد الارجاعات",
-    "returns_amount": "مبلغ الارجاعات"
+    "returns_amount": "مبلغ الارجاعات",
+    "count": "العدد",
+    "commission": "العمولة"
 }

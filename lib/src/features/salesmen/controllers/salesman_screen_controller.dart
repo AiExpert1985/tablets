@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
@@ -13,10 +14,10 @@ import 'package:tablets/src/features/transactions/repository/transaction_db_cach
 
 const salesmanDbRefKey = 'dbRef';
 const salesmanNameKey = 'name';
-const salaryKey = 'salary';
+const commissionKey = 'commission';
 const customersKey = 'customers';
 const customersDetailsKey = 'customersDetails';
-const salaryDetailsKey = 'salaryDetails';
+const commissionDetailsKey = 'salaryDetails';
 const totalDebtKey = 'totalDebt';
 const totalDebtDetailsKey = 'totalDebtDetails';
 const dueDebtKey = 'dueDebt';
@@ -28,13 +29,13 @@ const dueInvoicesDetailsKey = 'dueInvoicesDetails';
 const profitKey = 'profit';
 const profitDetailsKey = 'profitDetails';
 const numInvoicesKey = 'numInvoices';
-const numInvoicesDetailsKey = 'numInvoicesDetails';
+const invoicesKey = 'numInvoicesDetails';
 const numReceiptsKey = 'numReceipts';
-const numReceiptsDetailsKey = 'numReceiptsDetails';
+const receiptsKey = 'numReceiptsDetails';
 const invoicesAmountKey = 'invoicesAmount';
 const receiptsAmountKey = 'receiptsAmount';
 const numReturnsKey = 'numReturns';
-const numReturnsDetailsKey = 'numReturnsDetails';
+const returnsKey = 'numReturnsDetails';
 const returnsAmountKey = 'returnsAmount';
 
 final salesmanScreenControllerProvider = Provider<SalesmanScreenController>((ref) {
@@ -73,7 +74,7 @@ class SalesmanScreenController {
       screenData.add(newRow);
     }
     Map<String, dynamic> summaryTypes = {
-      salaryKey: 'sum',
+      commissionKey: 'sum',
       totalDebtKey: 'sum',
       dueDebtKey: 'sum',
       openInvoicesKey: 'sum',
@@ -84,6 +85,26 @@ class SalesmanScreenController {
     _screenDataNotifier.set(screenData);
   }
 
+  List<List<dynamic>> _getInvoices(
+      Map<String, List<List<dynamic>>> processedTransactionsMap, String name) {
+    final transactions = processedTransactionsMap[name] ?? [[]];
+    return trimLastXIndicesFromInnerLists(transactions, 2);
+  }
+
+  List<List<dynamic>> _getProfitableInvoices(
+      Map<String, List<List<dynamic>>> processedTransactionsMap) {
+    final invoices = processedTransactionsMap['invoicesList'] ?? [[]];
+    final receipts = processedTransactionsMap['reciptsList'] ?? [[]];
+    final profitableInvoices = [...invoices, ...receipts];
+    return trimLastXIndicesFromInnerLists(profitableInvoices, 1);
+  }
+
+  List<List<dynamic>> _getCommissions(
+      Map<String, List<List<dynamic>>> processedTransactionsMap, String name) {
+    final transactions = processedTransactionsMap[name] ?? [[]];
+    return removeIndicesFromInnerLists(transactions, [4, 5]);
+  }
+
   Map<String, dynamic> getSalesmanScreenData(
     BuildContext context,
     Map<String, dynamic> salesmanData,
@@ -92,14 +113,28 @@ class SalesmanScreenController {
   ) {
     final salesman = Salesman.fromMap(salesmanData);
     final numCustomers = salesmanCustomers.length;
-    // final numInvoices =
+    final customers = _getCustomerList(salesmanCustomers);
+    final processedTransactionsMap = _getProcessedTransactions(context, salesmanTransactions);
+    final invoices = _getInvoices(processedTransactionsMap, 'invoicesList');
+    final invoicesNumber = invoices.length;
+    final invoicesAmount = sumAtIndex(invoices, 4);
+    final receipts = _getInvoices(processedTransactionsMap, 'reciptsList');
+    final receiptsNumber = receipts.length;
+    final receiptsAmount = sumAtIndex(receipts, 4);
+    final returns = _getInvoices(processedTransactionsMap, 'returnsList');
+    final numReturns = returns.length;
+    final returnsAmount = sumAtIndex(returns, 4);
+    final profits = _getProfitableInvoices(processedTransactionsMap);
+    final profitAmount = sumAtIndex(profits, 5);
+    final commissions = _getCommissions(processedTransactionsMap, 'invoicesList');
+    final commissionAmount = sumAtIndex(commissions, 4);
     Map<String, dynamic> newDataRow = {
       salesmanDbRefKey: salesman.dbRef,
       salesmanNameKey: salesman.name,
-      salaryKey: 0,
-      salaryDetailsKey: [[]],
+      commissionKey: commissionAmount,
+      commissionDetailsKey: commissions,
       customersKey: numCustomers,
-      customersDetailsKey: [[]],
+      customersDetailsKey: customers,
       totalDebtKey: 0,
       totalDebtDetailsKey: [[]],
       dueDebtKey: 0,
@@ -108,17 +143,17 @@ class SalesmanScreenController {
       openInvoicesDetailsKey: [[]],
       dueInvoicesKey: 0,
       dueInvoicesDetailsKey: [[]],
-      profitKey: 0,
-      profitDetailsKey: [[]],
-      numInvoicesKey: 0,
-      numInvoicesDetailsKey: [[]],
-      numReceiptsKey: 0,
-      numReceiptsDetailsKey: [[]],
-      invoicesAmountKey: 0,
-      receiptsAmountKey: 0,
-      numReturnsKey: 0,
-      numReturnsDetailsKey: [[]],
-      returnsAmountKey: 0,
+      profitKey: profitAmount,
+      profitDetailsKey: profits,
+      numInvoicesKey: invoicesNumber,
+      invoicesKey: invoices,
+      numReceiptsKey: receiptsNumber,
+      receiptsKey: receipts,
+      invoicesAmountKey: invoicesAmount,
+      receiptsAmountKey: receiptsAmount,
+      numReturnsKey: numReturns,
+      returnsKey: returns,
+      returnsAmountKey: returnsAmount,
     };
     return newDataRow;
   }
@@ -166,7 +201,7 @@ class SalesmanScreenController {
   }
 
   Map<String, List<List<dynamic>>> _getProcessedTransactions(
-      List<Transaction> salesmanTransactions) {
+      BuildContext context, List<Transaction> salesmanTransactions) {
     List<List<dynamic>> invoicesList = [];
     List<List<dynamic>> receiptsList = [];
     List<List<dynamic>> returnsList = [];
@@ -174,13 +209,12 @@ class SalesmanScreenController {
       final transactionType = transaction.transactionType;
       final processedTransaction = [
         transaction,
-        transaction.transactionType,
+        translateDbTextToScreenText(context, transaction.transactionType),
         transaction.date,
         transaction.name,
         transaction.totalAmount,
         transaction.transactionTotalProfit,
         transaction.salesmanTransactionComssion,
-        1,
       ];
       if (transactionType == TransactionType.customerInvoice.name) {
         invoicesList.add(processedTransaction);
@@ -195,5 +229,13 @@ class SalesmanScreenController {
       'reciptsList': receiptsList,
       'returnsList': returnsList,
     };
+  }
+
+  List<List<dynamic>> _getCustomerList(List<Customer> salesmanCustomers) {
+    List<List<dynamic>> processedList = [];
+    for (var customer in salesmanCustomers) {
+      processedList.add([customer.name, customer.region]);
+    }
+    return processedList;
   }
 }

@@ -2079,6 +2079,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Count`
+  String get count {
+    return Intl.message(
+      'Count',
+      name: 'count',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Commission`
+  String get commission {
+    return Intl.message(
+      'Commission',
+      name: 'commission',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

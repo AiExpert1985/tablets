@@ -201,5 +201,7 @@
     "receipts_number": "Receipts number",
     "receipts_amount": "Receipts amount",
     "returns_number": "Returns number",
-    "returns_amount": "Returns amount"
+    "returns_amount": "Returns amount",
+    "count": "Count",
+    "commission": "Commission"
 }

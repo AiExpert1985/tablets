@@ -43,6 +43,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "category_selection":
             MessageLookupByLibrary.simpleMessage("اختيار الصنف "),
         "choose_image": MessageLookupByLibrary.simpleMessage("اختر صورة"),
+        "commission": MessageLookupByLibrary.simpleMessage("العمولة"),
+        "count": MessageLookupByLibrary.simpleMessage("العدد"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
         "credit_limit": MessageLookupByLibrary.simpleMessage("اقصى حد للدين"),

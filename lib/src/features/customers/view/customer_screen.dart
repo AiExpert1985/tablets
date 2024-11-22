@@ -23,13 +23,10 @@ class CustomerScreen extends ConsumerWidget {
   const CustomerScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // I need to read and watch db for one reason, which is hiding floating buttons when
-    // page is accessed by refresh and not throught the side bar
-    final dbCache = ref.read(customerDbCacheProvider.notifier).data;
     ref.watch(customerDbCacheProvider);
-    return AppScreenFrame(
-      const CustomerList(),
-      buttonsWidget: dbCache.isEmpty ? null : const CustomerFloatingButtons(),
+    return const AppScreenFrame(
+      CustomerList(),
+      buttonsWidget: CustomerFloatingButtons(),
     );
   }
 }
