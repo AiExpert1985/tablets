@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
-import 'package:tablets/src/common/classes/screen_data.dart';
-import 'package:tablets/src/features/salesmen/controllers/salesman_screen_data_provider.dart';
+import 'package:tablets/src/common/providers/screen_data_notifier.dart';
+import 'package:tablets/src/features/salesmen/controllers/salesman_screen_data_notifier.dart';
 import 'package:tablets/src/features/salesmen/model/salesman.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 
 const salesmanDbRefKey = 'dbRef';
@@ -25,20 +26,43 @@ const profitDetailsKey = 'profitDetails';
 
 final salesmanScreenControllerProvider = Provider<SalesmanScreenController>((ref) {
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
-  final screenDataProvider = ref.read(salesmanScreenDataProvider);
-  return SalesmanScreenController(screenDataProvider, transactionDbCache);
+  final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
+  final screenDataNotifier = ref.read(salesmanScreenDataNotifier.notifier);
+  return SalesmanScreenController(screenDataNotifier, transactionDbCache, salesmanDbCache);
 });
 
 class SalesmanScreenController {
   SalesmanScreenController(
-    this._screenDataProvider,
+    this._screenDataNotifier,
     this._transactionDbCache,
+    this._salesmanDbCache,
   );
 
-  final ScreenData _screenDataProvider;
+  final ScreenDataNotifier _screenDataNotifier;
   final DbCache _transactionDbCache;
+  final DbCache _salesmanDbCache;
 
-  void createSalesmanScreenData(BuildContext context, Map<String, dynamic> salesmanData) {
+  void setAllSalesmenScreenData(BuildContext context) {
+    final allSalesmenData = _salesmanDbCache.data;
+    List<Map<String, dynamic>> screenData = [];
+    for (var salesmanData in allSalesmenData) {
+      final newRow = getSalesmanScreenData(context, salesmanData);
+      screenData.add(newRow);
+    }
+    Map<String, dynamic> summaryTypes = {
+      salaryKey: 'sum',
+      totalDebtKey: 'sum',
+      dueDebtKey: 'sum',
+      openInvoicesKey: 'sum',
+      dueInvoicesKey: 'sum',
+      profitKey: 'sum',
+    };
+    _screenDataNotifier.initialize(summaryTypes);
+    _screenDataNotifier.set(screenData);
+  }
+
+  Map<String, dynamic> getSalesmanScreenData(
+      BuildContext context, Map<String, dynamic> salesmanData) {
     final salesman = Salesman.fromMap(salesmanData);
     Map<String, dynamic> newDataRow = {
       salesmanDbRefKey: salesman.dbRef,
@@ -58,6 +82,6 @@ class SalesmanScreenController {
       profitKey: 0,
       profitDetailsKey: [[]],
     };
-    _screenDataProvider.addData(newDataRow);
+    return newDataRow;
   }
 }

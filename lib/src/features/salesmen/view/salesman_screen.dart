@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -11,7 +13,7 @@ import 'package:tablets/src/features/salesmen/controllers/salesman_drawer_provid
 import 'package:tablets/src/features/salesmen/controllers/salesman_form_controller.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_report_controller.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
-import 'package:tablets/src/features/salesmen/controllers/salesman_screen_data_provider.dart';
+import 'package:tablets/src/features/salesmen/controllers/salesman_screen_data_notifier.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/view/salesman_form.dart';
 import 'package:tablets/src/features/salesmen/model/salesman.dart';
@@ -106,14 +108,14 @@ class ListData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dbCache = ref.read(salesmanDbCacheProvider.notifier);
-    final dbData = dbCache.data;
-    ref.watch(salesmanDbCacheProvider);
+    final screenDataNotifier = ref.read(salesmanScreenDataNotifier.notifier);
+    final screenData = screenDataNotifier.data;
+    ref.watch(salesmanScreenDataNotifier);
     return Expanded(
       child: ListView.builder(
-        itemCount: dbData.length,
+        itemCount: screenData.length,
         itemBuilder: (ctx, index) {
-          final vendorData = dbData[index];
+          final vendorData = screenData[index];
           return Column(
             children: [
               DataRow(vendorData),
@@ -131,50 +133,77 @@ class ListHeaders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const MainScreenPlaceholder(width: 20, isExpanded: false),
+            MainScreenHeaderCell(S.of(context).salesman_name),
+            MainScreenHeaderCell(S.of(context).salary),
+            MainScreenHeaderCell(S.of(context).customers),
+            MainScreenHeaderCell(S.of(context).current_debt),
+            MainScreenHeaderCell(S.of(context).due_debt_amount),
+            MainScreenHeaderCell(S.of(context).num_open_invoice),
+            MainScreenHeaderCell(S.of(context).num_due_invoices),
+            MainScreenHeaderCell(S.of(context).invoice_profit),
+          ],
+        ),
+        VerticalGap.m,
+        if (!hideMainScreenColumnTotals) const HeaderTotalsRow()
+      ],
+    );
+  }
+}
+
+class HeaderTotalsRow extends ConsumerWidget {
+  const HeaderTotalsRow({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const MainScreenPlaceholder(width: 20, isExpanded: false),
-        MainScreenHeaderCell(S.of(context).salesman_name),
-        MainScreenHeaderCell(S.of(context).salary),
-        MainScreenHeaderCell(S.of(context).customers),
-        MainScreenHeaderCell(S.of(context).current_debt),
-        MainScreenHeaderCell(S.of(context).due_debt_amount),
-        MainScreenHeaderCell(S.of(context).num_open_invoice),
-        MainScreenHeaderCell(S.of(context).num_due_invoices),
-        MainScreenHeaderCell(S.of(context).invoice_profit),
+        MainScreenPlaceholder(width: 20, isExpanded: false),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
       ],
     );
   }
 }
 
 class DataRow extends ConsumerWidget {
-  const DataRow(this.salesmanData, {super.key});
-  final Map<String, dynamic> salesmanData;
+  const DataRow(this.salesmanScreenData, {super.key});
+  final Map<String, dynamic> salesmanScreenData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final salesman = Salesman.fromMap(salesmanData);
     final reportController = ref.read(salesmanReportControllerProvider);
-    final screenController = ref.read(salesmanScreenControllerProvider);
-    screenController.createSalesmanScreenData(context, salesmanData);
-    final screenDataProvider = ref.read(salesmanScreenDataProvider);
-    final screenData = screenDataProvider.getItemData(salesman.dbRef);
-    final name = screenData[salesmanNameKey] as String;
-    final salary = screenData[salaryKey] as double;
-    final salaryDetails = screenData[salaryDetailsKey] as List<List<dynamic>>;
-    final numCustomers = screenData[customersKey] as double;
-    final customersList = screenData[customersDetailsKey] as List<List<dynamic>>;
-    final totalDebt = screenData[totalDebtKey] as double;
-    final customersTotalDebts = screenData[totalDebtDetailsKey] as List<List<dynamic>>;
-    final dueDebt = screenData[dueDebtKey] as double;
-    final customersDueDebts = screenData[dueDebtDetailsKey] as List<List<dynamic>>;
-    final numOpenInvoices = screenData[openInvoicesKey] as int;
-    final openInvoices = screenData[openInvoicesDetailsKey] as List<List<dynamic>>;
-    final numDueInovies = screenData[dueInvoicesKey] as int;
-    final dueInvoices = screenData[dueInvoicesDetailsKey] as List<List<dynamic>>;
-    final profit = screenData[profitKey] as double;
-    final profitTransactions = screenData[profitDetailsKey] as List<List<dynamic>>;
+    final customerRef = salesmanScreenData[salesmanDbRefKey];
+    final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
+    final customerData = salesmanDbCache.getItemByDbRef(customerRef);
+    final salesman = Salesman.fromMap(customerData);
+    final name = salesmanScreenData[salesmanNameKey] as String;
+    final salary = salesmanScreenData[salaryKey] as double;
+    final salaryDetails = salesmanScreenData[salaryDetailsKey] as List<List<dynamic>>;
+    final numCustomers = salesmanScreenData[customersKey] as double;
+    final customersList = salesmanScreenData[customersDetailsKey] as List<List<dynamic>>;
+    final totalDebt = salesmanScreenData[totalDebtKey] as double;
+    final customersTotalDebts = salesmanScreenData[totalDebtDetailsKey] as List<List<dynamic>>;
+    final dueDebt = salesmanScreenData[dueDebtKey] as double;
+    final customersDueDebts = salesmanScreenData[dueDebtDetailsKey] as List<List<dynamic>>;
+    final numOpenInvoices = salesmanScreenData[openInvoicesKey] as int;
+    final openInvoices = salesmanScreenData[openInvoicesDetailsKey] as List<List<dynamic>>;
+    final numDueInovies = salesmanScreenData[dueInvoicesKey] as int;
+    final dueInvoices = salesmanScreenData[dueInvoicesDetailsKey] as List<List<dynamic>>;
+    final profit = salesmanScreenData[profitKey] as double;
+    final profitTransactions = salesmanScreenData[profitDetailsKey] as List<List<dynamic>>;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),

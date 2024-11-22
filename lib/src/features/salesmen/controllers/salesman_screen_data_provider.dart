@@ -1,7 +1,0 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/classes/screen_data.dart';
-
-final salesmanScreenDataProvider = Provider<ScreenData>((ref) {
-  final data = <Map<String, dynamic>>[];
-  return ScreenData(data);
-});

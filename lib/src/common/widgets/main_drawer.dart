@@ -7,6 +7,7 @@ import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
+import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_screen_controller.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
@@ -127,6 +128,10 @@ class SalesmenButton extends ConsumerWidget {
       }
       if (context.mounted) {
         await initializeSalesmanDbCache(context, ref);
+      }
+      final salesmanScreenController = ref.read(salesmanScreenControllerProvider);
+      if (context.mounted) {
+        salesmanScreenController.setAllSalesmenScreenData(context);
       }
       final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {
