@@ -62,7 +62,10 @@ class PageLoading extends ConsumerWidget {
           VerticalGap.l,
           const CircularProgressIndicator(),
           VerticalGap.xl,
-          Text(S.of(context).loading_data),
+          Text(
+            S.of(context).loading_data,
+            style: const TextStyle(fontSize: 18),
+          ),
         ],
       ),
     );

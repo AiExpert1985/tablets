@@ -125,7 +125,7 @@ class HeaderTotalsRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final screenDataNotifier = ref.read(productScreenDataNotifier.notifier);
     final summary = screenDataNotifier.summary;
-    double totalStockPrice = summary[totalStockPriceKey]['value'];
+    final totalStockPrice = summary[totalStockPriceKey]?['value'] ?? '';
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

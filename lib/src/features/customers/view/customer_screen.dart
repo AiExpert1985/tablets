@@ -123,13 +123,13 @@ class HeaderTotalsRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
     final summary = screenDataNotifier.summary;
-    int openInvoices = summary[openInvoicesKey]['value'];
-    int dueInvoices = summary[dueInvoicesKey]['value'];
-    double totalDebt = summary[totalDebtKey]['value'];
-    double dueDebt = summary[dueDebtKey]['value'];
-    double profit = summary[invoicesProfitKey]['value'];
-    double gifts = summary[giftsKey]['value'];
-    double averageClosingDays = summary[avgClosingDaysKey]['value'].toInt();
+    final openInvoices = summary[openInvoicesKey]?['value'] ?? '';
+    final dueInvoices = summary[dueInvoicesKey]?['value'] ?? '';
+    final totalDebt = summary[totalDebtKey]?['value'] ?? '';
+    final dueDebt = summary[dueDebtKey]?['value'] ?? '';
+    final profit = summary[invoicesProfitKey]?['value'] ?? '';
+    final gifts = summary[giftsKey]?['value'] ?? '';
+    final averageClosingDays = summary[avgClosingDaysKey]['value'].toInt();
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

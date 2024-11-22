@@ -119,7 +119,7 @@ class HeaderTotalsRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final screenDataNotifier = ref.read(vendorScreenDataNotifier.notifier);
     final summary = screenDataNotifier.summary;
-    double totalDebt = summary[totalDebtKey]['value'];
+    final totalDebt = summary[totalDebtKey]?['value'] ?? '';
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
