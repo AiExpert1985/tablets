@@ -29,7 +29,18 @@ class SalesmanReportController {
   void showDueInvoices(
       BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
   void showProfitTransactions(
-      BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
+      BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {
+    showReportDialog(
+      context,
+      _getProfitReportTitles(context),
+      detailsList,
+      dateIndex: 2,
+      title: salesmanName,
+      useOriginalTransaction: true,
+      sumIndex: 4,
+    );
+  }
+
   void showTransactionCount(
       BuildContext context, List<List<dynamic>> transactionList, String salesmanName) {
     showReportDialog(
@@ -62,6 +73,15 @@ class SalesmanReportController {
       S.of(context).transaction_date,
       S.of(context).transaction_name,
       S.of(context).transaction_amount,
+    ];
+  }
+
+  List<String> _getProfitReportTitles(BuildContext context) {
+    return [
+      S.of(context).transaction_type,
+      S.of(context).transaction_date,
+      S.of(context).transaction_name,
+      S.of(context).profits,
     ];
   }
 }

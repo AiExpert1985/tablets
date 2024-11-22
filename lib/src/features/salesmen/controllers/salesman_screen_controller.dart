@@ -94,9 +94,9 @@ class SalesmanScreenController {
   List<List<dynamic>> _getProfitableInvoices(
       Map<String, List<List<dynamic>>> processedTransactionsMap) {
     final invoices = processedTransactionsMap['invoicesList'] ?? [[]];
-    final receipts = processedTransactionsMap['reciptsList'] ?? [[]];
+    final receipts = processedTransactionsMap['returnsList'] ?? [[]];
     final profitableInvoices = [...invoices, ...receipts];
-    return trimLastXIndicesFromInnerLists(profitableInvoices, 1);
+    return removeIndicesFromInnerLists(profitableInvoices, [4, 6]);
   }
 
   List<List<dynamic>> _getCommissions(
@@ -125,7 +125,7 @@ class SalesmanScreenController {
     final numReturns = returns.length;
     final returnsAmount = sumAtIndex(returns, 4);
     final profits = _getProfitableInvoices(processedTransactionsMap);
-    final profitAmount = sumAtIndex(profits, 5);
+    final profitAmount = sumAtIndex(profits, 4);
     final commissions = _getCommissions(processedTransactionsMap, 'invoicesList');
     final commissionAmount = sumAtIndex(commissions, 4);
     Map<String, dynamic> newDataRow = {
@@ -220,7 +220,9 @@ class SalesmanScreenController {
         invoicesList.add(processedTransaction);
       } else if (transactionType == TransactionType.customerReceipt.name) {
         receiptsList.add(processedTransaction);
-      } else if (transactionType == TransactionType.customerReceipt.name) {
+      } else if (transactionType == TransactionType.customerReturn.name) {
+        final profit = -1 * (processedTransaction[5] as double);
+        processedTransaction[5] = profit;
         returnsList.add(processedTransaction);
       }
     }
