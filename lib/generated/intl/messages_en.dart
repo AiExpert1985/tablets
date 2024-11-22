@@ -146,6 +146,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sold Qtty."),
         "item_total_price": MessageLookupByLibrary.simpleMessage("Total"),
         "later_debt": MessageLookupByLibrary.simpleMessage("Later debt"),
+        "loading_data": MessageLookupByLibrary.simpleMessage("Loading data"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
         "monthly_profit":
@@ -209,6 +210,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "product_subcategory":
             MessageLookupByLibrary.simpleMessage("Product subcategory"),
         "products": MessageLookupByLibrary.simpleMessage("Products"),
+        "profits": MessageLookupByLibrary.simpleMessage("Profits"),
         "quantity": MessageLookupByLibrary.simpleMessage("Quantity"),
         "receipt_amount":
             MessageLookupByLibrary.simpleMessage("Receipt amount"),

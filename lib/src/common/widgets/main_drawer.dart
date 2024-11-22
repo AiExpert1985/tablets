@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
+import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
@@ -54,17 +55,19 @@ class CustomersButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final customerScreenController = ref.read(customerScreenControllerProvider);
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('customers', S.of(context).customers, () async {
+      pageLoadingNotifier.state = true;
       //  we need related transactionDbCache, we make sure it is inialized
       await initializeTransactionDbCache(context, ref);
       if (context.mounted) {
         await initializeCustomerDbCache(context, ref);
       }
-      final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).customers;
       }
-      final customerScreenController = ref.read(customerScreenControllerProvider);
       if (context.mounted) {
         customerScreenController.setAllCustomersScreenData(context);
       }
@@ -76,6 +79,7 @@ class CustomersButton extends ConsumerWidget {
         Navigator.of(context).pop();
         context.goNamed(AppRoute.customers.name);
       }
+      pageLoadingNotifier.state = false;
     });
   }
 }
@@ -119,7 +123,11 @@ class SalesmenButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final salesmanScreenController = ref.read(salesmanScreenControllerProvider);
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('salesman', S.of(context).salesmen, () async {
+      pageLoadingNotifier.state = true;
       //  we need related transactionDbCache, we make sure it is inialized
       //  and we need related customerDbCache, we make sure it is inialized
       await initializeTransactionDbCache(context, ref);
@@ -129,11 +137,9 @@ class SalesmenButton extends ConsumerWidget {
       if (context.mounted) {
         await initializeSalesmanDbCache(context, ref);
       }
-      final salesmanScreenController = ref.read(salesmanScreenControllerProvider);
       if (context.mounted) {
         salesmanScreenController.setAllSalesmenScreenData(context);
       }
-      final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).salesmen;
       }
@@ -141,6 +147,7 @@ class SalesmenButton extends ConsumerWidget {
         Navigator.of(context).pop();
         context.goNamed(AppRoute.salesman.name);
       }
+      pageLoadingNotifier.state = false;
     });
   }
 }
@@ -150,17 +157,19 @@ class VendorsButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final vendorScreenController = ref.read(vendorScreenControllerProvider);
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('vendors', S.of(context).vendors, () async {
+      pageLoadingNotifier.state = true;
       //  we need related transactionDbCache, we make sure it is inialized
       await initializeTransactionDbCache(context, ref);
       if (context.mounted) {
         await initializeVendorDbCache(context, ref);
       }
-      final vendorScreenController = ref.read(vendorScreenControllerProvider);
       if (context.mounted) {
         vendorScreenController.setAllVendorsScreenData(context);
       }
-      final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).vendors;
       }
@@ -168,6 +177,7 @@ class VendorsButton extends ConsumerWidget {
         Navigator.of(context).pop();
         context.goNamed(AppRoute.vendors.name);
       }
+      pageLoadingNotifier.state = false;
     });
   }
 }
@@ -177,7 +187,10 @@ class TransactionsButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('transactions', S.of(context).transactions, () async {
+      pageLoadingNotifier.state = true;
       await initializeTransactionDbCache(context, ref);
       // initialize related dbCaches
       if (context.mounted) {
@@ -186,7 +199,6 @@ class TransactionsButton extends ConsumerWidget {
       if (context.mounted) {
         await initializeProductDbCache(context, ref);
       }
-      final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).transactions;
       }
@@ -194,6 +206,7 @@ class TransactionsButton extends ConsumerWidget {
         Navigator.of(context).pop();
         context.goNamed(AppRoute.transactions.name);
       }
+      pageLoadingNotifier.state = false;
     });
   }
 }
@@ -204,7 +217,10 @@ class ProductsButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productScreenController = ref.read(productScreenControllerProvider);
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('products', S.of(context).products, () async {
+      pageLoadingNotifier.state = true;
       //  we need related transactionDbCache, we make sure it is inialized
       await initializeTransactionDbCache(context, ref);
       if (context.mounted) {
@@ -217,7 +233,6 @@ class ProductsButton extends ConsumerWidget {
       //   final testClass = TestProductScreenPerformance(context, ref);
       //   testClass.run(1000);
       // }
-      final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).products;
       }
@@ -225,6 +240,7 @@ class ProductsButton extends ConsumerWidget {
         context.goNamed(AppRoute.products.name);
         Navigator.of(context).pop();
       }
+      pageLoadingNotifier.state = false;
     });
   }
 }

@@ -192,6 +192,8 @@
     "reload_page": "اعادة تحميل الصفحة",
     "transaction_reports": "تقارير  التعاملات",
     "printing_transactions": "طباعة التعاملات",
-    "salary": "الراتب الكلي",
-    "basic_salary": "الراتب الاسمي"
+    "salary": "المستحقات",
+    "basic_salary": "الراتب الاسمي",
+    "profits": "الارباح",
+    "loading_data": "تحميل البيانات"
 }

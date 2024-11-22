@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
@@ -42,7 +43,11 @@ class TransactionsList extends ConsumerWidget {
     final dbData = dbCache.data;
     sortListOfMapsByDate(dbData, 'date');
     ref.watch(transactionDbCacheProvider);
-
+    final pageIsLoading = ref.read(pageIsLoadingNotifier);
+    ref.watch(pageIsLoadingNotifier);
+    if (pageIsLoading) {
+      return const PageLoading();
+    }
     Widget screenWidget = dbData.isNotEmpty
         ? const Padding(
             padding: EdgeInsets.all(16),

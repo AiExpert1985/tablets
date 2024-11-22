@@ -1999,6 +1999,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Profits`
+  String get profits {
+    return Intl.message(
+      'Profits',
+      name: 'profits',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading data`
+  String get loading_data {
+    return Intl.message(
+      'Loading data',
+      name: 'loading_data',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

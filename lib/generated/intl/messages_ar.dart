@@ -144,6 +144,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_total_price":
             MessageLookupByLibrary.simpleMessage("السعر الكلي للمادة"),
         "later_debt": MessageLookupByLibrary.simpleMessage("الدين بعد"),
+        "loading_data": MessageLookupByLibrary.simpleMessage("تحميل البيانات"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
         "monthly_profit":
@@ -205,6 +206,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "product_subcategory":
             MessageLookupByLibrary.simpleMessage("التصنيف الفرعي "),
         "products": MessageLookupByLibrary.simpleMessage("المواد"),
+        "profits": MessageLookupByLibrary.simpleMessage("الارباح"),
         "quantity": MessageLookupByLibrary.simpleMessage("العدد"),
         "receipt_amount": MessageLookupByLibrary.simpleMessage("مبلغ التسديد"),
         "receipt_date": MessageLookupByLibrary.simpleMessage("تاريخ التسديد"),
@@ -217,7 +219,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "remaining_amount":
             MessageLookupByLibrary.simpleMessage("المتبقى من القائمة"),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),
-        "salary": MessageLookupByLibrary.simpleMessage("الراتب الكلي"),
+        "salary": MessageLookupByLibrary.simpleMessage("المستحقات"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "salesman_selection": MessageLookupByLibrary.simpleMessage("المندوب"),
         "salesmen": MessageLookupByLibrary.simpleMessage("المندوبين"),

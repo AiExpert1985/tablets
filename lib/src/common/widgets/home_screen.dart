@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -31,10 +32,37 @@ class HomeScreenGreeting extends ConsumerWidget {
             height: 200, // here I used width intentionally
             child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
           ),
+          VerticalGap.xl,
           Text(
             S.of(context).greeting,
             style: const TextStyle(fontSize: 20),
           ),
+          VerticalGap.xxl,
+        ],
+      ),
+    );
+  }
+}
+
+class PageLoading extends ConsumerWidget {
+  const PageLoading({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            // margin: const EdgeInsets.all(10),
+            width: double.infinity,
+            height: 200, // here I used width intentionally
+            child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
+          ),
+          VerticalGap.l,
+          const CircularProgressIndicator(),
+          VerticalGap.xl,
+          Text(S.of(context).loading_data),
         ],
       ),
     );

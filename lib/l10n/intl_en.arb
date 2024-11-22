@@ -193,5 +193,7 @@
     "transaction_reports": "Transaction reports",
     "printing_transactions": "Printing transactions",
     "salary": "Salary",
-    "basic_salary": "Basic salary"
+    "basic_salary": "Basic salary",
+    "profits": "Profits",
+    "loading_data": "Loading data"
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/settings.dart';
@@ -87,6 +88,11 @@ class SalesmanList extends ConsumerWidget {
     final dbCache = ref.read(salesmanDbCacheProvider.notifier);
     final dbData = dbCache.data;
     ref.watch(salesmanDbCacheProvider);
+    final pageIsLoading = ref.read(pageIsLoadingNotifier);
+    ref.watch(pageIsLoadingNotifier);
+    if (pageIsLoading) {
+      return const PageLoading();
+    }
     Widget screenWidget = dbData.isNotEmpty
         ? const Padding(
             padding: EdgeInsets.all(16),
@@ -146,7 +152,7 @@ class ListHeaders extends StatelessWidget {
             MainScreenHeaderCell(S.of(context).due_debt_amount),
             MainScreenHeaderCell(S.of(context).num_open_invoice),
             MainScreenHeaderCell(S.of(context).num_due_invoices),
-            MainScreenHeaderCell(S.of(context).invoice_profit),
+            MainScreenHeaderCell(S.of(context).profits),
           ],
         ),
         VerticalGap.m,
