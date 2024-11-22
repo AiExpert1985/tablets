@@ -195,5 +195,11 @@
     "salary": "المستحقات",
     "basic_salary": "الراتب الاسمي",
     "profits": "الارباح",
-    "loading_data": "تحميل البيانات"
+    "loading_data": "تحميل البيانات",
+    "invoices_number": "عدد القوائم",
+    "invoices_amount": "مبلغ القوائم",
+    "receipts_number": "عدد الوصولات",
+    "receipts_amount": "مبلغ الوصولات",
+    "returns_number": "عدد الارجاعات",
+    "returns_amount": "مبلغ الارجاعات"
 }

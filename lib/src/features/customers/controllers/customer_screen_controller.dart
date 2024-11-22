@@ -49,8 +49,12 @@ class CustomerScreenController {
   void setAllCustomersScreenData(BuildContext context) {
     final allCustomersData = _customerDbCache.data;
     List<Map<String, dynamic>> screenData = [];
+    final allCustomersTransactions = _getAllCustomersTransactions();
     for (var customerData in allCustomersData) {
-      final newRow = getCustomerScreenData(context, customerData);
+      final customerDbRef = customerData['dbRef'];
+      final customerTransactions = allCustomersTransactions[customerDbRef]!;
+      final newRow =
+          getCustomerScreenData(context, customerData, customerTransactions: customerTransactions);
       screenData.add(newRow);
     }
     Map<String, dynamic> summaryTypes = {
@@ -66,10 +70,42 @@ class CustomerScreenController {
     _screenDataNotifier.set(screenData);
   }
 
+  /// create a map, its keys are salesman dbRef, and value is a list of all customers belong the the
+  /// salesman, this will be used later for fetching salesman's custoemrs. this idea is used to avoid
+  /// going throught the list of customers for every salesman to get his customers (performance
+  /// imporvement)
+  Map<String, List<Map<String, dynamic>>> _getAllCustomersTransactions() {
+    // first initialize empty map with empty list for each customer dbRef
+    Map<String, List<Map<String, dynamic>>> customersMap = {};
+    for (var customer in _customerDbCache.data) {
+      final customerDbRef = customer['dbRef'];
+      customersMap[customerDbRef] = [];
+    }
+    // add transactions to their customer
+    final allTransactions = _transactionDbCache.data;
+    for (var transaction in allTransactions) {
+      // only add transactions for customers (discard other transactions)
+      if (customersMap.containsKey(transaction['nameDbRef'])) {
+        customersMap[transaction['nameDbRef']]!.add(transaction);
+      }
+    }
+    return customersMap;
+  }
+
+  /// if customerTransactions provided, it will not calculate it
+  /// I made that design decision because this method is called in two different cases
+  /// one case is when the feature screen is loaded, in this case we need to calculate customer
+  /// screen data for all customers, so we will not loop through all transactions for every customer
+  /// because it is bad in performance, and we will divide transactions between all customers in
+  /// one loop by using getAllCustomersTransactions method
+  /// the second case is when a specific customer is needed by other features, for example when
+  /// checking customer validity in new transaction, in this case we don't provide customer
+  /// transactions and calculate them inside this functions
   Map<String, dynamic> getCustomerScreenData(
-      BuildContext context, Map<String, dynamic> customerData) {
+      BuildContext context, Map<String, dynamic> customerData,
+      {List<Map<String, dynamic>>? customerTransactions}) {
     final customer = Customer.fromMap(customerData);
-    final customerTransactions = getCustomerTransactions(customer.dbRef);
+    customerTransactions ??= getCustomerTransactions(customer.dbRef);
     if (customer.initialCredit > 0) {
       customerTransactions.add(_createInitialDebtTransaction(customer));
     }

@@ -195,5 +195,11 @@
     "salary": "Salary",
     "basic_salary": "Basic salary",
     "profits": "Profits",
-    "loading_data": "Loading data"
+    "loading_data": "Loading data",
+    "invoices_number": "Invoices number",
+    "invoices_amount": "Invoices amount",
+    "receipts_number": "Receipts number",
+    "receipts_amount": "Receipts amount",
+    "returns_number": "Returns number",
+    "returns_amount": "Returns amount"
 }

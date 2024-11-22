@@ -150,8 +150,14 @@ class ListHeaders extends StatelessWidget {
             MainScreenHeaderCell(S.of(context).customers),
             MainScreenHeaderCell(S.of(context).current_debt),
             MainScreenHeaderCell(S.of(context).due_debt_amount),
+            MainScreenHeaderCell(S.of(context).receipts_number),
+            MainScreenHeaderCell(S.of(context).receipt_amount),
+            MainScreenHeaderCell(S.of(context).invoices_number),
             MainScreenHeaderCell(S.of(context).num_open_invoice),
             MainScreenHeaderCell(S.of(context).num_due_invoices),
+            MainScreenHeaderCell(S.of(context).invoices_amount),
+            MainScreenHeaderCell(S.of(context).returns_number),
+            MainScreenHeaderCell(S.of(context).returns_amount),
             MainScreenHeaderCell(S.of(context).profits),
           ],
         ),
@@ -171,6 +177,12 @@ class HeaderTotalsRow extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         MainScreenPlaceholder(width: 20, isExpanded: false),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
+        MainScreenPlaceholder(),
         MainScreenPlaceholder(),
         MainScreenPlaceholder(),
         MainScreenPlaceholder(),
@@ -210,6 +222,15 @@ class DataRow extends ConsumerWidget {
     final dueInvoices = salesmanScreenData[dueInvoicesDetailsKey] as List<List<dynamic>>;
     final profit = salesmanScreenData[profitKey] as double;
     final profitTransactions = salesmanScreenData[profitDetailsKey] as List<List<dynamic>>;
+    final numInvoices = salesmanScreenData[numInvoicesKey] as double;
+    final invoices = salesmanScreenData[numInvoicesDetailsKey] as List<List<dynamic>>;
+    final numReceipts = salesmanScreenData[numReceiptsKey] as double;
+    final receipts = salesmanScreenData[numReceiptsDetailsKey] as List<List<dynamic>>;
+    final invoicesAmount = salesmanScreenData[invoicesAmountKey] as double;
+    final receiptAmount = salesmanScreenData[receiptsAmountKey] as double;
+    final returns = salesmanScreenData[numReturnsDetailsKey] as List<List<dynamic>>;
+    final numReturns = salesmanScreenData[numReturnsKey] as double;
+    final returnsAmount = salesmanScreenData[returnsAmountKey] as double;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),
@@ -236,12 +257,36 @@ class DataRow extends ConsumerWidget {
             () => reportController.showDueDebts(context, customersDueDebts, name),
           ),
           MainScreenClickableCell(
+            numReceipts,
+            () => reportController.showDueInvoices(context, receipts, name),
+          ),
+          MainScreenClickableCell(
+            receiptAmount,
+            () => reportController.showDueInvoices(context, receipts, name),
+          ),
+          MainScreenClickableCell(
+            numInvoices,
+            () => reportController.showDueInvoices(context, invoices, name),
+          ),
+          MainScreenClickableCell(
             numOpenInvoices,
             () => reportController.showOpenInvoices(context, openInvoices, name),
           ),
           MainScreenClickableCell(
             numDueInovies,
             () => reportController.showDueInvoices(context, dueInvoices, name),
+          ),
+          MainScreenClickableCell(
+            invoicesAmount,
+            () => reportController.showDueInvoices(context, invoices, name),
+          ),
+          MainScreenClickableCell(
+            numReturns,
+            () => reportController.showDueInvoices(context, returns, name),
+          ),
+          MainScreenClickableCell(
+            returnsAmount,
+            () => reportController.showDueInvoices(context, returns, name),
           ),
           MainScreenClickableCell(
             profit,

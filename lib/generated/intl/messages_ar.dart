@@ -133,6 +133,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("المبلغ النهائي"),
         "invoice_total_weight":
             MessageLookupByLibrary.simpleMessage("الوزن النهائي "),
+        "invoices_amount": MessageLookupByLibrary.simpleMessage("مبلغ القوائم"),
+        "invoices_number": MessageLookupByLibrary.simpleMessage("عدد القوائم"),
         "item_available_quantity":
             MessageLookupByLibrary.simpleMessage("المخزون"),
         "item_gifts_quantity":
@@ -212,6 +214,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "receipt_date": MessageLookupByLibrary.simpleMessage("تاريخ التسديد"),
         "receipt_number": MessageLookupByLibrary.simpleMessage("رقم التسديد"),
         "receipt_type": MessageLookupByLibrary.simpleMessage("نوع التسديد"),
+        "receipts_amount":
+            MessageLookupByLibrary.simpleMessage("مبلغ الوصولات"),
+        "receipts_number": MessageLookupByLibrary.simpleMessage("عدد الوصولات"),
         "region_name": MessageLookupByLibrary.simpleMessage("اسم المنطقة"),
         "regions": MessageLookupByLibrary.simpleMessage("المناطق"),
         "reload_page":
@@ -219,6 +224,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "remaining_amount":
             MessageLookupByLibrary.simpleMessage("المتبقى من القائمة"),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),
+        "returns_amount":
+            MessageLookupByLibrary.simpleMessage("مبلغ الارجاعات"),
+        "returns_number": MessageLookupByLibrary.simpleMessage("عدد الارجاعات"),
         "salary": MessageLookupByLibrary.simpleMessage("المستحقات"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "salesman_selection": MessageLookupByLibrary.simpleMessage("المندوب"),

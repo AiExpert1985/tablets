@@ -2019,6 +2019,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Invoices number`
+  String get invoices_number {
+    return Intl.message(
+      'Invoices number',
+      name: 'invoices_number',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invoices amount`
+  String get invoices_amount {
+    return Intl.message(
+      'Invoices amount',
+      name: 'invoices_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receipts number`
+  String get receipts_number {
+    return Intl.message(
+      'Receipts number',
+      name: 'receipts_number',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receipts amount`
+  String get receipts_amount {
+    return Intl.message(
+      'Receipts amount',
+      name: 'receipts_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Returns number`
+  String get returns_number {
+    return Intl.message(
+      'Returns number',
+      name: 'returns_number',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Returns amount`
+  String get returns_amount {
+    return Intl.message(
+      'Returns amount',
+      name: 'returns_amount',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

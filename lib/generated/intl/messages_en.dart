@@ -135,6 +135,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Total price"),
         "invoice_total_weight":
             MessageLookupByLibrary.simpleMessage("Total weight"),
+        "invoices_amount":
+            MessageLookupByLibrary.simpleMessage("Invoices amount"),
+        "invoices_number":
+            MessageLookupByLibrary.simpleMessage("Invoices number"),
         "item_available_quantity":
             MessageLookupByLibrary.simpleMessage("Available quantity"),
         "item_gifts_quantity":
@@ -218,12 +222,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "receipt_number":
             MessageLookupByLibrary.simpleMessage("Receipt number"),
         "receipt_type": MessageLookupByLibrary.simpleMessage("ٌReceipt type"),
+        "receipts_amount":
+            MessageLookupByLibrary.simpleMessage("Receipts amount"),
+        "receipts_number":
+            MessageLookupByLibrary.simpleMessage("Receipts number"),
         "region_name": MessageLookupByLibrary.simpleMessage("Region name"),
         "regions": MessageLookupByLibrary.simpleMessage("Regions"),
         "reload_page": MessageLookupByLibrary.simpleMessage("Reload page"),
         "remaining_amount":
             MessageLookupByLibrary.simpleMessage("Remaining amount"),
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
+        "returns_amount":
+            MessageLookupByLibrary.simpleMessage("Returns amount"),
+        "returns_number":
+            MessageLookupByLibrary.simpleMessage("Returns number"),
         "salary": MessageLookupByLibrary.simpleMessage("Salary"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("Name"),
         "salesman_selection":

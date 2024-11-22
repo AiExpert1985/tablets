@@ -11,14 +11,15 @@ class TestCustomerScreenPerformance {
   final WidgetRef _ref;
   final BuildContext _context;
 
-  void run(int transactionMultiple) {
+  void run(int transactionMultiple, int customersMultiples) {
     final customerDbCache = _ref.read(customerDbCacheProvider.notifier);
     final customerData = customerDbCache.data;
+    final multipliedcustomerData = _createDuplicates(customerData, customersMultiples);
     final transactionDbCache = _ref.read(transactionDbCacheProvider.notifier);
     final transactionData = transactionDbCache.data;
     final multipliedTransactionData = _createDuplicates(transactionData, transactionMultiple);
     transactionDbCache.set(multipliedTransactionData);
-    final avgMatchingDuration = _runtests(multipliedTransactionData, customerData);
+    final avgMatchingDuration = _runtests(multipliedTransactionData, multipliedcustomerData);
     debugPrint('test took $avgMatchingDuration seconds per customer');
   }
 
@@ -55,6 +56,6 @@ class TestCustomerScreenPerformance {
     CustomerScreenController screenController,
     Map<String, dynamic> customerData,
   ) {
-    screenController.getCustomerScreenData(_context, customerData);
+    screenController.setAllCustomersScreenData(_context);
   }
 }
