@@ -2,6 +2,7 @@ import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -17,7 +18,10 @@ class TransactionReportController {
   TransactionReportController();
 
   final Map<String, List<String>> _dailyIncomeFilters = {
-    'subtract': [TransactionType.vendorReceipt.name, TransactionType.expenditures.name],
+    'subtract': [
+      TransactionType.vendorReceipt.name,
+      TransactionType.expenditures.name,
+    ],
     'add': [TransactionType.customerReceipt.name]
   };
   final Map<String, List<String>> _monthlyProfitFilters = {
@@ -105,7 +109,9 @@ class TransactionReportController {
         ]);
       }
     }
-    if (!includeNotes) processedTransactions.removeLast();
+    if (!includeNotes) {
+      processedTransactions = trimLastXIndicesFromInnerLists(processedTransactions, 1);
+    }
     return processedTransactions;
   }
 
@@ -126,7 +132,7 @@ class TransactionReportController {
   Widget _buildReportButton(BuildContext context, List<Map<String, dynamic>> allTransactions,
       AnyDrawerController drawerController, Map<String, List<String>> filters, String title,
       {bool isProfitReport = false, bool includeNotes = false}) {
-    List<List<dynamic>> incomeTransactions =
+    List<List<dynamic>> processedTransactions =
         _getProcessedTransactions(context, allTransactions, filters, isProfitReport, includeNotes);
     List<String> reportTitles = _getReportTitles(context, includeNotes);
     List<String> transactionTypeDropdown = getTransactionTypeDropList(context);
@@ -139,7 +145,7 @@ class TransactionReportController {
         showReportDialog(
           context,
           reportTitles,
-          incomeTransactions,
+          processedTransactions,
           title: title,
           dateIndex: 2,
           sumIndex: 6,

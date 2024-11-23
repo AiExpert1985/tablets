@@ -33,7 +33,7 @@ class MainScreenTextCell extends StatelessWidget {
     } else if (data is String) {
       processedData = data;
     } else {
-      processedData = 'Unknown data type';
+      processedData = '';
     }
     Widget cell = Text(
       processedData,
