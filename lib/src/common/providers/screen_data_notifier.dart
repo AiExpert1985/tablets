@@ -52,9 +52,9 @@ class ScreenDataNotifier extends StateNotifier<Map<String, dynamic>> {
   void reset() => state = {};
 
   /// seting the types of summary fields used
-  void initialize(Map<String, dynamic> summaryType) {
+  void initialize(Map<String, dynamic> summaryTypes) {
     Map<String, Map<String, dynamic>> summary = {};
-    summaryType.forEach((property, type) {
+    summaryTypes.forEach((property, type) {
       summary[property] = {'type': type, 'value': 0};
     });
     state = {

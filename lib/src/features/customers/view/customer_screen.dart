@@ -118,6 +118,7 @@ class HeaderTotalsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(customerScreenDataNotifier);
     final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
     final summary = screenDataNotifier.summary;
     final openInvoices = summary[openInvoicesKey]?['value'] ?? '';
