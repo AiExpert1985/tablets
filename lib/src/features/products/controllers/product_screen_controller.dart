@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_data_notifier.dart';
@@ -18,7 +19,7 @@ final productScreenControllerProvider = Provider<ProductScreenController>((ref) 
   return ProductScreenController(screenDataNotifier, transactionsDbCache, productDbCache);
 });
 
-class ProductScreenController {
+class ProductScreenController implements ScreenDataController {
   ProductScreenController(
     this._screenDataNotifier,
     this._transactionsDbCache,
@@ -28,11 +29,12 @@ class ProductScreenController {
   final DbCache _transactionsDbCache;
   final DbCache _productDbCache;
 
-  void setAllProductsScreenData(BuildContext context) {
+  @override
+  void setFeatureScreenData(BuildContext context) {
     final allProductsData = _productDbCache.data;
     List<Map<String, dynamic>> screenData = [];
     for (var productData in allProductsData) {
-      final newRow = getProductScreenData(context, productData);
+      final newRow = getItemScreenData(context, productData);
       screenData.add(newRow);
     }
     Map<String, dynamic> summaryTypes = {
@@ -44,8 +46,8 @@ class ProductScreenController {
 
   /// create a list of lists, where each resulting list contains transaction info
   /// [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
-  Map<String, dynamic> getProductScreenData(
-      BuildContext context, Map<String, dynamic> productData) {
+  @override
+  Map<String, dynamic> getItemScreenData(BuildContext context, Map<String, dynamic> productData) {
     final product = Product.fromMap(productData);
     List<List<dynamic>> productProcessedTransactions = [];
     if (product.initialQuantity > 0) {

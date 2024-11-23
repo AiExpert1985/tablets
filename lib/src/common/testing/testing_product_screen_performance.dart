@@ -55,6 +55,6 @@ class TestProductScreenPerformance {
     ProductScreenController screenController,
     Map<String, dynamic> productData,
   ) {
-    screenController.getProductScreenData(_context, productData);
+    screenController.getItemScreenData(_context, productData);
   }
 }

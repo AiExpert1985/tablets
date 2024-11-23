@@ -96,7 +96,7 @@ class ProductForm extends ConsumerWidget {
     dbCache.update(itemData, operationType);
     // redo screenData calculations
     if (context.mounted) {
-      screenController.setAllProductsScreenData(context);
+      screenController.setFeatureScreenData(context);
     }
   }
 
@@ -123,7 +123,7 @@ class ProductForm extends ConsumerWidget {
       dbCache.update(itemData, operationType);
       // redo screenData calculations
       if (context.mounted) {
-        screenController.setAllProductsScreenData(context);
+        screenController.setFeatureScreenData(context);
       }
     }
   }

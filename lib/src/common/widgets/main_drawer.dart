@@ -227,7 +227,7 @@ class ProductsButton extends ConsumerWidget {
         await initializeProductDbCache(context, ref);
       }
       if (context.mounted) {
-        productScreenController.setAllProductsScreenData(context);
+        productScreenController.setFeatureScreenData(context);
       }
       // if (context.mounted) {
       //   final testClass = TestProductScreenPerformance(context, ref);

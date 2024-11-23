@@ -2,8 +2,6 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 
 enum FilterCriteria { contains, equals, lessThanOrEqual, lessThan, moreThanOrEqual, moreThan }
 
-enum FilterDataTypes { text, num }
-
 class ScreenDataFilters {
   ScreenDataFilters(this._filters);
 
@@ -14,7 +12,6 @@ class ScreenDataFilters {
   /// add filter to filtersMap
   /// if value is empty, then the filter is removed from filtersMap
   void updateFilters(
-    FilterDataTypes dataType,
     String propertyName,
     FilterCriteria filterCriteria,
     dynamic value,
