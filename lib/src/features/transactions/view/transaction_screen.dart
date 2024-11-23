@@ -101,6 +101,7 @@ class ListHeaders extends StatelessWidget {
         MainScreenHeaderCell(S.of(context).salesman_selection),
         MainScreenHeaderCell(S.of(context).transaction_number),
         MainScreenHeaderCell(S.of(context).transaction_amount),
+        MainScreenHeaderCell(S.of(context).notes),
       ],
     );
   }
@@ -132,6 +133,7 @@ class DataRow extends ConsumerWidget {
               MainScreenTextCell(transaction.salesman),
               MainScreenTextCell(transaction.number),
               MainScreenTextCell(transaction.totalAmount),
+              MainScreenTextCell(transaction.notes),
             ],
           ),
         ),

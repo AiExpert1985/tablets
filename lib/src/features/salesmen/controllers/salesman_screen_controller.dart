@@ -284,8 +284,8 @@ class SalesmanScreenController {
     Map<String, dynamic> debtInfo = {
       debtsKey: '$totalDebt  ($dueDebt)',
       openInvoicesKey: '$openInvoices  ($dueInvoices)',
-      debtsDetailsKey: sortListOfListsByNumber(debtsDetails, 2),
-      openInvoicesDetailsKey: sortListOfListsByNumber(invoicesDetails, 2)
+      debtsDetailsKey: sortListOfListsByNumber(debtsDetails, 1),
+      openInvoicesDetailsKey: sortListOfListsByNumber(invoicesDetails, 1)
     };
     return debtInfo;
   }

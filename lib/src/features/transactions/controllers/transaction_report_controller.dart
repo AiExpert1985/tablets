@@ -2,7 +2,6 @@ import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -35,17 +34,17 @@ class TransactionReportController {
   };
   final Map<String, List<String>> _printTransactionsFilters = {
     'subtract': [
-      TransactionType.gifts.name,
       TransactionType.expenditures.name,
       TransactionType.damagedItems.name,
       TransactionType.vendorReceipt.name,
       TransactionType.vendorReturn.name,
-      TransactionType.customerInvoice.name,
-    ],
-    'add': [
-      TransactionType.vendorInvoice.name,
       TransactionType.customerReturn.name,
       TransactionType.customerReceipt.name,
+      TransactionType.gifts.name,
+    ],
+    'add': [
+      TransactionType.customerInvoice.name,
+      TransactionType.vendorInvoice.name,
     ]
   };
 
