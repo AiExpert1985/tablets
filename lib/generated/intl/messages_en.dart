@@ -208,6 +208,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Product profits"),
         "product_salesman_commission":
             MessageLookupByLibrary.simpleMessage("Salesman commision"),
+        "product_search":
+            MessageLookupByLibrary.simpleMessage("Product search"),
         "product_sell_retail_price":
             MessageLookupByLibrary.simpleMessage("Retail price"),
         "product_sell_whole_price":

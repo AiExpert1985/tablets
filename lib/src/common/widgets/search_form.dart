@@ -1,7 +1,6 @@
 import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/screen_data_filters.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
@@ -10,10 +9,10 @@ import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 
 class SearchForm extends StatelessWidget {
-  const SearchForm(this._drawerController, this._filterController, this._screenDataController,
-      this._screenDataNotifier, this._bodyWidgets,
+  const SearchForm(this._title, this._drawerController, this._filterController,
+      this._screenDataController, this._screenDataNotifier, this._bodyWidgets,
       {super.key});
-
+  final String _title;
   final AnyDrawerController _drawerController;
   final ScreenDataFilters _filterController;
   final ScreenDataController _screenDataController;
@@ -23,38 +22,39 @@ class SearchForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormBuilder(
-        child: Padding(
-      padding: const EdgeInsets.all(30.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ..._bodyWidgets,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: () {
-                  _screenDataController.setFeatureScreenData(context);
-                  final screenData = _screenDataNotifier.data as List<Map<String, dynamic>>;
-                  final filteredScreenData = _filterController.applyListFilter(screenData);
-                  _screenDataNotifier.set(filteredScreenData);
-                },
-                icon: const ApproveIcon(),
-              ),
-              IconButton(
-                onPressed: () {
-                  _screenDataController.setFeatureScreenData(context);
-                  _filterController.reset();
-                  _drawerController.close();
-                },
-                icon: const CancelIcon(),
-              ),
-            ],
-          )
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 50),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SearchFormTitle(_title),
+            ..._bodyWidgets,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    _screenDataController.setFeatureScreenData(context);
+                    final screenData = _screenDataNotifier.data as List<Map<String, dynamic>>;
+                    final filteredScreenData = _filterController.applyListFilter(screenData);
+                    _screenDataNotifier.set(filteredScreenData);
+                  },
+                  icon: const ApproveIcon(),
+                ),
+                IconButton(
+                  onPressed: () {
+                    _screenDataController.setFeatureScreenData(context);
+                    _filterController.reset();
+                    _drawerController.close();
+                  },
+                  icon: const CancelIcon(),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
-    ));
+    );
   }
 }
 
@@ -69,6 +69,7 @@ class NumberMatchSearchField extends StatelessWidget {
     return Row(
       children: [
         Container(
+          width: 120,
           padding: const EdgeInsets.all(5),
           child: Text(_label),
         ),
@@ -79,9 +80,24 @@ class NumberMatchSearchField extends StatelessWidget {
           },
           dataType: FieldDataType.num,
           name: _propertyName,
-          label: S.of(context).product_code,
         ),
       ],
+    );
+  }
+}
+
+class SearchFormTitle extends StatelessWidget {
+  const SearchFormTitle(this.title, {super.key});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      ),
     );
   }
 }

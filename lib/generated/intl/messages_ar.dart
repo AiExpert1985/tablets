@@ -202,6 +202,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "product_profits": MessageLookupByLibrary.simpleMessage("ارباح المادة"),
         "product_salesman_commission":
             MessageLookupByLibrary.simpleMessage("عمولة المندوب (دينار)"),
+        "product_search": MessageLookupByLibrary.simpleMessage("بحث المواد"),
         "product_sell_retail_price":
             MessageLookupByLibrary.simpleMessage("سعر البيع للمفرد"),
         "product_sell_whole_price":
