@@ -19,43 +19,34 @@ class ScreenDataFilters {
     FilterCriteria filterCriteria,
     dynamic value,
   ) {
-    // if (value == null || value.trim().isEmpty) {
-    //   tempPrint('inside if');
-    //   _filters.remove(propertyName);
-    // }
-    // tempPrint('step 2');
-    // if (dataType == FilterDataTypes.num) {
-    //   tempPrint(value.runtimeType);
-    // }
-
-    // final newValue = dataType == FilterDataTypes.num ? double.parse(value) : value;
-
-    tempPrint('step 3');
+    if (value == null || (value is String && value.trim().isEmpty)) {
+      _filters.remove(propertyName);
+    }
     _filters[propertyName] = {
       'criteria': filterCriteria,
       'value': value,
     };
-    tempPrint('done updating the filer');
   }
 
   List<Map<String, dynamic>> applyListFilter(
     List<Map<String, dynamic>> listValue,
   ) {
-    _filters.forEach((key, filter) {
+    _filters.forEach((propertyName, filter) {
       FilterCriteria criteria = filter['criteria'];
       dynamic value = filter['value'];
       if (criteria == FilterCriteria.contains) {
-        listValue = listValue.where((item) => item[key].contains(value)).toList();
+        listValue = listValue.where((item) => item[propertyName].contains(value)).toList();
       } else if (criteria == FilterCriteria.equals) {
-        listValue = listValue.where((product) => product[key] == value).toList();
+        tempPrint('here');
+        listValue = listValue.where((item) => item[propertyName] == value).toList();
       } else if (criteria == FilterCriteria.lessThanOrEqual) {
-        listValue = listValue.where((product) => product[key] <= value).toList();
+        listValue = listValue.where((item) => item[propertyName] <= value).toList();
       } else if (criteria == FilterCriteria.lessThan) {
-        listValue = listValue.where((product) => product[key] < value).toList();
+        listValue = listValue.where((item) => item[propertyName] < value).toList();
       } else if (criteria == FilterCriteria.moreThanOrEqual) {
-        listValue = listValue.where((product) => product[key] >= value).toList();
+        listValue = listValue.where((item) => item[propertyName] >= value).toList();
       } else if (criteria == FilterCriteria.moreThan) {
-        listValue = listValue.where((product) => product[key] > value).toList();
+        listValue = listValue.where((item) => item[propertyName] > value).toList();
       } else {
         errorPrint('unknown filter criteria');
       }

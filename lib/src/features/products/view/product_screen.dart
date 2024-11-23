@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
+import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -15,7 +16,6 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
-import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 
@@ -123,7 +123,7 @@ class HeaderTotalsRow extends ConsumerWidget {
     ref.watch(productScreenDataNotifier);
     final screenDataNotifier = ref.read(productScreenDataNotifier.notifier);
     final summary = screenDataNotifier.summary;
-    final totalStockPrice = summary[totalStockPriceKey]?['value'] ?? '';
+    final totalStockPrice = summary[productTotalStockPriceKey]?['value'] ?? '';
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -153,32 +153,30 @@ class DataRow extends ConsumerWidget {
     final reportController = ref.read(productReportControllerProvider);
     final productRef = productScreenData[productDbRefKey];
     final productDbCache = ref.read(productDbCacheProvider.notifier);
-    final customerData = productDbCache.getItemByDbRef(productRef);
-    final product = Product.fromMap(customerData);
-    final totalQuantity = productScreenData[quantityKey] as double;
-    final productTransactions = productScreenData[quantityDetailsKey] as List<List<dynamic>>;
-    // profit doesn't include salesman commission
-    final totalItemProfit = productScreenData[profitKey] as double;
-    final profitInvoices = productScreenData[profitDetailsKey] as List<List<dynamic>>;
-    final totalStockPrice = productScreenData[totalStockPriceKey] as double;
+    final productData = productDbCache.getItemByDbRef(productRef);
+    final product = Product.fromMap(productData);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           MainScreenEditButton(defaultImageUrl, () => _showEditProductForm(context, ref, product)),
-          MainScreenTextCell('${product.code}'),
-          MainScreenTextCell(product.name),
-          MainScreenTextCell(product.category),
-          MainScreenTextCell('${product.salesmanCommission}'),
-          if (!hideProductBuyingPrice) MainScreenTextCell('${product.buyingPrice}'),
-          MainScreenTextCell('${product.sellWholePrice}'),
-          MainScreenTextCell('${product.sellRetailPrice}'),
-          MainScreenClickableCell('$totalQuantity',
-              () => reportController.showHistoryReport(context, productTransactions, product.name)),
-          MainScreenTextCell('$totalStockPrice'),
-          MainScreenClickableCell(('$totalItemProfit'),
-              () => reportController.showProfitReport(context, profitInvoices, product.name)),
+          MainScreenTextCell(productScreenData[productCodeKey]),
+          MainScreenTextCell(productScreenData[productNameKey]),
+          MainScreenTextCell(productScreenData[productCategoryKey]),
+          MainScreenTextCell(productScreenData[productCommissionKey]),
+          if (!hideProductBuyingPrice) MainScreenTextCell(productScreenData[productBuyingPriceKey]),
+          MainScreenTextCell(productScreenData[productSellingWholeSaleKey]),
+          MainScreenTextCell(productScreenData[productSellingRetailKey]),
+          MainScreenClickableCell(
+              productScreenData[productQuantityKey],
+              () => reportController.showHistoryReport(
+                  context, productScreenData[productQuantityDetailsKey], product.name)),
+          MainScreenTextCell(productScreenData[productTotalStockPriceKey]),
+          MainScreenClickableCell(
+              (productScreenData[productProfitKey]),
+              () => reportController.showProfitReport(
+                  context, productScreenData[productProfitDetailsKey], product.name)),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
+import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_data_notifier.dart';
 import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
@@ -9,13 +10,6 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-
-const productDbRefKey = 'dbRef';
-const quantityKey = 'quantity';
-const quantityDetailsKey = 'quantityDetails';
-const profitKey = 'profit';
-const profitDetailsKey = 'profitDetails';
-const totalStockPriceKey = 'itemTotalStockPrice';
 
 final productScreenControllerProvider = Provider<ProductScreenController>((ref) {
   final screenDataNotifier = ref.read(productScreenDataNotifier.notifier);
@@ -42,7 +36,7 @@ class ProductScreenController {
       screenData.add(newRow);
     }
     Map<String, dynamic> summaryTypes = {
-      totalStockPriceKey: 'sum',
+      productTotalStockPriceKey: 'sum',
     };
     _screenDataNotifier.initialize(summaryTypes);
     _screenDataNotifier.set(screenData);
@@ -109,11 +103,18 @@ class ProductScreenController {
     final productTotals = _getProductTotals(productProcessedTransactions);
     Map<String, dynamic> newDataRow = {
       productDbRefKey: product.dbRef,
-      quantityKey: productTotals[0],
-      quantityDetailsKey: productProcessedTransactions,
-      profitKey: productTotals[1],
-      profitDetailsKey: _getOnlyProfitInvoices(productProcessedTransactions, 5),
-      totalStockPriceKey: productTotals[0] * product.buyingPrice,
+      productCodeKey: product.code,
+      productNameKey: product.name,
+      productCategoryKey: product.category,
+      productCommissionKey: product.salesmanCommission,
+      productSellingWholeSaleKey: product.sellRetailPrice,
+      productSellingRetailKey: product.sellWholePrice,
+      productBuyingPriceKey: product.buyingPrice,
+      productQuantityKey: productTotals[0],
+      productQuantityDetailsKey: productProcessedTransactions,
+      productProfitKey: productTotals[1],
+      productProfitDetailsKey: _getOnlyProfitInvoices(productProcessedTransactions, 5),
+      productTotalStockPriceKey: productTotals[0] * product.buyingPrice,
     };
     return newDataRow;
   }
