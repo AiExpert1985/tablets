@@ -68,7 +68,7 @@ class SalesmanReportController {
     ];
   }
 
-  List<String> _getOpenInvoicesReportTitles(BuildContext context, {bool isProfit = false}) {
+  List<String> _getOpenInvoicesReportTitles(BuildContext context) {
     return [
       S.of(context).customer,
       S.of(context).num_open_invoice,
@@ -76,7 +76,7 @@ class SalesmanReportController {
     ];
   }
 
-  List<String> _getDebtReportTitles(BuildContext context, {bool isProfit = false}) {
+  List<String> _getDebtReportTitles(BuildContext context) {
     return [
       S.of(context).customer,
       S.of(context).current_debt,
