@@ -1,3 +1,4 @@
+import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,7 +6,6 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/screen_data_filters.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
-import 'package:tablets/src/features/products/controllers/product_drawer_provider.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/products/controllers/product_filter_controller.dart';
@@ -13,7 +13,9 @@ import 'package:tablets/src/features/products/controllers/product_screen_control
 import 'package:tablets/src/features/products/controllers/product_screen_data_notifier.dart';
 
 class ProductSearchForm extends ConsumerWidget {
-  const ProductSearchForm({super.key});
+  const ProductSearchForm(this._drawerController, {super.key});
+
+  final AnyDrawerController _drawerController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -61,6 +63,7 @@ class ProductSearchForm extends ConsumerWidget {
             children: [
               IconButton(
                 onPressed: () {
+                  screenDataController.setAllProductsScreenData(context);
                   final screenData = screenDataNotifier.data as List<Map<String, dynamic>>;
                   final filteredScreenData = filterController.applyListFilter(screenData);
                   screenDataNotifier.set(filteredScreenData);
@@ -70,7 +73,8 @@ class ProductSearchForm extends ConsumerWidget {
               IconButton(
                 onPressed: () {
                   screenDataController.setAllProductsScreenData(context);
-                  ref.read(productsDrawerControllerProvider).drawerController.close();
+                  filterController.reset();
+                  _drawerController.close();
                 },
                 icon: const CancelIcon(),
               ),

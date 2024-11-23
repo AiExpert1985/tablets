@@ -9,10 +9,10 @@ class ProductDrawer {
     showDrawer(
       context,
       builder: (context) {
-        return const Center(
+        return Center(
           child: SafeArea(
             top: true,
-            child: ProductSearchForm(),
+            child: ProductSearchForm(drawerController),
           ),
         );
       },

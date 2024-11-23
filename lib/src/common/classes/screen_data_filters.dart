@@ -37,7 +37,6 @@ class ScreenDataFilters {
       if (criteria == FilterCriteria.contains) {
         listValue = listValue.where((item) => item[propertyName].contains(value)).toList();
       } else if (criteria == FilterCriteria.equals) {
-        tempPrint('here');
         listValue = listValue.where((item) => item[propertyName] == value).toList();
       } else if (criteria == FilterCriteria.lessThanOrEqual) {
         listValue = listValue.where((item) => item[propertyName] <= value).toList();
