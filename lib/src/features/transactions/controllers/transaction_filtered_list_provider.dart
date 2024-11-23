@@ -10,7 +10,7 @@ class TransactionFilteredList {
   AsyncValue<List<Map<String, dynamic>>> getFilteredList() {
     final filters = _ref.read(transactionFiltersProvider);
     final listValue = _ref.read(transactionStreamProvider);
-    final filteredList = filter_fn.applyListFilter(listValue, filters);
+    final filteredList = filter_fn.applyListFilterOnAsync(listValue, filters);
     return filteredList;
   }
 }

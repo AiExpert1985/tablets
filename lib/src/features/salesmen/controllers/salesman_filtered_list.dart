@@ -10,7 +10,7 @@ class SalesmanFilteredList {
   AsyncValue<List<Map<String, dynamic>>> getFilteredList() {
     final filters = _ref.read(salesmanFiltersProvider);
     final listValue = _ref.read(salesmanStreamProvider);
-    final filteredList = filter_fn.applyListFilter(listValue, filters);
+    final filteredList = filter_fn.applyListFilterOnAsync(listValue, filters);
     return filteredList;
   }
 }

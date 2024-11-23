@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 
 enum FilterCriteria { contains, equals, lessThanOrEqual, lessThan, moreThanOrEqual, moreThan }
@@ -30,7 +31,7 @@ Map<String, Map<String, dynamic>> updateFilters(
 }
 
 /// filters should have these keys {'xxx':{'criteria': xxx, 'value': xxx}}
-AsyncValue<List<Map<String, dynamic>>> applyListFilter(
+AsyncValue<List<Map<String, dynamic>>> applyListFilterOnAsync(
   AsyncValue<List<Map<String, dynamic>>> listValue,
   Map<String, Map<String, dynamic>> filters,
 ) {
@@ -48,4 +49,32 @@ AsyncValue<List<Map<String, dynamic>>> applyListFilter(
     }
   });
   return AsyncValue.data(filteredList);
+}
+
+/// filters should have these keys {'propertyName':{'criteria': xxx, 'value': xxx}}
+/// for example, in propertyNamed 'name' the criteria is 'contains' the vaue 'moh'
+List<Map<String, dynamic>> applyListFilter(
+  List<Map<String, dynamic>> listValue,
+  Map<String, Map<String, dynamic>> filters,
+) {
+  filters.forEach((key, filter) {
+    String criteria = filter['criteria'];
+    dynamic value = filter['value'];
+    if (criteria == FilterCriteria.contains.name) {
+      listValue = listValue.where((item) => item[key].contains(value)).toList();
+    } else if (criteria == FilterCriteria.equals.name) {
+      listValue = listValue.where((product) => product[key] == value).toList();
+    } else if (criteria == FilterCriteria.lessThanOrEqual.name) {
+      listValue = listValue.where((product) => product[key] <= value).toList();
+    } else if (criteria == FilterCriteria.lessThan.name) {
+      listValue = listValue.where((product) => product[key] < value).toList();
+    } else if (criteria == FilterCriteria.moreThanOrEqual.name) {
+      listValue = listValue.where((product) => product[key] >= value).toList();
+    } else if (criteria == FilterCriteria.moreThan.name) {
+      listValue = listValue.where((product) => product[key] > value).toList();
+    } else {
+      errorPrint('unknown filter criteria');
+    }
+  });
+  return listValue;
 }
