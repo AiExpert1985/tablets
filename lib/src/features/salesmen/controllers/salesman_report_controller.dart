@@ -10,23 +10,9 @@ final salesmanReportControllerProvider = Provider<SalesmanReportController>((ref
 class SalesmanReportController {
   SalesmanReportController();
 
-  void showSalaryDetails(
-      BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
-  void showCustomers(BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {
-    showReportDialog(
-      context,
-      [S.of(context).customer, S.of(context).region_name],
-      detailsList,
-      title: salesmanName,
-      width: 400,
-    );
-  }
+  void showDebtReport(BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
 
-  void showTotalDebts(BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
-  void showDueDebts(BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
-  void showOpenInvoices(
-      BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
-  void showDueInvoices(
+  void showInvoicesReport(
       BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
 
   void showTransactionReport(
@@ -56,5 +42,15 @@ class SalesmanReportController {
       S.of(context).transaction_name,
       isProfit ? S.of(context).profits : S.of(context).transaction_amount,
     ];
+  }
+
+  void showCustomers(BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {
+    showReportDialog(
+      context,
+      [S.of(context).customer, S.of(context).region_name],
+      detailsList,
+      title: salesmanName,
+      width: 400,
+    );
   }
 }

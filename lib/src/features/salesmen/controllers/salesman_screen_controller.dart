@@ -4,6 +4,7 @@ import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_data_notifier.dart';
@@ -43,8 +44,14 @@ final salesmanScreenControllerProvider = Provider<SalesmanScreenController>((ref
   final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
   final screenDataNotifier = ref.read(salesmanScreenDataNotifier.notifier);
+  final customerScreenController = ref.read(customerScreenControllerProvider);
   return SalesmanScreenController(
-      screenDataNotifier, transactionDbCache, salesmanDbCache, customerDbCache);
+    screenDataNotifier,
+    transactionDbCache,
+    salesmanDbCache,
+    customerDbCache,
+    customerScreenController,
+  );
 });
 
 class SalesmanScreenController {
@@ -53,12 +60,14 @@ class SalesmanScreenController {
     this._transactionDbCache,
     this._salesmanDbCache,
     this._customerDbCache,
+    this._customerScreenController,
   );
 
   final ScreenDataNotifier _screenDataNotifier;
   final DbCache _transactionDbCache;
   final DbCache _salesmanDbCache;
   final DbCache _customerDbCache;
+  final CustomerScreenController _customerScreenController;
 
   void setAllSalesmenScreenData(BuildContext context) {
     final allSalesmenData = _salesmanDbCache.data;
@@ -112,8 +121,22 @@ class SalesmanScreenController {
     List<Transaction> salesmanTransactions,
   ) {
     final salesman = Salesman.fromMap(salesmanData);
+    // create customer screen data for all customers to fetch from it invoices status
+    // and customers debt
+    final customersInfo = _getCustomersInfo(salesmanCustomers);
+    final customersBasicData = customersInfo['customersData'] as List<List<String>>;
+    final customersDbRef = customersInfo['customersDbRef'] as List<String>;
+    _customerScreenController.setAllCustomersScreenData(context);
+    final customersDebtInfo = _getCustomersDebtInfo(customersDbRef);
+    final totalDbet = customersDebtInfo['totalDebt'] as double;
+    final totalDebtDetails = customersDebtInfo['totalDebtDetails'] as List<List<dynamic>>;
+    final dueDebt = customersDebtInfo['dueDebt'] as double;
+    final dueDebtDetails = customersDebtInfo['dueDebtDetails'] as List<List<dynamic>>;
+    final openInvoices = customersDebtInfo['openInvoices'] as double;
+    final openInvoicesDetails = customersDebtInfo['openInvoicesDetails'] as List<List<dynamic>>;
+    final dueInvoices = customersDebtInfo['dueInvoices'] as double;
+    final dueInvoicesDetails = customersDebtInfo['dueInvoicesDetails'] as List<List<dynamic>>;
     final numCustomers = salesmanCustomers.length;
-    final customers = _getCustomerList(salesmanCustomers);
     final processedTransactionsMap = _getProcessedTransactions(context, salesmanTransactions);
     final invoices = _getInvoices(processedTransactionsMap, 'invoicesList');
     final invoicesNumber = invoices.length;
@@ -134,15 +157,15 @@ class SalesmanScreenController {
       commissionKey: commissionAmount,
       commissionDetailsKey: commissions,
       customersKey: numCustomers,
-      customersDetailsKey: customers,
-      totalDebtKey: 0,
-      totalDebtDetailsKey: [[]],
-      dueDebtKey: 0,
-      dueDebtDetailsKey: [[]],
-      openInvoicesKey: 0,
-      openInvoicesDetailsKey: [[]],
-      dueInvoicesKey: 0,
-      dueInvoicesDetailsKey: [[]],
+      customersDetailsKey: customersBasicData,
+      totalDebtKey: totalDbet,
+      totalDebtDetailsKey: totalDebtDetails,
+      dueDebtKey: dueDebt,
+      dueDebtDetailsKey: dueDebtDetails,
+      openInvoicesKey: openInvoices,
+      openInvoicesDetailsKey: openInvoicesDetails,
+      dueInvoicesKey: dueInvoices,
+      dueInvoicesDetailsKey: dueInvoicesDetails,
       profitKey: profitAmount,
       profitDetailsKey: profits,
       numInvoicesKey: invoicesNumber,
@@ -233,11 +256,20 @@ class SalesmanScreenController {
     };
   }
 
-  List<List<dynamic>> _getCustomerList(List<Customer> salesmanCustomers) {
-    List<List<dynamic>> processedList = [];
+  Map<String, dynamic> _getCustomersInfo(List<Customer> salesmanCustomers) {
+    List<List<String>> customerData = [];
+    List<String> customerDbRef = [];
     for (var customer in salesmanCustomers) {
-      processedList.add([customer.name, customer.region]);
+      customerData.add([customer.name, customer.region]);
+      customerDbRef.add(customer.dbRef);
     }
-    return processedList;
+    return {
+      'customersDbRef': customerDbRef,
+      'customersData': customerData,
+    };
+  }
+
+  Map<String, dynamic> _getCustomersDebtInfo(List<String> dbRefList) {
+    return {};
   }
 }

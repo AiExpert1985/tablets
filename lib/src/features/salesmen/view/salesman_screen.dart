@@ -250,19 +250,19 @@ class DataRow extends ConsumerWidget {
           ),
           MainScreenClickableCell(
             totalDebt,
-            () => reportController.showTotalDebts(context, customersTotalDebts, name),
+            () => reportController.showDebtReport(context, customersTotalDebts, name),
           ),
           MainScreenClickableCell(
             dueDebt,
-            () => reportController.showDueDebts(context, customersDueDebts, name),
+            () => reportController.showDebtReport(context, customersDueDebts, name),
           ),
           MainScreenClickableCell(
             numOpenInvoices,
-            () => reportController.showOpenInvoices(context, openInvoices, name),
+            () => reportController.showInvoicesReport(context, openInvoices, name),
           ),
           MainScreenClickableCell(
             numDueInovies,
-            () => reportController.showDueInvoices(context, dueInvoices, name),
+            () => reportController.showInvoicesReport(context, dueInvoices, name),
           ),
           MainScreenClickableCell(
             numReceipts,
