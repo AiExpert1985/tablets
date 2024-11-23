@@ -28,60 +28,33 @@ class SalesmanReportController {
       BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
   void showDueInvoices(
       BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {}
-  void showProfitTransactions(
-      BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {
-    showReportDialog(
-      context,
-      _getProfitReportTitles(context),
-      detailsList,
-      dateIndex: 2,
-      title: salesmanName,
-      useOriginalTransaction: true,
-      sumIndex: 4,
-    );
-  }
 
-  void showTransactionCount(
-      BuildContext context, List<List<dynamic>> transactionList, String salesmanName) {
+  void showTransactionReport(
+    BuildContext context,
+    List<List<dynamic>> transactionList,
+    String salesmanName, {
+    int? sumIndex,
+    bool isProfit = false,
+    bool isCount = false,
+  }) {
     showReportDialog(
       context,
-      _getTransactionsReportTitles(context),
+      _getTransactionsReportTitles(context, isProfit: isProfit),
       transactionList,
       dateIndex: 2,
       title: salesmanName,
       useOriginalTransaction: true,
-      isCount: true,
+      sumIndex: sumIndex,
+      isCount: isCount,
     );
   }
 
-  void showTransactionSum(
-      BuildContext context, List<List<dynamic>> transactionList, String salesmanName) {
-    showReportDialog(
-      context,
-      _getTransactionsReportTitles(context),
-      transactionList,
-      dateIndex: 2,
-      title: salesmanName,
-      useOriginalTransaction: true,
-      sumIndex: 4,
-    );
-  }
-
-  List<String> _getTransactionsReportTitles(BuildContext context) {
+  List<String> _getTransactionsReportTitles(BuildContext context, {bool isProfit = false}) {
     return [
       S.of(context).transaction_type,
       S.of(context).transaction_date,
       S.of(context).transaction_name,
-      S.of(context).transaction_amount,
-    ];
-  }
-
-  List<String> _getProfitReportTitles(BuildContext context) {
-    return [
-      S.of(context).transaction_type,
-      S.of(context).transaction_date,
-      S.of(context).transaction_name,
-      S.of(context).profits,
+      isProfit ? S.of(context).profits : S.of(context).transaction_amount,
     ];
   }
 }

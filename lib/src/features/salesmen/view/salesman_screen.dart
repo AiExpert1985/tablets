@@ -235,11 +235,14 @@ class DataRow extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           MainScreenEditButton(
-              defaultImageUrl, () => _showEditSalesmanForm(context, ref, salesman)),
+            defaultImageUrl,
+            () => _showEditSalesmanForm(context, ref, salesman),
+          ),
           MainScreenTextCell(name),
           MainScreenClickableCell(
             commission,
-            () => reportController.showTransactionSum(context, commissionDetails, name),
+            () => reportController.showTransactionReport(context, commissionDetails, name,
+                sumIndex: 4),
           ),
           MainScreenClickableCell(
             numCustomers,
@@ -263,31 +266,32 @@ class DataRow extends ConsumerWidget {
           ),
           MainScreenClickableCell(
             numReceipts,
-            () => reportController.showTransactionCount(context, receipts, name),
+            () => reportController.showTransactionReport(context, receipts, name, isCount: true),
           ),
           MainScreenClickableCell(
             receiptAmount,
-            () => reportController.showTransactionSum(context, receipts, name),
+            () => reportController.showTransactionReport(context, receipts, name, sumIndex: 4),
           ),
           MainScreenClickableCell(
             numInvoices,
-            () => reportController.showTransactionCount(context, invoices, name),
+            () => reportController.showTransactionReport(context, invoices, name, isCount: true),
           ),
           MainScreenClickableCell(
             invoicesAmount,
-            () => reportController.showTransactionSum(context, invoices, name),
+            () => reportController.showTransactionReport(context, invoices, name, sumIndex: 4),
           ),
           MainScreenClickableCell(
             numReturns,
-            () => reportController.showTransactionCount(context, returns, name),
+            () => reportController.showTransactionReport(context, returns, name, isCount: true),
           ),
           MainScreenClickableCell(
             returnsAmount,
-            () => reportController.showTransactionSum(context, returns, name),
+            () => reportController.showTransactionReport(context, returns, name, sumIndex: 4),
           ),
           MainScreenClickableCell(
             profit,
-            () => reportController.showProfitTransactions(context, profitTransactions, name),
+            () => reportController.showTransactionReport(context, profitTransactions, name,
+                isProfit: true),
           ),
         ],
       ),
