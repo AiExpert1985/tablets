@@ -83,6 +83,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("تم الحفظ بنجاح"),
         "db_success_updaging_doc":
             MessageLookupByLibrary.simpleMessage("تم التعديل بنجاح"),
+        "debts": MessageLookupByLibrary.simpleMessage("الديون"),
         "delete": MessageLookupByLibrary.simpleMessage("حذف"),
         "due_debt_amount":
             MessageLookupByLibrary.simpleMessage("الدين المستحق"),
@@ -163,6 +164,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "num_open_invoice":
             MessageLookupByLibrary.simpleMessage("القوائم المفتوحة"),
         "number": MessageLookupByLibrary.simpleMessage("الرقم"),
+        "open_invoices":
+            MessageLookupByLibrary.simpleMessage("القوائم المفتوحة"),
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
         "paid_amount":

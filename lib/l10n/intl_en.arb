@@ -203,5 +203,7 @@
     "returns_number": "Returns number",
     "returns_amount": "Returns amount",
     "count": "Count",
-    "commission": "Commission"
+    "commission": "Commission",
+    "debts": "Debts",
+    "open_invoices": "Open invoices"
 }

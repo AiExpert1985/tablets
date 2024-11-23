@@ -64,9 +64,10 @@ class ScreenDataNotifier extends StateNotifier<Map<String, dynamic>> {
   }
 
   Map<String, dynamic> getItem(String dbRefValue) {
-    return state['data'].firstWhere((item) => item['dbRef'] == dbRefValue, orElse: () {
-      errorPrint('item were not found');
-      return {};
-    });
+    List<Map<String, dynamic>> data = state['data'];
+    final itemsFound = data.where((item) => item['dbRef'] == dbRefValue).toList();
+    if (itemsFound.isNotEmpty) return itemsFound[0];
+    errorPrint('no item has dbRef $dbRefValue');
+    return {};
   }
 }

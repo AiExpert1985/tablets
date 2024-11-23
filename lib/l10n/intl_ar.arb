@@ -203,5 +203,7 @@
     "returns_number": "عدد الارجاعات",
     "returns_amount": "مبلغ الارجاعات",
     "count": "العدد",
-    "commission": "العمولة"
+    "commission": "العمولة",
+    "debts": "الديون",
+    "open_invoices": "القوائم المفتوحة"
 }

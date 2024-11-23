@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart' as cust;
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_data_notifier.dart';
@@ -19,14 +22,10 @@ const commissionKey = 'commission';
 const customersKey = 'customers';
 const customersDetailsKey = 'customersDetails';
 const commissionDetailsKey = 'salaryDetails';
-const totalDebtKey = 'totalDebt';
-const totalDebtDetailsKey = 'totalDebtDetails';
-const dueDebtKey = 'dueDebt';
-const dueDebtDetailsKey = 'dueDebtDetails';
+const debtsKey = 'debts';
+const debtsDetailsKey = 'totalDebtDetails';
 const openInvoicesKey = 'openInvoices';
 const openInvoicesDetailsKey = 'openInvoicesDetails';
-const dueInvoicesKey = 'dueInvoices';
-const dueInvoicesDetailsKey = 'dueInvoicesDetails';
 const profitKey = 'profit';
 const profitDetailsKey = 'profitDetails';
 const numInvoicesKey = 'numInvoices';
@@ -45,12 +44,14 @@ final salesmanScreenControllerProvider = Provider<SalesmanScreenController>((ref
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
   final screenDataNotifier = ref.read(salesmanScreenDataNotifier.notifier);
   final customerScreenController = ref.read(customerScreenControllerProvider);
+  final customersScreenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
   return SalesmanScreenController(
     screenDataNotifier,
     transactionDbCache,
     salesmanDbCache,
     customerDbCache,
     customerScreenController,
+    customersScreenDataNotifier,
   );
 });
 
@@ -61,6 +62,7 @@ class SalesmanScreenController {
     this._salesmanDbCache,
     this._customerDbCache,
     this._customerScreenController,
+    this._customerScreenDataNotifier,
   );
 
   final ScreenDataNotifier _screenDataNotifier;
@@ -68,6 +70,7 @@ class SalesmanScreenController {
   final DbCache _salesmanDbCache;
   final DbCache _customerDbCache;
   final CustomerScreenController _customerScreenController;
+  final ScreenDataNotifier _customerScreenDataNotifier;
 
   void setAllSalesmenScreenData(BuildContext context) {
     final allSalesmenData = _salesmanDbCache.data;
@@ -84,10 +87,6 @@ class SalesmanScreenController {
     }
     Map<String, dynamic> summaryTypes = {
       commissionKey: 'sum',
-      totalDebtKey: 'sum',
-      dueDebtKey: 'sum',
-      openInvoicesKey: 'sum',
-      dueInvoicesKey: 'sum',
       profitKey: 'sum',
     };
     _screenDataNotifier.initialize(summaryTypes);
@@ -128,14 +127,10 @@ class SalesmanScreenController {
     final customersDbRef = customersInfo['customersDbRef'] as List<String>;
     _customerScreenController.setAllCustomersScreenData(context);
     final customersDebtInfo = _getCustomersDebtInfo(customersDbRef);
-    final totalDbet = customersDebtInfo['totalDebt'] as double;
-    final totalDebtDetails = customersDebtInfo['totalDebtDetails'] as List<List<dynamic>>;
-    final dueDebt = customersDebtInfo['dueDebt'] as double;
-    final dueDebtDetails = customersDebtInfo['dueDebtDetails'] as List<List<dynamic>>;
-    final openInvoices = customersDebtInfo['openInvoices'] as double;
-    final openInvoicesDetails = customersDebtInfo['openInvoicesDetails'] as List<List<dynamic>>;
-    final dueInvoices = customersDebtInfo['dueInvoices'] as double;
-    final dueInvoicesDetails = customersDebtInfo['dueInvoicesDetails'] as List<List<dynamic>>;
+    final debts = customersDebtInfo[debtsKey] as String;
+    final debtsDetails = customersDebtInfo[debtsDetailsKey] as List<List<dynamic>>;
+    final openInvoices = customersDebtInfo[openInvoicesKey] as String;
+    final openInvoicesDetails = customersDebtInfo[openInvoicesDetailsKey] as List<List<dynamic>>;
     final numCustomers = salesmanCustomers.length;
     final processedTransactionsMap = _getProcessedTransactions(context, salesmanTransactions);
     final invoices = _getInvoices(processedTransactionsMap, 'invoicesList');
@@ -158,14 +153,10 @@ class SalesmanScreenController {
       commissionDetailsKey: commissions,
       customersKey: numCustomers,
       customersDetailsKey: customersBasicData,
-      totalDebtKey: totalDbet,
-      totalDebtDetailsKey: totalDebtDetails,
-      dueDebtKey: dueDebt,
-      dueDebtDetailsKey: dueDebtDetails,
+      debtsKey: debts,
+      debtsDetailsKey: debtsDetails,
       openInvoicesKey: openInvoices,
       openInvoicesDetailsKey: openInvoicesDetails,
-      dueInvoicesKey: dueInvoices,
-      dueInvoicesDetailsKey: dueInvoicesDetails,
       profitKey: profitAmount,
       profitDetailsKey: profits,
       numInvoicesKey: invoicesNumber,
@@ -270,6 +261,33 @@ class SalesmanScreenController {
   }
 
   Map<String, dynamic> _getCustomersDebtInfo(List<String> dbRefList) {
-    return {};
+    double totalDebt = 0;
+    double dueDebt = 0;
+    double openInvoices = 0;
+    double dueInvoices = 0;
+    List<List<dynamic>> debtsDetails = [];
+    List<List<dynamic>> invoicesDetails = [];
+    for (var dbRef in dbRefList) {
+      final screenData = _customerScreenDataNotifier.getItem(dbRef);
+      if (screenData.isEmpty) continue;
+      final customerName = screenData[cust.customerNameKey] ?? '';
+      final customerTotalDebt = screenData[cust.totalDebtKey] ?? 0;
+      final customerDueDbet = screenData[cust.dueDebtKey] ?? 0;
+      final customerOpenInvoices = screenData[cust.openInvoicesKey] ?? 0;
+      final customerDueInvoices = screenData[cust.dueInvoicesKey] ?? 0;
+      totalDebt += customerTotalDebt;
+      dueDebt += customerDueDbet;
+      openInvoices += customerOpenInvoices;
+      dueInvoices += customerDueInvoices;
+      debtsDetails.add([customerName, customerTotalDebt, customerDueDbet]);
+      invoicesDetails.add([customerName, customerOpenInvoices, customerDueInvoices]);
+    }
+    Map<String, dynamic> debtInfo = {
+      debtsKey: '$totalDebt  ($dueDebt)',
+      openInvoicesKey: '$openInvoices  ($dueInvoices)',
+      debtsDetailsKey: sortListOfListsByNumber(debtsDetails, 2),
+      openInvoicesDetailsKey: sortListOfListsByNumber(invoicesDetails, 2)
+    };
+    return debtInfo;
   }
 }

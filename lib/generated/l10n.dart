@@ -2099,6 +2099,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Debts`
+  String get debts {
+    return Intl.message(
+      'Debts',
+      name: 'debts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open invoices`
+  String get open_invoices {
+    return Intl.message(
+      'Open invoices',
+      name: 'open_invoices',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -167,6 +167,16 @@ List<List<dynamic>> sortListOfListsByDate(List<List<dynamic>> list, int dateInde
   return list;
 }
 
+// order a list of lists based on a number, from biggest to smallest
+List<List<dynamic>> sortListOfListsByNumber(List<List<dynamic>> list, int numberIndex) {
+  list.sort((a, b) {
+    final itemA = a[numberIndex];
+    final itemB = b[numberIndex];
+    return itemB.compareTo(itemA); // Descending order
+  });
+  return list;
+}
+
 void sortListOfMapsByDate(List<Map<String, dynamic>> list, String dateKey) {
   list.sort((a, b) {
     DateTime dateA = a[dateKey] is! DateTime ? a[dateKey].toDate() : a[dateKey];

@@ -145,10 +145,8 @@ class ListHeaders extends StatelessWidget {
             MainScreenHeaderCell(S.of(context).salesman_name),
             MainScreenHeaderCell(S.of(context).commission),
             MainScreenHeaderCell(S.of(context).customers),
-            MainScreenHeaderCell(S.of(context).current_debt),
-            MainScreenHeaderCell(S.of(context).due_debt_amount),
-            MainScreenHeaderCell(S.of(context).num_open_invoice),
-            MainScreenHeaderCell(S.of(context).num_due_invoices),
+            MainScreenHeaderCell(S.of(context).debts),
+            MainScreenHeaderCell(S.of(context).open_invoices),
             MainScreenHeaderCell(S.of(context).receipts_number),
             MainScreenHeaderCell(S.of(context).receipts_amount),
             MainScreenHeaderCell(S.of(context).invoices_number),
@@ -186,8 +184,6 @@ class HeaderTotalsRow extends ConsumerWidget {
         MainScreenPlaceholder(),
         MainScreenPlaceholder(),
         MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
       ],
     );
   }
@@ -209,14 +205,10 @@ class DataRow extends ConsumerWidget {
     final commissionDetails = salesmanScreenData[commissionDetailsKey] as List<List<dynamic>>;
     final numCustomers = salesmanScreenData[customersKey] as double;
     final customersList = salesmanScreenData[customersDetailsKey] as List<List<dynamic>>;
-    final totalDebt = salesmanScreenData[totalDebtKey] as double;
-    final customersTotalDebts = salesmanScreenData[totalDebtDetailsKey] as List<List<dynamic>>;
-    final dueDebt = salesmanScreenData[dueDebtKey] as double;
-    final customersDueDebts = salesmanScreenData[dueDebtDetailsKey] as List<List<dynamic>>;
-    final numOpenInvoices = salesmanScreenData[openInvoicesKey] as int;
-    final openInvoices = salesmanScreenData[openInvoicesDetailsKey] as List<List<dynamic>>;
-    final numDueInovies = salesmanScreenData[dueInvoicesKey] as int;
-    final dueInvoices = salesmanScreenData[dueInvoicesDetailsKey] as List<List<dynamic>>;
+    final debts = salesmanScreenData[debtsKey] as String;
+    final debtDetails = salesmanScreenData[debtsDetailsKey] as List<List<dynamic>>;
+    final openInvoices = salesmanScreenData[openInvoicesKey] as String;
+    final openInvoicesDetails = salesmanScreenData[openInvoicesDetailsKey] as List<List<dynamic>>;
     final profit = salesmanScreenData[profitKey] as double;
     final profitTransactions = salesmanScreenData[profitDetailsKey] as List<List<dynamic>>;
     final numInvoices = salesmanScreenData[numInvoicesKey] as double;
@@ -249,20 +241,12 @@ class DataRow extends ConsumerWidget {
             () => reportController.showCustomers(context, customersList, name),
           ),
           MainScreenClickableCell(
-            totalDebt,
-            () => reportController.showDebtReport(context, customersTotalDebts, name),
+            debts,
+            () => reportController.showDebtReport(context, debtDetails, name),
           ),
           MainScreenClickableCell(
-            dueDebt,
-            () => reportController.showDebtReport(context, customersDueDebts, name),
-          ),
-          MainScreenClickableCell(
-            numOpenInvoices,
-            () => reportController.showInvoicesReport(context, openInvoices, name),
-          ),
-          MainScreenClickableCell(
-            numDueInovies,
-            () => reportController.showInvoicesReport(context, dueInvoices, name),
+            openInvoices,
+            () => reportController.showInvoicesReport(context, openInvoicesDetails, name),
           ),
           MainScreenClickableCell(
             numReceipts,

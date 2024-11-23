@@ -83,6 +83,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Document was saved successfully"),
         "db_success_updaging_doc": MessageLookupByLibrary.simpleMessage(
             "Document was updated successfully "),
+        "debts": MessageLookupByLibrary.simpleMessage("Debts"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "due_debt_amount": MessageLookupByLibrary.simpleMessage("Due debt"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
@@ -167,6 +168,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "num_open_invoice":
             MessageLookupByLibrary.simpleMessage("Num of open invoices"),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
+        "open_invoices": MessageLookupByLibrary.simpleMessage("Open invoices"),
         "page_not_found":
             MessageLookupByLibrary.simpleMessage("Page is not found"),
         "paid_amount": MessageLookupByLibrary.simpleMessage("Payed amount"),
