@@ -29,40 +29,83 @@ class SearchForm extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SearchFormTitle(_title),
-            SizedBox(
-              child: Column(
-                children: [
-                  ..._bodyWidgets,
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    _screenDataController.setFeatureScreenData(context);
-                    final screenData = _screenDataNotifier.data as List<Map<String, dynamic>>;
-                    final filteredScreenData = _filterController.applyListFilter(screenData);
-                    _screenDataNotifier.set(filteredScreenData);
-                  },
-                  icon: const ApproveIcon(),
-                ),
-                HorizontalGap.l,
-                IconButton(
-                  onPressed: () {
-                    _screenDataController.setFeatureScreenData(context);
-                    _filterController.reset();
-                    _drawerController.close();
-                  },
-                  icon: const CancelIcon(),
-                ),
-              ],
-            )
+            _buildTitle(_title),
+            _buildBody(),
+            _buildButtons(context),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildBody() {
+    return SizedBox(
+      child: Column(
+        children: [
+          ..._bodyWidgets,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildButtons(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          onPressed: () {
+            _screenDataController.setFeatureScreenData(context);
+            final screenData = _screenDataNotifier.data as List<Map<String, dynamic>>;
+            final filteredScreenData = _filterController.applyListFilter(screenData);
+            _screenDataNotifier.set(filteredScreenData);
+          },
+          icon: const ApproveIcon(),
+        ),
+        HorizontalGap.l,
+        IconButton(
+          onPressed: () {
+            _screenDataController.setFeatureScreenData(context);
+            _filterController.reset();
+            _drawerController.close();
+          },
+          icon: const CancelIcon(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTitle(String title) {
+    return Center(
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class FilterRow extends StatelessWidget {
+  const FilterRow(this._label, this._firstFilter, {this.secondFilter, super.key});
+
+  final String _label;
+  final Widget _firstFilter;
+  final Widget? secondFilter;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          width: 100,
+          padding: const EdgeInsets.all(5),
+          child: Text(_label, style: const TextStyle(fontSize: 18)),
+        ),
+        HorizontalGap.l,
+        _firstFilter,
+        if (secondFilter != null) HorizontalGap.l,
+        if (secondFilter != null) secondFilter!,
+      ],
     );
   }
 }
@@ -88,6 +131,32 @@ class NumberMatchSearchField extends StatelessWidget {
         _filterController.updateFilters(_filterName, _propertyName, FilterCriteria.equals, value);
       },
       dataType: FieldDataType.num,
+      name: _filterName,
+      isRequired: false,
+    );
+  }
+}
+
+class TextSearchField extends StatelessWidget {
+  const TextSearchField(this._filterController, this._filterName, this._propertyName, this._label,
+      {super.key});
+  final ScreenDataFilters _filterController;
+  final String _propertyName;
+  final String _filterName;
+  final String _label;
+  @override
+  Widget build(BuildContext context) {
+    final filter = _buildFilter();
+    return FilterRow(_label, filter);
+  }
+
+  Widget _buildFilter() {
+    return SearchInputField(
+      initialValue: _filterController.getFilterValue(_filterName),
+      onChangedFn: (value) {
+        _filterController.updateFilters(_filterName, _propertyName, FilterCriteria.contains, value);
+      },
+      dataType: FieldDataType.text,
       name: _filterName,
       isRequired: false,
     );
@@ -136,47 +205,6 @@ class NumberRangeSearchField extends StatelessWidget {
       dataType: FieldDataType.num,
       name: _secondFilterName,
       isRequired: false,
-    );
-  }
-}
-
-class SearchFormTitle extends StatelessWidget {
-  const SearchFormTitle(this.title, {super.key});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        title,
-        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-}
-
-class FilterRow extends StatelessWidget {
-  const FilterRow(this._label, this._firstFilter, {this.secondFilter, super.key});
-
-  final String _label;
-  final Widget _firstFilter;
-  final Widget? secondFilter;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          width: 100,
-          padding: const EdgeInsets.all(5),
-          child: Text(_label, style: const TextStyle(fontSize: 18)),
-        ),
-        _firstFilter,
-        if (secondFilter != null) HorizontalGap.l,
-        if (secondFilter != null) secondFilter!,
-      ],
     );
   }
 }
