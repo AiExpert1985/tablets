@@ -169,7 +169,7 @@ class VendorsButton extends ConsumerWidget {
         await initializeVendorDbCache(context, ref);
       }
       if (context.mounted) {
-        vendorScreenController.setAllVendorsScreenData(context);
+        vendorScreenController.setFeatureScreenData(context);
       }
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).vendors;

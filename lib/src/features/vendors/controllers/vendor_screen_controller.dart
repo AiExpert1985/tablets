@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
@@ -22,7 +23,8 @@ final vendorScreenControllerProvider = Provider<VendorScreenController>((ref) {
   return VendorScreenController(screenDataNotifier, transactionDbCache, vendorDbCache);
 });
 
-class VendorScreenController {
+@override
+class VendorScreenController implements ScreenDataController {
   VendorScreenController(
     this._screenDataNotifier,
     this._transactionDbCache,
@@ -33,11 +35,12 @@ class VendorScreenController {
   final DbCache _transactionDbCache;
   final DbCache _vendorDbCache;
 
-  void setAllVendorsScreenData(BuildContext context) {
+  @override
+  void setFeatureScreenData(BuildContext context) {
     final allVendorsData = _vendorDbCache.data;
     List<Map<String, dynamic>> screenData = [];
     for (var vendorData in allVendorsData) {
-      final newRow = getVendorScreenData(context, vendorData);
+      final newRow = getItemScreenData(context, vendorData);
       screenData.add(newRow);
     }
     Map<String, dynamic> summaryTypes = {
@@ -47,8 +50,8 @@ class VendorScreenController {
     _screenDataNotifier.set(screenData);
   }
 
-  Map<String, dynamic> getVendorScreenData(
-      BuildContext context, Map<String, dynamic> customerData) {
+  @override
+  Map<String, dynamic> getItemScreenData(BuildContext context, Map<String, dynamic> customerData) {
     final vendor = Vendor.fromMap(customerData);
     final vendorTransactions = getVendorTransactions(vendor.dbRef);
     if (vendor.initialAmount > 0) {

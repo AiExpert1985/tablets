@@ -77,7 +77,7 @@ class VendorForm extends ConsumerWidget {
     dbCache.update(itemData, operationType);
     // redo screenData calculations
     if (context.mounted) {
-      screenController.setAllVendorsScreenData(context);
+      screenController.setFeatureScreenData(context);
     }
   }
 
@@ -104,7 +104,7 @@ class VendorForm extends ConsumerWidget {
       dbCache.update(itemData, operationType);
       // redo screenData calculations
       if (context.mounted) {
-        screenController.setAllVendorsScreenData(context);
+        screenController.setFeatureScreenData(context);
       }
     }
   }
