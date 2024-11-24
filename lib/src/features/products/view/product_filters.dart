@@ -39,7 +39,7 @@ class ProductSearchForm extends ConsumerWidget {
         productCodeKey,
         S.of(context).product_code,
       ),
-      NumberBetweenSearchField(
+      NumberRangeSearchField(
         filterController,
         'quantityMoreThanOrEqual',
         'quantityLessThanOrEqual',

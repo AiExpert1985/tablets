@@ -6,6 +6,15 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
 
+// TODO
+// this class is a copy of FormInputField class, with tiny change which is adding
+// if (value.trim().isEmpty) {onChangedFn(null);return;}
+// to deal with the case when user remove previously entered value, which in this case i need to
+// return a null to update the filter, which I didn't needed to do in the Forms, I didn't want to
+// change the FormInputField because there might be some effects on forms, and I don't have time
+// to check & deal with these effects now due to the near dead line for the applicaiton
+// later I will unify the two class which I didn't have time to do now
+// 24-Nov-2024
 class SearchInputField extends ConsumerWidget {
   const SearchInputField({
     required this.onChangedFn,

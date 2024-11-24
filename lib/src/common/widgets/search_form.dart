@@ -6,7 +6,6 @@ import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
-import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/search_fields/edit_search_box.dart';
 
@@ -94,8 +93,8 @@ class NumberMatchSearchField extends StatelessWidget {
   }
 }
 
-class NumberBetweenSearchField extends StatelessWidget {
-  const NumberBetweenSearchField(this._filterController, this._firstFilterName,
+class NumberRangeSearchField extends StatelessWidget {
+  const NumberRangeSearchField(this._filterController, this._firstFilterName,
       this._secondFilterName, this._propertyName, this._label,
       {super.key});
   final ScreenDataFilters _filterController;
@@ -103,37 +102,37 @@ class NumberBetweenSearchField extends StatelessWidget {
   final String _firstFilterName;
   final String _secondFilterName;
   final String _label;
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          width: 120,
-          padding: const EdgeInsets.all(5),
-          child: Text(_label),
-        ),
-        SearchInputField(
-          initialValue: _filterController.getFilterValue(_firstFilterName),
-          onChangedFn: (value) {
-            _filterController.updateFilters(
-                _firstFilterName, _propertyName, FilterCriteria.moreThanOrEqual, value);
-          },
-          dataType: FieldDataType.num,
-          name: _firstFilterName,
-          isRequired: false,
-        ),
-        SearchInputField(
-          initialValue: _filterController.getFilterValue(_secondFilterName),
-          onChangedFn: (value) {
-            _filterController.updateFilters(
-                _secondFilterName, _propertyName, FilterCriteria.lessThanOrEqual, value);
-          },
-          dataType: FieldDataType.num,
-          name: _secondFilterName,
-          isRequired: false,
-        ),
-      ],
+    final firstFilter = _buildFirstFilter();
+    final secondFilter = _buildSecondFilter();
+    return FilterRow(_label, firstFilter, secondFilter: secondFilter);
+  }
+
+  Widget _buildFirstFilter() {
+    return SearchInputField(
+      initialValue: _filterController.getFilterValue(_firstFilterName),
+      onChangedFn: (value) {
+        _filterController.updateFilters(
+            _firstFilterName, _propertyName, FilterCriteria.moreThanOrEqual, value);
+      },
+      dataType: FieldDataType.num,
+      name: _firstFilterName,
+      isRequired: false,
+    );
+  }
+
+  Widget _buildSecondFilter() {
+    return SearchInputField(
+      initialValue: _filterController.getFilterValue(_secondFilterName),
+      onChangedFn: (value) {
+        _filterController.updateFilters(
+            _secondFilterName, _propertyName, FilterCriteria.lessThanOrEqual, value);
+      },
+      dataType: FieldDataType.num,
+      name: _secondFilterName,
+      isRequired: false,
     );
   }
 }
@@ -150,6 +149,30 @@ class SearchFormTitle extends StatelessWidget {
         title,
         style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
       ),
+    );
+  }
+}
+
+class FilterRow extends StatelessWidget {
+  const FilterRow(this._label, this._firstFilter, {this.secondFilter, super.key});
+
+  final String _label;
+  final Widget _firstFilter;
+  final Widget? secondFilter;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          width: 120,
+          padding: const EdgeInsets.all(5),
+          child: Text(_label),
+        ),
+        _firstFilter,
+        if (secondFilter != null) secondFilter!,
+      ],
     );
   }
 }
