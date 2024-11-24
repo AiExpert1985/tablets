@@ -14,8 +14,8 @@ import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider
 const vendorDbRefKey = 'dbRef';
 const vendorNameKey = 'name';
 const vendorPhoneKey = 'phone';
-const totalDebtKey = 'totalDebt';
-const totalDebtDetailsKey = 'totalDebtDetails';
+const vendorTotalDebtKey = 'totalDebt';
+const vendorTotalDebtDetailsKey = 'totalDebtDetails';
 final vendorScreenControllerProvider = Provider<VendorScreenController>((ref) {
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
   final screenDataNotifier = ref.read(vendorScreenDataNotifier.notifier);
@@ -44,7 +44,7 @@ class VendorScreenController implements ScreenDataController {
       screenData.add(newRow);
     }
     Map<String, dynamic> summaryTypes = {
-      totalDebtKey: 'sum',
+      vendorTotalDebtKey: 'sum',
     };
     _screenDataNotifier.initialize(summaryTypes);
     _screenDataNotifier.set(screenData);
@@ -63,8 +63,8 @@ class VendorScreenController implements ScreenDataController {
       vendorDbRefKey: vendor.dbRef,
       vendorNameKey: vendor.name,
       vendorPhoneKey: vendor.phone,
-      totalDebtKey: totalDebt,
-      totalDebtDetailsKey: matchingList,
+      vendorTotalDebtKey: totalDebt,
+      vendorTotalDebtDetailsKey: matchingList,
     };
     return newDataRow;
   }

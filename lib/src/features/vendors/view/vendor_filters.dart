@@ -38,7 +38,7 @@ class VendorSearchForm extends ConsumerWidget {
       TextSearchField(filterController, 'phoneContains', vendorPhoneKey, S.of(context).phone),
       VerticalGap.xl,
       NumberRangeSearchField(filterController, 'debtThanOrEqual', 'debtLessThanOrEqual',
-          totalDebtKey, S.of(context).debts),
+          vendorTotalDebtKey, S.of(context).debts),
     ];
   }
 }

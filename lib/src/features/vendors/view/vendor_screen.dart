@@ -86,20 +86,22 @@ class ListData extends ConsumerWidget {
   }
 }
 
-class ListHeaders extends StatelessWidget {
+class ListHeaders extends ConsumerWidget {
   const ListHeaders({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final screenDataNotifier = ref.read(vendorScreenDataNotifier.notifier);
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const MainScreenPlaceholder(width: 20, isExpanded: false),
-            MainScreenHeaderCell(S.of(context).vendor),
-            MainScreenHeaderCell(S.of(context).phone),
-            MainScreenHeaderCell(S.of(context).current_debt),
+            SortableMainScreenHeaderCell(screenDataNotifier, vendorNameKey, S.of(context).vendor),
+            SortableMainScreenHeaderCell(screenDataNotifier, vendorPhoneKey, S.of(context).phone),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, vendorTotalDebtKey, S.of(context).current_debt),
           ],
         ),
         VerticalGap.m,
@@ -117,7 +119,7 @@ class HeaderTotalsRow extends ConsumerWidget {
     ref.watch(vendorScreenDataNotifier);
     final screenDataNotifier = ref.read(vendorScreenDataNotifier.notifier);
     final summary = screenDataNotifier.summary;
-    final totalDebt = summary[totalDebtKey]?['value'] ?? '';
+    final totalDebt = summary[vendorTotalDebtKey]?['value'] ?? '';
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -144,8 +146,8 @@ class DataRow extends ConsumerWidget {
     final vendor = Vendor.fromMap(customerData);
     final name = vendorScreenData[vendorNameKey] as String;
     final phone = vendorScreenData[vendorPhoneKey] as String;
-    final totalDebt = vendorScreenData[totalDebtKey] as double;
-    final matchingList = vendorScreenData[totalDebtDetailsKey] as List<List<dynamic>>;
+    final totalDebt = vendorScreenData[vendorTotalDebtKey] as double;
+    final matchingList = vendorScreenData[vendorTotalDebtDetailsKey] as List<List<dynamic>>;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),
