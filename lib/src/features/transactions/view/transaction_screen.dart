@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
+import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_drawer_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_screen_data_notifier.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_from_selection_dialog.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -38,8 +41,8 @@ class TransactionsList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     final dbData = dbCache.data;
-    sortListOfMapsByDate(dbData, 'date');
-    ref.watch(transactionDbCacheProvider);
+    sortMapsByProperty(dbData, 'date');
+    ref.watch(transactionScreenDataNotifier);
     final pageIsLoading = ref.read(pageIsLoadingNotifier);
     ref.watch(pageIsLoadingNotifier);
     if (pageIsLoading) {
@@ -66,14 +69,14 @@ class ListData extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dbCache = ref.read(transactionDbCacheProvider.notifier);
-    final dbData = dbCache.data;
-    ref.watch(transactionDbCacheProvider);
+    final screenDataNotifier = ref.read(transactionScreenDataNotifier.notifier);
+    final screenData = screenDataNotifier.data;
+    ref.watch(transactionScreenDataNotifier);
     return Expanded(
       child: ListView.builder(
-        itemCount: dbData.length,
+        itemCount: screenData.length,
         itemBuilder: (ctx, index) {
-          final transactionData = dbData[index];
+          final transactionData = screenData[index];
           return Column(
             children: [
               DataRow(transactionData),
@@ -86,38 +89,45 @@ class ListData extends ConsumerWidget {
   }
 }
 
-class ListHeaders extends StatelessWidget {
+class ListHeaders extends ConsumerWidget {
   const ListHeaders({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final screenDataNotifier = ref.read(transactionScreenDataNotifier.notifier);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const MainScreenPlaceholder(width: 20, isExpanded: false),
-        MainScreenHeaderCell(S.of(context).transaction_type),
-        MainScreenHeaderCell(S.of(context).transaction_date),
-        MainScreenHeaderCell(S.of(context).transaction_name),
-        MainScreenHeaderCell(S.of(context).salesman_selection),
-        MainScreenHeaderCell(S.of(context).transaction_number),
-        MainScreenHeaderCell(S.of(context).transaction_amount),
-        MainScreenHeaderCell(S.of(context).notes),
+        SortableMainScreenHeaderCell(
+            screenDataNotifier, 'transactionType', S.of(context).transaction_type),
+        SortableMainScreenHeaderCell(screenDataNotifier, 'date', S.of(context).transaction_date),
+        SortableMainScreenHeaderCell(screenDataNotifier, 'name', S.of(context).transaction_name),
+        SortableMainScreenHeaderCell(
+            screenDataNotifier, 'salesman', S.of(context).salesman_selection),
+        SortableMainScreenHeaderCell(
+            screenDataNotifier, 'number', S.of(context).transaction_number),
+        SortableMainScreenHeaderCell(
+            screenDataNotifier, 'totalAmount', S.of(context).transaction_amount),
+        SortableMainScreenHeaderCell(screenDataNotifier, 'notes', S.of(context).notes),
       ],
     );
   }
 }
 
 class DataRow extends ConsumerWidget {
-  const DataRow(this.transactionData, {super.key});
-  final Map<String, dynamic> transactionData;
+  const DataRow(this.transactionScreenData, {super.key});
+  final Map<String, dynamic> transactionScreenData;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final productRef = transactionScreenData[productDbRefKey];
+    final productDbCache = ref.read(transactionDbCacheProvider.notifier);
+    final transactionData = productDbCache.getItemByDbRef(productRef);
     final transaction = Transaction.fromMap(transactionData);
-
     final transactionTypeScreenName =
-        translateDbTextToScreenText(context, transaction.transactionType);
-
+        translateDbTextToScreenText(context, transactionScreenData['transactionType']);
+    final date = (transactionScreenData['date']).toDate();
     return Column(
       children: [
         Padding(
@@ -128,12 +138,12 @@ class DataRow extends ConsumerWidget {
               MainScreenEditButton(
                   defaultImageUrl, () => _showEditTransactionForm(context, ref, transaction)),
               MainScreenTextCell(transactionTypeScreenName),
-              MainScreenTextCell(transaction.date),
-              MainScreenTextCell(transaction.name),
-              MainScreenTextCell(transaction.salesman),
-              MainScreenTextCell(transaction.number),
-              MainScreenTextCell(transaction.totalAmount),
-              MainScreenTextCell(transaction.notes),
+              MainScreenTextCell(date),
+              MainScreenTextCell(transactionScreenData['name']),
+              MainScreenTextCell(transactionScreenData['salesman']),
+              MainScreenTextCell(transactionScreenData['number']),
+              MainScreenTextCell(transactionScreenData['totalAmount']),
+              MainScreenTextCell(transactionScreenData['notes']),
             ],
           ),
         ),

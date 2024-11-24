@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 
 /// A text data cell that is used for main screen for all features
 /// if it is header, then the text will be bold and larger
@@ -148,6 +149,32 @@ class MainScreenHeaderCell extends StatelessWidget {
       isExpanded: isExpanded,
       isHeader: true,
       isColumnTotal: isColumnTotal,
+    );
+  }
+}
+
+// returns a cell that is used for main screen List Column title
+// when click it sort column in descendent order, when double click it sorts column
+// in ascending order
+class SortableMainScreenHeaderCell extends StatelessWidget {
+  final ScreenDataNotifier _screenDataNotifier;
+  final String _propertyName;
+  final String _title;
+
+  const SortableMainScreenHeaderCell(this._screenDataNotifier, this._propertyName, this._title,
+      {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        child: MainScreenHeaderCell(
+          _title,
+          isExpanded: false,
+        ),
+        onDoubleTap: () => _screenDataNotifier.sortDataByProperty(_propertyName),
+        onTap: () => _screenDataNotifier.sortDataByProperty(_propertyName, isAscending: true),
+      ),
     );
   }
 }

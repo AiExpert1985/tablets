@@ -85,27 +85,39 @@ class ListData extends ConsumerWidget {
   }
 }
 
-class ListHeaders extends StatelessWidget {
+class ListHeaders extends ConsumerWidget {
   const ListHeaders({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final screenDataNotifier = ref.read(productScreenDataNotifier.notifier);
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const MainScreenPlaceholder(width: 20, isExpanded: false),
-            MainScreenHeaderCell(S.of(context).product_code),
-            MainScreenHeaderCell(S.of(context).product_name),
-            MainScreenHeaderCell(S.of(context).product_category),
-            MainScreenHeaderCell(S.of(context).product_salesman_commission),
-            if (!hideProductBuyingPrice) MainScreenHeaderCell(S.of(context).product_buying_price),
-            MainScreenHeaderCell(S.of(context).product_sell_whole_price),
-            MainScreenHeaderCell(S.of(context).product_sell_retail_price),
-            MainScreenHeaderCell(S.of(context).product_stock_quantity),
-            MainScreenHeaderCell(S.of(context).product_stock_amount),
-            MainScreenHeaderCell(S.of(context).product_profits),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, productCodeKey, S.of(context).product_code),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, productNameKey, S.of(context).product_name),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, productCategoryKey, S.of(context).product_category),
+            SortableMainScreenHeaderCell(screenDataNotifier, productCommissionKey,
+                S.of(context).product_salesman_commission),
+            if (!hideProductBuyingPrice)
+              SortableMainScreenHeaderCell(
+                  screenDataNotifier, productBuyingPriceKey, S.of(context).product_buying_price),
+            SortableMainScreenHeaderCell(screenDataNotifier, productSellingWholeSaleKey,
+                S.of(context).product_sell_whole_price),
+            SortableMainScreenHeaderCell(screenDataNotifier, productSellingRetailKey,
+                S.of(context).product_sell_retail_price),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, productQuantityKey, S.of(context).product_stock_quantity),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, productTotalStockPriceKey, S.of(context).product_stock_amount),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, productProfitKey, S.of(context).product_profits),
           ],
         ),
         VerticalGap.m,

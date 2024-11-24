@@ -177,11 +177,23 @@ List<List<dynamic>> sortListOfListsByNumber(List<List<dynamic>> list, int number
   return list;
 }
 
-void sortListOfMapsByDate(List<Map<String, dynamic>> list, String dateKey) {
+void sortMapsByProperty(List<Map<String, dynamic>> list, String propertyName,
+    {isAscending = false}) {
+  if (list.isEmpty || !list[0].containsKey(propertyName)) return;
   list.sort((a, b) {
-    DateTime dateA = a[dateKey] is! DateTime ? a[dateKey].toDate() : a[dateKey];
-    DateTime dateB = b[dateKey] is! DateTime ? b[dateKey].toDate() : b[dateKey];
-    return dateB.compareTo(dateA);
+    dynamic itemA = a[propertyName] ?? '';
+    dynamic itemB = b[propertyName] ?? '';
+    if (a[propertyName] is DateTime ||
+        a[propertyName] is Timestamp ||
+        b[propertyName] is DateTime ||
+        b[propertyName] is Timestamp) {
+      itemA = a[propertyName] is! DateTime ? a[propertyName].toDate() : a[propertyName];
+      itemB = b[propertyName] is! DateTime ? b[propertyName].toDate() : b[propertyName];
+    }
+    if (isAscending) {
+      return itemA.compareTo(itemB);
+    }
+    return itemB.compareTo(itemA);
   });
 }
 

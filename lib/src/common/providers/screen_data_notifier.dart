@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 
 /// columnsSummary Map<String, Map<String, dynamic>>
 /// example {totalDebt: {type:sum, value: 100}, closingDuration:{type:avg, value:10}}
@@ -69,5 +70,12 @@ class ScreenDataNotifier extends StateNotifier<Map<String, dynamic>> {
     if (itemsFound.isNotEmpty) return itemsFound[0];
     errorPrint('no item has dbRef $dbRefValue');
     return {};
+  }
+
+  void sortDataByProperty(String propertyName, {bool isAscending = false}) {
+    if (!state['data'][0].containsKey(propertyName)) return;
+    List<Map<String, dynamic>> stateData = [...data];
+    sortMapsByProperty(stateData, propertyName, isAscending: isAscending);
+    state = {...state, 'data': stateData};
   }
 }

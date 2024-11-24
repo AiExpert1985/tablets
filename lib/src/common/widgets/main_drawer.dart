@@ -9,6 +9,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_screen_controller.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
@@ -187,6 +188,7 @@ class TransactionsButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final transactionScreenController = ref.read(transactionScreenControllerProvider);
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('transactions', S.of(context).transactions, () async {
@@ -198,6 +200,9 @@ class TransactionsButton extends ConsumerWidget {
       }
       if (context.mounted) {
         await initializeProductDbCache(context, ref);
+      }
+      if (context.mounted) {
+        transactionScreenController.setFeatureScreenData(context);
       }
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).transactions;

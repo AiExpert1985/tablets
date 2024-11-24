@@ -25,7 +25,7 @@ class SearchForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilder(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 50),
+        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 65),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

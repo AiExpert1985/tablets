@@ -72,7 +72,7 @@ class VendorScreenController {
     List<Map<String, dynamic>> vendorTransactions =
         allTransactions.where((item) => item['nameDbRef'] == dbRef).toList();
 
-    sortListOfMapsByDate(vendorTransactions, 'date');
+    sortMapsByProperty(vendorTransactions, 'date');
     return vendorTransactions;
   }
 

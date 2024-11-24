@@ -191,7 +191,7 @@ class CustomerScreenController {
     List<Map<String, dynamic>> customerTransactions =
         allTransactions.where((item) => item['nameDbRef'] == dbRef).toList();
 
-    sortListOfMapsByDate(customerTransactions, 'date');
+    sortMapsByProperty(customerTransactions, 'date');
     return customerTransactions;
   }
 

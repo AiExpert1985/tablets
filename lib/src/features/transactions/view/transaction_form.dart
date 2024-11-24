@@ -11,6 +11,7 @@ import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
@@ -74,6 +75,7 @@ class TransactionForm extends ConsumerWidget {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
     final backgroundColor = ref.watch(backgroundColorProvider);
+    final screenController = ref.read(transactionScreenControllerProvider);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
 
     ref.watch(imagePickerProvider);
@@ -81,8 +83,8 @@ class TransactionForm extends ConsumerWidget {
       backgroundColor: backgroundColor,
       formKey: formController.formKey,
       fields: _getFormWidget(context, transactionType),
-      buttons:
-          _actionButtons(context, formController, formDataNotifier, formImagesNotifier, dbCache),
+      buttons: _actionButtons(
+          context, formController, formDataNotifier, formImagesNotifier, dbCache, screenController),
       width: transactionFormDimenssions[transactionType]['width'],
       height: transactionFormDimenssions[transactionType]['height'],
     );
@@ -94,20 +96,21 @@ class TransactionForm extends ConsumerWidget {
     ItemFormData formDataNotifier,
     ImageSliderNotifier formImagesNotifier,
     DbCache transactionDbCache,
+    TransactionScreenController screenController,
   ) {
     return [
       IconButton(
         onPressed: () {
-          _onSavePressed(
-              context, formController, formDataNotifier, formImagesNotifier, transactionDbCache);
+          _onSavePressed(context, formController, formDataNotifier, formImagesNotifier,
+              transactionDbCache, screenController);
         },
         icon: const SaveIcon(),
       ),
       if (isEditMode)
         IconButton(
           onPressed: () {
-            _onDeletePressed(
-                context, formDataNotifier, formImagesNotifier, formController, transactionDbCache);
+            _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController,
+                transactionDbCache, screenController);
           },
           icon: const DeleteIcon(),
         ),
@@ -115,11 +118,13 @@ class TransactionForm extends ConsumerWidget {
   }
 
   void _onSavePressed(
-      BuildContext context,
-      ItemFormController formController,
-      ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier,
-      DbCache transactionDbCache) {
+    BuildContext context,
+    ItemFormController formController,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+    DbCache transactionDbCache,
+    TransactionScreenController screenController,
+  ) {
     if (!formController.validateData()) return;
     formController.submitData();
     final formData = formDataNotifier.data;
@@ -130,14 +135,20 @@ class TransactionForm extends ConsumerWidget {
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
     transactionDbCache.update(itemData, operationType);
+    // redo screenData calculations
+    if (context.mounted) {
+      screenController.setFeatureScreenData(context);
+    }
   }
 
   Future<void> _onDeletePressed(
-      BuildContext context,
-      ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier,
-      ItemFormController formController,
-      DbCache transactionDbCache) async {
+    BuildContext context,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+    ItemFormController formController,
+    DbCache transactionDbCache,
+    TransactionScreenController screenController,
+  ) async {
     final confirmation = await showDeleteConfirmationDialog(
         context: context, message: formDataNotifier.data['name']);
     final formData = formDataNotifier.data;
@@ -151,6 +162,10 @@ class TransactionForm extends ConsumerWidget {
       // update the bdCache (database mirror) so that we don't need to fetch data from db
       const operationType = DbCacheOperationTypes.delete;
       transactionDbCache.update(itemData, operationType);
+      // redo screenData calculations
+      if (context.mounted) {
+        screenController.setFeatureScreenData(context);
+      }
     }
   }
 }
