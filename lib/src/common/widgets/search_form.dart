@@ -5,8 +5,10 @@ import 'package:tablets/src/common/classes/screen_data_filters.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
+import 'package:tablets/src/common/widgets/search_fields/edit_search_box.dart';
 
 class SearchForm extends StatelessWidget {
   const SearchForm(this._title, this._drawerController, this._filterController,
@@ -41,6 +43,7 @@ class SearchForm extends StatelessWidget {
                   },
                   icon: const ApproveIcon(),
                 ),
+                HorizontalGap.l,
                 IconButton(
                   onPressed: () {
                     _screenDataController.setFeatureScreenData(context);
@@ -59,27 +62,76 @@ class SearchForm extends StatelessWidget {
 }
 
 class NumberMatchSearchField extends StatelessWidget {
-  const NumberMatchSearchField(this._filterController, this._propertyName, this._label,
+  const NumberMatchSearchField(
+      this._filterController, this._filterName, this._propertyName, this._label,
       {super.key});
   final ScreenDataFilters _filterController;
   final String _propertyName;
+  final String _filterName;
   final String _label;
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
           width: 120,
           padding: const EdgeInsets.all(5),
           child: Text(_label),
         ),
-        FormInputField(
-          initialValue: _filterController.getFilterValue(_propertyName),
+        SearchInputField(
+          initialValue: _filterController.getFilterValue(_filterName),
           onChangedFn: (value) {
-            _filterController.updateFilters(_propertyName, FilterCriteria.equals, value);
+            _filterController.updateFilters(
+                _filterName, _propertyName, FilterCriteria.equals, value);
           },
           dataType: FieldDataType.num,
-          name: _propertyName,
+          name: _filterName,
+          isRequired: false,
+        ),
+      ],
+    );
+  }
+}
+
+class NumberBetweenSearchField extends StatelessWidget {
+  const NumberBetweenSearchField(this._filterController, this._firstFilterName,
+      this._secondFilterName, this._propertyName, this._label,
+      {super.key});
+  final ScreenDataFilters _filterController;
+  final String _propertyName;
+  final String _firstFilterName;
+  final String _secondFilterName;
+  final String _label;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          width: 120,
+          padding: const EdgeInsets.all(5),
+          child: Text(_label),
+        ),
+        SearchInputField(
+          initialValue: _filterController.getFilterValue(_firstFilterName),
+          onChangedFn: (value) {
+            _filterController.updateFilters(
+                _firstFilterName, _propertyName, FilterCriteria.moreThanOrEqual, value);
+          },
+          dataType: FieldDataType.num,
+          name: _firstFilterName,
+          isRequired: false,
+        ),
+        SearchInputField(
+          initialValue: _filterController.getFilterValue(_secondFilterName),
+          onChangedFn: (value) {
+            _filterController.updateFilters(
+                _secondFilterName, _propertyName, FilterCriteria.lessThanOrEqual, value);
+          },
+          dataType: FieldDataType.num,
+          name: _secondFilterName,
+          isRequired: false,
         ),
       ],
     );
