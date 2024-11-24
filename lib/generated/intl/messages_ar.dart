@@ -308,6 +308,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_reports":
             MessageLookupByLibrary.simpleMessage("تقارير  التعاملات"),
         "transaction_salesman": MessageLookupByLibrary.simpleMessage("المندوب"),
+        "transaction_search":
+            MessageLookupByLibrary.simpleMessage("بحث التعاملات"),
         "transaction_subTotal_amount":
             MessageLookupByLibrary.simpleMessage("المبلغ المسدد"),
         "transaction_total_amount_as_text":

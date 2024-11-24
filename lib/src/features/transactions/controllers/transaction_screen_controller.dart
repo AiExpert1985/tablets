@@ -1,11 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
-import 'package:tablets/src/features/products/controllers/product_screen_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_data_notifier.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:flutter/material.dart';
+
+const String transactionTypeKey = 'transactionType';
+const String transactionDateKey = 'date';
+const String transactionNameKey = 'name';
+const String transactionSalesmanKey = 'salesman';
+const String transactionNumberKey = 'number';
+const String transactionTotalAmountKey = 'totalAmount';
+const String transactionNotesKey = 'notes';
 
 final transactionScreenControllerProvider = Provider<TransactionScreenController>((ref) {
   final screenDataNotifier = ref.read(transactionScreenDataNotifier.notifier);
@@ -25,6 +33,10 @@ class TransactionScreenController implements ScreenDataController {
   void setFeatureScreenData(BuildContext context) {
     final dbCache = _transactionsDbCache.data;
     _screenDataNotifier.initialize({});
+    for (var mapData in dbCache) {
+      mapData[transactionTypeKey] =
+          translateDbTextToScreenText(context, mapData[transactionTypeKey]);
+    }
     _screenDataNotifier.set(dbCache);
   }
 

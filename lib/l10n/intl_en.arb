@@ -208,5 +208,6 @@
     "open_invoices": "Open invoices",
     "product_search": "Product search",
     "from": "From",
-    "to": "To"
+    "to": "To",
+    "transaction_search": "Transaction search"
 }

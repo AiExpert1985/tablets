@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
@@ -8,6 +7,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_drawer_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_data_notifier.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_from_selection_dialog.dart';
@@ -100,16 +100,18 @@ class ListHeaders extends ConsumerWidget {
       children: [
         const MainScreenPlaceholder(width: 20, isExpanded: false),
         SortableMainScreenHeaderCell(
-            screenDataNotifier, 'transactionType', S.of(context).transaction_type),
-        SortableMainScreenHeaderCell(screenDataNotifier, 'date', S.of(context).transaction_date),
-        SortableMainScreenHeaderCell(screenDataNotifier, 'name', S.of(context).transaction_name),
+            screenDataNotifier, transactionTypeKey, S.of(context).transaction_type),
         SortableMainScreenHeaderCell(
-            screenDataNotifier, 'salesman', S.of(context).salesman_selection),
+            screenDataNotifier, transactionDateKey, S.of(context).transaction_date),
         SortableMainScreenHeaderCell(
-            screenDataNotifier, 'number', S.of(context).transaction_number),
+            screenDataNotifier, transactionNameKey, S.of(context).transaction_name),
         SortableMainScreenHeaderCell(
-            screenDataNotifier, 'totalAmount', S.of(context).transaction_amount),
-        SortableMainScreenHeaderCell(screenDataNotifier, 'notes', S.of(context).notes),
+            screenDataNotifier, transactionSalesmanKey, S.of(context).salesman_selection),
+        SortableMainScreenHeaderCell(
+            screenDataNotifier, transactionNumberKey, S.of(context).transaction_number),
+        SortableMainScreenHeaderCell(
+            screenDataNotifier, transactionTotalAmountKey, S.of(context).transaction_amount),
+        SortableMainScreenHeaderCell(screenDataNotifier, transactionNotesKey, S.of(context).notes),
       ],
     );
   }
@@ -125,9 +127,7 @@ class DataRow extends ConsumerWidget {
     final productDbCache = ref.read(transactionDbCacheProvider.notifier);
     final transactionData = productDbCache.getItemByDbRef(productRef);
     final transaction = Transaction.fromMap(transactionData);
-    final transactionTypeScreenName =
-        translateDbTextToScreenText(context, transactionScreenData['transactionType']);
-    final date = (transactionScreenData['date']).toDate();
+    final date = (transactionScreenData[transactionDateKey]).toDate();
     return Column(
       children: [
         Padding(
@@ -137,13 +137,13 @@ class DataRow extends ConsumerWidget {
             children: [
               MainScreenEditButton(
                   defaultImageUrl, () => _showEditTransactionForm(context, ref, transaction)),
-              MainScreenTextCell(transactionTypeScreenName),
+              MainScreenTextCell(transactionScreenData[transactionTypeKey]),
               MainScreenTextCell(date),
-              MainScreenTextCell(transactionScreenData['name']),
-              MainScreenTextCell(transactionScreenData['salesman']),
-              MainScreenTextCell(transactionScreenData['number']),
-              MainScreenTextCell(transactionScreenData['totalAmount']),
-              MainScreenTextCell(transactionScreenData['notes']),
+              MainScreenTextCell(transactionScreenData[transactionNameKey]),
+              MainScreenTextCell(transactionScreenData[transactionSalesmanKey]),
+              MainScreenTextCell(transactionScreenData[transactionNumberKey]),
+              MainScreenTextCell(transactionScreenData[transactionTotalAmountKey]),
+              MainScreenTextCell(transactionScreenData[transactionNotesKey]),
             ],
           ),
         ),

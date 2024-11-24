@@ -316,6 +316,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Transaction reports"),
         "transaction_salesman":
             MessageLookupByLibrary.simpleMessage("Salesman"),
+        "transaction_search":
+            MessageLookupByLibrary.simpleMessage("Transaction search"),
         "transaction_subTotal_amount":
             MessageLookupByLibrary.simpleMessage("Subtotal"),
         "transaction_total_amount_as_text":

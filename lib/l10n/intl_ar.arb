@@ -208,5 +208,6 @@
     "open_invoices": "القوائم المفتوحة",
     "product_search": "بحث المواد",
     "from": "من",
-    "to": "الى"
+    "to": "الى",
+    "transaction_search": "بحث التعاملات"
 }

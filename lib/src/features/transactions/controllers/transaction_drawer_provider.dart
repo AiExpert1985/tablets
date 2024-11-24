@@ -1,8 +1,8 @@
 import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/products/view/product_filters.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_report_controller.dart';
+import 'package:tablets/src/features/transactions/view/transaction_filters.dart';
 
 class TransactionDrawer {
   TransactionDrawer(this._reportController);
@@ -17,7 +17,7 @@ class TransactionDrawer {
         return Center(
           child: SafeArea(
             top: true,
-            child: ProductSearchForm(drawerController),
+            child: TransactionSearchForm(drawerController),
           ),
         );
       },

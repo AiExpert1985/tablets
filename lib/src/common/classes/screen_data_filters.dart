@@ -35,7 +35,7 @@ class ScreenDataFilters {
       if (value == null || value.toString().trim().isEmpty) {
         continue;
       } else if (criteria == FilterCriteria.contains) {
-        listValue = listValue.where((item) => item[propertyName].contains(value)).toList();
+        listValue = listValue.where((item) => (item[propertyName] ?? '').contains(value)).toList();
       } else if (criteria == FilterCriteria.equals) {
         listValue = listValue.where((item) => item[propertyName] == value).toList();
       } else if (criteria == FilterCriteria.lessThanOrEqual) {
