@@ -206,5 +206,7 @@
     "commission": "العمولة",
     "debts": "الديون",
     "open_invoices": "القوائم المفتوحة",
-    "product_search": "بحث المواد"
+    "product_search": "بحث المواد",
+    "from": "من",
+    "to": "الى"
 }

@@ -1,5 +1,7 @@
 import 'package:tablets/src/common/functions/debug_print.dart';
 
+// multipleMatch for selecting multiple items from dropdown selection and return all items
+// that contains any of these selections
 enum FilterCriteria { contains, equals, lessThanOrEqual, lessThan, moreThanOrEqual, moreThan }
 
 // each filter is Map<String, Map<String, dynmic>>

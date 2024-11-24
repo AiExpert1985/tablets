@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/screen_data_filters.dart';
 import 'package:tablets/src/common/values/features_keys.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/search_form.dart';
 import 'package:tablets/src/features/products/controllers/product_filter_controller.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
@@ -39,6 +40,7 @@ class ProductSearchForm extends ConsumerWidget {
         productCodeKey,
         S.of(context).product_code,
       ),
+      VerticalGap.xl,
       NumberRangeSearchField(
         filterController,
         'quantityMoreThanOrEqual',

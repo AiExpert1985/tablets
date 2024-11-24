@@ -1,6 +1,7 @@
 import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/screen_data_filters.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
@@ -29,7 +30,13 @@ class SearchForm extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SearchFormTitle(_title),
-            ..._bodyWidgets,
+            SizedBox(
+              child: Column(
+                children: [
+                  ..._bodyWidgets,
+                ],
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -70,25 +77,19 @@ class NumberMatchSearchField extends StatelessWidget {
   final String _label;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          width: 120,
-          padding: const EdgeInsets.all(5),
-          child: Text(_label),
-        ),
-        SearchInputField(
-          initialValue: _filterController.getFilterValue(_filterName),
-          onChangedFn: (value) {
-            _filterController.updateFilters(
-                _filterName, _propertyName, FilterCriteria.equals, value);
-          },
-          dataType: FieldDataType.num,
-          name: _filterName,
-          isRequired: false,
-        ),
-      ],
+    final filter = _buildFilter();
+    return FilterRow(_label, filter);
+  }
+
+  Widget _buildFilter() {
+    return SearchInputField(
+      initialValue: _filterController.getFilterValue(_filterName),
+      onChangedFn: (value) {
+        _filterController.updateFilters(_filterName, _propertyName, FilterCriteria.equals, value);
+      },
+      dataType: FieldDataType.num,
+      name: _filterName,
+      isRequired: false,
     );
   }
 }
@@ -105,14 +106,15 @@ class NumberRangeSearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firstFilter = _buildFirstFilter();
-    final secondFilter = _buildSecondFilter();
+    final firstFilter = _buildFirstFilter(context);
+    final secondFilter = _buildSecondFilter(context);
     return FilterRow(_label, firstFilter, secondFilter: secondFilter);
   }
 
-  Widget _buildFirstFilter() {
+  Widget _buildFirstFilter(BuildContext context) {
     return SearchInputField(
       initialValue: _filterController.getFilterValue(_firstFilterName),
+      label: S.of(context).from,
       onChangedFn: (value) {
         _filterController.updateFilters(
             _firstFilterName, _propertyName, FilterCriteria.moreThanOrEqual, value);
@@ -123,9 +125,10 @@ class NumberRangeSearchField extends StatelessWidget {
     );
   }
 
-  Widget _buildSecondFilter() {
+  Widget _buildSecondFilter(BuildContext context) {
     return SearchInputField(
       initialValue: _filterController.getFilterValue(_secondFilterName),
+      label: S.of(context).to,
       onChangedFn: (value) {
         _filterController.updateFilters(
             _secondFilterName, _propertyName, FilterCriteria.lessThanOrEqual, value);
@@ -166,11 +169,12 @@ class FilterRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          width: 120,
+          width: 100,
           padding: const EdgeInsets.all(5),
-          child: Text(_label),
+          child: Text(_label, style: const TextStyle(fontSize: 18)),
         ),
         _firstFilter,
+        if (secondFilter != null) HorizontalGap.l,
         if (secondFilter != null) secondFilter!,
       ],
     );

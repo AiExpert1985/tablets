@@ -206,5 +206,7 @@
     "commission": "Commission",
     "debts": "Debts",
     "open_invoices": "Open invoices",
-    "product_search": "Product search"
+    "product_search": "Product search",
+    "from": "From",
+    "to": "To"
 }

@@ -91,6 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_importing_image": MessageLookupByLibrary.simpleMessage(
             "An error happend while importing images"),
         "failure": MessageLookupByLibrary.simpleMessage("Failure"),
+        "from": MessageLookupByLibrary.simpleMessage("From"),
         "from_date": MessageLookupByLibrary.simpleMessage("From date"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("Go back to home page"),
@@ -268,6 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "slogan": MessageLookupByLibrary.simpleMessage(
             "Tablets, where accounting started"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
+        "to": MessageLookupByLibrary.simpleMessage("To"),
         "to_date": MessageLookupByLibrary.simpleMessage("To date"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
         "transaction_amount": MessageLookupByLibrary.simpleMessage("Amount"),

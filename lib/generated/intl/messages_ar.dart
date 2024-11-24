@@ -92,6 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_importing_image":
             MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء استيراد الصور"),
         "failure": MessageLookupByLibrary.simpleMessage("فشل"),
+        "from": MessageLookupByLibrary.simpleMessage("من"),
         "from_date": MessageLookupByLibrary.simpleMessage("من تاريخ"),
         "go_home_page":
             MessageLookupByLibrary.simpleMessage("العودة الى الصفحة الرئيسية"),
@@ -258,6 +259,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "slogan":
             MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
+        "to": MessageLookupByLibrary.simpleMessage("الى"),
         "to_date": MessageLookupByLibrary.simpleMessage("الى تاريخ"),
         "total": MessageLookupByLibrary.simpleMessage("المجموع"),
         "transaction_amount":
