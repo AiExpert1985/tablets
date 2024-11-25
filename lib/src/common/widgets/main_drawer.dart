@@ -139,7 +139,7 @@ class SalesmenButton extends ConsumerWidget {
         await initializeSalesmanDbCache(context, ref);
       }
       if (context.mounted) {
-        salesmanScreenController.setAllSalesmenScreenData(context);
+        salesmanScreenController.setFeatureScreenData(context);
       }
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).salesmen;

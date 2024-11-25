@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
@@ -54,7 +55,7 @@ final salesmanScreenControllerProvider = Provider<SalesmanScreenController>((ref
   );
 });
 
-class SalesmanScreenController {
+class SalesmanScreenController implements ScreenDataController {
   SalesmanScreenController(
     this._screenDataNotifier,
     this._transactionDbCache,
@@ -71,7 +72,8 @@ class SalesmanScreenController {
   final CustomerScreenController _customerScreenController;
   final ScreenDataNotifier _customerScreenDataNotifier;
 
-  void setAllSalesmenScreenData(BuildContext context) {
+  @override
+  void setFeatureScreenData(BuildContext context) {
     final allSalesmenData = _salesmanDbCache.data;
     List<Map<String, dynamic>> screenData = [];
     final allSalesmenCustomers = _getSalesmenCustomers();
@@ -112,6 +114,16 @@ class SalesmanScreenController {
     return removeIndicesFromInnerLists(transactions, [4, 5]);
   }
 
+  @override
+  Map<String, dynamic> getItemScreenData(BuildContext context, Map<String, dynamic> salesmanData) {
+    //TODO
+    // getSalesmanScreenData() should be converted to this function, but I didn't have
+    // time to do it, I postponed it later.
+    return {};
+  }
+
+// TODO
+// the name of this function should getItemScreenData() and comply to the interface
   Map<String, dynamic> getSalesmanScreenData(
     BuildContext context,
     Map<String, dynamic> salesmanData,

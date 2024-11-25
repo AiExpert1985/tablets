@@ -131,29 +131,40 @@ class ListData extends ConsumerWidget {
   }
 }
 
-class ListHeaders extends StatelessWidget {
+class ListHeaders extends ConsumerWidget {
   const ListHeaders({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final screenDataNotifier = ref.read(salesmanScreenDataNotifier.notifier);
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const MainScreenPlaceholder(width: 20, isExpanded: false),
-            MainScreenHeaderCell(S.of(context).salesman_name),
-            MainScreenHeaderCell(S.of(context).commission),
-            MainScreenHeaderCell(S.of(context).customers),
-            MainScreenHeaderCell(S.of(context).debts),
-            MainScreenHeaderCell(S.of(context).open_invoices),
-            MainScreenHeaderCell(S.of(context).receipts_number),
-            MainScreenHeaderCell(S.of(context).receipts_amount),
-            MainScreenHeaderCell(S.of(context).invoices_number),
-            MainScreenHeaderCell(S.of(context).invoices_amount),
-            MainScreenHeaderCell(S.of(context).returns_number),
-            MainScreenHeaderCell(S.of(context).returns_amount),
-            MainScreenHeaderCell(S.of(context).profits),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, salesmanNameKey, S.of(context).salesman_name),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, commissionKey, S.of(context).commission),
+            SortableMainScreenHeaderCell(screenDataNotifier, customersKey, S.of(context).customers),
+            SortableMainScreenHeaderCell(screenDataNotifier, debtsKey, S.of(context).debts),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, openInvoicesKey, S.of(context).open_invoices),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, numReceiptsKey, S.of(context).receipts_number),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, receiptsAmountKey, S.of(context).receipts_amount),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, numInvoicesKey, S.of(context).invoices_number),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, invoicesAmountKey, S.of(context).invoices_amount),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, numReturnsKey, S.of(context).returns_number),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, receiptsAmountKey, S.of(context).returns_amount),
+            if (!hideSalesmanProfit)
+              SortableMainScreenHeaderCell(screenDataNotifier, profitKey, S.of(context).profits),
           ],
         ),
         VerticalGap.m,
@@ -168,22 +179,22 @@ class HeaderTotalsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        MainScreenPlaceholder(width: 20, isExpanded: false),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
-        MainScreenPlaceholder(),
+        const MainScreenPlaceholder(width: 20, isExpanded: false),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        const MainScreenPlaceholder(),
+        if (!hideSalesmanProfit) const MainScreenPlaceholder(),
       ],
     );
   }
@@ -272,11 +283,12 @@ class DataRow extends ConsumerWidget {
             returnsAmount,
             () => reportController.showTransactionReport(context, returns, name, sumIndex: 4),
           ),
-          MainScreenClickableCell(
-            profit,
-            () => reportController.showTransactionReport(context, profitTransactions, name,
-                isProfit: true),
-          ),
+          if (!hideSalesmanProfit)
+            MainScreenClickableCell(
+              profit,
+              () => reportController.showTransactionReport(context, profitTransactions, name,
+                  isProfit: true),
+            ),
         ],
       ),
     );
