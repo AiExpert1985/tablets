@@ -206,8 +206,12 @@
     "commission": "Commission",
     "debts": "Debts",
     "open_invoices": "Open invoices",
-    "product_search": "Product search",
     "from": "From",
     "to": "To",
-    "transaction_search": "Transaction search"
+    "product_search": "Product search",
+    "transaction_search": "Transactions search",
+    "salesman_search": "Salesmen search",
+    "customer_search": "Customers search",
+    "vendor_search": "Vendors search",
+    "sum_of_commissions": "Commissions_sum"
 }

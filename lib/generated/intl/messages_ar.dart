@@ -55,6 +55,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "customer_invoice_profit":
             MessageLookupByLibrary.simpleMessage("ارباح قوائم الزبون"),
         "customer_name": MessageLookupByLibrary.simpleMessage("الأسم"),
+        "customer_search": MessageLookupByLibrary.simpleMessage("بحث الزبائن"),
         "customers": MessageLookupByLibrary.simpleMessage("الزبائن"),
         "daily_income": MessageLookupByLibrary.simpleMessage("الوارد اليومي"),
         "daily_income_report":
@@ -236,6 +237,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "returns_number": MessageLookupByLibrary.simpleMessage("عدد الارجاعات"),
         "salary": MessageLookupByLibrary.simpleMessage("المستحقات"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
+        "salesman_search":
+            MessageLookupByLibrary.simpleMessage("بحث المندوبين"),
         "salesman_selection": MessageLookupByLibrary.simpleMessage("المندوب"),
         "salesmen": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
@@ -259,6 +262,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "slogan":
             MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
+        "sum_of_commissions":
+            MessageLookupByLibrary.simpleMessage("مجموع العمولات"),
         "to": MessageLookupByLibrary.simpleMessage("الى"),
         "to_date": MessageLookupByLibrary.simpleMessage("الى تاريخ"),
         "total": MessageLookupByLibrary.simpleMessage("المجموع"),
@@ -339,6 +344,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("تعديل معلومات الصنف"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("الصلاحيات"),
         "vendor": MessageLookupByLibrary.simpleMessage("المجهز"),
+        "vendor_search": MessageLookupByLibrary.simpleMessage("بحث المجهزين"),
         "vendors": MessageLookupByLibrary.simpleMessage("المجهزين"),
         "warning": MessageLookupByLibrary.simpleMessage("تحذير"),
         "yes": MessageLookupByLibrary.simpleMessage("نعم")

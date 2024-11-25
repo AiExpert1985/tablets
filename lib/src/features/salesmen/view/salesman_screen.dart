@@ -146,9 +146,9 @@ class ListHeaders extends ConsumerWidget {
             SortableMainScreenHeaderCell(
                 screenDataNotifier, salesmanNameKey, S.of(context).salesman_name),
             SortableMainScreenHeaderCell(
-                screenDataNotifier, commissionKey, S.of(context).commission),
+                screenDataNotifier, commissionKey, S.of(context).sum_of_commissions),
             SortableMainScreenHeaderCell(screenDataNotifier, customersKey, S.of(context).customers),
-            SortableMainScreenHeaderCell(screenDataNotifier, debtsKey, S.of(context).debts),
+            SortableMainScreenHeaderCell(screenDataNotifier, totalDebtsKey, S.of(context).debts),
             SortableMainScreenHeaderCell(
                 screenDataNotifier, openInvoicesKey, S.of(context).open_invoices),
             SortableMainScreenHeaderCell(
@@ -216,9 +216,11 @@ class DataRow extends ConsumerWidget {
     final commissionDetails = salesmanScreenData[commissionDetailsKey] as List<List<dynamic>>;
     final numCustomers = salesmanScreenData[customersKey] as double;
     final customersList = salesmanScreenData[customersDetailsKey] as List<List<dynamic>>;
-    final debts = salesmanScreenData[debtsKey] as String;
+    final totalDebt = salesmanScreenData[totalDebtsKey] as double;
+    final dueDebt = salesmanScreenData[dueDbetsKey] as double;
     final debtDetails = salesmanScreenData[debtsDetailsKey] as List<List<dynamic>>;
-    final openInvoices = salesmanScreenData[openInvoicesKey] as String;
+    final openInvoices = salesmanScreenData[openInvoicesKey] as double;
+    final dueInvoices = salesmanScreenData[dueInvoicesKey] as double;
     final openInvoicesDetails = salesmanScreenData[openInvoicesDetailsKey] as List<List<dynamic>>;
     final profit = salesmanScreenData[profitKey] as double;
     final profitTransactions = salesmanScreenData[profitDetailsKey] as List<List<dynamic>>;
@@ -252,11 +254,11 @@ class DataRow extends ConsumerWidget {
             () => reportController.showCustomers(context, customersList, name),
           ),
           MainScreenClickableCell(
-            debts,
+            '$totalDebt \n ($dueDebt)',
             () => reportController.showDebtReport(context, debtDetails, name),
           ),
           MainScreenClickableCell(
-            openInvoices,
+            '$openInvoices ($dueInvoices)',
             () => reportController.showInvoicesReport(context, openInvoicesDetails, name),
           ),
           MainScreenClickableCell(

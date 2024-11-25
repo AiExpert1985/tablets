@@ -206,8 +206,12 @@
     "commission": "العمولة",
     "debts": "الديون",
     "open_invoices": "القوائم المفتوحة",
-    "product_search": "بحث المواد",
     "from": "من",
     "to": "الى",
-    "transaction_search": "بحث التعاملات"
+    "product_search": "بحث المواد",
+    "transaction_search": "بحث التعاملات",
+    "salesman_search": "بحث المندوبين",
+    "customer_search": "بحث الزبائن",
+    "vendor_search": "بحث المجهزين",
+    "sum_of_commissions": "مجموع العمولات"
 }

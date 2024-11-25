@@ -22,10 +22,12 @@ const commissionKey = 'commission';
 const customersKey = 'customers';
 const customersDetailsKey = 'customersDetails';
 const commissionDetailsKey = 'salaryDetails';
-const debtsKey = 'debts';
+const totalDebtsKey = 'debts';
+const dueDbetsKey = 'dueDebts';
 const debtsDetailsKey = 'totalDebtDetails';
 const openInvoicesKey = 'openInvoices';
 const openInvoicesDetailsKey = 'openInvoicesDetails';
+const dueInvoicesKey = 'dueInvoices';
 const profitKey = 'profit';
 const profitDetailsKey = 'profitDetails';
 const numInvoicesKey = 'numInvoices';
@@ -138,9 +140,11 @@ class SalesmanScreenController implements ScreenDataController {
     final customersDbRef = customersInfo['customersDbRef'] as List<String>;
     _customerScreenController.setFeatureScreenData(context);
     final customersDebtInfo = _getCustomersDebtInfo(customersDbRef);
-    final debts = customersDebtInfo[debtsKey] as String;
+    final totalDebts = customersDebtInfo[totalDebtsKey];
+    final dueDebts = customersDebtInfo[dueDbetsKey];
     final debtsDetails = customersDebtInfo[debtsDetailsKey] as List<List<dynamic>>;
-    final openInvoices = customersDebtInfo[openInvoicesKey] as String;
+    final openInvoices = customersDebtInfo[openInvoicesKey];
+    final dueInvoices = customersDebtInfo[dueInvoicesKey];
     final openInvoicesDetails = customersDebtInfo[openInvoicesDetailsKey] as List<List<dynamic>>;
     final numCustomers = salesmanCustomers.length;
     final processedTransactionsMap = _getProcessedTransactions(context, salesmanTransactions);
@@ -164,7 +168,7 @@ class SalesmanScreenController implements ScreenDataController {
       commissionDetailsKey: commissions,
       customersKey: numCustomers,
       customersDetailsKey: customersBasicData,
-      debtsKey: debts,
+      totalDebtsKey: totalDebts,
       debtsDetailsKey: debtsDetails,
       openInvoicesKey: openInvoices,
       openInvoicesDetailsKey: openInvoicesDetails,
@@ -179,6 +183,8 @@ class SalesmanScreenController implements ScreenDataController {
       numReturnsKey: numReturns,
       returnsKey: returns,
       returnsAmountKey: returnsAmount,
+      dueDbetsKey: dueDebts,
+      dueInvoicesKey: dueInvoices,
     };
     return newDataRow;
   }
@@ -294,8 +300,10 @@ class SalesmanScreenController implements ScreenDataController {
       invoicesDetails.add([customerName, customerOpenInvoices, customerDueInvoices]);
     }
     Map<String, dynamic> debtInfo = {
-      debtsKey: '$totalDebt  ($dueDebt)',
-      openInvoicesKey: '$openInvoices  ($dueInvoices)',
+      totalDebtsKey: totalDebt,
+      dueDbetsKey: dueDebt,
+      openInvoicesKey: openInvoices,
+      dueInvoicesKey: dueInvoices,
       debtsDetailsKey: sortListOfListsByNumber(debtsDetails, 1),
       openInvoicesDetailsKey: sortListOfListsByNumber(invoicesDetails, 1)
     };

@@ -2120,16 +2120,6 @@ class S {
     );
   }
 
-  /// `Product search`
-  String get product_search {
-    return Intl.message(
-      'Product search',
-      name: 'product_search',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `From`
   String get from {
     return Intl.message(
@@ -2150,11 +2140,61 @@ class S {
     );
   }
 
-  /// `Transaction search`
+  /// `Product search`
+  String get product_search {
+    return Intl.message(
+      'Product search',
+      name: 'product_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transactions search`
   String get transaction_search {
     return Intl.message(
-      'Transaction search',
+      'Transactions search',
       name: 'transaction_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Salesmen search`
+  String get salesman_search {
+    return Intl.message(
+      'Salesmen search',
+      name: 'salesman_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Customers search`
+  String get customer_search {
+    return Intl.message(
+      'Customers search',
+      name: 'customer_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vendors search`
+  String get vendor_search {
+    return Intl.message(
+      'Vendors search',
+      name: 'vendor_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Commissions_sum`
+  String get sum_of_commissions {
+    return Intl.message(
+      'Commissions_sum',
+      name: 'sum_of_commissions',
       desc: '',
       args: [],
     );

@@ -20,7 +20,7 @@ class VendorSearchForm extends ConsumerWidget {
     final screenDataController = ref.read(vendorScreenControllerProvider);
     final screenDataNotifier = ref.read(vendorScreenDataNotifier.notifier);
     final bodyWidgets = _buildBodyWidgets(filterController, context);
-    final title = S.of(context).product_search;
+    final title = S.of(context).vendor_search;
     return SearchForm(
       title,
       _drawerController,

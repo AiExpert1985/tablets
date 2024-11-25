@@ -1,7 +1,7 @@
 import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/salesmen/view/salesman_drawer_filters.dart';
+import 'package:tablets/src/features/salesmen/view/salesman_filters.dart';
 
 class SalesmanDrawer {
   final AnyDrawerController drawerController = AnyDrawerController();

@@ -55,6 +55,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "customer_invoice_profit": MessageLookupByLibrary.simpleMessage(
             "Customer profit from invoices"),
         "customer_name": MessageLookupByLibrary.simpleMessage("Name"),
+        "customer_search":
+            MessageLookupByLibrary.simpleMessage("Customers search"),
         "customers": MessageLookupByLibrary.simpleMessage("Customers"),
         "daily_income": MessageLookupByLibrary.simpleMessage("Daily income"),
         "daily_income_report":
@@ -245,6 +247,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Returns number"),
         "salary": MessageLookupByLibrary.simpleMessage("Salary"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("Name"),
+        "salesman_search":
+            MessageLookupByLibrary.simpleMessage("Salesmen search"),
         "salesman_selection":
             MessageLookupByLibrary.simpleMessage("Salesman selection"),
         "salesmen": MessageLookupByLibrary.simpleMessage("Salesmen"),
@@ -269,6 +273,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "slogan": MessageLookupByLibrary.simpleMessage(
             "Tablets, where accounting started"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
+        "sum_of_commissions":
+            MessageLookupByLibrary.simpleMessage("Commissions_sum"),
         "to": MessageLookupByLibrary.simpleMessage("To"),
         "to_date": MessageLookupByLibrary.simpleMessage("To date"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
@@ -317,7 +323,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_salesman":
             MessageLookupByLibrary.simpleMessage("Salesman"),
         "transaction_search":
-            MessageLookupByLibrary.simpleMessage("Transaction search"),
+            MessageLookupByLibrary.simpleMessage("Transactions search"),
         "transaction_subTotal_amount":
             MessageLookupByLibrary.simpleMessage("Subtotal"),
         "transaction_total_amount_as_text":
@@ -348,6 +354,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Update category"),
         "user_privilage": MessageLookupByLibrary.simpleMessage("Privilage"),
         "vendor": MessageLookupByLibrary.simpleMessage("Vendor"),
+        "vendor_search": MessageLookupByLibrary.simpleMessage("Vendors search"),
         "vendors": MessageLookupByLibrary.simpleMessage("Vendors"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "yes": MessageLookupByLibrary.simpleMessage("yes")
