@@ -2,7 +2,16 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 
 // multipleMatch for selecting multiple items from dropdown selection and return all items
 // that contains any of these selections
-enum FilterCriteria { contains, equals, lessThanOrEqual, lessThan, moreThanOrEqual, moreThan }
+enum FilterCriteria {
+  contains,
+  equals,
+  lessThanOrEqual,
+  lessThan,
+  moreThanOrEqual,
+  moreThan,
+  dateAfter,
+  dateBefore
+}
 
 // each filter is Map<String, Map<String, dynmic>>
 // example {'qunatityMoreThan': {'property': 'quantity', 'criteria': FilterCriteria.moreThan, 'value': 100}}
@@ -46,6 +55,16 @@ class ScreenDataFilters {
         listValue = listValue.where((item) => item[propertyName] >= value).toList();
       } else if (criteria == FilterCriteria.moreThan) {
         listValue = listValue.where((item) => item[propertyName] > value).toList();
+      } else if (criteria == FilterCriteria.dateAfter) {
+        listValue = listValue
+            .where((item) =>
+                item[propertyName].isAfter(value) || item[propertyName].isAtSameMomentAs(value))
+            .toList();
+      } else if (criteria == FilterCriteria.dateBefore) {
+        listValue = listValue
+            .where((item) =>
+                item[propertyName].isBefore(value) || item[propertyName].isAtSameMomentAs(value))
+            .toList();
       } else {
         errorPrint('unknown filter criteria');
       }
@@ -53,7 +72,7 @@ class ScreenDataFilters {
     return listValue;
   }
 
-  String? getFilterValue(String filterName) {
+  dynamic getFilterValue(String filterName) {
     if (!_filters.containsKey(filterName)) {
       return null;
     }

@@ -1,6 +1,7 @@
 import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:intl/intl.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/screen_data_filters.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
@@ -25,7 +26,7 @@ class SearchForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormBuilder(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 50),
+        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -205,6 +206,64 @@ class NumberRangeSearchField extends StatelessWidget {
       dataType: FieldDataType.num,
       name: _secondFilterName,
       isRequired: false,
+    );
+  }
+}
+
+class DateRangeSearchField extends StatelessWidget {
+  const DateRangeSearchField(this._filterController, this._firstFilterName, this._secondFilterName,
+      this._propertyName, this._label,
+      {super.key});
+  final ScreenDataFilters _filterController;
+  final String _propertyName;
+  final String _firstFilterName;
+  final String _secondFilterName;
+  final String _label;
+
+  @override
+  Widget build(BuildContext context) {
+    final firstFilter = _buildFirstFilter(context);
+    final secondFilter = _buildSecondFilter(context);
+    return FilterRow(_label, firstFilter, secondFilter: secondFilter);
+  }
+
+  Widget _buildFirstFilter(BuildContext context) {
+    return Expanded(
+      child: FormBuilderDateTimePicker(
+          textAlign: TextAlign.center,
+          name: _firstFilterName,
+          decoration: InputDecoration(
+            labelStyle: const TextStyle(color: Colors.black26, fontSize: 15),
+            labelText: S.of(context).from,
+            border: const OutlineInputBorder(),
+          ),
+          initialValue: _filterController.getFilterValue(_firstFilterName),
+          inputType: InputType.date,
+          format: DateFormat('dd-MM-yyyy'),
+          onChanged: (value) {
+            _filterController.updateFilters(
+                _firstFilterName, _propertyName, FilterCriteria.dateAfter, value);
+          }),
+    );
+  }
+
+  Widget _buildSecondFilter(BuildContext context) {
+    return Expanded(
+      child: FormBuilderDateTimePicker(
+          textAlign: TextAlign.center,
+          name: _secondFilterName,
+          decoration: InputDecoration(
+            labelStyle: const TextStyle(color: Colors.black26, fontSize: 15),
+            labelText: S.of(context).from,
+            border: const OutlineInputBorder(),
+          ),
+          initialValue: _filterController.getFilterValue(_secondFilterName),
+          inputType: InputType.date,
+          format: DateFormat('dd-MM-yyyy'),
+          onChanged: (value) {
+            _filterController.updateFilters(
+                _secondFilterName, _propertyName, FilterCriteria.dateBefore, value);
+          }),
     );
   }
 }

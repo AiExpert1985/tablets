@@ -23,7 +23,7 @@ class TransactionDrawer {
       },
       config: const DrawerConfig(
         side: DrawerSide.left,
-        widthPercentage: 0.3,
+        widthPercentage: 0.25,
         dragEnabled: false,
         closeOnClickOutside: true,
         backdropOpacity: 0.3,

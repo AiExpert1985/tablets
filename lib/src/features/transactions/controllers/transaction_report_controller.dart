@@ -6,7 +6,7 @@ import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart'
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/report_dialog.dart';
-import 'package:tablets/src/common/widgets/report_widgets.dart';
+import 'package:tablets/src/common/widgets/report_side_drawer_column.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 
 final transactionReportControllerProvider = Provider<TransactionReportController>((ref) {
