@@ -88,6 +88,9 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
 
   @override
   void initState() {
+    if (widget.dateIndex != null) {
+      sortListOfListsByDate(widget.dataList, widget.dateIndex!);
+    }
     super.initState();
     filteredList = List.from(widget.dataList);
   }

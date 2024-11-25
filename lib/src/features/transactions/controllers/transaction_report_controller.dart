@@ -5,7 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/common/widgets/dialog_report.dart';
+import 'package:tablets/src/common/widgets/report_dialog.dart';
 import 'package:tablets/src/common/widgets/report_widgets.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 

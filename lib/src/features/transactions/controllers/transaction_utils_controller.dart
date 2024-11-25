@@ -44,7 +44,7 @@ class TransactionsUtils {
     CustomerScreenController customerScreenController,
   ) {
     final customerScreenData =
-        customerScreenController.getCustomerScreenData(context, selectedCustomer.toMap());
+        customerScreenController.getItemScreenData(context, selectedCustomer.toMap());
     if (customerScreenData[inValidUserKey]) return true;
     final creditLimit = selectedCustomer.creditLimit;
     final totalDebt = customerScreenData[totalDebtKey];

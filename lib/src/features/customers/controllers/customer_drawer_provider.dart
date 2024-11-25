@@ -1,7 +1,7 @@
 import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/customers/view/customer_drawer_filters.dart';
+import 'package:tablets/src/features/customers/view/customer_filters.dart';
 
 class CustomerDrawer {
   final AnyDrawerController drawerController = AnyDrawerController();
@@ -9,10 +9,10 @@ class CustomerDrawer {
     showDrawer(
       context,
       builder: (context) {
-        return const Center(
+        return Center(
           child: SafeArea(
             top: true,
-            child: CustomerSearchForm(),
+            child: CustomerSearchForm(drawerController),
           ),
         );
       },

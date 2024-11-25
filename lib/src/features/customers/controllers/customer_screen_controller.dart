@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
@@ -36,7 +37,7 @@ final customerScreenControllerProvider = Provider<CustomerScreenController>((ref
   return CustomerScreenController(screenDataNotifier, transactionDbCache, customerDbCache);
 });
 
-class CustomerScreenController {
+class CustomerScreenController implements ScreenDataController {
   CustomerScreenController(
     this._screenDataNotifier,
     this._transactionDbCache,
@@ -46,7 +47,8 @@ class CustomerScreenController {
   final DbCache _transactionDbCache;
   final DbCache _customerDbCache;
 
-  void setAllCustomersScreenData(BuildContext context) {
+  @override
+  void setFeatureScreenData(BuildContext context) {
     final allCustomersData = _customerDbCache.data;
     List<Map<String, dynamic>> screenData = [];
     final allCustomersTransactions = _getAllCustomersTransactions();
@@ -54,7 +56,7 @@ class CustomerScreenController {
       final customerDbRef = customerData['dbRef'];
       final customerTransactions = allCustomersTransactions[customerDbRef]!;
       final newRow =
-          getCustomerScreenData(context, customerData, customerTransactions: customerTransactions);
+          getItemScreenData(context, customerData, customerTransactions: customerTransactions);
       screenData.add(newRow);
     }
     Map<String, dynamic> summaryTypes = {
@@ -101,8 +103,8 @@ class CustomerScreenController {
   /// the second case is when a specific customer is needed by other features, for example when
   /// checking customer validity in new transaction, in this case we don't provide customer
   /// transactions and calculate them inside this functions
-  Map<String, dynamic> getCustomerScreenData(
-      BuildContext context, Map<String, dynamic> customerData,
+  @override
+  Map<String, dynamic> getItemScreenData(BuildContext context, Map<String, dynamic> customerData,
       {List<Map<String, dynamic>>? customerTransactions}) {
     final customer = Customer.fromMap(customerData);
     customerTransactions ??= getCustomerTransactions(customer.dbRef);

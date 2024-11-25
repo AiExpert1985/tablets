@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/functions/utils.dart';
-import 'package:tablets/src/common/widgets/dialog_report.dart';
+import 'package:tablets/src/common/widgets/report_dialog.dart';
 
 final productReportControllerProvider = Provider<ProductReportController>((ref) {
   return ProductReportController();

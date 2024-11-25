@@ -124,7 +124,7 @@ class SalesmanScreenController {
     final customersInfo = _getCustomersInfo(salesmanCustomers);
     final customersBasicData = customersInfo['customersData'] as List<List<String>>;
     final customersDbRef = customersInfo['customersDbRef'] as List<String>;
-    _customerScreenController.setAllCustomersScreenData(context);
+    _customerScreenController.setFeatureScreenData(context);
     final customersDebtInfo = _getCustomersDebtInfo(customersDbRef);
     final debts = customersDebtInfo[debtsKey] as String;
     final debtsDetails = customersDebtInfo[debtsDetailsKey] as List<List<dynamic>>;

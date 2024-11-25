@@ -70,7 +70,7 @@ class CustomersButton extends ConsumerWidget {
         pageTitleNotifier.state = S.of(context).customers;
       }
       if (context.mounted) {
-        customerScreenController.setAllCustomersScreenData(context);
+        customerScreenController.setFeatureScreenData(context);
       }
       // if (context.mounted) {
       //   final testClass = TestCustomerScreenPerformance(context, ref);

@@ -85,25 +85,35 @@ class ListData extends ConsumerWidget {
   }
 }
 
-class ListHeaders extends StatelessWidget {
+class ListHeaders extends ConsumerWidget {
   const ListHeaders({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const MainScreenPlaceholder(width: 20, isExpanded: false),
-            MainScreenHeaderCell(S.of(context).customer),
-            MainScreenHeaderCell(S.of(context).salesman_selection),
-            MainScreenHeaderCell(S.of(context).current_debt),
-            MainScreenHeaderCell(S.of(context).num_open_invoice),
-            MainScreenHeaderCell(S.of(context).due_debt_amount),
-            MainScreenHeaderCell(S.of(context).average_invoice_closing_duration),
-            if (!hideCustomerProfit) MainScreenHeaderCell(S.of(context).customer_invoice_profit),
-            MainScreenHeaderCell(S.of(context).customer_gifts_and_discounts),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, customerNameKey, S.of(context).customer),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, customerSalesmanKey, S.of(context).salesman_selection),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, totalDebtKey, S.of(context).current_debt),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, openInvoicesKey, S.of(context).num_open_invoice),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, dueDebtKey, S.of(context).due_debt_amount),
+            SortableMainScreenHeaderCell(screenDataNotifier, avgClosingDaysKey,
+                S.of(context).average_invoice_closing_duration),
+            if (!hideCustomerProfit)
+              SortableMainScreenHeaderCell(
+                  screenDataNotifier, invoicesProfitKey, S.of(context).customer_invoice_profit),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, giftsKey, S.of(context).customer_gifts_and_discounts),
           ],
         ),
         VerticalGap.m,

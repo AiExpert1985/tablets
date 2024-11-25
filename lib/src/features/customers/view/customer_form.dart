@@ -78,7 +78,7 @@ class CustomerForm extends ConsumerWidget {
     dbCache.update(itemData, operationType);
     // redo screenData calculations
     if (context.mounted) {
-      screenController.setAllCustomersScreenData(context);
+      screenController.setFeatureScreenData(context);
     }
   }
 
@@ -105,7 +105,7 @@ class CustomerForm extends ConsumerWidget {
       dbCache.update(itemData, operationType);
       // redo screenData calculations
       if (context.mounted) {
-        screenController.setAllCustomersScreenData(context);
+        screenController.setFeatureScreenData(context);
       }
     }
   }
