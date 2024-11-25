@@ -232,11 +232,11 @@ class ProductFloatingButtons extends ConsumerWidget {
       visible: true,
       curve: Curves.bounceInOut,
       children: [
-        SpeedDialChild(
-          child: const Icon(Icons.pie_chart, color: Colors.white),
-          backgroundColor: iconsColor,
-          onTap: () => drawerController.showReports(context),
-        ),
+        // SpeedDialChild(
+        //   child: const Icon(Icons.pie_chart, color: Colors.white),
+        //   backgroundColor: iconsColor,
+        //   onTap: () => drawerController.showReports(context),
+        // ),
         SpeedDialChild(
           child: const Icon(Icons.search, color: Colors.white),
           backgroundColor: iconsColor,

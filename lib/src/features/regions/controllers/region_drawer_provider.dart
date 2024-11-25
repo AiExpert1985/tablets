@@ -1,7 +1,7 @@
 import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/regions/view/region_drawer_filters.dart';
+import 'package:tablets/src/features/regions/view/region_filters.dart';
 
 class RegionDrawer {
   final AnyDrawerController drawerController = AnyDrawerController();

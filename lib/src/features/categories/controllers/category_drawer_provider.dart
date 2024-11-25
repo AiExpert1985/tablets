@@ -1,7 +1,7 @@
 import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/features/categories/view/category_drawer_filters.dart';
+import 'package:tablets/src/features/categories/view/category_filters.dart';
 
 class CategoryDrawer {
   final AnyDrawerController drawerController = AnyDrawerController();
