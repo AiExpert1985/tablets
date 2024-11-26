@@ -104,6 +104,44 @@ class MainScreenClickableCell extends StatelessWidget {
   }
 }
 
+/// clickable a circled number that opens an edit form
+/// used in main screen of almost all features as the button that show the item form
+class MainScreenNumberedEditButton extends StatelessWidget {
+  final int number;
+  final Color color;
+  final VoidCallback onTap;
+
+  const MainScreenNumberedEditButton(
+    this.number,
+    this.onTap, {
+    this.color = const Color.fromARGB(255, 75, 63, 141),
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: onTap,
+        child: Container(
+          width: 28.0, // Width of the circle
+          height: 28.0, // Height of the circle
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle, // Makes the container circular
+          ),
+          alignment: Alignment.center, // Center the text inside the circle
+          child: Text(
+            number.toString(),
+            style: const TextStyle(
+              color: Colors.white, // Text color
+              fontSize: 13.0, // Font size
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ));
+  }
+}
+
 /// clickable a avatar image that opens an edit form
 /// used in main screen of almost all features as the button that show the item form
 class MainScreenEditButton extends StatelessWidget {

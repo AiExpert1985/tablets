@@ -4,7 +4,6 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
-import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -78,14 +77,14 @@ class TransactionForm extends ConsumerWidget {
     final backgroundColor = ref.watch(backgroundColorProvider);
     final screenController = ref.read(transactionScreenControllerProvider);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
-    final transactionTypeTranslated = translateScreenTextToDbText(context, transactionType);
+    // final transactionTypeTranslated = translateScreenTextToDbText(context, transactionType);
     ref.watch(imagePickerProvider);
-    final height = transactionFormDimenssions[transactionTypeTranslated]['height'];
-    final width = transactionFormDimenssions[transactionTypeTranslated]['width'];
+    final height = transactionFormDimenssions[transactionType]['height'];
+    final width = transactionFormDimenssions[transactionType]['width'];
     return FormFrame(
       backgroundColor: backgroundColor,
       formKey: formController.formKey,
-      fields: _getFormWidget(context, transactionTypeTranslated),
+      fields: _getFormWidget(context, transactionType),
       buttons: _actionButtons(
           context, formController, formDataNotifier, formImagesNotifier, dbCache, screenController),
       width: width,

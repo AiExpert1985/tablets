@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -15,7 +16,6 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
@@ -79,7 +79,7 @@ class ListData extends ConsumerWidget {
           final transactionData = screenData[index];
           return Column(
             children: [
-              DataRow(transactionData),
+              DataRow(transactionData, index + 1),
               const Divider(thickness: 0.2, color: Colors.grey),
             ],
           );
@@ -118,16 +118,21 @@ class ListHeaders extends ConsumerWidget {
 }
 
 class DataRow extends ConsumerWidget {
-  const DataRow(this.transactionScreenData, {super.key});
+  const DataRow(this.transactionScreenData, this.sequence, {super.key});
   final Map<String, dynamic> transactionScreenData;
+  final int sequence;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productRef = transactionScreenData[productDbRefKey];
     final productDbCache = ref.read(transactionDbCacheProvider.notifier);
     final transactionData = productDbCache.getItemByDbRef(productRef);
-    final transaction = Transaction.fromMap(transactionData);
+    final translatedTransactionType =
+        translateScreenTextToDbText(context, transactionData[transactionTypeKey]);
+    final transaction =
+        Transaction.fromMap({...transactionData, transactionTypeKey: translatedTransactionType});
     final date = (transactionScreenData[transactionDateKey]).toDate();
+    final color = _getSequnceColor(transaction.transactionType);
     return Column(
       children: [
         Padding(
@@ -135,8 +140,11 @@ class DataRow extends ConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              MainScreenEditButton(
-                  defaultImageUrl, () => _showEditTransactionForm(context, ref, transaction)),
+              MainScreenNumberedEditButton(
+                sequence,
+                () => _showEditTransactionForm(context, ref, transaction),
+                color: color,
+              ),
               MainScreenTextCell(transactionScreenData[transactionTypeKey]),
               MainScreenTextCell(date),
               MainScreenTextCell(transactionScreenData[transactionNameKey]),
@@ -150,23 +158,42 @@ class DataRow extends ConsumerWidget {
       ],
     );
   }
-}
 
-_showEditTransactionForm(BuildContext context, WidgetRef ref, Transaction transaction) {
-  final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
-  final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-  final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-  final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
-  backgroundColorNofifier.state = Colors.white;
-  TransactionShowForm.showForm(
-    context,
-    imagePickerNotifier,
-    formDataNotifier,
-    textEditingNotifier,
-    backgroundColorNofifier,
-    transaction: transaction,
-    formType: transaction.transactionType,
-  );
+  void _showEditTransactionForm(BuildContext context, WidgetRef ref, Transaction transaction) {
+    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+    backgroundColorNofifier.state = Colors.white;
+    TransactionShowForm.showForm(
+      context,
+      imagePickerNotifier,
+      formDataNotifier,
+      textEditingNotifier,
+      backgroundColorNofifier,
+      transaction: transaction,
+      formType: transaction.transactionType,
+    );
+  }
+
+  Color _getSequnceColor(String transactionType) {
+    if (transactionType == TransactionType.customerInvoice.name ||
+        transactionType == TransactionType.customerReturn.name ||
+        transactionType == TransactionType.customerReceipt.name ||
+        transactionType == TransactionType.gifts.name) {
+      return const Color.fromARGB(255, 75, 63, 141); // use default color
+    }
+    if (transactionType == TransactionType.vendorInvoice.name ||
+        transactionType == TransactionType.vendorReceipt.name ||
+        transactionType == TransactionType.vendorReturn.name) {
+      return Colors.green;
+    }
+    if (transactionType == TransactionType.expenditures.name ||
+        transactionType == TransactionType.damagedItems.name) {
+      return Colors.red;
+    }
+    return Colors.red;
+  }
 }
 
 class TransactionsFloatingButtons extends ConsumerWidget {

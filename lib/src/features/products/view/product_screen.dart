@@ -12,7 +12,6 @@ import 'package:tablets/src/features/products/controllers/product_report_control
 import 'package:tablets/src/features/products/controllers/product_screen_data_notifier.dart';
 import 'package:tablets/src/features/products/view/product_form.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
@@ -75,7 +74,7 @@ class ListData extends ConsumerWidget {
           final productData = screenData[index];
           return Column(
             children: [
-              DataRow(productData),
+              DataRow(productData, index + 1),
               const Divider(thickness: 0.2, color: Colors.grey),
             ],
           );
@@ -157,8 +156,9 @@ class HeaderTotalsRow extends ConsumerWidget {
 }
 
 class DataRow extends ConsumerWidget {
-  const DataRow(this.productScreenData, {super.key});
+  const DataRow(this.productScreenData, this.sequence, {super.key});
   final Map<String, dynamic> productScreenData;
+  final int sequence;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -172,7 +172,7 @@ class DataRow extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          MainScreenEditButton(defaultImageUrl, () => _showEditProductForm(context, ref, product)),
+          MainScreenNumberedEditButton(sequence, () => _showEditProductForm(context, ref, product)),
           MainScreenTextCell(productScreenData[productCodeKey]),
           MainScreenTextCell(productScreenData[productNameKey]),
           MainScreenTextCell(productScreenData[productCategoryKey]),

@@ -76,7 +76,7 @@ class ListData extends ConsumerWidget {
           final vendorData = screenData[index];
           return Column(
             children: [
-              DataRow(vendorData),
+              DataRow(vendorData, index + 1),
               const Divider(thickness: 0.2, color: Colors.grey),
             ],
           );
@@ -134,8 +134,9 @@ class HeaderTotalsRow extends ConsumerWidget {
 }
 
 class DataRow extends ConsumerWidget {
-  const DataRow(this.vendorScreenData, {super.key});
+  const DataRow(this.vendorScreenData, this.sequence, {super.key});
   final Map<String, dynamic> vendorScreenData;
+  final int sequence;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -154,7 +155,7 @@ class DataRow extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          MainScreenEditButton(defaultImageUrl, () => _showEditVendorForm(context, ref, vendor)),
+          MainScreenNumberedEditButton(sequence, () => _showEditVendorForm(context, ref, vendor)),
           MainScreenTextCell(name),
           MainScreenTextCell(phone),
           MainScreenClickableCell(

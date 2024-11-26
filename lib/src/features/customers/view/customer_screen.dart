@@ -17,7 +17,6 @@ import 'package:tablets/src/features/customers/controllers/customer_report_contr
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
-import 'package:tablets/src/common/values/constants.dart';
 
 class CustomerScreen extends ConsumerWidget {
   const CustomerScreen({super.key});
@@ -75,7 +74,7 @@ class ListData extends ConsumerWidget {
           final customerScreenData = screenData[index];
           return Column(
             children: [
-              DataRow(customerScreenData),
+              DataRow(customerScreenData, index + 1),
               const Divider(thickness: 0.2, color: Colors.grey),
             ],
           );
@@ -157,8 +156,9 @@ class HeaderTotalsRow extends ConsumerWidget {
 }
 
 class DataRow extends ConsumerWidget {
-  const DataRow(this.customerScreenData, {super.key});
+  const DataRow(this.customerScreenData, this.sequence, {super.key});
   final Map<String, dynamic> customerScreenData;
+  final int sequence;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -187,8 +187,8 @@ class DataRow extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          MainScreenEditButton(
-              defaultImageUrl, () => _showEditCustomerForm(context, ref, customer)),
+          MainScreenNumberedEditButton(
+              sequence, () => _showEditCustomerForm(context, ref, customer)),
           MainScreenTextCell(customer.name, isWarning: inValidCustomer),
           MainScreenTextCell(customer.salesman, isWarning: inValidCustomer),
           MainScreenClickableCell(
