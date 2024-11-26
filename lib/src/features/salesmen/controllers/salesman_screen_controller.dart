@@ -240,7 +240,7 @@ class SalesmanScreenController implements ScreenDataController {
       final transactionType = transaction.transactionType;
       final processedTransaction = [
         transaction,
-        translateDbTextToScreenText(context, transaction.transactionType),
+        transaction.transactionType,
         transaction.date,
         transaction.name,
         transaction.totalAmount,
