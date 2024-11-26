@@ -63,6 +63,7 @@ dependencies:
   dio: ^5.7.0
   multi_select_flutter: ^4.1.3
   calendar_date_picker2: ^1.1.7
+  syncfusion_flutter_sliders: ^27.2.4
 
 dev_dependencies:
   flutter_test:

@@ -2199,6 +2199,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Hide customer profit`
+  String get hide_customer_profit {
+    return Intl.message(
+      'Hide customer profit',
+      name: 'hide_customer_profit',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

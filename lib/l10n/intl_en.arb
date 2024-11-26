@@ -213,5 +213,6 @@
     "salesman_search": "Salesmen search",
     "customer_search": "Customers search",
     "vendor_search": "Vendors search",
-    "sum_of_commissions": "Commissions_sum"
+    "sum_of_commissions": "Commissions_sum",
+    "hide_customer_profit": "Hide customer profit"
 }

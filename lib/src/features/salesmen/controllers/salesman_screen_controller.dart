@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
@@ -239,7 +238,6 @@ class SalesmanScreenController implements ScreenDataController {
     List<List<dynamic>> returnsList = [];
     for (var transaction in salesmanTransactions) {
       final transactionType = translateScreenTextToDbText(context, transaction.transactionType);
-      tempPrint(transactionType);
       final processedTransaction = [
         transaction,
         translateDbTextToScreenText(context, transactionType),

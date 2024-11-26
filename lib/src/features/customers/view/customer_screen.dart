@@ -7,7 +7,6 @@ import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
-import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/features/customers/controllers/customer_drawer_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_form_data_notifier.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
@@ -17,6 +16,8 @@ import 'package:tablets/src/features/customers/controllers/customer_report_contr
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/view/settings_keys.dart';
 
 class CustomerScreen extends ConsumerWidget {
   const CustomerScreen({super.key});
@@ -89,6 +90,11 @@ class ListHeaders extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideCustomerProfit = settingsController.getProperty(hideCustomerProfitKey);
+    //TODO
+    final hideMainScreenColumnTotals =
+        settingsController.getProperty(hideMainScreenColumnTotalsKey) ?? false;
     final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
     return Column(
       children: [
@@ -127,6 +133,8 @@ class HeaderTotalsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideCustomerProfit = settingsController.getProperty(hideCustomerProfitKey);
     ref.watch(customerScreenDataNotifier);
     final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
     final summary = screenDataNotifier.summary;
@@ -162,6 +170,8 @@ class DataRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideCustomerProfit = settingsController.getProperty(hideCustomerProfitKey);
     final reportController = ref.read(customerReportControllerProvider);
     final customerRef = customerScreenData[customerDbRefKey];
     final customerDbCache = ref.read(customerDbCacheProvider.notifier);
@@ -248,6 +258,10 @@ class CustomerFloatingButtons extends ConsumerWidget {
   const CustomerFloatingButtons({super.key});
 
   void showAddCustomerForm(BuildContext context, WidgetRef ref) {
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    //TODO
+    final maxDebtAmount = settingsController.getProperty(maxDebtAmountKey) ?? 1000000;
+    final maxDebtDuration = settingsController.getProperty(maxDebtDurationKey) ?? 21;
     final formDataNotifier = ref.read(customerFormDataProvider.notifier);
     formDataNotifier.initialize();
     formDataNotifier.updateProperties({

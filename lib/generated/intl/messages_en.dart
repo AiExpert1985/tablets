@@ -100,6 +100,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "gps_x": MessageLookupByLibrary.simpleMessage("X coordinate"),
         "gps_y": MessageLookupByLibrary.simpleMessage("Y coordinate"),
         "greeting": MessageLookupByLibrary.simpleMessage("hi"),
+        "hide_customer_profit":
+            MessageLookupByLibrary.simpleMessage("Hide customer profit"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("I already have account"),
         "include_total_as_text":

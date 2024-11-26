@@ -9,6 +9,8 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_screen_controller.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
@@ -342,10 +344,18 @@ class SettingsDialog extends ConsumerWidget {
           itemCount: names.length,
           itemBuilder: (context, index) {
             return InkWell(
-              onTap: () {
+              onTap: () async {
+                final settingRepository = ref.read(settingsRepositoryProvider);
+                final settingsData = await settingRepository.fetchItemListAsMaps();
+                final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+                settingsDataNotifier.initialize(initialData: settingsData[0]);
                 pageTitleNotifier.state = names[index];
-                Navigator.of(context).pop();
-                context.goNamed(routes[index]);
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+                if (context.mounted) {
+                  context.goNamed(routes[index]);
+                }
               },
               child: Card(
                 elevation: 4,
