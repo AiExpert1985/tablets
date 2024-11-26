@@ -102,6 +102,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "greeting": MessageLookupByLibrary.simpleMessage("hi"),
         "hide_customer_profit":
             MessageLookupByLibrary.simpleMessage("Hide customer profit"),
+        "hide_totals_row":
+            MessageLookupByLibrary.simpleMessage("Hide columns totals"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("I already have account"),
         "include_total_as_text":

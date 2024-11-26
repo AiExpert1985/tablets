@@ -214,5 +214,6 @@
     "customer_search": "بحث الزبائن",
     "vendor_search": "بحث المجهزين",
     "sum_of_commissions": "مجموع العمولات",
-    "hide_customer_profit": "اخفاء ارباح الزبون"
+    "hide_customer_profit": "اخفاء ارباح الزبون",
+    "hide_totals_row": "اخفاء مجاميع الاعمدة"
 }

@@ -103,6 +103,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("مرحبا بك في نظام الواح"),
         "hide_customer_profit":
             MessageLookupByLibrary.simpleMessage("اخفاء ارباح الزبون"),
+        "hide_totals_row":
+            MessageLookupByLibrary.simpleMessage("اخفاء مجاميع الاعمدة"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("لدي حساب في البرنامج"),
         "include_total_as_text":

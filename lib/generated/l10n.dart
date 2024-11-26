@@ -2209,6 +2209,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Hide columns totals`
+  String get hide_totals_row {
+    return Intl.message(
+      'Hide columns totals',
+      name: 'hide_totals_row',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

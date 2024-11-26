@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
@@ -37,6 +38,7 @@ class SettingsParameters extends ConsumerWidget {
       child: Column(
         children: [
           const Row(
+            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               FirstColumn(),
@@ -78,7 +80,14 @@ class FirstColumn extends ConsumerWidget {
             RowLabel(S.of(context).hide_customer_profit),
             SwitchButton(hideCustomerProfitKey),
           ],
-        )
+        ),
+        VerticalGap.xl,
+        Row(
+          children: [
+            RowLabel(S.of(context).hide_totals_row),
+            SwitchButton(hideMainScreenColumnTotalsKey),
+          ],
+        ),
       ],
     );
   }
@@ -90,7 +99,7 @@ class SecondColumn extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return const Column(
-      children: [],
+      children: [Text('hi')],
     );
   }
 }
