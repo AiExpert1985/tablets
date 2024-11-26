@@ -97,9 +97,9 @@ class ListHeaders extends ConsumerWidget {
           children: [
             const MainScreenPlaceholder(width: 20, isExpanded: false),
             SortableMainScreenHeaderCell(
-                screenDataNotifier, productCodeKey, S.of(context).product_code),
-            SortableMainScreenHeaderCell(
                 screenDataNotifier, productNameKey, S.of(context).product_name),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, productCodeKey, S.of(context).product_code),
             SortableMainScreenHeaderCell(
                 screenDataNotifier, productCategoryKey, S.of(context).product_category),
             SortableMainScreenHeaderCell(screenDataNotifier, productCommissionKey,
@@ -173,8 +173,8 @@ class DataRow extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           MainScreenNumberedEditButton(sequence, () => _showEditProductForm(context, ref, product)),
-          MainScreenTextCell(productScreenData[productCodeKey]),
           MainScreenTextCell(productScreenData[productNameKey]),
+          MainScreenTextCell(productScreenData[productCodeKey]),
           MainScreenTextCell(productScreenData[productCategoryKey]),
           MainScreenTextCell(productScreenData[productCommissionKey]),
           if (!hideProductBuyingPrice) MainScreenTextCell(productScreenData[productBuyingPriceKey]),

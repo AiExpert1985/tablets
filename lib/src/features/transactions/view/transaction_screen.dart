@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/features_keys.dart';
@@ -129,8 +130,13 @@ class DataRow extends ConsumerWidget {
     final transactionData = productDbCache.getItemByDbRef(productRef);
     final translatedTransactionType =
         translateScreenTextToDbText(context, transactionData[transactionTypeKey]);
+    tempPrint(transactionData[transactionDateKey]);
+    tempPrint(transactionData[transactionDateKey].runtimeType);
     final transaction =
         Transaction.fromMap({...transactionData, transactionTypeKey: translatedTransactionType});
+    tempPrint(transaction.date);
+    tempPrint(transaction.date.runtimeType);
+    tempPrint('');
     final date = (transactionScreenData[transactionDateKey]).toDate();
     final color = _getSequnceColor(transaction.transactionType);
     return Column(

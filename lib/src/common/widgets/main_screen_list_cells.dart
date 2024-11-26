@@ -114,7 +114,7 @@ class MainScreenNumberedEditButton extends StatelessWidget {
   const MainScreenNumberedEditButton(
     this.number,
     this.onTap, {
-    this.color = const Color.fromARGB(255, 75, 63, 141),
+    this.color = const Color.fromARGB(255, 86, 73, 161),
     super.key,
   });
 
