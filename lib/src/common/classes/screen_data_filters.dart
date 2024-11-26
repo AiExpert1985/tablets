@@ -58,12 +58,14 @@ class ScreenDataFilters {
       } else if (criteria == FilterCriteria.dateAfter) {
         listValue = listValue
             .where((item) =>
-                item[propertyName].isAfter(value) || item[propertyName].isAtSameMomentAs(value))
+                item[propertyName].toDate().isAfter(value) ||
+                item[propertyName].toDate().isAtSameMomentAs(value))
             .toList();
       } else if (criteria == FilterCriteria.dateBefore) {
         listValue = listValue
             .where((item) =>
-                item[propertyName].isBefore(value) || item[propertyName].isAtSameMomentAs(value))
+                item[propertyName].toDate().isBefore(value) ||
+                item[propertyName].toDate().isAtSameMomentAs(value))
             .toList();
       } else {
         errorPrint('unknown filter criteria');
@@ -80,7 +82,7 @@ class ScreenDataFilters {
     if (value == null) return null;
     if (value is int || value is double) {
       return value.toString();
-    } else if (value is String) {
+    } else if (value is String || value is DateTime) {
       return value;
     } else {
       errorPrint('unknow value type for filter name $filterName');

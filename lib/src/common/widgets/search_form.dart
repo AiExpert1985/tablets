@@ -1,7 +1,7 @@
 import 'package:anydrawer/anydrawer.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:intl/intl.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/screen_data_filters.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
@@ -211,59 +211,42 @@ class NumberRangeSearchField extends StatelessWidget {
 }
 
 class DateRangeSearchField extends StatelessWidget {
-  const DateRangeSearchField(this._filterController, this._firstFilterName, this._secondFilterName,
-      this._propertyName, this._label,
+  const DateRangeSearchField(
+      this._filterController, this._firstFilterName, this._secondFilterName, this._propertyName,
       {super.key});
   final ScreenDataFilters _filterController;
   final String _propertyName;
   final String _firstFilterName;
   final String _secondFilterName;
-  final String _label;
 
   @override
   Widget build(BuildContext context) {
-    final firstFilter = _buildFirstFilter(context);
-    final secondFilter = _buildSecondFilter(context);
-    return FilterRow(_label, firstFilter, secondFilter: secondFilter);
-  }
-
-  Widget _buildFirstFilter(BuildContext context) {
-    return Expanded(
-      child: FormBuilderDateTimePicker(
-          textAlign: TextAlign.center,
-          name: _firstFilterName,
-          decoration: InputDecoration(
-            labelStyle: const TextStyle(color: Colors.black26, fontSize: 15),
-            labelText: S.of(context).from,
-            border: const OutlineInputBorder(),
-          ),
-          initialValue: _filterController.getFilterValue(_firstFilterName),
-          inputType: InputType.date,
-          format: DateFormat('dd-MM-yyyy'),
-          onChanged: (value) {
-            _filterController.updateFilters(
-                _firstFilterName, _propertyName, FilterCriteria.dateAfter, value);
-          }),
-    );
-  }
-
-  Widget _buildSecondFilter(BuildContext context) {
-    return Expanded(
-      child: FormBuilderDateTimePicker(
-          textAlign: TextAlign.center,
-          name: _secondFilterName,
-          decoration: InputDecoration(
-            labelStyle: const TextStyle(color: Colors.black26, fontSize: 15),
-            labelText: S.of(context).from,
-            border: const OutlineInputBorder(),
-          ),
-          initialValue: _filterController.getFilterValue(_secondFilterName),
-          inputType: InputType.date,
-          format: DateFormat('dd-MM-yyyy'),
-          onChanged: (value) {
-            _filterController.updateFilters(
-                _secondFilterName, _propertyName, FilterCriteria.dateBefore, value);
-          }),
+    return Container(
+      width: 400,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.black38,
+          width: 1.0, // Border width
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: CalendarDatePicker2(
+        config: CalendarDatePicker2Config(
+          calendarType: CalendarDatePicker2Type.range,
+        ),
+        value: [
+          _filterController.getFilterValue(_firstFilterName),
+          _filterController.getFilterValue(_secondFilterName),
+        ],
+        onValueChanged: (dates) {
+          if (dates.isEmpty) return;
+          _filterController.updateFilters(
+              _firstFilterName, _propertyName, FilterCriteria.dateAfter, dates[0]);
+          if (dates.length == 1) return;
+          _filterController.updateFilters(
+              _secondFilterName, _propertyName, FilterCriteria.dateBefore, dates[1]);
+        },
+      ),
     );
   }
 }
