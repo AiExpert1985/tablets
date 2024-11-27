@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
+import 'package:tablets/src/features/settings/view/settings_keys.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -17,11 +20,38 @@ class HomeScreen extends ConsumerWidget {
 /// for cases when refreshing page, since we need user to press a button in the side bar
 /// to load data from DB to dbCache, so after a refresh we display this widget, which forces
 /// user to go the sidebar and press a button to continue working
-class HomeScreenGreeting extends ConsumerWidget {
+
+class HomeScreenGreeting extends ConsumerStatefulWidget {
   const HomeScreenGreeting({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreenGreeting> createState() => _HomeScreenGreetingState();
+}
+
+class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
+  String customizableGreeting = '';
+
+  void _setGreeting(BuildContext context, WidgetRef ref) async {
+    String greeting = S.of(context).greeting;
+    final settingDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    if (settingDataNotifier.data.isNotEmpty) {
+      greeting = settingDataNotifier.getProperty(mainPageGreetingTextKey) ?? greeting;
+    } else {
+      final repository = ref.read(settingsRepositoryProvider);
+      final allSettings = await repository.fetchItemListAsMaps();
+      if (context.mounted) {
+        greeting = allSettings[0][mainPageGreetingTextKey] ?? greeting;
+      }
+    }
+    setState(() {
+      customizableGreeting = greeting;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Access the notifier using ref.read
+    _setGreeting(context, ref);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -34,7 +64,7 @@ class HomeScreenGreeting extends ConsumerWidget {
           ),
           VerticalGap.xl,
           Text(
-            S.of(context).greeting,
+            customizableGreeting,
             style: const TextStyle(fontSize: 20),
           ),
           VerticalGap.xxl,

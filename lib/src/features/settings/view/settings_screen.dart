@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
@@ -40,40 +41,39 @@ class SettingsParameters extends ConsumerWidget {
     final settingDataNotifier = ref.read(settingsFormDataProvider.notifier);
     return Center(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 25),
-        width: 1300,
+        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 15),
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 100),
+              height: 550,
+              padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 50),
               child: const Row(
-                mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   FirstColumn(),
                   VerticalDivider(),
                   SecondColumn(),
+                  VerticalDivider(),
+                  ThirdColumn(),
                 ],
               ),
             ),
             const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // button only saves changes to Db, in case user didn't save, then his changes
-                // will be only available in the current settings
-                IconButton(
-                  onPressed: () async {
-                    final settingsData = settingDataNotifier.data;
-                    final isSuccess = await repository.updateItem(Settings.fromMap(settingsData));
-                    if (isSuccess && context.mounted) {
-                      success(context, S.of(context).db_success_updaging_doc);
-                    }
-                  },
-                  icon: const SaveIcon(),
-                ),
-              ],
-            )
+
+            // button only saves changes to Db, in case user didn't save, then his changes
+            // will be only available in the current settings
+            Center(
+              child: IconButton(
+                onPressed: () async {
+                  final settingsData = settingDataNotifier.data;
+                  final isSuccess = await repository.updateItem(Settings.fromMap(settingsData));
+                  if (isSuccess && context.mounted) {
+                    success(context, S.of(context).db_success_updaging_doc);
+                  }
+                },
+                icon: const SaveIcon(),
+              ),
+            ),
           ],
         ),
       ),
@@ -124,8 +124,26 @@ class SecondColumn extends ConsumerWidget {
         VerticalGap.xl,
         SliderButton(S.of(context).num_printed_receipts, printedCustomerReceiptsKey, 0, 10, 5),
         VerticalGap.xxl,
+      ],
+    );
+  }
+}
+
+class ThirdColumn extends ConsumerWidget {
+  const ThirdColumn({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      children: [
+        SettingsInputField(S.of(context).max_debt_amount_allowed, settingsMaxDebtAmountKey,
+            FieldDataType.num.name),
+        VerticalGap.xl,
         SettingsInputField(
-            S.of(context).max_debt_amount_allowed, settingsMaxDebtAmountKey, FieldDataType.num.name)
+            S.of(context).settings_company_url, companyUrlKey, FieldDataType.text.name),
+        VerticalGap.xl,
+        SettingsInputField(S.of(context).settings_main_page_greeting, mainPageGreetingTextKey,
+            FieldDataType.text.name),
       ],
     );
   }
@@ -138,10 +156,10 @@ class SettingLabel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
-      width: 210,
+      width: 160,
       child: Text(
         label,
-        style: const TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 16),
       ),
     );
   }
@@ -249,43 +267,71 @@ class SwitchButton extends ConsumerWidget {
   }
 }
 
-class SettingsInputField extends ConsumerWidget {
+class SettingsInputField extends ConsumerStatefulWidget {
   const SettingsInputField(this.label, this.propertyName, this.dataType, {super.key});
+
   final String label;
   final String propertyName;
   final String dataType;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsInputField> createState() => _SettingsInputFieldState();
+}
+
+class _SettingsInputFieldState extends ConsumerState<SettingsInputField> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
-    dynamic currentValue = settingsDataNotifier.getProperty(propertyName);
-    if (dataType == FieldDataType.num.name) {
+    dynamic currentValue = settingsDataNotifier.getProperty(widget.propertyName);
+    if (widget.dataType == FieldDataType.num.name) {
       currentValue = currentValue.toString();
     }
-    ref.watch(settingsFormDataProvider);
+    _controller = TextEditingController(text: currentValue);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose(); // Dispose of the controller
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final settingsDataNotifier = ref.watch(settingsFormDataProvider.notifier);
+
     return Row(
       children: [
-        SettingLabel(label),
+        SettingLabel(widget.label),
         HorizontalGap.xl,
         SizedBox(
           width: 200,
-          child: TextField(
+          child: FormBuilderTextField(
+            name: widget.propertyName,
             textAlign: TextAlign.center,
             onChanged: (value) {
+              if (value == null) return; // Check for null
               dynamic newValue;
-              if (dataType == FieldDataType.num.name) {
+              if (widget.dataType == FieldDataType.num.name) {
                 try {
                   newValue = double.parse(value);
                 } catch (e) {
                   errorPrint('value is not a number');
+                  return; // Exit if parsing fails
                 }
               } else {
                 newValue = value;
               }
-              settingsDataNotifier.updateProperties({propertyName: newValue});
+              // Update the controller text only if it's different
+              if (_controller.text != newValue.toString()) {
+                _controller.text = newValue.toString();
+              }
+              settingsDataNotifier.updateProperties({widget.propertyName: newValue});
             },
             decoration: formFieldDecoration(),
-            controller: TextEditingController(text: currentValue),
+            controller: _controller,
           ),
         )
       ],

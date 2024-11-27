@@ -30,16 +30,18 @@ class MainDrawer extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
               child: Column(
                 children: [
+                  HomeButton(),
+                  VerticalGap.m,
                   TransactionsButton(),
-                  VerticalGap.l,
+                  VerticalGap.m,
                   CustomersButton(),
-                  VerticalGap.l,
+                  VerticalGap.m,
                   VendorsButton(),
-                  VerticalGap.l,
+                  VerticalGap.m,
                   SalesmenButton(),
-                  VerticalGap.l,
+                  VerticalGap.m,
                   ProductsButton(),
-                  VerticalGap.l,
+                  VerticalGap.m,
                   SettingsButton(),
                   Spacer(),
                   PendingsButton(),
@@ -50,6 +52,21 @@ class MainDrawer extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+class HomeButton extends ConsumerWidget {
+  const HomeButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    return MainDrawerButton('home', S.of(context).home_page, () async {
+      initializeSettings(ref);
+      Navigator.of(context).pop();
+      pageTitleNotifier.state = '';
+      context.goNamed(AppRoute.home.name);
+    });
   }
 }
 
@@ -285,10 +302,10 @@ class MainDrawerHeader extends StatelessWidget {
                 height: 200, // here I used width intentionally
                 child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
               ),
-              // Text(
-              //   S.of(context).slogan,
-              //   style: const TextStyle(fontSize: 14, color: Colors.white),
-              // ),
+              Text(
+                S.of(context).slogan,
+                style: const TextStyle(fontSize: 14, color: Colors.white),
+              ),
             ])));
   }
 }

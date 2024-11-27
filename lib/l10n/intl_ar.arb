@@ -32,7 +32,7 @@
     "success": "نجاح",
     "info": "معلومات",
     "warning": "تحذير",
-    "slogan": "الواح ... حيث بدأت المحاسبة",
+    "slogan": "الواح  ...  حيث بدأت المحاسبة",
     "product_code": "رمز المادة",
     "product_name": "اسم المادة",
     "product_sell_retail_price": "سعر البيع للمفرد",
@@ -221,11 +221,12 @@
     "hide_salesman_profit": "اخفاء ارباح المندوب ",
     "show_barcode_when_printing": "اخفاء الباركود عند الطباعة",
     "max_debt_duration_allowed": " اقصى مدة للتسديد ",
-    "max_debt_amount_allowed": "اقصى مبلغ دين مسموح",
+    "max_debt_amount_allowed": "اقصى حد للدين",
     "num_printed_invoices": "عدد القوائم المطبوعة ",
     "num_printed_receipts": "عدد الوصولات المطبوعة ",
-    "company_url": "صفحة الشركة ",
-    "main_page_greeting": "التحية في الواجهة الرئيسية",
+    "settings_company_url": "صفحة الشركة ",
+    "settings_main_page_greeting": "تحية البرنامج",
     "hide_product_buying_price": "اخفاء سعر شراء المادة",
-    "settings_currency": "العملة المستخدمة"
+    "settings_currency": "العملة المستخدمة",
+    "home_page": "الرئيسية"
 }

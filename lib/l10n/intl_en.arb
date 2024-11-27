@@ -224,8 +224,9 @@
     "max_debt_amount_allowed": "max Debt Amount ",
     "num_printed_invoices": "printed Customer Invoices ",
     "num_printed_receipts": "printed Customer Receipts ",
-    "company_url": "company Url ",
-    "main_page_greeting": "main Page Greeting Text",
+    "settings_company_url": "company Url ",
+    "settings_main_page_greeting": "main Page Greeting Text",
     "hide_product_buying_price": "hide product buying price",
-    "settings_currency": "Used currency"
+    "settings_currency": "Used currency",
+    "home_page": "Home page"
 }

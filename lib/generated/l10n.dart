@@ -2301,20 +2301,20 @@ class S {
   }
 
   /// `company Url `
-  String get company_url {
+  String get settings_company_url {
     return Intl.message(
       'company Url ',
-      name: 'company_url',
+      name: 'settings_company_url',
       desc: '',
       args: [],
     );
   }
 
   /// `main Page Greeting Text`
-  String get main_page_greeting {
+  String get settings_main_page_greeting {
     return Intl.message(
       'main Page Greeting Text',
-      name: 'main_page_greeting',
+      name: 'settings_main_page_greeting',
       desc: '',
       args: [],
     );
@@ -2335,6 +2335,16 @@ class S {
     return Intl.message(
       'Used currency',
       name: 'settings_currency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home page`
+  String get home_page {
+    return Intl.message(
+      'Home page',
+      name: 'home_page',
       desc: '',
       args: [],
     );

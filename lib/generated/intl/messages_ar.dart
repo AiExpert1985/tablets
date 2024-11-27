@@ -44,7 +44,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("اختيار الصنف "),
         "choose_image": MessageLookupByLibrary.simpleMessage("اختر صورة"),
         "commission": MessageLookupByLibrary.simpleMessage("العمولة"),
-        "company_url": MessageLookupByLibrary.simpleMessage("صفحة الشركة "),
         "count": MessageLookupByLibrary.simpleMessage("العدد"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
@@ -114,6 +113,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("اخفاء ارباح المندوب "),
         "hide_totals_row":
             MessageLookupByLibrary.simpleMessage("اخفاء مجاميع الاعمدة"),
+        "home_page": MessageLookupByLibrary.simpleMessage("الرئيسية"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("لدي حساب في البرنامج"),
         "include_total_as_text":
@@ -167,10 +167,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "loading_data": MessageLookupByLibrary.simpleMessage("تحميل البيانات"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
-        "main_page_greeting":
-            MessageLookupByLibrary.simpleMessage("التحية في الواجهة الرئيسية"),
         "max_debt_amount_allowed":
-            MessageLookupByLibrary.simpleMessage("اقصى مبلغ دين مسموح"),
+            MessageLookupByLibrary.simpleMessage("اقصى حد للدين"),
         "max_debt_duration_allowed":
             MessageLookupByLibrary.simpleMessage(" اقصى مدة للتسديد "),
         "monthly_profit":
@@ -280,14 +278,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "selling_price_type_whole":
             MessageLookupByLibrary.simpleMessage("جملة"),
         "settings": MessageLookupByLibrary.simpleMessage("الاعدادات"),
+        "settings_company_url":
+            MessageLookupByLibrary.simpleMessage("صفحة الشركة "),
         "settings_currency":
             MessageLookupByLibrary.simpleMessage("العملة المستخدمة"),
+        "settings_main_page_greeting":
+            MessageLookupByLibrary.simpleMessage("تحية البرنامج"),
         "share": MessageLookupByLibrary.simpleMessage("ارسال"),
         "show_barcode_when_printing":
             MessageLookupByLibrary.simpleMessage("اخفاء الباركود عند الطباعة"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
-        "slogan":
-            MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),
+        "slogan": MessageLookupByLibrary.simpleMessage(
+            "الواح  ...  حيث بدأت المحاسبة"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
         "sum_of_commissions":
             MessageLookupByLibrary.simpleMessage("مجموع العمولات"),

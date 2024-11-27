@@ -44,7 +44,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Select category"),
         "choose_image": MessageLookupByLibrary.simpleMessage("Choose image"),
         "commission": MessageLookupByLibrary.simpleMessage("Commission"),
-        "company_url": MessageLookupByLibrary.simpleMessage("company Url "),
         "count": MessageLookupByLibrary.simpleMessage("Count"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("Create a new account"),
@@ -113,6 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("hide Salesman Profit "),
         "hide_totals_row":
             MessageLookupByLibrary.simpleMessage("Hide columns totals"),
+        "home_page": MessageLookupByLibrary.simpleMessage("Home page"),
         "i_already_have_account":
             MessageLookupByLibrary.simpleMessage("I already have account"),
         "include_total_as_text":
@@ -172,8 +172,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "loading_data": MessageLookupByLibrary.simpleMessage("Loading data"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
-        "main_page_greeting":
-            MessageLookupByLibrary.simpleMessage("main Page Greeting Text"),
         "max_debt_amount_allowed":
             MessageLookupByLibrary.simpleMessage("max Debt Amount "),
         "max_debt_duration_allowed":
@@ -291,8 +289,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "selling_price_type_whole":
             MessageLookupByLibrary.simpleMessage("Wholesale"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "settings_company_url":
+            MessageLookupByLibrary.simpleMessage("company Url "),
         "settings_currency":
             MessageLookupByLibrary.simpleMessage("Used currency"),
+        "settings_main_page_greeting":
+            MessageLookupByLibrary.simpleMessage("main Page Greeting Text"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
         "show_barcode_when_printing":
             MessageLookupByLibrary.simpleMessage("show Company Url Bar Code"),
