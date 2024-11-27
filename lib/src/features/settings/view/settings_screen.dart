@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
@@ -12,6 +13,9 @@ import 'package:tablets/src/features/settings/controllers/settings_form_data_not
 import 'package:tablets/src/features/settings/model/settings.dart';
 import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
+
+final paymentValues = [PaymentType.credit.name, PaymentType.cash.name];
+final currencyValues = [Currency.dinar.name, Currency.dollar.name];
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -37,14 +41,17 @@ class SettingsParameters extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 100),
       child: Column(
         children: [
-          const Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              FirstColumn(),
-              VerticalDivider(),
-              SecondColumn(),
-            ],
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 100),
+            child: const Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FirstColumn(),
+                VerticalDivider(),
+                SecondColumn(),
+              ],
+            ),
           ),
           const Spacer(),
           Row(
@@ -77,17 +84,17 @@ class FirstColumn extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        SwitchRow(S.of(context).hide_amount_as_text, hideTransactionAmountAsTextKey),
+        SwitchButton(S.of(context).hide_amount_as_text, hideTransactionAmountAsTextKey),
         VerticalGap.xl,
-        SwitchRow(S.of(context).hide_totals_row, hideMainScreenColumnTotalsKey),
+        SwitchButton(S.of(context).hide_totals_row, hideMainScreenColumnTotalsKey),
         VerticalGap.xl,
-        SwitchRow(S.of(context).hide_product_buying_price, hideProductBuyingPriceKey),
+        SwitchButton(S.of(context).hide_product_buying_price, hideProductBuyingPriceKey),
         VerticalGap.xl,
-        SwitchRow(S.of(context).hide_customer_profit, hideCustomerProfitKey),
+        SwitchButton(S.of(context).hide_customer_profit, hideCustomerProfitKey),
         VerticalGap.xl,
-        SwitchRow(S.of(context).hide_product_profit, hideProductProfitKey),
+        SwitchButton(S.of(context).hide_product_profit, hideProductProfitKey),
         VerticalGap.xl,
-        SwitchRow(S.of(context).hide_salesman_profit, hideSalesmanProfitKey),
+        SwitchButton(S.of(context).hide_salesman_profit, hideSalesmanProfitKey),
       ],
     );
   }
@@ -98,21 +105,24 @@ class SecondColumn extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Column(
-      children: [Text('hi')],
+    return Column(
+      children: [
+        RadioButtons(S.of(context).transaction_payment_type, settingsPaymentTypeKey, paymentValues),
+        RadioButtons(S.of(context).transaction_currency, settingsCurrencyKey, currencyValues),
+      ],
     );
   }
 }
 
-class RowLabel extends ConsumerWidget {
-  const RowLabel(this.label, {super.key});
+class SettingLabel extends ConsumerWidget {
+  const SettingLabel(this.label, {super.key});
   final String label;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      width: 200,
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      width: 210,
       child: Text(
         label,
         style: const TextStyle(fontSize: 18),
@@ -143,53 +153,64 @@ class SliderButton extends ConsumerWidget {
 }
 
 class RadioButtons extends ConsumerWidget {
-  const RadioButtons(this.numButtons, {super.key});
-  final int numButtons;
+  const RadioButtons(this.label, this.propertyName, this.values, {super.key});
+  final List<String> values;
+  final String label;
+  final String propertyName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final currentValue = settingsDataNotifier.getProperty(propertyName);
+    ref.watch(settingsFormDataProvider);
     return Row(
       children: [
-        ...List.generate(numButtons, (index) {
-          return Radio(
-            value: index + 1,
-            groupValue: 1,
-            onChanged: (value) {},
-          );
-        }),
+        SettingLabel(label),
+        ...values.map(
+          (buttonValue) {
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  Text(translateDbTextToScreenText(context, buttonValue)),
+                  VerticalGap.s,
+                  Radio(
+                    value: buttonValue,
+                    groupValue: currentValue,
+                    onChanged: (value) {
+                      settingsDataNotifier.updateProperties({propertyName: value});
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ],
     );
   }
 }
 
 class SwitchButton extends ConsumerWidget {
-  const SwitchButton(this.property, {super.key});
-  final String property;
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
-    final currentValue = settingsDataNotifier.getProperty(property);
-    ref.watch(settingsFormDataProvider);
-    return Switch(
-      value: currentValue,
-      onChanged: (value) {
-        settingsDataNotifier.updateProperties({property: value});
-      },
-    );
-  }
-}
-
-class SwitchRow extends StatelessWidget {
-  const SwitchRow(this.label, this.propertyName, {super.key});
+  const SwitchButton(this.label, this.propertyName, {super.key});
   final String label;
   final String propertyName;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final currentValue = settingsDataNotifier.getProperty(propertyName);
+    ref.watch(settingsFormDataProvider);
     return Row(
       children: [
-        RowLabel(label),
-        SwitchButton(propertyName),
+        SettingLabel(label),
+        HorizontalGap.xl,
+        Switch(
+          value: currentValue,
+          onChanged: (value) {
+            settingsDataNotifier.updateProperties({propertyName: value});
+          },
+        ),
       ],
     );
   }

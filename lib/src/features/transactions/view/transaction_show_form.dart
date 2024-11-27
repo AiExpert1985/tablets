@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
+import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/transactions/view/transaction_form.dart';
@@ -14,6 +16,7 @@ class TransactionShowForm {
     BuildContext context,
     ImageSliderNotifier imagePickerNotifier,
     ItemFormData formDataNotifier,
+    ItemFormData settingsDataNotifier,
     TextControllerNotifier textEditingNotifier,
     StateController<Color> backgroundColorNofifier, {
     String? formType,
@@ -26,7 +29,8 @@ class TransactionShowForm {
     }
     String transactionType = formType ?? transaction?.transactionType as String;
     imagePickerNotifier.initialize();
-    initializeFormData(context, formDataNotifier, transactionType, transaction: transaction);
+    initializeFormData(context, formDataNotifier, settingsDataNotifier, transactionType,
+        transaction: transaction);
     initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
     bool isEditMode = transaction != null;
 
@@ -39,15 +43,16 @@ class TransactionShowForm {
     });
   }
 
-  static void initializeFormData(
-      BuildContext context, ItemFormData formDataNotifier, String transactionType,
+  static void initializeFormData(BuildContext context, ItemFormData formDataNotifier,
+      ItemFormData settingsDataNotifier, String transactionType,
       {Transaction? transaction}) {
     formDataNotifier.initialize(initialData: transaction?.toMap());
     if (transaction != null) return; // if we are in edit, we don't need further initialization
-
+    String paymentType = settingsDataNotifier.getProperty(settingsPaymentTypeKey);
+    String currenctyType = settingsDataNotifier.getProperty(settingsCurrencyKey);
     formDataNotifier.updateProperties({
-      currencyKey: S.of(context).transaction_payment_Dinar,
-      paymentTypeKey: S.of(context).transaction_payment_credit,
+      currencyKey: translateDbTextToScreenText(context, currenctyType),
+      paymentTypeKey: translateDbTextToScreenText(context, paymentType),
       discountKey: 0.0,
       transactionTypeKey: transactionType,
       dateKey: DateTime.now(),

@@ -7,6 +7,7 @@ import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_drawer_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
@@ -169,11 +170,13 @@ class DataRow extends ConsumerWidget {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     backgroundColorNofifier.state = Colors.white;
     TransactionShowForm.showForm(
       context,
       imagePickerNotifier,
       formDataNotifier,
+      settingsDataNotifier,
       textEditingNotifier,
       backgroundColorNofifier,
       transaction: transaction,
