@@ -44,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("اختيار الصنف "),
         "choose_image": MessageLookupByLibrary.simpleMessage("اختر صورة"),
         "commission": MessageLookupByLibrary.simpleMessage("العمولة"),
+        "company_url": MessageLookupByLibrary.simpleMessage("صفحة الشركة "),
         "count": MessageLookupByLibrary.simpleMessage("العدد"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("انشاء حساب جديد"),
@@ -101,8 +102,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "gps_y": MessageLookupByLibrary.simpleMessage("احداثيات العرض"),
         "greeting":
             MessageLookupByLibrary.simpleMessage("مرحبا بك في نظام الواح"),
+        "hide_amount_as_text":
+            MessageLookupByLibrary.simpleMessage("اخفاء حقل كتابة المبلغ"),
         "hide_customer_profit":
             MessageLookupByLibrary.simpleMessage("اخفاء ارباح الزبون"),
+        "hide_product_buying_price":
+            MessageLookupByLibrary.simpleMessage("اخفاء سعر شراء المادة"),
+        "hide_product_profit":
+            MessageLookupByLibrary.simpleMessage("اخفاء ارباح المادة"),
+        "hide_salesman_profit":
+            MessageLookupByLibrary.simpleMessage("اخفاء ارباح المندوب "),
         "hide_totals_row":
             MessageLookupByLibrary.simpleMessage("اخفاء مجاميع الاعمدة"),
         "i_already_have_account":
@@ -158,6 +167,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "loading_data": MessageLookupByLibrary.simpleMessage("تحميل البيانات"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
+        "main_page_greeting":
+            MessageLookupByLibrary.simpleMessage("التحية في الواجهة الرئيسية"),
+        "max_debt_amount_allowed":
+            MessageLookupByLibrary.simpleMessage("اقصى مبلغ دين مسموح"),
+        "max_debt_duration_allowed":
+            MessageLookupByLibrary.simpleMessage(" اقصى مدة مسموحة للتسديد "),
         "monthly_profit":
             MessageLookupByLibrary.simpleMessage("الارباح الشهرية"),
         "monthly_profit_report":
@@ -262,6 +277,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("جملة"),
         "settings": MessageLookupByLibrary.simpleMessage("الاعدادات"),
         "share": MessageLookupByLibrary.simpleMessage("ارسال"),
+        "show_barcode_when_printing":
+            MessageLookupByLibrary.simpleMessage("اظهار الباركود عند الطباعة"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
         "slogan":
             MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),

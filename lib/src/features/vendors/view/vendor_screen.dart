@@ -3,12 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/gaps.dart';
-import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_drawer_provider.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_form_controller.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_report_controller.dart';
@@ -91,6 +92,9 @@ class ListHeaders extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final screenDataNotifier = ref.read(vendorScreenDataNotifier.notifier);
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideMainScreenColumnTotals =
+        settingsController.getProperty(hideMainScreenColumnTotalsKey);
     return Column(
       children: [
         Row(

@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/gaps.dart';
@@ -12,6 +11,8 @@ import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 
 class ExpenditureForm extends ConsumerWidget {
@@ -23,6 +24,9 @@ class ExpenditureForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideTransactionAmountAsText =
+        settingsController.getProperty(hideTransactionAmountAsTextKey);
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
@@ -41,7 +45,7 @@ class ExpenditureForm extends ConsumerWidget {
             VerticalGap.l,
             _buildForthRow(context, formDataNotifier),
             VerticalGap.l,
-            _buildFifthRow(context, formDataNotifier),
+            _buildFifthRow(context, formDataNotifier, hideTransactionAmountAsText),
           ],
         ),
       ),
@@ -152,9 +156,10 @@ class ExpenditureForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildFifthRow(BuildContext context, ItemFormData formDataNotifier) {
+  Widget _buildFifthRow(
+      BuildContext context, ItemFormData formDataNotifier, bool hideTransactionAmountAsTextKey) {
     return Visibility(
-      visible: !settings.hideTransactionAmountAsText,
+      visible: !hideTransactionAmountAsTextKey,
       child: Row(
         children: [
           FormInputField(

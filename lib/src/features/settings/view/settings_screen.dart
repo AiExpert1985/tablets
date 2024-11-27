@@ -50,6 +50,8 @@ class SettingsParameters extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // button only saves changes to Db, in case user didn't save, then his changes
+              // will be only available in the current settings
               IconButton(
                 onPressed: () async {
                   final settingsData = settingDataNotifier.data;
@@ -75,19 +77,17 @@ class FirstColumn extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        Row(
-          children: [
-            RowLabel(S.of(context).hide_customer_profit),
-            SwitchButton(hideCustomerProfitKey),
-          ],
-        ),
+        SwitchRow(S.of(context).hide_amount_as_text, hideTransactionAmountAsTextKey),
         VerticalGap.xl,
-        Row(
-          children: [
-            RowLabel(S.of(context).hide_totals_row),
-            SwitchButton(hideMainScreenColumnTotalsKey),
-          ],
-        ),
+        SwitchRow(S.of(context).hide_totals_row, hideMainScreenColumnTotalsKey),
+        VerticalGap.xl,
+        SwitchRow(S.of(context).hide_product_buying_price, hideProductBuyingPriceKey),
+        VerticalGap.xl,
+        SwitchRow(S.of(context).hide_customer_profit, hideCustomerProfitKey),
+        VerticalGap.xl,
+        SwitchRow(S.of(context).hide_product_profit, hideProductProfitKey),
+        VerticalGap.xl,
+        SwitchRow(S.of(context).hide_salesman_profit, hideSalesmanProfitKey),
       ],
     );
   }
@@ -175,6 +175,22 @@ class SwitchButton extends ConsumerWidget {
       onChanged: (value) {
         settingsDataNotifier.updateProperties({property: value});
       },
+    );
+  }
+}
+
+class SwitchRow extends StatelessWidget {
+  const SwitchRow(this.label, this.propertyName, {super.key});
+  final String label;
+  final String propertyName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        RowLabel(label),
+        SwitchButton(propertyName),
+      ],
     );
   }
 }

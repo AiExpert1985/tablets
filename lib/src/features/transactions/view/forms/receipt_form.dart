@@ -6,7 +6,6 @@ import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
-import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/gaps.dart';
@@ -17,6 +16,8 @@ import 'package:tablets/src/features/customers/repository/customer_repository_pr
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
 
@@ -34,6 +35,9 @@ class ReceiptForm extends ConsumerWidget {
     final customerRepository = ref.read(customerRepositoryProvider);
     final vendorRepository = ref.read(vendorRepositoryProvider);
     final counterPartyRepository = isVendor ? vendorRepository : customerRepository;
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideTransactionAmountAsText =
+        settingsController.getProperty(hideTransactionAmountAsTextKey);
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
@@ -53,7 +57,7 @@ class ReceiptForm extends ConsumerWidget {
             VerticalGap.l,
             _buildForthRow(context, formDataNotifier),
             VerticalGap.l,
-            _buildFifthRow(context, formDataNotifier),
+            _buildFifthRow(context, formDataNotifier, hideTransactionAmountAsText),
             VerticalGap.xxl,
             _buildTotalsRow(context, formDataNotifier, textEditingNotifier),
           ],
@@ -201,9 +205,10 @@ class ReceiptForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildFifthRow(BuildContext context, ItemFormData formDataNotifier) {
+  Widget _buildFifthRow(
+      BuildContext context, ItemFormData formDataNotifier, bool hideTransactionAmountAsText) {
     return Visibility(
-      visible: !settings.hideTransactionAmountAsText,
+      visible: !hideTransactionAmountAsText,
       child: Row(
         children: [
           FormInputField(

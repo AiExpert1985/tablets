@@ -91,10 +91,9 @@ class ListHeaders extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsController = ref.read(settingsFormDataProvider.notifier);
-    final hideCustomerProfit = settingsController.getProperty(hideCustomerProfitKey);
-    //TODO
     final hideMainScreenColumnTotals =
-        settingsController.getProperty(hideMainScreenColumnTotalsKey) ?? false;
+        settingsController.getProperty(hideMainScreenColumnTotalsKey);
+    final hideCustomerProfit = settingsController.getProperty(hideCustomerProfitKey);
     final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
     return Column(
       children: [
@@ -260,8 +259,8 @@ class CustomerFloatingButtons extends ConsumerWidget {
   void showAddCustomerForm(BuildContext context, WidgetRef ref) {
     final settingsController = ref.read(settingsFormDataProvider.notifier);
     //TODO
-    final maxDebtAmount = settingsController.getProperty(maxDebtAmountKey) ?? 1000000;
-    final maxDebtDuration = settingsController.getProperty(maxDebtDurationKey) ?? 21;
+    final maxDebtAmount = settingsController.getProperty(settingsMaxDebtAmountKey) ?? 1000000;
+    final maxDebtDuration = settingsController.getProperty(settingsMaxDebtDurationKey) ?? 21;
     final formDataNotifier = ref.read(customerFormDataProvider.notifier);
     formDataNotifier.initialize();
     formDataNotifier.updateProperties({

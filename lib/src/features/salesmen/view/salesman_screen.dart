@@ -4,7 +4,6 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
-import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -18,6 +17,8 @@ import 'package:tablets/src/features/salesmen/controllers/salesman_screen_data_n
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/view/salesman_form.dart';
 import 'package:tablets/src/features/salesmen/model/salesman.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/view/settings_keys.dart';
 
 class SalesmanScreen extends ConsumerWidget {
   const SalesmanScreen({super.key});
@@ -137,6 +138,10 @@ class ListHeaders extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final screenDataNotifier = ref.read(salesmanScreenDataNotifier.notifier);
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideSalesmanProfit = settingsController.getProperty(hideSalesmanProfitKey);
+    final hideMainScreenColumnTotals =
+        settingsController.getProperty(hideMainScreenColumnTotalsKey);
     return Column(
       children: [
         Row(
@@ -179,6 +184,8 @@ class HeaderTotalsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideSalesmanProfit = settingsController.getProperty(hideSalesmanProfitKey);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -206,6 +213,8 @@ class DataRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideSalesmanProfit = settingsController.getProperty(hideSalesmanProfitKey);
     final reportController = ref.read(salesmanReportControllerProvider);
     final customerRef = salesmanScreenData[salesmanDbRefKey];
     final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);

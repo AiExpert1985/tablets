@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
-import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/gaps.dart';
@@ -13,6 +12,8 @@ import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
@@ -33,6 +34,9 @@ class StatementForm extends ConsumerWidget {
     final customerRepository = ref.read(customerRepositoryProvider);
     final vendorRepository = ref.read(vendorRepositoryProvider);
     final counterPartyRepository = isGift ? customerRepository : vendorRepository;
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideTransactionAmountAsText =
+        settingsController.getProperty(hideTransactionAmountAsTextKey);
     ref.watch(transactionFormDataProvider);
 
     return SingleChildScrollView(
@@ -50,7 +54,7 @@ class StatementForm extends ConsumerWidget {
             VerticalGap.m,
             _buildThirdRow(context, formDataNotifier),
             VerticalGap.m,
-            _buildFourthRow(context, formDataNotifier),
+            _buildFourthRow(context, formDataNotifier, hideTransactionAmountAsText),
             VerticalGap.m,
             ItemsList(true, true, transactionType),
           ],
@@ -141,9 +145,10 @@ class StatementForm extends ConsumerWidget {
     );
   }
 
-  Widget _buildFourthRow(BuildContext context, ItemFormData formDataNotifier) {
+  Widget _buildFourthRow(
+      BuildContext context, ItemFormData formDataNotifier, bool hideTransactionAmountAsText) {
     return Visibility(
-      visible: !settings.hideTransactionAmountAsText,
+      visible: !hideTransactionAmountAsText,
       child: Row(
         children: [
           FormInputField(

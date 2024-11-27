@@ -7,7 +7,6 @@ import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
-import 'package:tablets/src/common/values/settings.dart' as settings;
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/gaps.dart';
@@ -18,6 +17,8 @@ import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_utils_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
@@ -251,9 +252,12 @@ class FifthRow extends ConsumerWidget {
   const FifthRow({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideTransactionAmountAsText =
+        settingsController.getProperty(hideTransactionAmountAsTextKey);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     return Visibility(
-      visible: !settings.hideTransactionAmountAsText,
+      visible: !hideTransactionAmountAsText,
       child: Row(
         children: [
           FormInputField(

@@ -62,6 +62,7 @@ class CustomersButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('customers', S.of(context).customers, () async {
+      initializeSettings(ref);
       pageLoadingNotifier.state = true;
       //  we need related transactionDbCache, we make sure it is inialized
       await initializeTransactionDbCache(context, ref);
@@ -97,6 +98,7 @@ class PendingsButton extends ConsumerWidget {
       'pending_transactions',
       S.of(context).pending_transactions,
       () {
+        initializeSettings(ref);
         Navigator.of(context).pop();
         pageTitleNotifier.state = S.of(context).pending_transactions;
         context.goNamed(AppRoute.pendingTransactions.name);
@@ -114,6 +116,7 @@ class SettingsButton extends ConsumerWidget {
       'settings',
       S.of(context).settings,
       () {
+        initializeSettings(ref);
         Navigator.of(context).pop();
         showDialog(context: context, builder: (BuildContext ctx) => const SettingsDialog());
       },
@@ -130,6 +133,7 @@ class SalesmenButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('salesman', S.of(context).salesmen, () async {
+      initializeSettings(ref);
       pageLoadingNotifier.state = true;
       //  we need related transactionDbCache, we make sure it is inialized
       //  and we need related customerDbCache, we make sure it is inialized
@@ -164,6 +168,7 @@ class VendorsButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('vendors', S.of(context).vendors, () async {
+      initializeSettings(ref);
       pageLoadingNotifier.state = true;
       //  we need related transactionDbCache, we make sure it is inialized
       await initializeTransactionDbCache(context, ref);
@@ -194,6 +199,7 @@ class TransactionsButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('transactions', S.of(context).transactions, () async {
+      initializeSettings(ref);
       pageLoadingNotifier.state = true;
       await initializeTransactionDbCache(context, ref);
       // initialize related dbCaches
@@ -227,6 +233,7 @@ class ProductsButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('products', S.of(context).products, () async {
+      initializeSettings(ref);
       pageLoadingNotifier.state = true;
       //  we need related transactionDbCache, we make sure it is inialized
       await initializeTransactionDbCache(context, ref);
@@ -344,11 +351,7 @@ class SettingsDialog extends ConsumerWidget {
           itemCount: names.length,
           itemBuilder: (context, index) {
             return InkWell(
-              onTap: () async {
-                final settingRepository = ref.read(settingsRepositoryProvider);
-                final settingsData = await settingRepository.fetchItemListAsMaps();
-                final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
-                settingsDataNotifier.initialize(initialData: settingsData[0]);
+              onTap: () {
                 pageTitleNotifier.state = names[index];
                 if (context.mounted) {
                   Navigator.of(context).pop();
@@ -375,5 +378,14 @@ class SettingsDialog extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+void initializeSettings(WidgetRef ref) async {
+  final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+  if (settingsDataNotifier.data.isEmpty) {
+    final settingRepository = ref.read(settingsRepositoryProvider);
+    final settingsData = await settingRepository.fetchItemListAsMaps();
+    settingsDataNotifier.initialize(initialData: settingsData[0]);
   }
 }

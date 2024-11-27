@@ -215,5 +215,16 @@
     "vendor_search": "Vendors search",
     "sum_of_commissions": "Commissions_sum",
     "hide_customer_profit": "Hide customer profit",
-    "hide_totals_row": "Hide columns totals"
+    "hide_totals_row": "Hide columns totals",
+    "hide_amount_as_text": "hide Transaction Amount As Text",
+    "hide_product_profit": "hide Product Profit",
+    "hide_salesman_profit": "hide Salesman Profit ",
+    "show_barcode_when_printing": "show Company Url Bar Code",
+    "max_debt_duration_allowed": "max Debt Duration ",
+    "max_debt_amount_allowed": "max Debt Amount ",
+    "num_printed_customer_invoices": "printed Customer Invoices ",
+    "num_printed_customer_receipts": "printed Customer Receipts ",
+    "company_url": "company Url ",
+    "main_page_greeting": "main Page Greeting Text",
+    "hide_product_buying_price": "hide product buying price"
 }

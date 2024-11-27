@@ -2219,6 +2219,116 @@ class S {
       args: [],
     );
   }
+
+  /// `hide Transaction Amount As Text`
+  String get hide_amount_as_text {
+    return Intl.message(
+      'hide Transaction Amount As Text',
+      name: 'hide_amount_as_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hide Product Profit`
+  String get hide_product_profit {
+    return Intl.message(
+      'hide Product Profit',
+      name: 'hide_product_profit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hide Salesman Profit `
+  String get hide_salesman_profit {
+    return Intl.message(
+      'hide Salesman Profit ',
+      name: 'hide_salesman_profit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `show Company Url Bar Code`
+  String get show_barcode_when_printing {
+    return Intl.message(
+      'show Company Url Bar Code',
+      name: 'show_barcode_when_printing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `max Debt Duration `
+  String get max_debt_duration_allowed {
+    return Intl.message(
+      'max Debt Duration ',
+      name: 'max_debt_duration_allowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `max Debt Amount `
+  String get max_debt_amount_allowed {
+    return Intl.message(
+      'max Debt Amount ',
+      name: 'max_debt_amount_allowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `printed Customer Invoices `
+  String get num_printed_customer_invoices {
+    return Intl.message(
+      'printed Customer Invoices ',
+      name: 'num_printed_customer_invoices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `printed Customer Receipts `
+  String get num_printed_customer_receipts {
+    return Intl.message(
+      'printed Customer Receipts ',
+      name: 'num_printed_customer_receipts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `company Url `
+  String get company_url {
+    return Intl.message(
+      'company Url ',
+      name: 'company_url',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `main Page Greeting Text`
+  String get main_page_greeting {
+    return Intl.message(
+      'main Page Greeting Text',
+      name: 'main_page_greeting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hide product buying price`
+  String get hide_product_buying_price {
+    return Intl.message(
+      'hide product buying price',
+      name: 'hide_product_buying_price',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

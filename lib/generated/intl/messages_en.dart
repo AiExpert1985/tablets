@@ -44,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Select category"),
         "choose_image": MessageLookupByLibrary.simpleMessage("Choose image"),
         "commission": MessageLookupByLibrary.simpleMessage("Commission"),
+        "company_url": MessageLookupByLibrary.simpleMessage("company Url "),
         "count": MessageLookupByLibrary.simpleMessage("Count"),
         "create_new_account":
             MessageLookupByLibrary.simpleMessage("Create a new account"),
@@ -100,8 +101,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "gps_x": MessageLookupByLibrary.simpleMessage("X coordinate"),
         "gps_y": MessageLookupByLibrary.simpleMessage("Y coordinate"),
         "greeting": MessageLookupByLibrary.simpleMessage("hi"),
+        "hide_amount_as_text": MessageLookupByLibrary.simpleMessage(
+            "hide Transaction Amount As Text"),
         "hide_customer_profit":
             MessageLookupByLibrary.simpleMessage("Hide customer profit"),
+        "hide_product_buying_price":
+            MessageLookupByLibrary.simpleMessage("hide product buying price"),
+        "hide_product_profit":
+            MessageLookupByLibrary.simpleMessage("hide Product Profit"),
+        "hide_salesman_profit":
+            MessageLookupByLibrary.simpleMessage("hide Salesman Profit "),
         "hide_totals_row":
             MessageLookupByLibrary.simpleMessage("Hide columns totals"),
         "i_already_have_account":
@@ -163,6 +172,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "loading_data": MessageLookupByLibrary.simpleMessage("Loading data"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
+        "main_page_greeting":
+            MessageLookupByLibrary.simpleMessage("main Page Greeting Text"),
+        "max_debt_amount_allowed":
+            MessageLookupByLibrary.simpleMessage("max Debt Amount "),
+        "max_debt_duration_allowed":
+            MessageLookupByLibrary.simpleMessage("max Debt Duration "),
         "monthly_profit":
             MessageLookupByLibrary.simpleMessage("Monthly profit"),
         "monthly_profit_report":
@@ -174,6 +189,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Due invoices"),
         "num_open_invoice":
             MessageLookupByLibrary.simpleMessage("Num of open invoices"),
+        "num_printed_customer_invoices":
+            MessageLookupByLibrary.simpleMessage("printed Customer Invoices "),
+        "num_printed_customer_receipts":
+            MessageLookupByLibrary.simpleMessage("printed Customer Receipts "),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
         "open_invoices": MessageLookupByLibrary.simpleMessage("Open invoices"),
         "page_not_found":
@@ -273,6 +292,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Wholesale"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
+        "show_barcode_when_printing":
+            MessageLookupByLibrary.simpleMessage("show Company Url Bar Code"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign up"),
         "slogan": MessageLookupByLibrary.simpleMessage(
             "Tablets, where accounting started"),

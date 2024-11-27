@@ -215,5 +215,16 @@
     "vendor_search": "بحث المجهزين",
     "sum_of_commissions": "مجموع العمولات",
     "hide_customer_profit": "اخفاء ارباح الزبون",
-    "hide_totals_row": "اخفاء مجاميع الاعمدة"
+    "hide_totals_row": "اخفاء مجاميع الاعمدة",
+    "hide_amount_as_text": "اخفاء حقل كتابة المبلغ",
+    "hide_product_profit": "اخفاء ارباح المادة",
+    "hide_salesman_profit": "اخفاء ارباح المندوب ",
+    "show_barcode_when_printing": "اظهار الباركود عند الطباعة",
+    "max_debt_duration_allowed": " اقصى مدة مسموحة للتسديد ",
+    "max_debt_amount_allowed": "اقصى مبلغ دين مسموح",
+    "num_printed_invoices": "عدد نسخ القوائم المطبوعة ",
+    "num_printed_receipts": "عدد نسخ الوصولات المطبوعة ",
+    "company_url": "صفحة الشركة ",
+    "main_page_greeting": "التحية في الواجهة الرئيسية",
+    "hide_product_buying_price": "اخفاء سعر شراء المادة"
 }

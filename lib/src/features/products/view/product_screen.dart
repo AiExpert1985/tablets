@@ -15,8 +15,9 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
-import 'package:tablets/src/common/values/settings.dart';
 import 'package:tablets/src/features/products/model/product.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/view/settings_keys.dart';
 
 class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});
@@ -90,6 +91,11 @@ class ListHeaders extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final screenDataNotifier = ref.read(productScreenDataNotifier.notifier);
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideProductBuyingPrice = settingsController.getProperty(hideProductBuyingPriceKey);
+    final hideProductProfit = settingsController.getProperty(hideProductProfitKey);
+    final hideMainScreenColumnTotals =
+        settingsController.getProperty(hideMainScreenColumnTotalsKey);
     return Column(
       children: [
         Row(
@@ -115,8 +121,9 @@ class ListHeaders extends ConsumerWidget {
                 screenDataNotifier, productQuantityKey, S.of(context).product_stock_quantity),
             SortableMainScreenHeaderCell(
                 screenDataNotifier, productTotalStockPriceKey, S.of(context).product_stock_amount),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, productProfitKey, S.of(context).product_profits),
+            if (!hideProductProfit)
+              SortableMainScreenHeaderCell(
+                  screenDataNotifier, productProfitKey, S.of(context).product_profits),
           ],
         ),
         VerticalGap.m,
@@ -135,6 +142,9 @@ class HeaderTotalsRow extends ConsumerWidget {
     final screenDataNotifier = ref.read(productScreenDataNotifier.notifier);
     final summary = screenDataNotifier.summary;
     final totalStockPrice = summary[productTotalStockPriceKey]?['value'] ?? '';
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideProductBuyingPrice = settingsController.getProperty(hideProductBuyingPriceKey);
+    final hideProductProfit = settingsController.getProperty(hideProductProfitKey);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -144,12 +154,12 @@ class HeaderTotalsRow extends ConsumerWidget {
         const MainScreenPlaceholder(),
         const MainScreenPlaceholder(),
         const MainScreenPlaceholder(),
-        const MainScreenPlaceholder(),
+        if (!hideProductBuyingPrice) const MainScreenPlaceholder(),
         const MainScreenPlaceholder(),
         const MainScreenPlaceholder(),
         const MainScreenPlaceholder(),
         MainScreenHeaderCell(totalStockPrice, isColumnTotal: true),
-        const MainScreenPlaceholder(),
+        if (!hideProductProfit) const MainScreenPlaceholder(),
       ],
     );
   }
@@ -162,6 +172,9 @@ class DataRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsController = ref.read(settingsFormDataProvider.notifier);
+    final hideProductBuyingPrice = settingsController.getProperty(hideProductBuyingPriceKey);
+    final hideProductProfit = settingsController.getProperty(hideProductProfitKey);
     final reportController = ref.read(productReportControllerProvider);
     final productRef = productScreenData[productDbRefKey];
     final productDbCache = ref.read(productDbCacheProvider.notifier);
@@ -185,10 +198,11 @@ class DataRow extends ConsumerWidget {
               () => reportController.showHistoryReport(
                   context, productScreenData[productQuantityDetailsKey], product.name)),
           MainScreenTextCell(productScreenData[productTotalStockPriceKey]),
-          MainScreenClickableCell(
-              (productScreenData[productProfitKey]),
-              () => reportController.showProfitReport(
-                  context, productScreenData[productProfitDetailsKey], product.name)),
+          if (!hideProductProfit)
+            MainScreenClickableCell(
+                (productScreenData[productProfitKey]),
+                () => reportController.showProfitReport(
+                    context, productScreenData[productProfitDetailsKey], product.name)),
         ],
       ),
     );
