@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
@@ -12,15 +14,15 @@ import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
 class TransactionShowForm {
   static void showForm(
-    BuildContext context,
-    ImageSliderNotifier imagePickerNotifier,
-    ItemFormData formDataNotifier,
-    ItemFormData settingsDataNotifier,
-    TextControllerNotifier textEditingNotifier,
-    StateController<Color> backgroundColorNofifier, {
-    String? formType,
-    Transaction? transaction,
-  }) {
+      BuildContext context,
+      ImageSliderNotifier imagePickerNotifier,
+      ItemFormData formDataNotifier,
+      ItemFormData settingsDataNotifier,
+      TextControllerNotifier textEditingNotifier,
+      StateController<Color> backgroundColorNofifier,
+      {String? formType,
+      Transaction? transaction,
+      DbCache? transactionDbCache}) {
     if (formType == null && transaction?.transactionType == null) {
       errorPrint(
           'both formType and transaction can not be null, one of them is needed for transactionType');
@@ -28,8 +30,14 @@ class TransactionShowForm {
     }
     String transactionType = formType ?? transaction?.transactionType as String;
     imagePickerNotifier.initialize();
-    initializeFormData(context, formDataNotifier, settingsDataNotifier, transactionType,
-        transaction: transaction);
+    initializeFormData(
+      context,
+      formDataNotifier,
+      settingsDataNotifier,
+      transactionType,
+      transaction: transaction,
+      transactionDbCache: transactionDbCache,
+    );
     initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
     bool isEditMode = transaction != null;
 
@@ -44,11 +52,16 @@ class TransactionShowForm {
 
   static void initializeFormData(BuildContext context, ItemFormData formDataNotifier,
       ItemFormData settingsDataNotifier, String transactionType,
-      {Transaction? transaction}) {
+      {Transaction? transaction, DbCache? transactionDbCache}) {
     formDataNotifier.initialize(initialData: transaction?.toMap());
     if (transaction != null) return; // if we are in edit, we don't need further initialization
-    String paymentType = settingsDataNotifier.getProperty(settingsPaymentTypeKey);
-    String currenctyType = settingsDataNotifier.getProperty(settingsCurrencyKey);
+    String paymentType = settingsDataNotifier.getProperty(settingsPaymentTypeKey) ??
+        S.of(context).transaction_payment_credit;
+    String currenctyType = settingsDataNotifier.getProperty(settingsCurrencyKey) ??
+        S.of(context).transaction_payment_Dinar;
+    final transactionsData = transactionDbCache?.data;
+    int? transactionNumber =
+        getHighestTransactionNumber(context, transactionsData!, transactionType);
     formDataNotifier.updateProperties({
       currencyKey: translateDbTextToScreenText(context, currenctyType),
       paymentTypeKey: translateDbTextToScreenText(context, paymentType),
@@ -62,7 +75,7 @@ class TransactionShowForm {
       itemSalesmanTotalCommissionKey: 0,
       nameKey: null,
       salesmanKey: null,
-      numberKey: null,
+      numberKey: transactionNumber,
       totalAsTextKey: null,
       notesKey: "",
     });
@@ -94,5 +107,23 @@ class TransactionShowForm {
       textEditingNotifier
           .updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
     }
+  }
+
+  // for every different transaction, we calculate the next number which is the last reached +1
+  static int? getHighestTransactionNumber(
+      BuildContext context, List<Map<String, dynamic>> transactions, String type) {
+    if (transactions.isEmpty) return 1;
+    type = translateDbTextToScreenText(context, type);
+    // Step 1: Filter the list for the given transaction type
+    final filteredTransactions =
+        transactions.where((transaction) => transaction[transactionTypeKey] == type);
+    // Step 2: Extract the transaction numbers and convert them to integers
+    final transactionNumbers =
+        filteredTransactions.map((transaction) => transaction[numberKey] as int?);
+    // Step 3: Find the maximum transaction number
+    int maxNumber = transactionNumbers
+            .reduce((a, b) => (a != null && b != null) ? (a > b ? a : b) : (a ?? b)) ??
+        0;
+    return maxNumber + 1;
   }
 }

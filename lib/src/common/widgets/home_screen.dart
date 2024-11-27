@@ -36,16 +36,19 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
     final settingDataNotifier = ref.read(settingsFormDataProvider.notifier);
     if (settingDataNotifier.data.isNotEmpty) {
       greeting = settingDataNotifier.getProperty(mainPageGreetingTextKey) ?? greeting;
+      setState(() {
+        customizableGreeting = greeting;
+      });
     } else {
       final repository = ref.read(settingsRepositoryProvider);
       final allSettings = await repository.fetchItemListAsMaps();
       if (context.mounted) {
         greeting = allSettings[0][mainPageGreetingTextKey] ?? greeting;
+        setState(() {
+          customizableGreeting = greeting;
+        });
       }
     }
-    setState(() {
-      customizableGreeting = greeting;
-    });
   }
 
   @override

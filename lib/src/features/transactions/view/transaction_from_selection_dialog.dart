@@ -5,6 +5,7 @@ import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
@@ -123,6 +124,7 @@ class TransactionTypeSelection extends ConsumerWidget {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
 
     return AlertDialog(
       alignment: Alignment.center,
@@ -150,6 +152,7 @@ class TransactionTypeSelection extends ConsumerWidget {
                     textEditingNotifier,
                     backgroundColorNofifier,
                     formType: formTypes[index], // Use the corresponding form type
+                    transactionDbCache: transactionDbCache,
                   );
                 }
               },
