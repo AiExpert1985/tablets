@@ -59,13 +59,13 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
           SizedBox(
             // margin: const EdgeInsets.all(10),
             width: double.infinity,
-            height: 200, // here I used width intentionally
+            height: 300, // here I used width intentionally
             child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
           ),
           VerticalGap.xl,
           Text(
             customizableGreeting,
-            style: const TextStyle(fontSize: 20),
+            style: const TextStyle(fontSize: 24),
           ),
           VerticalGap.xxl,
         ],
@@ -86,7 +86,7 @@ class PageLoading extends ConsumerWidget {
           SizedBox(
             // margin: const EdgeInsets.all(10),
             width: double.infinity,
-            height: 200, // here I used width intentionally
+            height: 300, // here I used width intentionally
             child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
           ),
           VerticalGap.l,
