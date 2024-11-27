@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_drawer.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 
 class AppScreenFrame extends ConsumerWidget {
   const AppScreenFrame(this.listWidget, {this.buttonsWidget, super.key});
@@ -55,12 +57,19 @@ class MainScreenBody extends ConsumerWidget {
   const MainScreenBody(this.listWidget, this.buttonsWidget, {super.key});
   final Widget listWidget;
   final Widget? buttonsWidget;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final settingsData = settingsDataNotifier.data;
     return Stack(
       children: [
         listWidget,
-        if (buttonsWidget != null)
+        // if settings data is empty it means user has refresh the web page &
+        // didn't reach the page through pressing the page button
+        // in this case he didn't load required dbCaches so, I should hide buttons because
+        // using them might cause bugs in the program
+        if (buttonsWidget != null && settingsData.isNotEmpty)
           Positioned(
             bottom: 0,
             left: 0,
