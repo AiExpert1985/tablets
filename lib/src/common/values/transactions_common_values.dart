@@ -15,6 +15,7 @@ const String totalAmountKey = 'totalAmount';
 const String itemNameKey = 'name';
 const String itemDbRefKey = 'dbRef';
 const String itemWeightKey = 'weight';
+const String itemStockQuantityKey = 'itemStockQuantity';
 const String itemSellingPriceKey = 'sellingPrice';
 const String itemBuyingPriceKey = 'buyingPrice';
 const String itemSalesmanCommissionKey = 'salesmanCommission'; // commision on one item

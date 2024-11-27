@@ -228,5 +228,6 @@
     "settings_main_page_greeting": "main Page Greeting Text",
     "hide_product_buying_price": "hide product buying price",
     "settings_currency": "Used currency",
-    "home_page": "Home page"
+    "home_page": "Home page",
+    "stock": "Stock"
 }

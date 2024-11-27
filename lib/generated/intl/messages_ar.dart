@@ -290,6 +290,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
         "slogan":
             MessageLookupByLibrary.simpleMessage("الواح  ...  حساباتك اسهل"),
+        "stock": MessageLookupByLibrary.simpleMessage("المخزون"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
         "sum_of_commissions":
             MessageLookupByLibrary.simpleMessage("مجموع العمولات"),

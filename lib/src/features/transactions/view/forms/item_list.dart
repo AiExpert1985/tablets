@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
+import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_utils_controller.dart';
@@ -34,6 +38,8 @@ class ItemsList extends ConsumerWidget {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final productRepository = ref.read(productRepositoryProvider);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final productDbCache = ref.read(productDbCacheProvider.notifier);
+    final productScreenController = ref.read(productScreenControllerProvider);
     return Container(
       height: 350,
       decoration: BoxDecoration(
@@ -47,7 +53,7 @@ class ItemsList extends ConsumerWidget {
             _buildColumnTitles(
                 context, formDataNotifier, textEditingNotifier, hideGifts, hidePrice),
             ..._buildDataRows(formDataNotifier, textEditingNotifier, productRepository, hideGifts,
-                hidePrice, transactionType),
+                hidePrice, transactionType, productDbCache, productScreenController, context),
           ],
         ),
       ),
@@ -56,12 +62,16 @@ class ItemsList extends ConsumerWidget {
 }
 
 List<Widget> _buildDataRows(
-    ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingNotifier,
-    DbRepository productRepository,
-    bool hideGifts,
-    bool hidePrice,
-    String transactionType) {
+  ItemFormData formDataNotifier,
+  TextControllerNotifier textEditingNotifier,
+  DbRepository productRepository,
+  bool hideGifts,
+  bool hidePrice,
+  String transactionType,
+  DbCache productDbCache,
+  ProductScreenController productScreenController,
+  BuildContext context,
+) {
   if (!formDataNotifier.data.containsKey(itemsKey) || formDataNotifier.data[itemsKey] is! List) {
     return const [];
   }
@@ -80,8 +90,15 @@ List<Widget> _buildDataRows(
           _buildDeleteItemButton(
               formDataNotifier, textEditingNotifier, index, sequenceColumnWidth, transactionType,
               isFirst: true),
-          _buildDropDownWithSearch(
-              formDataNotifier, textEditingNotifier, productRepository, index, nameColumnWidth),
+          _buildDropDownWithSearch(formDataNotifier, textEditingNotifier, productRepository, index,
+              nameColumnWidth, productDbCache, productScreenController, context),
+          buildDataCell(
+            soldQuantityColumnWidth,
+            Text(formDataNotifier
+                    .getSubProperty(itemsKey, index, itemStockQuantityKey)
+                    ?.toString() ??
+                ''),
+          ),
           if (!hidePrice)
             TransactionFormInputField(
                 index, priceColumnWidth, itemsKey, itemSellingPriceKey, transactionType),
@@ -170,6 +187,7 @@ Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
   final titles = [
     _buildAddItemButton(formDataNotifier, textEditingNotifier),
     Text(S.of(context).item_name),
+    Text(S.of(context).stock),
     if (!hidePrice) Text(S.of(context).item_price),
     Text(S.of(context).item_sold_quantity),
     if (!hideGifts) Text(S.of(context).item_gifts_quantity),
@@ -179,6 +197,7 @@ Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
   final widths = [
     sequenceColumnWidth,
     nameColumnWidth,
+    soldQuantityColumnWidth,
     if (!hidePrice) priceColumnWidth,
     soldQuantityColumnWidth,
     if (!hideGifts) giftQuantityColumnWidth,
@@ -224,8 +243,16 @@ dynamic _getTotal(ItemFormData formDataNotifier, String property, String subProp
   return total;
 }
 
-Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingNotifier, dynamic repository, int index, double width) {
+Widget _buildDropDownWithSearch(
+  ItemFormData formDataNotifier,
+  TextControllerNotifier textEditingNotifier,
+  dynamic repository,
+  int index,
+  double width,
+  DbCache productDbCache,
+  ProductScreenController productScreenController,
+  BuildContext context,
+) {
   return buildDataCell(
     width,
     DropDownWithSearchFormField(
@@ -234,6 +261,10 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
       dbRepository: repository,
       isRequired: false,
       onChangedFn: (item) {
+        // calculate the quantity of the product
+        final productData = productDbCache.getItemByDbRef(item['dbRef']);
+        final prodcutScreenData = productScreenController.getItemScreenData(context, productData);
+        final productQuantity = prodcutScreenData[productQuantityKey];
         // updates related fields using the item selected (of type Map<String, dynamic>)
         // and triger the on changed function in price field using its controller
         final subProperties = {
@@ -243,6 +274,7 @@ Widget _buildDropDownWithSearch(ItemFormData formDataNotifier,
           itemWeightKey: item['packageWeight'],
           itemBuyingPriceKey: item['buyingPrice'],
           itemSalesmanCommissionKey: item['salesmanCommission'],
+          itemStockQuantityKey: productQuantity,
         };
         formDataNotifier.updateSubProperties(itemsKey, subProperties, index: index);
         final price = formDataNotifier.getSubProperty(itemsKey, index, itemSellingPriceKey);

@@ -228,5 +228,6 @@
     "settings_main_page_greeting": "تحية البرنامج",
     "hide_product_buying_price": "اخفاء سعر شراء المادة",
     "settings_currency": "العملة المستخدمة",
-    "home_page": "الرئيسية"
+    "home_page": "الرئيسية",
+    "stock": "المخزون"
 }
