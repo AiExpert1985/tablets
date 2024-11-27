@@ -10,8 +10,11 @@ class Settings implements BaseItem {
   String dbRef;
   @override
   String name;
+
+  // uploading
   @override
   List<String> imageUrls;
+
   // switches
   bool hideTransactionAmountAsText;
   bool hideProductBuyingPrice;
@@ -19,21 +22,21 @@ class Settings implements BaseItem {
   bool hideCustomerProfit;
   bool hideProductProfit;
   bool hideSalesmanProfit;
-  bool showCompanyUrlBarCode;
+  bool hideCompanyUrlBarCode;
 
-// Sliders
+  // Sliders
+  int printedCustomerInvoices;
+  int printedCustomerReceipts;
   int maxDebtDuration;
-  int printedCsutomerInvoices;
-  int printedCsutomerReceipts;
 
-  double maxDebtAmount;
-
-  String companyUrl;
-  String mainPageGreetingText;
-
-// Radio buttons
+  // Radio buttons
   String paymentType;
   String currency;
+
+  // text box
+  double maxDebtAmount;
+  String companyUrl;
+  String mainPageGreetingText;
 
   Settings({
     required this.dbRef,
@@ -45,10 +48,10 @@ class Settings implements BaseItem {
     required this.hideCustomerProfit,
     required this.hideProductProfit,
     required this.hideSalesmanProfit,
-    required this.showCompanyUrlBarCode,
+    required this.hideCompanyUrlBarCode,
     required this.maxDebtDuration,
-    required this.printedCsutomerInvoices,
-    required this.printedCsutomerReceipts,
+    required this.printedCustomerInvoices,
+    required this.printedCustomerReceipts,
     required this.maxDebtAmount,
     required this.companyUrl,
     required this.mainPageGreetingText,
@@ -72,10 +75,10 @@ class Settings implements BaseItem {
       'hideCustomerProfit': hideCustomerProfit,
       'hideProductProfit': hideProductProfit,
       'hideSalesmanProfit': hideSalesmanProfit,
-      'showCompanyUrlBarCode': showCompanyUrlBarCode,
+      'hideCompanyUrlBarCode': hideCompanyUrlBarCode,
       'maxDebtDuration': maxDebtDuration,
-      'printedCsutomerInvoices': printedCsutomerInvoices,
-      'printedCsutomerReceipts': printedCsutomerReceipts,
+      'printedCustomerInvoices': printedCustomerInvoices,
+      'printedCustomerReceipts': printedCustomerReceipts,
       'maxDebtAmount': maxDebtAmount,
       'companyUrl': companyUrl,
       'mainPageGreetingText': mainPageGreetingText,
@@ -95,10 +98,10 @@ class Settings implements BaseItem {
       hideCustomerProfit: map['hideCustomerProfit'] ?? false,
       hideProductProfit: map['hideProductProfit'] ?? false,
       hideSalesmanProfit: map['hideSalesmanProfit'] ?? false,
-      showCompanyUrlBarCode: map['showCompanyUrlBarCode'] ?? false,
+      hideCompanyUrlBarCode: map['hideCompanyUrlBarCode'] ?? false,
       maxDebtDuration: map['maxDebtDuration']?.toInt() ?? 21,
-      printedCsutomerInvoices: map['printedCsutomerInvoices']?.toInt() ?? 1,
-      printedCsutomerReceipts: map['printedCsutomerReceipts']?.toInt() ?? 1,
+      printedCustomerInvoices: map['printedCustomerInvoices']?.toInt() ?? 1,
+      printedCustomerReceipts: map['printedCustomerReceipts']?.toInt() ?? 1,
       maxDebtAmount: map['maxDebtAmount']?.toDouble() ?? 1000000,
       companyUrl: map['companyUrl'] ?? '',
       mainPageGreetingText: map['mainPageGreetingText'] ?? '',

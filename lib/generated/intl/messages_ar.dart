@@ -172,7 +172,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "max_debt_amount_allowed":
             MessageLookupByLibrary.simpleMessage("اقصى مبلغ دين مسموح"),
         "max_debt_duration_allowed":
-            MessageLookupByLibrary.simpleMessage(" اقصى مدة مسموحة للتسديد "),
+            MessageLookupByLibrary.simpleMessage(" اقصى مدة للتسديد "),
         "monthly_profit":
             MessageLookupByLibrary.simpleMessage("الارباح الشهرية"),
         "monthly_profit_report":
@@ -184,6 +184,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("القوائم المتجاوزة"),
         "num_open_invoice":
             MessageLookupByLibrary.simpleMessage("القوائم المفتوحة"),
+        "num_printed_invoices":
+            MessageLookupByLibrary.simpleMessage("عدد القوائم المطبوعة "),
+        "num_printed_receipts":
+            MessageLookupByLibrary.simpleMessage("عدد الوصولات المطبوعة "),
         "number": MessageLookupByLibrary.simpleMessage("الرقم"),
         "open_invoices":
             MessageLookupByLibrary.simpleMessage("القوائم المفتوحة"),
@@ -276,9 +280,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "selling_price_type_whole":
             MessageLookupByLibrary.simpleMessage("جملة"),
         "settings": MessageLookupByLibrary.simpleMessage("الاعدادات"),
+        "settings_currency":
+            MessageLookupByLibrary.simpleMessage("العملة المستخدمة"),
         "share": MessageLookupByLibrary.simpleMessage("ارسال"),
         "show_barcode_when_printing":
-            MessageLookupByLibrary.simpleMessage("اظهار الباركود عند الطباعة"),
+            MessageLookupByLibrary.simpleMessage("اخفاء الباركود عند الطباعة"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
         "slogan":
             MessageLookupByLibrary.simpleMessage("الواح ... حيث بدأت المحاسبة"),

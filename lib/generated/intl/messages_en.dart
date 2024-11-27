@@ -189,9 +189,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Due invoices"),
         "num_open_invoice":
             MessageLookupByLibrary.simpleMessage("Num of open invoices"),
-        "num_printed_customer_invoices":
+        "num_printed_invoices":
             MessageLookupByLibrary.simpleMessage("printed Customer Invoices "),
-        "num_printed_customer_receipts":
+        "num_printed_receipts":
             MessageLookupByLibrary.simpleMessage("printed Customer Receipts "),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
         "open_invoices": MessageLookupByLibrary.simpleMessage("Open invoices"),
@@ -291,6 +291,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "selling_price_type_whole":
             MessageLookupByLibrary.simpleMessage("Wholesale"),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "settings_currency":
+            MessageLookupByLibrary.simpleMessage("Used currency"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
         "show_barcode_when_printing":
             MessageLookupByLibrary.simpleMessage("show Company Url Bar Code"),

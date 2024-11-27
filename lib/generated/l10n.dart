@@ -2281,20 +2281,20 @@ class S {
   }
 
   /// `printed Customer Invoices `
-  String get num_printed_customer_invoices {
+  String get num_printed_invoices {
     return Intl.message(
       'printed Customer Invoices ',
-      name: 'num_printed_customer_invoices',
+      name: 'num_printed_invoices',
       desc: '',
       args: [],
     );
   }
 
   /// `printed Customer Receipts `
-  String get num_printed_customer_receipts {
+  String get num_printed_receipts {
     return Intl.message(
       'printed Customer Receipts ',
-      name: 'num_printed_customer_receipts',
+      name: 'num_printed_receipts',
       desc: '',
       args: [],
     );
@@ -2325,6 +2325,16 @@ class S {
     return Intl.message(
       'hide product buying price',
       name: 'hide_product_buying_price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Used currency`
+  String get settings_currency {
+    return Intl.message(
+      'Used currency',
+      name: 'settings_currency',
       desc: '',
       args: [],
     );

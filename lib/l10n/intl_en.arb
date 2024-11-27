@@ -222,9 +222,10 @@
     "show_barcode_when_printing": "show Company Url Bar Code",
     "max_debt_duration_allowed": "max Debt Duration ",
     "max_debt_amount_allowed": "max Debt Amount ",
-    "num_printed_customer_invoices": "printed Customer Invoices ",
-    "num_printed_customer_receipts": "printed Customer Receipts ",
+    "num_printed_invoices": "printed Customer Invoices ",
+    "num_printed_receipts": "printed Customer Receipts ",
     "company_url": "company Url ",
     "main_page_greeting": "main Page Greeting Text",
-    "hide_product_buying_price": "hide product buying price"
+    "hide_product_buying_price": "hide product buying price",
+    "settings_currency": "Used currency"
 }

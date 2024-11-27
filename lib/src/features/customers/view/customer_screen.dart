@@ -257,10 +257,9 @@ class CustomerFloatingButtons extends ConsumerWidget {
   const CustomerFloatingButtons({super.key});
 
   void showAddCustomerForm(BuildContext context, WidgetRef ref) {
-    final settingsController = ref.read(settingsFormDataProvider.notifier);
-    //TODO
-    final maxDebtAmount = settingsController.getProperty(settingsMaxDebtAmountKey) ?? 1000000;
-    final maxDebtDuration = settingsController.getProperty(settingsMaxDebtDurationKey) ?? 21;
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final maxDebtAmount = settingsDataNotifier.getProperty(settingsMaxDebtAmountKey) ?? 1000000;
+    final maxDebtDuration = settingsDataNotifier.getProperty(settingsMaxDebtDurationKey);
     final formDataNotifier = ref.read(customerFormDataProvider.notifier);
     formDataNotifier.initialize();
     formDataNotifier.updateProperties({

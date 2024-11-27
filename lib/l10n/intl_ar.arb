@@ -219,12 +219,13 @@
     "hide_amount_as_text": "اخفاء حقل كتابة المبلغ",
     "hide_product_profit": "اخفاء ارباح المادة",
     "hide_salesman_profit": "اخفاء ارباح المندوب ",
-    "show_barcode_when_printing": "اظهار الباركود عند الطباعة",
-    "max_debt_duration_allowed": " اقصى مدة مسموحة للتسديد ",
+    "show_barcode_when_printing": "اخفاء الباركود عند الطباعة",
+    "max_debt_duration_allowed": " اقصى مدة للتسديد ",
     "max_debt_amount_allowed": "اقصى مبلغ دين مسموح",
-    "num_printed_invoices": "عدد نسخ القوائم المطبوعة ",
-    "num_printed_receipts": "عدد نسخ الوصولات المطبوعة ",
+    "num_printed_invoices": "عدد القوائم المطبوعة ",
+    "num_printed_receipts": "عدد الوصولات المطبوعة ",
     "company_url": "صفحة الشركة ",
     "main_page_greeting": "التحية في الواجهة الرئيسية",
-    "hide_product_buying_price": "اخفاء سعر شراء المادة"
+    "hide_product_buying_price": "اخفاء سعر شراء المادة",
+    "settings_currency": "العملة المستخدمة"
 }
