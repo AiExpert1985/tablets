@@ -29,10 +29,19 @@ class TransactionsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(transactionDbCacheProvider);
-    return const AppScreenFrame(
-      TransactionsList(),
-      buttonsWidget: TransactionsFloatingButtons(),
-    );
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final settingsData = settingsDataNotifier.data;
+    // if settings data is empty it means user has refresh the web page &
+    // didn't reach the page through pressing the page button
+    // in this case he didn't load required dbCaches so, I should hide buttons because
+    // using them might cause bugs in the program
+    Widget screenWidget = settingsData.isEmpty
+        ? const HomeScreen()
+        : const AppScreenFrame(
+            TransactionsList(),
+            buttonsWidget: TransactionsFloatingButtons(),
+          );
+    return screenWidget;
   }
 }
 

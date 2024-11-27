@@ -182,6 +182,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Monthly profit report"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "no": MessageLookupByLibrary.simpleMessage("No"),
+        "no_data_available":
+            MessageLookupByLibrary.simpleMessage("No data available"),
         "notes": MessageLookupByLibrary.simpleMessage("Notes"),
         "num_due_invoices":
             MessageLookupByLibrary.simpleMessage("Due invoices"),

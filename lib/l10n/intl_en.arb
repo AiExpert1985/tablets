@@ -229,5 +229,6 @@
     "hide_product_buying_price": "hide product buying price",
     "settings_currency": "Used currency",
     "home_page": "Home page",
-    "stock": "Stock"
+    "stock": "Stock",
+    "no_data_available": "No data available"
 }

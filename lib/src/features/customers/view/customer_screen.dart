@@ -23,11 +23,20 @@ class CustomerScreen extends ConsumerWidget {
   const CustomerScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final settingsData = settingsDataNotifier.data;
     ref.watch(customerDbCacheProvider);
-    return const AppScreenFrame(
-      CustomerList(),
-      buttonsWidget: CustomerFloatingButtons(),
-    );
+    // if settings data is empty it means user has refresh the web page &
+    // didn't reach the page through pressing the page button
+    // in this case he didn't load required dbCaches so, I should hide buttons because
+    // using them might cause bugs in the program
+    Widget screenWidget = settingsData.isEmpty
+        ? const HomeScreen()
+        : const AppScreenFrame(
+            CustomerList(),
+            buttonsWidget: CustomerFloatingButtons(),
+          );
+    return screenWidget;
   }
 }
 
@@ -55,7 +64,7 @@ class CustomerList extends ConsumerWidget {
               ],
             ),
           )
-        : const HomeScreenGreeting();
+        : const EmptyPage();
     return screenWidget;
   }
 }

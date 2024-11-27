@@ -8,7 +8,7 @@ class PendingTransactions extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return const AppScreenFrame(
-      Text('Pending Bills'),
+      Text(''),
     );
   }
 }

@@ -177,6 +177,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("تقرير الارباح الشهرية"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "no": MessageLookupByLibrary.simpleMessage("لا"),
+        "no_data_available":
+            MessageLookupByLibrary.simpleMessage("لا يوجد بيانات"),
         "notes": MessageLookupByLibrary.simpleMessage("الملاحظات"),
         "num_due_invoices":
             MessageLookupByLibrary.simpleMessage("القوائم المتجاوزة"),

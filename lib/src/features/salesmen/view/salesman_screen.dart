@@ -25,10 +25,19 @@ class SalesmanScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(salesmanDbCacheProvider);
-    return const AppScreenFrame(
-      SalesmanList(),
-      buttonsWidget: SalesmanFloatingButtons(),
-    );
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final settingsData = settingsDataNotifier.data;
+    // if settings data is empty it means user has refresh the web page &
+    // didn't reach the page through pressing the page button
+    // in this case he didn't load required dbCaches so, I should hide buttons because
+    // using them might cause bugs in the program
+    Widget screenWidget = settingsData.isEmpty
+        ? const HomeScreen()
+        : const AppScreenFrame(
+            SalesmanList(),
+            buttonsWidget: SalesmanFloatingButtons(),
+          );
+    return screenWidget;
   }
 }
 

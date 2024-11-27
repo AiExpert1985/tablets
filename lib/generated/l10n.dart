@@ -2359,6 +2359,16 @@ class S {
       args: [],
     );
   }
+
+  /// `No data available`
+  String get no_data_available {
+    return Intl.message(
+      'No data available',
+      name: 'no_data_available',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
