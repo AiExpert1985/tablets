@@ -288,8 +288,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "show_barcode_when_printing":
             MessageLookupByLibrary.simpleMessage("اخفاء الباركود عند الطباعة"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
-        "slogan": MessageLookupByLibrary.simpleMessage(
-            "الواح  ...  حيث بدأت المحاسبة"),
+        "slogan":
+            MessageLookupByLibrary.simpleMessage("الواح  ...  حساباتك اسهل"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
         "sum_of_commissions":
             MessageLookupByLibrary.simpleMessage("مجموع العمولات"),
