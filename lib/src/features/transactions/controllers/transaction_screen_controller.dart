@@ -31,7 +31,7 @@ class TransactionScreenController implements ScreenDataController {
 
   @override
   void setFeatureScreenData(BuildContext context) {
-    final dbCache = _transactionsDbCache.data;
+    final dbCache = [..._transactionsDbCache.data];
     _screenDataNotifier.initialize({});
     for (var mapData in dbCache) {
       mapData[transactionTypeKey] =

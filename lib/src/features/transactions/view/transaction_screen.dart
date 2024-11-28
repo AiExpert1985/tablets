@@ -28,7 +28,7 @@ class TransactionsScreen extends ConsumerWidget {
   const TransactionsScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(transactionDbCacheProvider);
+    ref.watch(transactionScreenDataNotifier);
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final settingsData = settingsDataNotifier.data;
     // if settings data is empty it means user has refresh the web page &
@@ -50,12 +50,12 @@ class TransactionsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(transactionScreenDataNotifier);
+    ref.watch(pageIsLoadingNotifier);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     final dbData = dbCache.data;
     sortMapsByProperty(dbData, 'date');
-    ref.watch(transactionScreenDataNotifier);
     final pageIsLoading = ref.read(pageIsLoadingNotifier);
-    ref.watch(pageIsLoadingNotifier);
     if (pageIsLoading) {
       return const PageLoading();
     }

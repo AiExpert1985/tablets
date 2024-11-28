@@ -23,7 +23,7 @@ class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(productDbCacheProvider);
+    ref.watch(productScreenDataNotifier);
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final settingsData = settingsDataNotifier.data;
     // if settings data is empty it means user has refresh the web page &
@@ -45,11 +45,11 @@ class ProductsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(productScreenDataNotifier);
+    ref.watch(pageIsLoadingNotifier);
     final dbCache = ref.read(productDbCacheProvider.notifier);
     final dbData = dbCache.data;
-    ref.watch(productScreenDataNotifier);
     final pageIsLoading = ref.read(pageIsLoadingNotifier);
-    ref.watch(pageIsLoadingNotifier);
     if (pageIsLoading) {
       return const PageLoading();
     }

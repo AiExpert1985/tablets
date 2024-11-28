@@ -24,7 +24,7 @@ class VendorScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(vendorDbCacheProvider);
+    ref.watch(vendorScreenDataNotifier);
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final settingsData = settingsDataNotifier.data;
     // if settings data is empty it means user has refresh the web page &
@@ -46,11 +46,11 @@ class VendorList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(vendorScreenDataNotifier);
+    ref.watch(pageIsLoadingNotifier);
     final dbCache = ref.read(vendorDbCacheProvider.notifier);
     final dbData = dbCache.data;
-    ref.watch(vendorScreenDataNotifier);
     final pageIsLoading = ref.read(pageIsLoadingNotifier);
-    ref.watch(pageIsLoadingNotifier);
     if (pageIsLoading) {
       return const PageLoading();
     }

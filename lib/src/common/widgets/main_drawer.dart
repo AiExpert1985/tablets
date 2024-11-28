@@ -83,10 +83,12 @@ class CustomersButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('customers', S.of(context).customers, () async {
-      initializeSettings(ref);
+      await initializeSettings(ref);
       pageLoadingNotifier.state = true;
-      //  we need related transactionDbCache, we make sure it is inialized
-      await initializeTransactionDbCache(context, ref);
+      if (context.mounted) {
+        //  we need related transactionDbCache, we make sure it is inialized
+        await initializeTransactionDbCache(context, ref);
+      }
       if (context.mounted) {
         await initializeCustomerDbCache(context, ref);
       }
@@ -118,11 +120,17 @@ class PendingsButton extends ConsumerWidget {
     return MainDrawerButton(
       'pending_transactions',
       S.of(context).pending_transactions,
-      () {
-        initializeSettings(ref);
-        Navigator.of(context).pop();
-        pageTitleNotifier.state = S.of(context).pending_transactions;
-        context.goNamed(AppRoute.pendingTransactions.name);
+      () async {
+        await initializeSettings(ref);
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+        if (context.mounted) {
+          pageTitleNotifier.state = S.of(context).pending_transactions;
+        }
+        if (context.mounted) {
+          context.goNamed(AppRoute.pendingTransactions.name);
+        }
       },
     );
   }
@@ -136,10 +144,14 @@ class SettingsButton extends ConsumerWidget {
     return MainDrawerButton(
       'settings',
       S.of(context).settings,
-      () {
-        initializeSettings(ref);
-        Navigator.of(context).pop();
-        showDialog(context: context, builder: (BuildContext ctx) => const SettingsDialog());
+      () async {
+        await initializeSettings(ref);
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+        if (context.mounted) {
+          showDialog(context: context, builder: (BuildContext ctx) => const SettingsDialog());
+        }
       },
     );
   }
@@ -154,11 +166,13 @@ class SalesmenButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('salesman', S.of(context).salesmen, () async {
-      initializeSettings(ref);
+      await initializeSettings(ref);
       pageLoadingNotifier.state = true;
-      //  we need related transactionDbCache, we make sure it is inialized
-      //  and we need related customerDbCache, we make sure it is inialized
-      await initializeTransactionDbCache(context, ref);
+      if (context.mounted) {
+        //  we need related transactionDbCache, we make sure it is inialized
+        //  and we need related customerDbCache, we make sure it is inialized
+        await initializeTransactionDbCache(context, ref);
+      }
       if (context.mounted) {
         await initializeCustomerDbCache(context, ref);
       }
@@ -189,10 +203,12 @@ class VendorsButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('vendors', S.of(context).vendors, () async {
-      initializeSettings(ref);
+      await initializeSettings(ref);
       pageLoadingNotifier.state = true;
-      //  we need related transactionDbCache, we make sure it is inialized
-      await initializeTransactionDbCache(context, ref);
+      if (context.mounted) {
+        //  we need related transactionDbCache, we make sure it is inialized
+        await initializeTransactionDbCache(context, ref);
+      }
       if (context.mounted) {
         await initializeVendorDbCache(context, ref);
       }
@@ -220,18 +236,19 @@ class TransactionsButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('transactions', S.of(context).transactions, () async {
-      initializeSettings(ref);
       pageLoadingNotifier.state = true;
-      await initializeTransactionDbCache(context, ref);
+      if (context.mounted) {
+        await initializeSettings(ref);
+      }
+      if (context.mounted) {
+        await initializeTransactionDbCache(context, ref);
+      }
       // initialize related dbCaches
       if (context.mounted) {
         await initializeCustomerDbCache(context, ref);
       }
       if (context.mounted) {
         await initializeProductDbCache(context, ref);
-      }
-      if (context.mounted) {
-        transactionScreenController.setFeatureScreenData(context);
       }
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).transactions;
@@ -241,6 +258,9 @@ class TransactionsButton extends ConsumerWidget {
         context.goNamed(AppRoute.transactions.name);
       }
       pageLoadingNotifier.state = false;
+      if (context.mounted) {
+        transactionScreenController.setFeatureScreenData(context);
+      }
     });
   }
 }
@@ -254,10 +274,12 @@ class ProductsButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
     return MainDrawerButton('products', S.of(context).products, () async {
-      initializeSettings(ref);
+      await initializeSettings(ref);
       pageLoadingNotifier.state = true;
-      //  we need related transactionDbCache, we make sure it is inialized
-      await initializeTransactionDbCache(context, ref);
+      if (context.mounted) {
+        //  we need related transactionDbCache, we make sure it is inialized
+        await initializeTransactionDbCache(context, ref);
+      }
       if (context.mounted) {
         await initializeProductDbCache(context, ref);
       }
@@ -429,9 +451,9 @@ class BackupButton extends ConsumerWidget {
     return SizedBox(
       height: 150,
       child: InkWell(
-        onTap: () {
-          final dataBaseMaps = _getDataBaseMaps(context, ref);
+        onTap: () async {
           final dataBaseNames = _getDataBaseNames(context);
+          final dataBaseMaps = await _getDataBaseMaps(context, ref);
           backupDatabase(dataBaseMaps, dataBaseNames);
         },
         child: Card(
@@ -451,12 +473,21 @@ class BackupButton extends ConsumerWidget {
     );
   }
 
-  List<List<Map<String, dynamic>>> _getDataBaseMaps(BuildContext context, WidgetRef ref) {
-    initializeTransactionDbCache(context, ref);
-    initializeCustomerDbCache(context, ref);
-    initializeSalesmanDbCache(context, ref);
-    initializeProductDbCache(context, ref);
-    initializeVendorDbCache(context, ref);
+  Future<List<List<Map<String, dynamic>>>> _getDataBaseMaps(
+      BuildContext context, WidgetRef ref) async {
+    await initializeTransactionDbCache(context, ref);
+    if (context.mounted) {
+      await initializeCustomerDbCache(context, ref);
+    }
+    if (context.mounted) {
+      await initializeSalesmanDbCache(context, ref);
+    }
+    if (context.mounted) {
+      await initializeProductDbCache(context, ref);
+    }
+    if (context.mounted) {
+      await initializeVendorDbCache(context, ref);
+    }
     final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
     final transactionData = formatDateForJson(transactionsDbCache.data, 'date');
     final salesmenDbCache = ref.read(salesmanDbCacheProvider.notifier);
@@ -473,7 +504,7 @@ class BackupButton extends ConsumerWidget {
   }
 }
 
-void initializeSettings(WidgetRef ref) async {
+Future<void> initializeSettings(WidgetRef ref) async {
   final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
   if (settingsDataNotifier.data.isEmpty) {
     final settingRepository = ref.read(settingsRepositoryProvider);

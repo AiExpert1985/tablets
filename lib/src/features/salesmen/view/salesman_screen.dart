@@ -25,6 +25,7 @@ class SalesmanScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(salesmanDbCacheProvider);
+    ref.watch(salesmanScreenDataNotifier);
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final settingsData = settingsDataNotifier.data;
     // if settings data is empty it means user has refresh the web page &
@@ -41,62 +42,16 @@ class SalesmanScreen extends ConsumerWidget {
   }
 }
 
-class SalesmanFloatingButtons extends ConsumerWidget {
-  const SalesmanFloatingButtons({super.key});
-
-  void showAddSalesmanForm(BuildContext context, WidgetRef ref) {
-    ref.read(salesmanFormDataProvider.notifier).initialize();
-    final imagePicker = ref.read(imagePickerProvider.notifier);
-    imagePicker.initialize();
-    showDialog(
-      context: context,
-      builder: (BuildContext ctx) => const SalesmanForm(),
-    ).whenComplete(imagePicker.close);
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final drawerController = ref.watch(salesmanDrawerControllerProvider);
-    const iconsColor = Color.fromARGB(255, 126, 106, 211);
-    return SpeedDial(
-      direction: SpeedDialDirection.up,
-      switchLabelPosition: false,
-      animatedIcon: AnimatedIcons.menu_close,
-      spaceBetweenChildren: 10,
-      animatedIconTheme: const IconThemeData(size: 28.0),
-      visible: true,
-      curve: Curves.bounceInOut,
-      children: [
-        // SpeedDialChild(
-        //   child: const Icon(Icons.pie_chart, color: Colors.white),
-        //   backgroundColor: iconsColor,
-        //   onTap: () => drawerController.showReports(context),
-        // ),
-        SpeedDialChild(
-          child: const Icon(Icons.search, color: Colors.white),
-          backgroundColor: iconsColor,
-          onTap: () => drawerController.showSearchForm(context),
-        ),
-        SpeedDialChild(
-          child: const Icon(Icons.add, color: Colors.white),
-          backgroundColor: iconsColor,
-          onTap: () => showAddSalesmanForm(context, ref),
-        ),
-      ],
-    );
-  }
-}
-
 class SalesmanList extends ConsumerWidget {
   const SalesmanList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(salesmanScreenDataNotifier);
+    ref.watch(pageIsLoadingNotifier);
     final dbCache = ref.read(salesmanDbCacheProvider.notifier);
     final dbData = dbCache.data;
-    ref.watch(salesmanDbCacheProvider);
     final pageIsLoading = ref.read(pageIsLoadingNotifier);
-    ref.watch(pageIsLoadingNotifier);
     if (pageIsLoading) {
       return const PageLoading();
     }
@@ -324,5 +279,51 @@ class DataRow extends ConsumerWidget {
         isEditMode: true,
       ),
     ).whenComplete(imagePicker.close);
+  }
+}
+
+class SalesmanFloatingButtons extends ConsumerWidget {
+  const SalesmanFloatingButtons({super.key});
+
+  void showAddSalesmanForm(BuildContext context, WidgetRef ref) {
+    ref.read(salesmanFormDataProvider.notifier).initialize();
+    final imagePicker = ref.read(imagePickerProvider.notifier);
+    imagePicker.initialize();
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => const SalesmanForm(),
+    ).whenComplete(imagePicker.close);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final drawerController = ref.watch(salesmanDrawerControllerProvider);
+    const iconsColor = Color.fromARGB(255, 126, 106, 211);
+    return SpeedDial(
+      direction: SpeedDialDirection.up,
+      switchLabelPosition: false,
+      animatedIcon: AnimatedIcons.menu_close,
+      spaceBetweenChildren: 10,
+      animatedIconTheme: const IconThemeData(size: 28.0),
+      visible: true,
+      curve: Curves.bounceInOut,
+      children: [
+        // SpeedDialChild(
+        //   child: const Icon(Icons.pie_chart, color: Colors.white),
+        //   backgroundColor: iconsColor,
+        //   onTap: () => drawerController.showReports(context),
+        // ),
+        SpeedDialChild(
+          child: const Icon(Icons.search, color: Colors.white),
+          backgroundColor: iconsColor,
+          onTap: () => drawerController.showSearchForm(context),
+        ),
+        SpeedDialChild(
+          child: const Icon(Icons.add, color: Colors.white),
+          backgroundColor: iconsColor,
+          onTap: () => showAddSalesmanForm(context, ref),
+        ),
+      ],
+    );
   }
 }
