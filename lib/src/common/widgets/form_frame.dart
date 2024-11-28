@@ -7,8 +7,8 @@ class FormFrame extends StatelessWidget {
       required this.formKey,
       required this.fields,
       required this.buttons,
-      required this.width,
-      required this.height});
+      this.width = 800,
+      this.height = 800});
   final Color? backgroundColor;
   final Widget fields;
   final List<Widget> buttons;

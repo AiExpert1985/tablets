@@ -52,8 +52,8 @@ class SalesmanForm extends ConsumerWidget {
             icon: const DeleteIcon(),
           ),
       ],
-      width: customerFormWidth,
-      height: customerFormHeight,
+      width: salesmanFormWidth,
+      height: salesmanFormHeight,
     );
   }
 
