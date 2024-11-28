@@ -7,6 +7,7 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
@@ -73,7 +74,10 @@ class TransactionShowForm {
       subTotalAmountKey: 0,
       transactionTotalProfitKey: 0,
       itemSalesmanTotalCommissionKey: 0,
-      nameKey: null,
+      // if transaction is damaged item, then we set name here, because we can't easily do that
+      // inside the form
+      nameKey:
+          transactionType == TransactionType.damagedItems.name ? S.of(context).damagedItems : null,
       salesmanKey: null,
       numberKey: transactionNumber,
       totalAsTextKey: null,
@@ -112,11 +116,11 @@ class TransactionShowForm {
   // for every different transaction, we calculate the next number which is the last reached +1
   static int? getHighestTransactionNumber(
       BuildContext context, List<Map<String, dynamic>> transactions, String type) {
-    if (transactions.isEmpty) return 1;
     type = translateDbTextToScreenText(context, type);
     // Step 1: Filter the list for the given transaction type
     final filteredTransactions =
         transactions.where((transaction) => transaction[transactionTypeKey] == type);
+    if (filteredTransactions.isEmpty) return 1;
     // Step 2: Extract the transaction numbers and convert them to integers
     final transactionNumbers =
         filteredTransactions.map((transaction) => transaction[numberKey] as int?);

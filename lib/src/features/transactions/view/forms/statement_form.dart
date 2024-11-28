@@ -108,7 +108,6 @@ class StatementForm extends ConsumerWidget {
             // so, when user enter transaction number, if the type is damaged items, then the name
             // we be inserted automatically
             formDataNotifier.updateProperties({
-              if (!isGift) nameKey: S.of(context).damagedItems,
               numberKey: value,
             });
           },

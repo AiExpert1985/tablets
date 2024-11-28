@@ -47,7 +47,7 @@ class CustomerFormFields extends ConsumerWidget {
               ),
             ]),
           ),
-          VerticalGap.l,
+          VerticalGap.m,
           Expanded(
             child: Row(
               children: [
@@ -60,7 +60,7 @@ class CustomerFormFields extends ConsumerWidget {
                         .updateProperties({'region': item['name'], 'regionDbRef': item['dbRef']});
                   },
                 ),
-                HorizontalGap.m,
+                HorizontalGap.l,
                 FormInputField(
                   isRequired: false,
                   onChangedFn: (value) {
@@ -74,7 +74,7 @@ class CustomerFormFields extends ConsumerWidget {
               ],
             ),
           ),
-          VerticalGap.l,
+          VerticalGap.m,
           Expanded(
             child: Row(
               children: [
@@ -113,7 +113,7 @@ class CustomerFormFields extends ConsumerWidget {
               ],
             ),
           ),
-          VerticalGap.l,
+          VerticalGap.m,
           Expanded(
             child: Row(
               children: [
@@ -140,7 +140,7 @@ class CustomerFormFields extends ConsumerWidget {
               ],
             ),
           ),
-          VerticalGap.l,
+          VerticalGap.m,
           Expanded(
             child: Row(
               children: [

@@ -151,7 +151,7 @@ class TransactionTypeSelection extends ConsumerWidget {
                     settingsDataNotifier,
                     textEditingNotifier,
                     backgroundColorNofifier,
-                    formType: formTypes[index], // Use the corresponding form type
+                    formType: formTypes[index],
                     transactionDbCache: transactionDbCache,
                   );
                 }
