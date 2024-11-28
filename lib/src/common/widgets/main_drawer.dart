@@ -66,10 +66,14 @@ class HomeButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     return MainDrawerButton('home', S.of(context).home_page, () async {
-      initializeSettings(ref);
-      Navigator.of(context).pop();
+      await initializeSettings(ref);
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
       pageTitleNotifier.state = '';
-      context.goNamed(AppRoute.home.name);
+      if (context.mounted) {
+        context.goNamed(AppRoute.home.name);
+      }
     });
   }
 }
@@ -95,9 +99,7 @@ class CustomersButton extends ConsumerWidget {
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).customers;
       }
-      if (context.mounted) {
-        customerScreenController.setFeatureScreenData(context);
-      }
+
       // if (context.mounted) {
       //   final testClass = TestCustomerScreenPerformance(context, ref);
       //   testClass.run(10000);
@@ -105,6 +107,9 @@ class CustomersButton extends ConsumerWidget {
       if (context.mounted) {
         Navigator.of(context).pop();
         context.goNamed(AppRoute.customers.name);
+      }
+      if (context.mounted) {
+        customerScreenController.setFeatureScreenData(context);
       }
       pageLoadingNotifier.state = false;
     });
@@ -179,11 +184,13 @@ class SalesmenButton extends ConsumerWidget {
       if (context.mounted) {
         await initializeSalesmanDbCache(context, ref);
       }
-      if (context.mounted) {
-        salesmanScreenController.setFeatureScreenData(context);
-      }
+
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).salesmen;
+      }
+
+      if (context.mounted) {
+        salesmanScreenController.setFeatureScreenData(context);
       }
       if (context.mounted) {
         Navigator.of(context).pop();
@@ -213,10 +220,11 @@ class VendorsButton extends ConsumerWidget {
         await initializeVendorDbCache(context, ref);
       }
       if (context.mounted) {
-        vendorScreenController.setFeatureScreenData(context);
-      }
-      if (context.mounted) {
         pageTitleNotifier.state = S.of(context).vendors;
+      }
+
+      if (context.mounted) {
+        vendorScreenController.setFeatureScreenData(context);
       }
       if (context.mounted) {
         Navigator.of(context).pop();
@@ -253,14 +261,15 @@ class TransactionsButton extends ConsumerWidget {
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).transactions;
       }
+
+      if (context.mounted) {
+        transactionScreenController.setFeatureScreenData(context);
+      }
       if (context.mounted) {
         Navigator.of(context).pop();
         context.goNamed(AppRoute.transactions.name);
       }
       pageLoadingNotifier.state = false;
-      if (context.mounted) {
-        transactionScreenController.setFeatureScreenData(context);
-      }
     });
   }
 }
@@ -283,15 +292,16 @@ class ProductsButton extends ConsumerWidget {
       if (context.mounted) {
         await initializeProductDbCache(context, ref);
       }
-      if (context.mounted) {
-        productScreenController.setFeatureScreenData(context);
-      }
+
       // if (context.mounted) {
       //   final testClass = TestProductScreenPerformance(context, ref);
       //   testClass.run(1000);
       // }
       if (context.mounted) {
         pageTitleNotifier.state = S.of(context).products;
+      }
+      if (context.mounted) {
+        productScreenController.setFeatureScreenData(context);
       }
       if (context.mounted) {
         context.goNamed(AppRoute.products.name);
