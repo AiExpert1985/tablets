@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/data_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -12,6 +14,7 @@ import 'package:tablets/src/features/salesmen/controllers/salesman_screen_contro
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_screen_controller.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
@@ -340,7 +343,6 @@ class SettingsDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final List<String> names = [
       S.of(context).categories,
       S.of(context).regions,
@@ -350,7 +352,7 @@ class SettingsDialog extends ConsumerWidget {
     final List<String> routes = [
       AppRoute.categories.name,
       AppRoute.regions.name,
-      AppRoute.settings.name
+      AppRoute.settings.name,
     ];
 
     return AlertDialog(
@@ -359,39 +361,95 @@ class SettingsDialog extends ConsumerWidget {
       content: Container(
         padding: const EdgeInsets.all(25),
         width: 300,
-        height: 500,
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1, // Number of columns
-            childAspectRatio: 1.7, // Aspect ratio of each card
-          ),
-          itemCount: names.length,
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () {
-                pageTitleNotifier.state = names[index];
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                }
-                if (context.mounted) {
-                  context.goNamed(routes[index]);
-                }
-              },
-              child: Card(
-                elevation: 4,
-                margin: const EdgeInsets.all(16),
-                child: SizedBox(
-                  height: 40, // Reduced height for the card
-                  child: Center(
-                    child: Text(
-                      names[index], // Use the corresponding name
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ),
+        height: 650,
+        child: Column(
+          children: [
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 1, // Number of columns
+                  childAspectRatio: 1.7, // Aspect ratio of each card
                 ),
+                itemCount: names.length,
+                itemBuilder: (context, index) {
+                  return SettingChildButton(names[index], routes[index]);
+                },
               ),
-            );
-          },
+            ),
+            const BackupButton(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SettingChildButton extends ConsumerWidget {
+  const SettingChildButton(this.name, this.route, {super.key});
+
+  final String name;
+  final String route;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    return InkWell(
+      onTap: () {
+        pageTitleNotifier.state = name;
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+        if (context.mounted) {
+          context.goNamed(route);
+        }
+      },
+      child: Card(
+        elevation: 4,
+        margin: const EdgeInsets.all(16),
+        child: SizedBox(
+          height: 40, // Reduced height for the card
+          child: Center(
+            child: Text(
+              name, // Use the corresponding name
+              style: const TextStyle(fontSize: 18),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BackupButton extends ConsumerWidget {
+  const BackupButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    initializeTransactionDbCache(context, ref);
+    final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
+    final transactionData = transactionsDbCache.data;
+    tempPrint(transactionData);
+    return SizedBox(
+      height: 150,
+      child: InkWell(
+        onTap: () {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+          backupDatabase(transactionData, 'data_backup');
+        },
+        child: Card(
+          elevation: 4,
+          margin: const EdgeInsets.all(16),
+          child: SizedBox(
+            height: 40, // Reduced height for the card
+            child: Center(
+              child: Text(
+                S.of(context).save_data_backup, // Use the corresponding name
+                style: const TextStyle(fontSize: 18),
+              ),
+            ),
+          ),
         ),
       ),
     );

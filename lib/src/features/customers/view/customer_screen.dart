@@ -23,9 +23,9 @@ class CustomerScreen extends ConsumerWidget {
   const CustomerScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(customerDbCacheProvider);
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final settingsData = settingsDataNotifier.data;
-    ref.watch(customerDbCacheProvider);
     // if settings data is empty it means user has refresh the web page &
     // didn't reach the page through pressing the page button
     // in this case he didn't load required dbCaches so, I should hide buttons because

@@ -230,5 +230,6 @@
     "settings_currency": "Used currency",
     "home_page": "Home page",
     "stock": "Stock",
-    "no_data_available": "No data available"
+    "no_data_available": "No data available",
+    "save_data_backup": "Save data backup"
 }

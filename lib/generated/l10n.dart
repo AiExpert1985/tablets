@@ -2369,6 +2369,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Save data backup`
+  String get save_data_backup {
+    return Intl.message(
+      'Save data backup',
+      name: 'save_data_backup',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

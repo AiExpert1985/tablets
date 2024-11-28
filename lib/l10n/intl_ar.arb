@@ -230,5 +230,6 @@
     "settings_currency": "العملة المستخدمة",
     "home_page": "الرئيسية",
     "stock": "المخزون",
-    "no_data_available": "لا يوجد بيانات"
+    "no_data_available": "لا يوجد بيانات",
+    "save_data_backup": "نسخ احتياطية"
 }

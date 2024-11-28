@@ -65,7 +65,7 @@ class VendorList extends ConsumerWidget {
               ],
             ),
           )
-        : const HomeScreenGreeting();
+        : const EmptyPage();
     return screenWidget;
   }
 }

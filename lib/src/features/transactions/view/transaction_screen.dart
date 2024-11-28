@@ -70,7 +70,7 @@ class TransactionsList extends ConsumerWidget {
               ],
             ),
           )
-        : const HomeScreenGreeting();
+        : const EmptyPage();
     return screenWidget;
   }
 }
