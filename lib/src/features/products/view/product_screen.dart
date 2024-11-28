@@ -233,7 +233,9 @@ class ProductFloatingButtons extends ConsumerWidget {
   const ProductFloatingButtons({super.key});
 
   void showAddProductForm(BuildContext context, WidgetRef ref) {
-    ref.read(productFormDataProvider.notifier).initialize();
+    ref
+        .read(productFormDataProvider.notifier)
+        .initialize(initialData: {'initialDate': DateTime.now()});
     final imagePicker = ref.read(imagePickerProvider.notifier);
     imagePicker.initialize();
     showDialog(

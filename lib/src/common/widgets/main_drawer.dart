@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/data_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -397,10 +396,10 @@ class SettingChildButton extends ConsumerWidget {
       onTap: () {
         pageTitleNotifier.state = name;
         if (context.mounted) {
-          Navigator.of(context).pop();
+          context.goNamed(route);
         }
         if (context.mounted) {
-          context.goNamed(route);
+          Navigator.of(context).pop();
         }
       },
       child: Card(
@@ -428,7 +427,6 @@ class BackupButton extends ConsumerWidget {
     initializeTransactionDbCache(context, ref);
     final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
     final transactionData = transactionsDbCache.data;
-    tempPrint(transactionData);
     return SizedBox(
       height: 150,
       child: InkWell(

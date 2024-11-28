@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/widgets/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/async_value_widget.dart';
@@ -36,9 +37,12 @@ class CategoriesGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productStream = ref.watch(categoryStreamProvider);
+    final categorytStream = ref.watch(categoryStreamProvider);
+    if (categorytStream.value != null && categorytStream.value!.isEmpty) {
+      return const EmptyPage();
+    }
     return AsyncValueWidget<List<Map<String, dynamic>>>(
-      value: productStream,
+      value: categorytStream,
       data: (categories) => GridView.builder(
         itemCount: categories.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

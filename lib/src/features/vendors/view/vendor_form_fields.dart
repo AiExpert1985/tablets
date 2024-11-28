@@ -35,6 +35,7 @@ class VendorFormFields extends ConsumerWidget {
             dataType: FieldDataType.text,
             name: 'phone',
             label: S.of(context).phone,
+            isRequired: false,
           ),
           VerticalGap.l,
           Expanded(
