@@ -16,24 +16,10 @@ class TestProductScreenPerformance {
     final productData = productDbCache.data;
     final transactionDbCache = _ref.read(transactionDbCacheProvider.notifier);
     final transactionData = transactionDbCache.data;
-    final multipliedTransactionData = _createDuplicates(transactionData, transactionMultiple);
+    final multipliedTransactionData = duplicateDbCache(transactionData, transactionMultiple);
     transactionDbCache.set(multipliedTransactionData);
     final avgMatchingDuration = _runtests(multipliedTransactionData, productData);
     debugPrint('test took $avgMatchingDuration seconds per product');
-  }
-
-  /// returns a new copy of the list, where Maps are duplicated x number of times
-  /// I used it to create huge size copies of lists for performace testing purpose
-  List<Map<String, dynamic>> _createDuplicates(List<Map<String, dynamic>> data, int times) {
-    List<Map<String, dynamic>> duplicatedList = [];
-    for (var map in data) {
-      for (int i = 0; i < times; i++) {
-        // change dbRef to make every item unique
-        final newDbRef = generateRandomString(len: 8);
-        duplicatedList.add(Map<String, dynamic>.from({...map, 'dbRef': newDbRef}));
-      }
-    }
-    return duplicatedList;
   }
 
   double _runtests(List<Map<String, dynamic>> transactions, List<Map<String, dynamic>> products) {

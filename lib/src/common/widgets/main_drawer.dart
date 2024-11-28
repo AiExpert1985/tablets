@@ -4,12 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/data_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
@@ -424,17 +426,13 @@ class BackupButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    initializeTransactionDbCache(context, ref);
-    final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
-    final transactionData = transactionsDbCache.data;
     return SizedBox(
       height: 150,
       child: InkWell(
         onTap: () {
-          if (context.mounted) {
-            Navigator.of(context).pop();
-          }
-          backupDatabase(transactionData, 'data_backup');
+          final dataBaseMaps = _getDataBaseMaps(context, ref);
+          final dataBaseNames = _getDataBaseNames(context);
+          backupDatabase(dataBaseMaps, dataBaseNames);
         },
         child: Card(
           elevation: 4,
@@ -451,6 +449,27 @@ class BackupButton extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  List<List<Map<String, dynamic>>> _getDataBaseMaps(BuildContext context, WidgetRef ref) {
+    initializeTransactionDbCache(context, ref);
+    initializeCustomerDbCache(context, ref);
+    initializeSalesmanDbCache(context, ref);
+    initializeProductDbCache(context, ref);
+    initializeVendorDbCache(context, ref);
+    final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
+    final transactionData = formatDateForJson(transactionsDbCache.data, 'date');
+    final salesmenDbCache = ref.read(salesmanDbCacheProvider.notifier);
+    final salesmanData = salesmenDbCache.data;
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
+    final dataBaseMaps = [transactionData, salesmanData];
+    return dataBaseMaps;
+  }
+
+  List<String> _getDataBaseNames(BuildContext context) {
+    return [S.of(context).transactions, S.of(context).salesmen];
   }
 }
 

@@ -239,3 +239,29 @@ double sumAtIndex(List<List<dynamic>> listOfLists, int index) {
   }
   return sum;
 }
+
+/// returns a new copy of the list, where Maps are duplicated x number of times
+/// I used it to create huge size copies of lists for performace testing purpose
+List<Map<String, dynamic>> duplicateDbCache(List<Map<String, dynamic>> data, int times) {
+  List<Map<String, dynamic>> duplicatedList = [];
+  for (var map in data) {
+    for (int i = 0; i < times; i++) {
+      // change dbRef to make every item unique
+      final newDbRef = generateRandomString(len: 8);
+      duplicatedList.add(Map<String, dynamic>.from({...map, 'dbRef': newDbRef}));
+    }
+  }
+  return duplicatedList;
+}
+
+/// convert the date type of a date key in a  whole List<Map<String, dynamic>>
+/// from type Timestamp to DateTime
+List<Map<String, dynamic>> formatDateForJson(List<Map<String, dynamic>> data, String keyName) {
+  List<Map<String, dynamic>> modifiedList = [...data];
+  for (var i = 0; i < data.length; i++) {
+    if (data[i].containsKey(keyName) && data[i][keyName] is Timestamp) {
+      modifiedList[i][keyName] = formatDate(data[i][keyName].toDate());
+    }
+  }
+  return modifiedList;
+}

@@ -361,7 +361,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_type_customer_return":
             MessageLookupByLibrary.simpleMessage("ارجاع زبون"),
         "transaction_type_damaged_items":
-            MessageLookupByLibrary.simpleMessage("قائمة اتلاف مواد"),
+            MessageLookupByLibrary.simpleMessage("اتلاف مواد"),
         "transaction_type_expenditures":
             MessageLookupByLibrary.simpleMessage("مصاريف"),
         "transaction_type_gifts": MessageLookupByLibrary.simpleMessage("هدية"),

@@ -107,7 +107,7 @@
     "transaction_type_customer_return": "ارجاع زبون",
     "transaction_type_vender_invoice": "قائمة مجهز",
     "transaction_type_customer_invoice": "قائمة زبون",
-    "transaction_type_damaged_items": "قائمة اتلاف مواد",
+    "transaction_type_damaged_items": "اتلاف مواد",
     "transaction_type_initial_credit": "رصيد اولي",
     "salesman_name": "الأسم",
     "category_name": "الأسم",
