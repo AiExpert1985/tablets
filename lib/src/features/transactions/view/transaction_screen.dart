@@ -53,7 +53,6 @@ class TransactionsList extends ConsumerWidget {
     ref.watch(pageIsLoadingNotifier);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     final dbData = dbCache.data;
-    sortMapsByProperty(dbData, 'date');
     final pageIsLoading = ref.read(pageIsLoadingNotifier);
     if (pageIsLoading) {
       return const PageLoading();
@@ -141,10 +140,7 @@ class DataRow extends ConsumerWidget {
         translateScreenTextToDbText(context, transactionData[transactionTypeKey]);
     final transaction =
         Transaction.fromMap({...transactionData, transactionTypeKey: translatedTransactionType});
-    dynamic date = transactionScreenData[transactionDateKey];
-    if (date is! DateTime) {
-      date = date.toDate();
-    }
+    final date = transactionScreenData[transactionDateKey].toDate();
     final color = _getSequnceColor(transaction.transactionType);
     return Column(
       children: [

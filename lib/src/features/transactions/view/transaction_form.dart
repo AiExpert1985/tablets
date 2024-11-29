@@ -5,7 +5,6 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -137,12 +136,10 @@ class TransactionForm extends ConsumerWidget {
     final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
     formController.saveItemToDb(context, transaction, isEditMode);
     // update the bdCache (database mirror) so that we don't need to fetch data from db
-    if (formData[transactionDateKey] is! firebase.Timestamp) {
-      tempPrint(formData[transactionDateKey]);
+    if (itemData[transactionDateKey] is! firebase.Timestamp) {
       // in our form the data type usually is DateTime, but the date type in dbCache should be
       // Timestamp, as to mirror the datatype of firebase
-      formData[transactionDateKey] = firebase.Timestamp.fromDate(formData[transactionDateKey]);
-      tempPrint(formData[transactionDateKey]);
+      itemData[transactionDateKey] = firebase.Timestamp.fromDate(formData[transactionDateKey]);
     }
     final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
     transactionDbCache.update(itemData, operationType);
