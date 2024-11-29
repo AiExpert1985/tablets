@@ -138,8 +138,8 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           return false;
         }
         bool dateInRange =
-            (startDate == null || date.isAfter(startDate!) || date.isAtSameMomentAs(startDate!)) &&
-                (endDate == null || date.isBefore(endDate!) || date.isAtSameMomentAs(endDate!));
+            (startDate == null || date.isAfter(startDate!.subtract(const Duration(days: 1)))) &&
+                (endDate == null || date.isBefore(endDate!.add(const Duration(days: 1))));
 
         // Filter by dropdown selection if applicable
         if (widget.dropdownIndex != null && widget.dropdownList != null) {

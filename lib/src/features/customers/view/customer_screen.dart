@@ -270,7 +270,7 @@ class CustomerFloatingButtons extends ConsumerWidget {
     final maxDebtAmount = settingsDataNotifier.getProperty(settingsMaxDebtAmountKey) ?? 1000000;
     final maxDebtDuration = settingsDataNotifier.getProperty(settingsMaxDebtDurationKey);
     final formDataNotifier = ref.read(customerFormDataProvider.notifier);
-    formDataNotifier.initialize(initialData: {'initialDate': DateTime.now()});
+    formDataNotifier.initialize();
     formDataNotifier.updateProperties({
       'initialDate': DateTime.now(),
       'initialCredit': 0,
