@@ -4,16 +4,16 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/categories/controllers/category_screen_controller.dart';
 import 'package:tablets/src/features/categories/controllers/category_screen_data_notifier.dart';
-import 'package:tablets/src/features/categories/repository/category_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
+import 'package:tablets/src/features/regions/controllers/region_screen_controller.dart';
+import 'package:tablets/src/features/regions/controllers/region_screen_data_notifier.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/repository/settings_db_cache_provider.dart';
@@ -366,12 +366,16 @@ class SettingChildButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final categoryScreenController = ref.read(categoryScreenControllerProvider);
     final categoryScreenData = ref.read(categoryScreenDataNotifier.notifier);
+    final regionScreenController = ref.read(regionScreenControllerProvider);
+    final regionScreenData = ref.read(regionScreenDataNotifier.notifier);
 
     return InkWell(
       onTap: () {
         if (categoryScreenData.data.isEmpty) {
           categoryScreenController.setFeatureScreenData(context);
-          tempPrint('hi');
+        }
+        if (regionScreenData.data.isEmpty) {
+          regionScreenController.setFeatureScreenData(context);
         }
         pageTitleNotifier.state = name;
         if (context.mounted) {

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/classes/item_form_controller.dart';
+import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
@@ -7,8 +10,10 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/features/regions/controllers/region_form_controller.dart';
+import 'package:tablets/src/features/regions/controllers/region_screen_controller.dart';
 import 'package:tablets/src/features/regions/model/region.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
 import 'package:tablets/src/features/regions/view/region_form_fields.dart';
 
 class RegionForm extends ConsumerWidget {
@@ -17,10 +22,11 @@ class RegionForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formController = ref.read(regionFormControllerProvider);
-    // final formData = ref.watch(regionFormDataProvider);
+    final formController = ref.watch(regionFormControllerProvider);
     final formDataNotifier = ref.read(regionFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    final screenController = ref.read(regionScreenControllerProvider);
+    final dbCache = ref.read(regionDbCacheProvider.notifier);
     ref.watch(imagePickerProvider);
     return FormFrame(
       formKey: formController.formKey,
@@ -35,39 +41,71 @@ class RegionForm extends ConsumerWidget {
       ),
       buttons: [
         IconButton(
-          onPressed: () {
-            if (!formController.validateData()) return;
-            formController.submitData();
-            final updateFormData = formDataNotifier.data;
-            final imageUrls = formImagesNotifier.saveChanges();
-            final region = Region.fromMap({...updateFormData, 'imageUrls': imageUrls});
-            formController.saveItemToDb(context, region, isEditMode);
-          },
+          onPressed: () => _onSavePress(context, formDataNotifier, formImagesNotifier,
+              formController, dbCache, screenController),
           icon: const SaveIcon(),
         ),
-        // IconButton(
-        //   onPressed: () => Navigator.of(context).pop(),
-        //   icon: const CancelIcon(),
-        // ),
-        Visibility(
-          visible: isEditMode,
-          child: IconButton(
-              onPressed: () async {
-                bool? confiramtion = await showDeleteConfirmationDialog(
-                    context: context, message: formDataNotifier.data['name']);
-                if (confiramtion != null) {
-                  final updateFormData = formDataNotifier.data;
-                  final imageUrls = formImagesNotifier.saveChanges();
-                  final region = Region.fromMap({...updateFormData, 'imageUrls': imageUrls});
-                  // ignore: use_build_context_synchronously
-                  formController.deleteItemFromDb(context, region);
-                }
-              },
-              icon: const DeleteIcon()),
-        )
+        if (isEditMode)
+          IconButton(
+            onPressed: () => _onDeletePressed(context, formDataNotifier, formImagesNotifier,
+                formController, dbCache, screenController),
+            icon: const DeleteIcon(),
+          ),
       ],
       width: regionFormWidth,
       height: regionFormHeight,
     );
+  }
+
+  void _onSavePress(
+    BuildContext context,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+    ItemFormController formController,
+    DbCache dbCache,
+    RegionScreenController screenController,
+  ) {
+    if (!formController.validateData()) return;
+    formController.submitData();
+    final formData = formDataNotifier.data;
+    final imageUrls = formImagesNotifier.saveChanges();
+    final itemData = {...formData, 'imageUrls': imageUrls};
+    final region = Region.fromMap(itemData);
+    formController.saveItemToDb(context, region, isEditMode);
+    // update the bdCache (database mirror) so that we don't need to fetch data from db
+    final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
+    dbCache.update(itemData, operationType);
+    // redo screenData calculations
+    if (context.mounted) {
+      screenController.setFeatureScreenData(context);
+    }
+  }
+
+  void _onDeletePressed(
+    BuildContext context,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+    ItemFormController formController,
+    DbCache dbCache,
+    RegionScreenController screenController,
+  ) async {
+    final confiramtion = await showDeleteConfirmationDialog(
+        context: context, message: formDataNotifier.data['name']);
+    if (confiramtion != null) {
+      final formData = formDataNotifier.data;
+      final imageUrls = formImagesNotifier.saveChanges();
+      final itemData = {...formData, 'imageUrls': imageUrls};
+      final region = Region.fromMap(itemData);
+      if (context.mounted) {
+        formController.deleteItemFromDb(context, region);
+      }
+      // update the dbCache (database mirror) so that we don't need to fetch data from db
+      const operationType = DbCacheOperationTypes.delete;
+      dbCache.update(itemData, operationType);
+      // redo screenData calculations
+      if (context.mounted) {
+        screenController.setFeatureScreenData(context);
+      }
+    }
   }
 }

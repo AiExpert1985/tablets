@@ -6,7 +6,7 @@ import 'package:tablets/src/features/customers/repository/customer_db_cache_prov
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
-import 'package:tablets/src/features/regions/model/region_db_cache_provider.dart';
+import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
 import 'package:tablets/src/features/regions/repository/region_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
