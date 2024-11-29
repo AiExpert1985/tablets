@@ -40,6 +40,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),
         "category": MessageLookupByLibrary.simpleMessage("الصنف"),
         "category_name": MessageLookupByLibrary.simpleMessage("الأسم"),
+        "category_search": MessageLookupByLibrary.simpleMessage("بحث الاصناف"),
         "category_selection":
             MessageLookupByLibrary.simpleMessage("اختيار الصنف "),
         "choose_image": MessageLookupByLibrary.simpleMessage("اختر صورة"),
@@ -250,7 +251,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "receipts_amount":
             MessageLookupByLibrary.simpleMessage("مبلغ الوصولات"),
         "receipts_number": MessageLookupByLibrary.simpleMessage("عدد الوصولات"),
+        "region": MessageLookupByLibrary.simpleMessage("المنطقة"),
         "region_name": MessageLookupByLibrary.simpleMessage("اسم المنطقة"),
+        "region_search": MessageLookupByLibrary.simpleMessage("بحث المناطق"),
         "regions": MessageLookupByLibrary.simpleMessage("المناطق"),
         "reload_page":
             MessageLookupByLibrary.simpleMessage("اعادة تحميل الصفحة"),

@@ -232,5 +232,8 @@
     "stock": "Stock",
     "no_data_available": "No data available",
     "save_data_backup": "Save data backup",
-    "downloaded_backup_file_name": "Tablets database"
+    "downloaded_backup_file_name": "Tablets database",
+    "category_search": "Category search",
+    "region_search": "Region search",
+    "region": "Region"
 }

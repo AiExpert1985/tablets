@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
+import 'package:tablets/src/features/categories/controllers/category_drawer_provider.dart';
 import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
@@ -71,8 +72,8 @@ class GridData extends ConsumerWidget {
         final categoryScreenData = screenData[index];
         final categoryRef = categoryScreenData[categoryDbRefKey];
         final categoryDbCache = ref.read(categoryDbCacheProvider.notifier);
-        final customerData = categoryDbCache.getItemByDbRef(categoryRef);
-        final category = ProductCategory.fromMap(customerData);
+        final categoryData = categoryDbCache.getItemByDbRef(categoryRef);
+        final category = ProductCategory.fromMap(categoryData);
         return InkWell(
           hoverColor: const Color.fromARGB(255, 173, 170, 170),
           onTap: () => _showEditCategoryForm(ctx, ref, category),
@@ -111,7 +112,7 @@ class CategoryFloatingButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final drawerController = ref.watch(categoryDrawerControllerProvider);
+    final drawerController = ref.watch(categoryDrawerControllerProvider);
     const iconsColor = Color.fromARGB(255, 126, 106, 211);
     return SpeedDial(
       direction: SpeedDialDirection.up,
@@ -127,11 +128,11 @@ class CategoryFloatingButtons extends ConsumerWidget {
         //   backgroundColor: iconsColor,
         //   onTap: () => drawerController.showReports(context),
         // ),
-        // SpeedDialChild(
-        //   child: const Icon(Icons.search, color: Colors.white),
-        //   backgroundColor: iconsColor,
-        //   onTap: () => drawerController.showSearchForm(context),
-        // ),
+        SpeedDialChild(
+          child: const Icon(Icons.search, color: Colors.white),
+          backgroundColor: iconsColor,
+          onTap: () => drawerController.showSearchForm(context),
+        ),
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,

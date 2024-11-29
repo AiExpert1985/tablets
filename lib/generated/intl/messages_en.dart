@@ -40,6 +40,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "categories": MessageLookupByLibrary.simpleMessage("Categories"),
         "category": MessageLookupByLibrary.simpleMessage("Category"),
         "category_name": MessageLookupByLibrary.simpleMessage("Name"),
+        "category_search":
+            MessageLookupByLibrary.simpleMessage("Category search"),
         "category_selection":
             MessageLookupByLibrary.simpleMessage("Select category"),
         "choose_image": MessageLookupByLibrary.simpleMessage("Choose image"),
@@ -260,7 +262,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Receipts amount"),
         "receipts_number":
             MessageLookupByLibrary.simpleMessage("Receipts number"),
+        "region": MessageLookupByLibrary.simpleMessage("Region"),
         "region_name": MessageLookupByLibrary.simpleMessage("Region name"),
+        "region_search": MessageLookupByLibrary.simpleMessage("Region search"),
         "regions": MessageLookupByLibrary.simpleMessage("Regions"),
         "reload_page": MessageLookupByLibrary.simpleMessage("Reload page"),
         "remaining_amount":

@@ -2389,6 +2389,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Category search`
+  String get category_search {
+    return Intl.message(
+      'Category search',
+      name: 'category_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Region search`
+  String get region_search {
+    return Intl.message(
+      'Region search',
+      name: 'region_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Region`
+  String get region {
+    return Intl.message(
+      'Region',
+      name: 'region',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

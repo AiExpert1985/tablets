@@ -232,5 +232,8 @@
     "stock": "المخزون",
     "no_data_available": "لا يوجد بيانات",
     "save_data_backup": "نسخ احتياطية",
-    "downloaded_backup_file_name": "قاعدة بيانات برنامج الواح"
+    "downloaded_backup_file_name": "قاعدة بيانات برنامج الواح",
+    "category_search": "بحث الاصناف",
+    "region_search": "بحث المناطق",
+    "region": "المنطقة"
 }

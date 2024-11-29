@@ -5,6 +5,7 @@ import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/image_titled.dart';
+import 'package:tablets/src/features/regions/controllers/region_drawer_provider.dart';
 import 'package:tablets/src/features/regions/controllers/region_form_controller.dart';
 import 'package:tablets/src/features/regions/controllers/region_screen_controller.dart';
 import 'package:tablets/src/features/regions/controllers/region_screen_data_notifier.dart';
@@ -111,7 +112,7 @@ class RegionFloatingButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final drawerController = ref.watch(regionDrawerControllerProvider);
+    final drawerController = ref.watch(regionDrawerControllerProvider);
     const iconsColor = Color.fromARGB(255, 126, 106, 211);
     return SpeedDial(
       direction: SpeedDialDirection.up,
@@ -127,11 +128,11 @@ class RegionFloatingButtons extends ConsumerWidget {
         //   backgroundColor: iconsColor,
         //   onTap: () => drawerController.showReports(context),
         // ),
-        // SpeedDialChild(
-        //   child: const Icon(Icons.search, color: Colors.white),
-        //   backgroundColor: iconsColor,
-        //   onTap: () => drawerController.showSearchForm(context),
-        // ),
+        SpeedDialChild(
+          child: const Icon(Icons.search, color: Colors.white),
+          backgroundColor: iconsColor,
+          onTap: () => drawerController.showSearchForm(context),
+        ),
         SpeedDialChild(
           child: const Icon(Icons.add, color: Colors.white),
           backgroundColor: iconsColor,

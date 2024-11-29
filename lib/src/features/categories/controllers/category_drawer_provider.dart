@@ -9,10 +9,10 @@ class CategoryDrawer {
     showDrawer(
       context,
       builder: (context) {
-        return const Center(
+        return Center(
           child: SafeArea(
             top: true,
-            child: CategorySearchForm(),
+            child: CategorySearchForm(drawerController),
           ),
         );
       },

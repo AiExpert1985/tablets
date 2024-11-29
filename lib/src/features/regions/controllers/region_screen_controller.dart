@@ -7,7 +7,7 @@ import 'package:tablets/src/features/regions/controllers/region_screen_data_noti
 import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
 
 const String regionDbRefKey = 'dbRef';
-const String regionDbRefName = 'name';
+const String regionNameKey = 'name';
 
 final regionScreenControllerProvider = Provider<RegionScreenController>((ref) {
   final screenDataNotifier = ref.read(regionScreenDataNotifier.notifier);

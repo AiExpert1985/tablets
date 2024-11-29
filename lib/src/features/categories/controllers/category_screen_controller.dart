@@ -7,7 +7,7 @@ import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:flutter/material.dart';
 
 const String categoryDbRefKey = 'dbRef';
-const String categoryDbRefName = 'name';
+const String categoryNameKey = 'name';
 
 final categoryScreenControllerProvider = Provider<CategoryScreenController>((ref) {
   final screenDataNotifier = ref.read(categoryScreenDataNotifier.notifier);
