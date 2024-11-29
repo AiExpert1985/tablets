@@ -83,6 +83,9 @@ class ProductScreenController implements ScreenDataController {
             type == TransactionType.customerReturn.name) {
           totalQuantity += item['soldQuantity'] as int;
           totalQuantity += item['giftQuantity'] as int;
+          if (type == TransactionType.customerReturn.name) {
+            totalProfit -= item['itemTotalProfit'] ?? 0;
+          }
         } else if (type == TransactionType.damagedItems.name) {
           totalQuantity -= item['soldQuantity'] as int;
           totalProfit -= (item['soldQuantity'] ?? 0) * (item['buyingPrice'] ?? 0);
