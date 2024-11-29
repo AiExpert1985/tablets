@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
-import 'package:tablets/src/common/widgets/home_screen.dart';
+import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
-import 'package:tablets/src/common/widgets/async_value_widget.dart';
 import 'package:tablets/src/common/widgets/image_titled.dart';
 import 'package:tablets/src/features/categories/controllers/category_form_controller.dart';
 import 'package:tablets/src/features/categories/controllers/category_screen_controller.dart';
 import 'package:tablets/src/features/categories/controllers/category_screen_data_notifier.dart';
 import 'package:tablets/src/features/categories/model/category.dart';
 import 'package:tablets/src/features/categories/repository/category_db_cache_provider.dart';
-import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/categories/view/category_form.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/repository/settings_db_cache_provider.dart';
 
 class CategoriesScreen extends ConsumerWidget {
   const CategoriesScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    tempPrint('1');
     ref.watch(categoryScreenDataNotifier);
-    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final settingsDataNotifier = ref.read(settingsDbCacheProvider.notifier);
     final settingsData = settingsDataNotifier.data;
     // if settings data is empty it means user has refresh the web page &
     // didn't reach the page through pressing the page button
@@ -51,12 +47,7 @@ class CategoriesGrid extends ConsumerWidget {
     if (pageIsLoading) {
       return const PageLoading();
     }
-    Widget screenWidget = dbData.isNotEmpty
-        ? const Padding(
-            padding: EdgeInsets.all(16),
-            child: GridData(),
-          )
-        : const EmptyPage();
+    Widget screenWidget = dbData.isNotEmpty ? const GridData() : const EmptyPage();
     return screenWidget;
   }
 }
@@ -69,30 +60,28 @@ class GridData extends ConsumerWidget {
     final screenDataNotifier = ref.read(categoryScreenDataNotifier.notifier);
     final screenData = screenDataNotifier.data;
     ref.watch(categoryScreenDataNotifier);
-    return Expanded(
-      child: GridView.builder(
-        itemCount: screenData.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 8,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-        ),
-        itemBuilder: (ctx, index) {
-          final categoryScreenData = screenData[index];
-          final categoryRef = categoryScreenData[categoryDbRefKey];
-          final categoryDbCache = ref.read(categoryDbCacheProvider.notifier);
-          final customerData = categoryDbCache.getItemByDbRef(categoryRef);
-          final category = ProductCategory.fromMap(customerData);
-          return InkWell(
-            hoverColor: const Color.fromARGB(255, 173, 170, 170),
-            onTap: () => _showEditCategoryForm(ctx, ref, category),
-            child: TitledImage(
-              imageUrl: category.coverImageUrl,
-              title: category.name,
-            ),
-          );
-        },
+    return GridView.builder(
+      itemCount: screenData.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 8,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
       ),
+      itemBuilder: (ctx, index) {
+        final categoryScreenData = screenData[index];
+        final categoryRef = categoryScreenData[categoryDbRefKey];
+        final categoryDbCache = ref.read(categoryDbCacheProvider.notifier);
+        final customerData = categoryDbCache.getItemByDbRef(categoryRef);
+        final category = ProductCategory.fromMap(customerData);
+        return InkWell(
+          hoverColor: const Color.fromARGB(255, 173, 170, 170),
+          onTap: () => _showEditCategoryForm(ctx, ref, category),
+          child: TitledImage(
+            imageUrl: category.coverImageUrl,
+            title: category.name,
+          ),
+        );
+      },
     );
   }
 }
@@ -105,36 +94,6 @@ void _showEditCategoryForm(BuildContext context, WidgetRef ref, ProductCategory 
     context: context,
     builder: (BuildContext ctx) => const CategoryForm(isEditMode: true),
   ).whenComplete(imagePicker.close);
-}
-
-@override
-Widget build(BuildContext context, WidgetRef ref) {
-  final categorytStream = ref.watch(categoryStreamProvider);
-  if (categorytStream.value != null && categorytStream.value!.isEmpty) {
-    return const EmptyPage();
-  }
-  return AsyncValueWidget<List<Map<String, dynamic>>>(
-    value: categorytStream,
-    data: (categories) => GridView.builder(
-      itemCount: categories.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 8,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-      ),
-      itemBuilder: (ctx, index) {
-        final category = ProductCategory.fromMap(categories[index]);
-        return InkWell(
-          hoverColor: const Color.fromARGB(255, 173, 170, 170),
-          onTap: () => _showEditCategoryForm(ctx, ref, category),
-          child: TitledImage(
-            imageUrl: category.coverImageUrl,
-            title: category.name,
-          ),
-        );
-      },
-    ),
-  );
 }
 
 class CategoryFloatingButtons extends ConsumerWidget {

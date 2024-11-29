@@ -4,10 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/features/categories/controllers/category_screen_controller.dart';
+import 'package:tablets/src/features/categories/controllers/category_screen_data_notifier.dart';
+import 'package:tablets/src/features/categories/repository/category_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
@@ -76,7 +80,7 @@ void processAndMoveToTargetPage(BuildContext context, WidgetRef ref,
   pageLoadingNotifier.state = true;
   // note that dbCaches are only used for mirroring the database, all the data used in the
   // app in the screenData, which is a processed version of dbCache
-  await initializeDbCacheAndSettings(context, ref);
+  await initializeAllDbCaches(context, ref);
   // we inialize settings
   if (context.mounted) {
     await _initializeSettings(ref);
@@ -105,7 +109,7 @@ class HomeButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     return MainDrawerButton('home', S.of(context).home_page, () async {
-      await initializeDbCacheAndSettings(context, ref);
+      await initializeAllDbCaches(context, ref);
       if (context.mounted) {
         Navigator.of(context).pop();
       }
@@ -169,7 +173,7 @@ class SettingsButton extends ConsumerWidget {
         // before loading initializing dbCaches and settings we show loading spinner &
         // when done it is cleared using below pageLoadingNotifier.state = false;
         pageLoadingNotifier.state = true;
-        await initializeDbCacheAndSettings(context, ref);
+        await initializeAllDbCaches(context, ref);
         pageLoadingNotifier.state = false;
         if (context.mounted) {
           Navigator.of(context).pop();
@@ -360,8 +364,15 @@ class SettingChildButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    final categoryScreenController = ref.read(categoryScreenControllerProvider);
+    final categoryScreenData = ref.read(categoryScreenDataNotifier.notifier);
+
     return InkWell(
       onTap: () {
+        if (categoryScreenData.data.isEmpty) {
+          categoryScreenController.setFeatureScreenData(context);
+          tempPrint('hi');
+        }
         pageTitleNotifier.state = name;
         if (context.mounted) {
           context.goNamed(route);

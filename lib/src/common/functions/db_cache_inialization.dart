@@ -24,7 +24,7 @@ import 'package:tablets/src/features/vendors/repository/vendor_repository_provid
 //! database with same data (whether create, update or delete), so there will be no need to fetch
 //! from database again
 
-Future<void> initializeDbCacheAndSettings(BuildContext context, WidgetRef ref) async {
+Future<void> initializeAllDbCaches(BuildContext context, WidgetRef ref) async {
   if (context.mounted) {
     await _initializeTransactionDbCache(context, ref);
   }

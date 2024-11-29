@@ -9,7 +9,7 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
-import 'package:tablets/src/common/widgets/home_screen.dart';
+import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';

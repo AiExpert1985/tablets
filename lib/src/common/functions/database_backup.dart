@@ -20,7 +20,7 @@ void backupDataBase(BuildContext context, WidgetRef ref) async {
 
 Future<List<List<Map<String, dynamic>>>> _getDataBaseMaps(
     BuildContext context, WidgetRef ref) async {
-  await initializeDbCacheAndSettings(context, ref);
+  await initializeAllDbCaches(context, ref);
   final salesmanData = getSalesmenDbCacheData(ref);
   final regionsData = getRegionsDbCacheData(ref);
   final categoriesData = getCategoriesDbCacheData(ref);
