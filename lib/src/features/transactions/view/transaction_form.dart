@@ -136,7 +136,7 @@ class TransactionForm extends ConsumerWidget {
     final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
     formController.saveItemToDb(context, transaction, isEditMode);
     // update the bdCache (database mirror) so that we don't need to fetch data from db
-    if (itemData[transactionDateKey] is! firebase.Timestamp) {
+    if (itemData[transactionDateKey] is DateTime) {
       // in our form the data type usually is DateTime, but the date type in dbCache should be
       // Timestamp, as to mirror the datatype of firebase
       itemData[transactionDateKey] = firebase.Timestamp.fromDate(formData[transactionDateKey]);

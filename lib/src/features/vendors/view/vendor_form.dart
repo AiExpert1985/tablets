@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
@@ -73,6 +74,11 @@ class VendorForm extends ConsumerWidget {
     final customer = Vendor.fromMap(itemData);
     formController.saveItemToDb(context, customer, isEditMode);
     // update the bdCache (database mirror) so that we don't need to fetch data from db
+    if (itemData['initialDate'] is DateTime) {
+      // in our form the data type usually is DateTime, but the date type in dbCache should be
+      // Timestamp, as to mirror the datatype of firebase
+      itemData['initialDate'] = Timestamp.fromDate(formData['initialDate']);
+    }
     final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
     dbCache.update(itemData, operationType);
     // redo screenData calculations
