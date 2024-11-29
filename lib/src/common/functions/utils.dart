@@ -265,3 +265,8 @@ List<Map<String, dynamic>> formatDateForJson(List<Map<String, dynamic>> data, St
   }
   return modifiedList;
 }
+
+/// create completely new copy of dbCache or any List<Map<String, dynamic>>
+List<Map<String, dynamic>> deepCopyDbCache(List<Map<String, dynamic>> original) {
+  return original.map((map) => Map<String, dynamic>.from(map)).toList();
+}
