@@ -257,7 +257,7 @@ List<Map<String, dynamic>> duplicateDbCache(List<Map<String, dynamic>> data, int
 /// convert the date type of a date key in a  whole List<Map<String, dynamic>>
 /// from type Timestamp to DateTime
 List<Map<String, dynamic>> formatDateForJson(List<Map<String, dynamic>> data, String keyName) {
-  List<Map<String, dynamic>> modifiedList = [...data];
+  List<Map<String, dynamic>> modifiedList = deepCopyDbCache(data);
   for (var i = 0; i < data.length; i++) {
     if (data[i].containsKey(keyName) && data[i][keyName] is Timestamp) {
       modifiedList[i][keyName] = formatDate(data[i][keyName].toDate());

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
@@ -21,7 +20,7 @@ import 'package:tablets/src/common/providers/text_editing_controllers_provider.d
 import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
-import 'package:tablets/src/features/transactions/model/transaction.dart' as trans;
+import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
 
 class TransactionsScreen extends ConsumerWidget {
@@ -140,12 +139,12 @@ class DataRow extends ConsumerWidget {
     final transactionData = productDbCache.getItemByDbRef(productRef);
     final translatedTransactionType =
         translateScreenTextToDbText(context, transactionData[transactionTypeKey]);
-    if (transactionData[transactionDateKey] is! Timestamp) {
-      transactionData[transactionDateKey] = Timestamp.fromDate(transactionData[transactionDateKey]);
+    final transaction =
+        Transaction.fromMap({...transactionData, transactionTypeKey: translatedTransactionType});
+    dynamic date = transactionScreenData[transactionDateKey];
+    if (date is! DateTime) {
+      date = date.toDate();
     }
-    final transaction = trans.Transaction.fromMap(
-        {...transactionData, transactionTypeKey: translatedTransactionType});
-    final date = (transactionScreenData[transactionDateKey]).toDate();
     final color = _getSequnceColor(transaction.transactionType);
     return Column(
       children: [
@@ -173,8 +172,7 @@ class DataRow extends ConsumerWidget {
     );
   }
 
-  void _showEditTransactionForm(
-      BuildContext context, WidgetRef ref, trans.Transaction transaction) {
+  void _showEditTransactionForm(BuildContext context, WidgetRef ref, Transaction transaction) {
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);

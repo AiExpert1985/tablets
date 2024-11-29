@@ -5,6 +5,7 @@ import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/constants.dart';
@@ -269,7 +270,7 @@ Widget _buildDropDownWithSearch(
         final subProperties = {
           itemNameKey: item['name'],
           itemDbRefKey: item['dbRef'],
-          itemSellingPriceKey: _getItemPrice(formDataNotifier, item),
+          itemSellingPriceKey: _getItemPrice(context, formDataNotifier, item),
           itemWeightKey: item['packageWeight'],
           itemBuyingPriceKey: item['buyingPrice'],
           itemSalesmanCommissionKey: item['salesmanCommission'],
@@ -402,7 +403,8 @@ Widget buildDataCell(width, cell, {height = 45, isTitle = false, isFirst = false
 
 // item price is not the same for all customers, it depends on selling type to the customer,
 // if customer is not selected yet then default is salewhole type
-double _getItemPrice(ItemFormData formDataNotifier, Map<String, dynamic> item) {
+double _getItemPrice(
+    BuildContext context, ItemFormData formDataNotifier, Map<String, dynamic> item) {
   final transactionType = formDataNotifier.getProperty(transactionTypeKey);
   if (transactionType == TransactionType.expenditures.name ||
       transactionType == TransactionType.customerReceipt.name ||
@@ -416,9 +418,11 @@ double _getItemPrice(ItemFormData formDataNotifier, Map<String, dynamic> item) {
     return item['buyingPrice'];
   }
 
-  final customerSellType = formDataNotifier.getProperty(sellingPriceTypeKey);
-  final price = customerSellType == null || customerSellType == SellPriceType.wholesale.name
-      ? item['sellWholePrice']
-      : item['sellRetailPrice'];
+  String? customerSellType = formDataNotifier.getProperty(sellingPriceTypeKey);
+  if (customerSellType == null) return item['sellRetailPrice'];
+  customerSellType = translateScreenTextToDbText(context, customerSellType);
+  final price = customerSellType == SellPriceType.retail.name
+      ? item['sellRetailPrice']
+      : item['sellWholePrice'];
   return price;
 }
