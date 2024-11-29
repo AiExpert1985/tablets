@@ -90,8 +90,8 @@ List<Widget> _buildDataRows(
           _buildDeleteItemButton(
               formDataNotifier, textEditingNotifier, index, sequenceColumnWidth, transactionType,
               isFirst: true),
-          _buildDropDownWithSearch(formDataNotifier, textEditingNotifier, productRepository, index,
-              nameColumnWidth, productDbCache, productScreenController, context),
+          _buildDropDownWithSearch(formDataNotifier, textEditingNotifier, index, nameColumnWidth,
+              productDbCache, productScreenController, context),
           buildDataCell(
             soldQuantityColumnWidth,
             Text(formDataNotifier
@@ -246,7 +246,6 @@ dynamic _getTotal(ItemFormData formDataNotifier, String property, String subProp
 Widget _buildDropDownWithSearch(
   ItemFormData formDataNotifier,
   TextControllerNotifier textEditingNotifier,
-  dynamic repository,
   int index,
   double width,
   DbCache productDbCache,
@@ -258,7 +257,7 @@ Widget _buildDropDownWithSearch(
     DropDownWithSearchFormField(
       initialValue: formDataNotifier.getSubProperty(itemsKey, index, itemNameKey),
       hideBorders: true,
-      dbRepository: repository,
+      dbCache: productDbCache,
       isRequired: false,
       onChangedFn: (item) {
         // calculate the quantity of the product

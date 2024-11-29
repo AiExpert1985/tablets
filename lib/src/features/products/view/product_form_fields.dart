@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
-import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
+import 'package:tablets/src/features/categories/repository/category_db_cache_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/products/controllers/product_form_data_notifier.dart';
@@ -18,7 +19,7 @@ class ProductFormFields extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.read(productFormDataProvider.notifier);
-    final repository = ref.read(categoryRepositoryProvider);
+    final dbCache = ref.read(categoryDbCacheProvider.notifier);
 
     return Column(
       children: [
@@ -28,7 +29,7 @@ class ProductFormFields extends ConsumerWidget {
           _createFormField(
               'name', FieldDataType.text, S.of(context).product_name, formDataNotifier),
           HorizontalGap.m,
-          _createDropdownField(S.of(context).category_selection, formDataNotifier, repository),
+          _createDropdownField(S.of(context).category_selection, formDataNotifier, dbCache),
         ]),
         VerticalGap.m,
         _buildRow(context, formDataNotifier, [
@@ -100,11 +101,11 @@ class ProductFormFields extends ConsumerWidget {
     );
   }
 
-  Widget _createDropdownField(String label, ItemFormData formDataNotifier, var repository) {
+  Widget _createDropdownField(String label, ItemFormData formDataNotifier, DbCache repository) {
     return DropDownWithSearchFormField(
       label: label,
       initialValue: formDataNotifier.getProperty('category'),
-      dbRepository: repository,
+      dbCache: repository,
       onChangedFn: (item) {
         formDataNotifier.updateProperties({
           'category': item['name'],

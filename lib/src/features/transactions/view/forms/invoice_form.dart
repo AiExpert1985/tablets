@@ -14,8 +14,8 @@ import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
-import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
@@ -23,7 +23,7 @@ import 'package:tablets/src/features/transactions/controllers/transaction_form_d
 import 'package:tablets/src/features/transactions/controllers/transaction_utils_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
-import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
+import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider.dart';
 
 class InvoiceForm extends ConsumerWidget {
   const InvoiceForm(this.title, this.transactionType,
@@ -76,19 +76,19 @@ class FirstRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final customerRepository = ref.read(customerRepositoryProvider);
-    final vendorRepository = ref.read(vendorRepositoryProvider);
-    final repository = isVendor ? vendorRepository : customerRepository;
+    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+    final vendorDbCache = ref.read(vendorDbCacheProvider.notifier);
+    final dbCache = isVendor ? vendorDbCache : customerDbCache;
     final transactionUtils = ref.read(transactionUtilsControllerProvider);
     final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
-    final salesmanRepository = ref.read(salesmanRepositoryProvider);
+    final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
     final customerScreenController = ref.read(customerScreenControllerProvider);
     return Row(
       children: [
         DropDownWithSearchFormField(
           label: isVendor ? S.of(context).vendor : S.of(context).customer,
           initialValue: formDataNotifier.getProperty(nameKey),
-          dbRepository: repository,
+          dbCache: dbCache,
           onChangedFn: (item) {
             // update customer field & related fields
             final properties = {
@@ -119,7 +119,7 @@ class FirstRow extends ConsumerWidget {
           DropDownWithSearchFormField(
             label: S.of(context).transaction_salesman,
             initialValue: formDataNotifier.getProperty(salesmanKey),
-            dbRepository: salesmanRepository,
+            dbCache: salesmanDbCache,
             onChangedFn: (item) {
               formDataNotifier
                   .updateProperties({salesmanKey: item['name'], salesmanDbRefKey: item['dbRef']});

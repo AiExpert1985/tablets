@@ -3,7 +3,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/classes/db_repository.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/utils.dart' as utils;
 import 'package:tablets/src/common/functions/form_validation.dart' as validation;
 
@@ -13,11 +13,11 @@ class DropDownWithSearchFormField extends ConsumerWidget {
       this.label,
       this.isRequired = true,
       this.hideBorders = false,
-      required this.dbRepository,
+      required this.dbCache,
       this.initialValue,
       super.key});
 
-  final DbRepository dbRepository; // used to bring items (from database) shown in the list
+  final DbCache dbCache; // used to bring items (from database) shown in the list
   final String? initialValue; // must contains 'name' property
   final String? label; // label shown on the cell
   final bool hideBorders; // hide borders in decoration, used if the field in sub list
@@ -34,8 +34,7 @@ class DropDownWithSearchFormField extends ConsumerWidget {
           decoration: utils.formFieldDecoration(label: label, hideBorders: hideBorders),
         ),
         selectedItem: initialValue != null ? {'name': initialValue} : null,
-        items: (filter, t) =>
-            dbRepository.fetchItemListAsMaps(filterKey: 'name', filterValue: filter),
+        items: (filter, t) => dbCache.getSearchableList(filterKey: 'name', filterValue: filter),
         compareFn: (i, s) => i == s,
         popupProps: PopupProps.dialog(
           title: label != null

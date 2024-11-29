@@ -2,22 +2,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/classes/db_repository.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
-import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
-import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
+import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider.dart';
 
 // used for gifts and damages items
 class StatementForm extends ConsumerWidget {
@@ -30,10 +30,10 @@ class StatementForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final salesmanRepository = ref.read(salesmanRepositoryProvider);
-    final customerRepository = ref.read(customerRepositoryProvider);
-    final vendorRepository = ref.read(vendorRepositoryProvider);
-    final counterPartyRepository = isGift ? customerRepository : vendorRepository;
+    final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
+    final customerCache = ref.read(customerDbCacheProvider.notifier);
+    final vendorDbCache = ref.read(vendorDbCacheProvider.notifier);
+    final counterPartyDbCache = isGift ? customerCache : vendorDbCache;
     final settingsController = ref.read(settingsFormDataProvider.notifier);
     final hideTransactionAmountAsText =
         settingsController.getProperty(hideTransactionAmountAsTextKey);
@@ -48,7 +48,7 @@ class StatementForm extends ConsumerWidget {
             buildFormTitle(title),
             VerticalGap.xl,
             if (isGift)
-              _buildFirstRow(context, formDataNotifier, counterPartyRepository, salesmanRepository),
+              _buildFirstRow(context, formDataNotifier, counterPartyDbCache, salesmanDbCache),
             VerticalGap.m,
             _buildSecondRow(context, formDataNotifier),
             VerticalGap.m,
@@ -64,13 +64,13 @@ class StatementForm extends ConsumerWidget {
   }
 
   Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier,
-      DbRepository repository, DbRepository salesmanRepository) {
+      DbCache counterPartyDbCache, DbCache salesmanDbCache) {
     return Row(
       children: [
         DropDownWithSearchFormField(
           label: S.of(context).customer,
           initialValue: formDataNotifier.getProperty(nameKey),
-          dbRepository: repository,
+          dbCache: counterPartyDbCache,
           onChangedFn: (item) {
             formDataNotifier.updateProperties({
               if (isGift) nameDbRefKey: item['dbRef'],
@@ -84,7 +84,7 @@ class StatementForm extends ConsumerWidget {
         DropDownWithSearchFormField(
           label: S.of(context).transaction_salesman,
           initialValue: formDataNotifier.getProperty(salesmanKey),
-          dbRepository: salesmanRepository,
+          dbCache: salesmanDbCache,
           onChangedFn: (item) {
             formDataNotifier.updateProperties({
               salesmanKey: item[nameKey],

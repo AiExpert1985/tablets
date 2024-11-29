@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 
 enum DbCacheOperationTypes { add, edit, delete }
 
@@ -82,4 +85,15 @@ class DbCache extends StateNotifier<List<Map<String, dynamic>>> {
   }
 
   List<Map<String, dynamic>> get data => state;
+
+  // Function to convert List<Map<String, dynamic>> to FutureOr<List<Map<String, dynamic>>>
+  // it is used main for dropdown with search
+  FutureOr<List<Map<String, dynamic>>> getSearchableList(
+      {required String filterKey, required String filterValue}) {
+    List<Map<String, dynamic>> filteredList = deepCopyDbCache(state);
+    if (filterValue != '') {
+      filteredList = state.where((map) => map[filterKey] == filterValue).toList();
+    }
+    return Future.value(filteredList);
+  }
 }

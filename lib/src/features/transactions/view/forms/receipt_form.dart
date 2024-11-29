@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/classes/db_repository.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
@@ -12,14 +12,14 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
-import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
-import 'package:tablets/src/features/vendors/repository/vendor_repository_provider.dart';
+import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider.dart';
 
 class ReceiptForm extends ConsumerWidget {
   const ReceiptForm(this.title, {this.isVendor = false, super.key});
@@ -31,10 +31,10 @@ class ReceiptForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-    final salesmanRepository = ref.read(salesmanRepositoryProvider);
-    final customerRepository = ref.read(customerRepositoryProvider);
-    final vendorRepository = ref.read(vendorRepositoryProvider);
-    final counterPartyRepository = isVendor ? vendorRepository : customerRepository;
+    final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
+    final customerDbCacje = ref.read(customerDbCacheProvider.notifier);
+    final vendorDbCache = ref.read(vendorDbCacheProvider.notifier);
+    final counterPartyDbCache = isVendor ? vendorDbCache : customerDbCacje;
     final settingsController = ref.read(settingsFormDataProvider.notifier);
     final hideTransactionAmountAsText =
         settingsController.getProperty(hideTransactionAmountAsTextKey);
@@ -49,7 +49,7 @@ class ReceiptForm extends ConsumerWidget {
             buildFormTitle(title),
             VerticalGap.xl,
             _buildFirstRow(
-                context, formDataNotifier, counterPartyRepository, salesmanRepository, isVendor),
+                context, formDataNotifier, counterPartyDbCache, salesmanDbCache, isVendor),
             VerticalGap.l,
             _buildSecondRow(context, formDataNotifier, textEditingNotifier),
             VerticalGap.l,
@@ -67,13 +67,13 @@ class ReceiptForm extends ConsumerWidget {
   }
 
   Widget _buildFirstRow(BuildContext context, ItemFormData formDataNotifier,
-      DbRepository repository, DbRepository salesmanRepository, bool isVendor) {
+      DbCache counterPartyDbCache, DbCache salesmanDbCache, bool isVendor) {
     return Row(
       children: [
         DropDownWithSearchFormField(
           label: isVendor ? S.of(context).vendor : S.of(context).customer,
           initialValue: formDataNotifier.getProperty(nameKey),
-          dbRepository: repository,
+          dbCache: counterPartyDbCache,
           onChangedFn: (item) {
             final properties = {
               nameKey: item['name'],
@@ -89,7 +89,7 @@ class ReceiptForm extends ConsumerWidget {
           DropDownWithSearchFormField(
             label: S.of(context).transaction_salesman,
             initialValue: formDataNotifier.getProperty(salesmanKey),
-            dbRepository: salesmanRepository,
+            dbCache: salesmanDbCache,
             onChangedFn: (item) {
               formDataNotifier.updateProperties({salesmanKey: item[nameKey]});
             },
