@@ -31,13 +31,13 @@ class TransactionScreenController implements ScreenDataController {
 
   @override
   void setFeatureScreenData(BuildContext context) {
-    final dbCache = deepCopyDbCache(_transactionsDbCache.data);
+    final dbCacheDataCopy = deepCopyDbCache(_transactionsDbCache.data);
     _screenDataNotifier.initialize({});
-    for (var mapData in dbCache) {
+    for (var mapData in dbCacheDataCopy) {
       mapData[transactionTypeKey] =
           translateDbTextToScreenText(context, mapData[transactionTypeKey]);
     }
-    _screenDataNotifier.set(dbCache);
+    _screenDataNotifier.set(dbCacheDataCopy);
   }
 
   /// create a list of lists, where each resulting list contains transaction info
