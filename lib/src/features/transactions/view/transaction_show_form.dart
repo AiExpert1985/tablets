@@ -116,7 +116,6 @@ class TransactionShowForm {
   // for every different transaction, we calculate the next number which is the last reached +1
   static int? getHighestTransactionNumber(
       BuildContext context, List<Map<String, dynamic>> transactions, String type) {
-    type = translateDbTextToScreenText(context, type);
     // Step 1: Filter the list for the given transaction type
     final filteredTransactions =
         transactions.where((transaction) => transaction[transactionTypeKey] == type);
