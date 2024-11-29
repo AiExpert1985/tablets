@@ -58,9 +58,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "customer_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "customer_search": MessageLookupByLibrary.simpleMessage("بحث الزبائن"),
         "customers": MessageLookupByLibrary.simpleMessage("الزبائن"),
-        "daily_income": MessageLookupByLibrary.simpleMessage("الوارد اليومي"),
+        "daily_income": MessageLookupByLibrary.simpleMessage("الصندوق"),
         "daily_income_report":
-            MessageLookupByLibrary.simpleMessage("تقرير الوارد اليومي"),
+            MessageLookupByLibrary.simpleMessage("تقرير الصندوق"),
         "damagedItems": MessageLookupByLibrary.simpleMessage("مواد تالفة"),
         "date_picker_hint":
             MessageLookupByLibrary.simpleMessage("اختيار التاريخ"),
