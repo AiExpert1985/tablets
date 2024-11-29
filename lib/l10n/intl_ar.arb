@@ -231,5 +231,6 @@
     "home_page": "الرئيسية",
     "stock": "المخزون",
     "no_data_available": "لا يوجد بيانات",
-    "save_data_backup": "نسخ احتياطية"
+    "save_data_backup": "نسخ احتياطية",
+    "downloaded_backup_file_name": "قاعدة بيانات برنامج الواح"
 }

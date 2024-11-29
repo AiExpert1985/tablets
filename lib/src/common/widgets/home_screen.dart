@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
@@ -11,7 +12,13 @@ class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const AppScreenFrame(HomeScreenGreeting());
+    // we watch pageIsLoadingNotifier for one reason, which is that when we are
+    // in home page, and move to another page
+    // a load spinner will be shown in home until we move to target page
+    ref.watch(pageIsLoadingNotifier);
+    final pageIsLoading = ref.read(pageIsLoadingNotifier);
+    final screenWidget = pageIsLoading ? const PageLoading() : const HomeScreenGreeting();
+    return AppScreenFrame(screenWidget);
   }
 }
 

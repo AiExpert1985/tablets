@@ -2379,6 +2379,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Tablets database`
+  String get downloaded_backup_file_name {
+    return Intl.message(
+      'Tablets database',
+      name: 'downloaded_backup_file_name',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
