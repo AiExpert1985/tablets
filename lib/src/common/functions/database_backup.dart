@@ -22,17 +22,41 @@ Future<List<List<Map<String, dynamic>>>> _getDataBaseMaps(
     BuildContext context, WidgetRef ref) async {
   await initializeDbCacheAndSettings(context, ref);
   final salesmanData = getSalesmenDbCacheData(ref);
+  final regionsData = getRegionsDbCacheData(ref);
+  final categoriesData = getCategoriesDbCacheData(ref);
+  final settingsData = getSettingsDbCacheData(ref);
   // because json can't deal with Date classes, we need to convert to String
   final transactionData = formatDateForJson(getTransactionDbCacheData(ref), 'date');
+  final productsData = formatDateForJson(getProductsDbCacheData(ref), 'initialDate');
+  final customersData = formatDateForJson(getCustomersDbCacheData(ref), 'initialDate');
+  final vendorsData = formatDateForJson(getVendorsDbCacheData(ref), 'initialDate');
   if (context.mounted) {
     Navigator.of(context).pop();
   }
-  final dataBaseMaps = [transactionData, salesmanData];
+  final dataBaseMaps = [
+    transactionData,
+    salesmanData,
+    productsData,
+    customersData,
+    vendorsData,
+    regionsData,
+    categoriesData,
+    settingsData,
+  ];
   return dataBaseMaps;
 }
 
 List<String> _getDataBaseNames(BuildContext context) {
-  return [S.of(context).transactions, S.of(context).salesmen];
+  return [
+    S.of(context).transactions,
+    S.of(context).salesmen,
+    S.of(context).products,
+    S.of(context).customers,
+    S.of(context).vendors,
+    S.of(context).regions,
+    S.of(context).categories,
+    S.of(context).settings
+  ];
 }
 
 void _downLoadDbFiles(

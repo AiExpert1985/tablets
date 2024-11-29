@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
@@ -13,6 +14,7 @@ import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/model/settings.dart';
+import 'package:tablets/src/features/settings/repository/settings_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
 
@@ -39,6 +41,7 @@ class SettingsParameters extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final repository = ref.read(settingsRepositoryProvider);
     final settingDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final dbCache = ref.read(settingsDbCacheProvider.notifier);
     return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 15),
@@ -69,6 +72,8 @@ class SettingsParameters extends ConsumerWidget {
                   final isSuccess = await repository.updateItem(Settings.fromMap(settingsData));
                   if (isSuccess && context.mounted) {
                     success(context, S.of(context).db_success_updaging_doc);
+                    // finally we update the dbCache to mirror the change in db
+                    dbCache.update(settingsData, DbCacheOperationTypes.edit);
                   }
                 },
                 icon: const SaveIcon(),

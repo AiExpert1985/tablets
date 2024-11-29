@@ -10,7 +10,7 @@ import 'package:tablets/src/features/regions/model/region_db_cache_provider.dart
 import 'package:tablets/src/features/regions/repository/region_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_repository_provider.dart';
-import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/repository/settings_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
@@ -25,9 +25,6 @@ import 'package:tablets/src/features/vendors/repository/vendor_repository_provid
 //! from database again
 
 Future<void> initializeDbCacheAndSettings(BuildContext context, WidgetRef ref) async {
-  if (context.mounted) {
-    await _initializeSettings(ref);
-  }
   if (context.mounted) {
     await _initializeTransactionDbCache(context, ref);
   }
@@ -50,14 +47,8 @@ Future<void> initializeDbCacheAndSettings(BuildContext context, WidgetRef ref) a
   if (context.mounted) {
     await _initializeRegionsDbCache(context, ref);
   }
-}
-
-Future<void> _initializeSettings(WidgetRef ref) async {
-  final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
-  if (settingsDataNotifier.data.isEmpty) {
-    final settingRepository = ref.read(settingsRepositoryProvider);
-    final settingsData = await settingRepository.fetchItemListAsMaps();
-    settingsDataNotifier.initialize(initialData: settingsData[0]);
+  if (context.mounted) {
+    await _initializeSettingsDbCache(context, ref);
   }
 }
 
@@ -117,6 +108,14 @@ Future<void> _initializeRegionsDbCache(BuildContext context, WidgetRef ref) asyn
   }
 }
 
+Future<void> _initializeSettingsDbCache(BuildContext context, WidgetRef ref) async {
+  final settingsDbCache = ref.read(settingsDbCacheProvider.notifier);
+  if (settingsDbCache.data.isEmpty) {
+    final settingsData = await ref.read(settingsRepositoryProvider).fetchItemListAsMaps();
+    settingsDbCache.set(settingsData);
+  }
+}
+
 List<Map<String, dynamic>> getTransactionDbCacheData(WidgetRef ref) {
   final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
   return transactionsDbCache.data;
@@ -149,5 +148,10 @@ List<Map<String, dynamic>> getCustomersDbCacheData(WidgetRef ref) {
 
 List<Map<String, dynamic>> getRegionsDbCacheData(WidgetRef ref) {
   final dbCache = ref.read(regionDbCacheProvider.notifier);
+  return dbCache.data;
+}
+
+List<Map<String, dynamic>> getSettingsDbCacheData(WidgetRef ref) {
+  final dbCache = ref.read(settingsDbCacheProvider.notifier);
   return dbCache.data;
 }

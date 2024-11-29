@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/data_backup.dart';
+import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
@@ -11,6 +11,8 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/settings/repository/settings_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_screen_controller.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
@@ -55,6 +57,14 @@ class MainDrawer extends ConsumerWidget {
   }
 }
 
+Future<void> _initializeSettings(WidgetRef ref) async {
+  final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+  if (settingsDataNotifier.data.isEmpty) {
+    final settingsData = ref.read(settingsDbCacheProvider);
+    settingsDataNotifier.initialize(initialData: settingsData[0]);
+  }
+}
+
 /// initialize all dbCaches and settings, and move on the the target page
 void processAndMoveToTargetPage(BuildContext context, WidgetRef ref,
     ScreenDataController screenController, String route, String pageTitle) async {
@@ -67,13 +77,17 @@ void processAndMoveToTargetPage(BuildContext context, WidgetRef ref,
   // note that dbCaches are only used for mirroring the database, all the data used in the
   // app in the screenData, which is a processed version of dbCache
   await initializeDbCacheAndSettings(context, ref);
+  // we inialize settings
   if (context.mounted) {
-    pageTitleNotifier.state = pageTitle;
+    await _initializeSettings(ref);
   }
   // load dbCache data into screenData, which will be used later for show data in the
   // page main screen, and also for search
   if (context.mounted) {
     screenController.setFeatureScreenData(context);
+  }
+  if (context.mounted) {
+    pageTitleNotifier.state = pageTitle;
   }
   // after loading and processing data, we turn off the loading spinner
   pageLoadingNotifier.state = false;
