@@ -58,6 +58,8 @@ class FormInputField extends ConsumerWidget {
   }
 
   void _onChanged(String? value) {
+    // use try catch for cases where wrong type is entered by user
+    // ex, insert text instead of number
     try {
       if (value == null) return;
       if (dataType == FieldDataType.num) {
