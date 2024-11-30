@@ -360,7 +360,6 @@ class TransactionFormInputField extends ConsumerWidget {
               },
               index: index);
           final itemsTotalProfit = _getTotal(formDataNotifier, property, itemTotalProfitKey);
-          tempPrint(itemsTotalProfit);
           final salesmanTransactionComssion =
               _getTotal(formDataNotifier, property, itemSalesmanTotalCommissionKey);
           double transactionTotalProfit = transactionUtils.getTransactionProfit(formDataNotifier,

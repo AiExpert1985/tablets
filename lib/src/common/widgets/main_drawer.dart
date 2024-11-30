@@ -174,6 +174,7 @@ class SettingsButton extends ConsumerWidget {
         // when done it is cleared using below pageLoadingNotifier.state = false;
         pageLoadingNotifier.state = true;
         await initializeAllDbCaches(context, ref);
+        await _initializeSettings(ref);
         pageLoadingNotifier.state = false;
         if (context.mounted) {
           Navigator.of(context).pop();

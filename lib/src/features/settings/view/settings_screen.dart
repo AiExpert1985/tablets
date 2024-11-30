@@ -79,6 +79,8 @@ class SettingsParameters extends ConsumerWidget {
                 icon: const SaveIcon(),
               ),
             ),
+            VerticalGap.xl,
+            const Text('version 0.80', style: TextStyle(fontSize: 8)),
           ],
         ),
       ),
