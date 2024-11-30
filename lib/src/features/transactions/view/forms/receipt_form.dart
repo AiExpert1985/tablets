@@ -51,7 +51,7 @@ class ReceiptForm extends ConsumerWidget {
             _buildFirstRow(
                 context, formDataNotifier, counterPartyDbCache, salesmanDbCache, isVendor),
             VerticalGap.l,
-            _buildSecondRow(context, formDataNotifier, textEditingNotifier),
+            _buildSecondRow(context, formDataNotifier, textEditingNotifier, isVendor),
             VerticalGap.l,
             _buildThirdRow(context, formDataNotifier),
             VerticalGap.l,
@@ -99,7 +99,7 @@ class ReceiptForm extends ConsumerWidget {
   }
 
   Widget _buildSecondRow(BuildContext context, ItemFormData formDataNotifier,
-      TextControllerNotifier textEditingNotifier) {
+      TextControllerNotifier textEditingNotifier, bool isVendor) {
     return Row(
       children: [
         DropDownListFormField(
@@ -130,20 +130,22 @@ class ReceiptForm extends ConsumerWidget {
           },
         ),
         HorizontalGap.l,
-        FormInputField(
-          initialValue: formDataNotifier.getProperty(discountKey),
-          name: discountKey,
-          dataType: constants.FieldDataType.num,
-          label: S.of(context).transaction_discount,
-          onChangedFn: (value) {
-            formDataNotifier.updateProperties({discountKey: value});
-            final subTotalAmount = formDataNotifier.getProperty(subTotalAmountKey);
-            final totalAmount = subTotalAmount - value;
-            final updatedProperties = {totalAmountKey: totalAmount, transactionTotalProfitKey: 0};
-            formDataNotifier.updateProperties(updatedProperties);
-            textEditingNotifier.updateControllers(updatedProperties);
-          },
-        ),
+        // hide for vendors, because there is no discount
+        if (!isVendor)
+          FormInputField(
+            initialValue: formDataNotifier.getProperty(discountKey),
+            name: discountKey,
+            dataType: constants.FieldDataType.num,
+            label: S.of(context).transaction_discount,
+            onChangedFn: (value) {
+              formDataNotifier.updateProperties({discountKey: value});
+              final subTotalAmount = formDataNotifier.getProperty(subTotalAmountKey);
+              final totalAmount = subTotalAmount - value;
+              final updatedProperties = {totalAmountKey: totalAmount, transactionTotalProfitKey: 0};
+              formDataNotifier.updateProperties(updatedProperties);
+              textEditingNotifier.updateControllers(updatedProperties);
+            },
+          ),
       ],
     );
   }

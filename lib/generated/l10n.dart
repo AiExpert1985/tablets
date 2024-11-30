@@ -2419,6 +2419,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Data entry date`
+  String get date_entery_date {
+    return Intl.message(
+      'Data entry date',
+      name: 'date_entery_date',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -235,5 +235,6 @@
     "downloaded_backup_file_name": "Tablets database",
     "category_search": "Category search",
     "region_search": "Region search",
-    "region": "Region"
+    "region": "Region",
+    "date_entery_date": "Data entry date"
 }

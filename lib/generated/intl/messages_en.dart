@@ -64,6 +64,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "daily_income_report":
             MessageLookupByLibrary.simpleMessage("Daily income report"),
         "damagedItems": MessageLookupByLibrary.simpleMessage("Damaged items"),
+        "date_entery_date":
+            MessageLookupByLibrary.simpleMessage("Data entry date"),
         "date_picker_hint":
             MessageLookupByLibrary.simpleMessage("Select a date"),
         "days": MessageLookupByLibrary.simpleMessage("Days"),

@@ -121,7 +121,7 @@ class ProductFormFields extends ConsumerWidget {
           ? formDataNotifier.getProperty('initialDate').toDate()
           : formDataNotifier.getProperty('initialDate'),
       name: 'initialDate',
-      label: S.of(context).transaction_date,
+      label: S.of(context).date_entery_date,
       onChangedFn: (date) {
         formDataNotifier.updateProperties({'initialDate': Timestamp.fromDate(date!)});
       },
