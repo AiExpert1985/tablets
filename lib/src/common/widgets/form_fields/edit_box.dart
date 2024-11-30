@@ -58,15 +58,19 @@ class FormInputField extends ConsumerWidget {
   }
 
   void _onChanged(String? value) {
-    if (value == null) return;
-    if (dataType == FieldDataType.num) {
-      if (value.toString().trim().isEmpty) return;
-      final parsedValue = double.parse(value);
-      onChangedFn(parsedValue);
+    try {
+      if (value == null) return;
+      if (dataType == FieldDataType.num) {
+        if (value.toString().trim().isEmpty) return;
+        final parsedValue = double.parse(value);
+        onChangedFn(parsedValue);
+        return;
+      }
+      if (value.toString().isEmpty) return;
+      onChangedFn(value);
+    } catch (e) {
       return;
     }
-    if (value.toString().isEmpty) return;
-    onChangedFn(value);
   }
 
   FormFieldValidator<String>? _validator(BuildContext context) {
