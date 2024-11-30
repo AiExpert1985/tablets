@@ -2,6 +2,7 @@ import 'package:anydrawer/anydrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -33,7 +34,8 @@ class TransactionReportController {
     'add': [TransactionType.customerInvoice.name],
   };
   final Map<String, List<String>> _printTransactionsFilters = {
-    'subtract': [
+    'subtract': [],
+    'add': [
       TransactionType.expenditures.name,
       TransactionType.damagedItems.name,
       TransactionType.vendorReceipt.name,
@@ -41,8 +43,6 @@ class TransactionReportController {
       TransactionType.customerReturn.name,
       TransactionType.customerReceipt.name,
       TransactionType.gifts.name,
-    ],
-    'add': [
       TransactionType.customerInvoice.name,
       TransactionType.vendorInvoice.name,
     ]
@@ -81,10 +81,12 @@ class TransactionReportController {
     for (var trans in allTransactions) {
       final transaction = Transaction.fromMap(trans);
       final type = transaction.transactionType;
+      tempPrint(type);
       final addFilters = filters['add'] ?? [];
       final subtractFilters = filters['subtract'] ?? [];
       final salesman = transaction.salesman ?? '';
       if (addFilters.contains(type)) {
+        tempPrint('add');
         processedTransactions.add([
           transaction,
           translateDbTextToScreenText(context, type),
@@ -96,6 +98,7 @@ class TransactionReportController {
           transaction.notes,
         ]);
       } else if (subtractFilters.contains(type)) {
+        tempPrint('subtract');
         processedTransactions.add([
           transaction,
           translateDbTextToScreenText(context, type),

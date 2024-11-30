@@ -129,7 +129,8 @@ class ReceiptForm extends ConsumerWidget {
             textEditingNotifier.updateControllers(updatedProperties);
           },
         ),
-        HorizontalGap.l,
+        // hide for vendors, because there is no discount
+        if (!isVendor) HorizontalGap.l,
         // hide for vendors, because there is no discount
         if (!isVendor)
           FormInputField(
