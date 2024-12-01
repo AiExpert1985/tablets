@@ -167,7 +167,6 @@ class DataRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    tempPrint('hi');
     final settingsController = ref.read(settingsFormDataProvider.notifier);
     final hideSalesmanProfit = settingsController.getProperty(hideSalesmanProfitKey);
     final reportController = ref.read(salesmanReportControllerProvider);

@@ -9,7 +9,7 @@ class Salesman implements BaseItem {
   @override
   List<String> imageUrls;
   String? phone;
-  num salary;
+  double salary;
 
   Salesman({
     required this.dbRef,

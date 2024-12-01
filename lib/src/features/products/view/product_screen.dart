@@ -184,9 +184,7 @@ class DataRow extends ConsumerWidget {
     final productDbCache = ref.read(productDbCacheProvider.notifier);
     final productData = productDbCache.getItemByDbRef(productRef);
     final productCode = productScreenData[productCodeKey];
-    // tempPrint(productCode);
     final product = Product.fromMap(productData);
-    // tempPrint(productScreenData);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: Row(
