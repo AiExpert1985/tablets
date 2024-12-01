@@ -105,25 +105,36 @@ class ListHeaders extends ConsumerWidget {
     final screenDataNotifier = ref.read(salesmanScreenDataNotifier.notifier);
     final settingsController = ref.read(settingsFormDataProvider.notifier);
     final hideSalesmanProfit = settingsController.getProperty(hideSalesmanProfitKey);
-    final hideMainScreenColumnTotals = settingsController.getProperty(hideMainScreenColumnTotalsKey);
+    final hideMainScreenColumnTotals =
+        settingsController.getProperty(hideMainScreenColumnTotalsKey);
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const MainScreenPlaceholder(width: 20, isExpanded: false),
-            SortableMainScreenHeaderCell(screenDataNotifier, salesmanNameKey, S.of(context).salesman_name),
-            SortableMainScreenHeaderCell(screenDataNotifier, commissionKey, S.of(context).sum_of_commissions),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, salesmanNameKey, S.of(context).salesman_name),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, commissionKey, S.of(context).sum_of_commissions),
             SortableMainScreenHeaderCell(screenDataNotifier, customersKey, S.of(context).customers),
             SortableMainScreenHeaderCell(screenDataNotifier, totalDebtsKey, S.of(context).debts),
-            SortableMainScreenHeaderCell(screenDataNotifier, openInvoicesKey, S.of(context).open_invoices),
-            SortableMainScreenHeaderCell(screenDataNotifier, numReceiptsKey, S.of(context).receipts_number),
-            SortableMainScreenHeaderCell(screenDataNotifier, receiptsAmountKey, S.of(context).receipts_amount),
-            SortableMainScreenHeaderCell(screenDataNotifier, numInvoicesKey, S.of(context).invoices_number),
-            SortableMainScreenHeaderCell(screenDataNotifier, invoicesAmountKey, S.of(context).invoices_amount),
-            SortableMainScreenHeaderCell(screenDataNotifier, numReturnsKey, S.of(context).returns_number),
-            SortableMainScreenHeaderCell(screenDataNotifier, receiptsAmountKey, S.of(context).returns_amount),
-            if (!hideSalesmanProfit) SortableMainScreenHeaderCell(screenDataNotifier, profitKey, S.of(context).profits),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, openInvoicesKey, S.of(context).open_invoices),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, numReceiptsKey, S.of(context).receipts_number),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, receiptsAmountKey, S.of(context).receipts_amount),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, numInvoicesKey, S.of(context).invoices_number),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, invoicesAmountKey, S.of(context).invoices_amount),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, numReturnsKey, S.of(context).returns_number),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, receiptsAmountKey, S.of(context).returns_amount),
+            if (!hideSalesmanProfit)
+              SortableMainScreenHeaderCell(screenDataNotifier, profitKey, S.of(context).profits),
           ],
         ),
         VerticalGap.m,
@@ -209,7 +220,8 @@ class DataRow extends ConsumerWidget {
           MainScreenTextCell(name),
           MainScreenClickableCell(
             commission,
-            () => reportController.showTransactionReport(context, commissionDetails, name, sumIndex: 4),
+            () => reportController.showTransactionReport(context, commissionDetails, name,
+                sumIndex: 4),
           ),
           MainScreenClickableCell(
             numCustomers,
@@ -250,7 +262,8 @@ class DataRow extends ConsumerWidget {
           if (!hideSalesmanProfit)
             MainScreenClickableCell(
               profit,
-              () => reportController.showTransactionReport(context, profitTransactions, name, isProfit: true),
+              () => reportController.showTransactionReport(context, profitTransactions, name,
+                  isProfit: true),
             ),
         ],
       ),

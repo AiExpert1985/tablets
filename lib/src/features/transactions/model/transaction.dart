@@ -108,7 +108,7 @@ class Transaction implements BaseItem {
       name: map['name'],
       nameDbRef: map['nameDbRef'],
       imageUrls: List<String>.from(map['imageUrls']),
-      number: map['number'],
+      number: map['number'] is int ? map['number'] : map['number']?.toInt(),
       date: map['date'] is Timestamp ? map['date'].toDate() : map['date'],
       currency: map['currency'],
       notes: map['notes'],
@@ -116,16 +116,26 @@ class Transaction implements BaseItem {
       paymentType: map['paymentType'],
       salesman: map['salesman'],
       items: (map['items'] as List<dynamic>?)?.map((item) => item as Map<String, dynamic>).toList(),
-      discount: map['discount'],
+      discount: map['discount'] is double ? map['discount'] : map['discount']?.toDouble(),
       totalAsText: map['totalAsText'],
-      totalWeight: map['totalWeight'],
-      totalAmount: map['totalAmount'],
-      subTotalAmount: map['subTotalAmount'],
+      totalWeight:
+          map['totalWeight'] is double ? map['totalWeight'] : map['totalWeight']?.toDouble(),
+      totalAmount:
+          map['totalAmount'] is double ? map['totalAmount'] : map['totalAmount']?.toDouble(),
+      subTotalAmount: map['subTotalAmount'] is double
+          ? map['subTotalAmount']
+          : map['subTotalAmount']?.toDouble(),
       salesmanDbRef: map['salesmanDbRef'],
       sellingPriceType: map['sellingPriceType'],
-      transactionTotalProfit: map['transactionTotalProfit'],
-      itemsTotalProfit: map['itemsTotalProfit'],
-      salesmanTransactionComssion: map['salesmanTransactionComssion'],
+      transactionTotalProfit: map['transactionTotalProfit'] is double
+          ? map['transactionTotalProfit']
+          : map['transactionTotalProfit']?.toDouble(),
+      itemsTotalProfit: map['itemsTotalProfit'] is double
+          ? map['itemsTotalProfit']
+          : map['itemsTotalProfit']?.toDouble(),
+      salesmanTransactionComssion: map['salesmanTransactionComssion'] is double
+          ? map['salesmanTransactionComssion']
+          : map['salesmanTransactionComssion']?.toDouble(),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
@@ -84,7 +85,8 @@ class SalesmanScreenController implements ScreenDataController {
       final salesmanDbRef = salesmanData['dbRef'];
       final salesmanCustomers = allSalesmenCustomers[salesmanDbRef]!;
       final salesmanTransactions = allSalesmenTransactions[salesmanDbRef]!;
-      final newRow = getSalesmanScreenData(context, salesmanData, salesmanCustomers, salesmanTransactions);
+      final newRow =
+          getSalesmanScreenData(context, salesmanData, salesmanCustomers, salesmanTransactions);
       screenData.add(newRow);
     }
     Map<String, dynamic> summaryTypes = {
@@ -95,19 +97,22 @@ class SalesmanScreenController implements ScreenDataController {
     _screenDataNotifier.set(screenData);
   }
 
-  List<List<dynamic>> _getInvoices(Map<String, List<List<dynamic>>> processedTransactionsMap, String name) {
+  List<List<dynamic>> _getInvoices(
+      Map<String, List<List<dynamic>>> processedTransactionsMap, String name) {
     final transactions = processedTransactionsMap[name] ?? [[]];
     return trimLastXIndicesFromInnerLists(transactions, 2);
   }
 
-  List<List<dynamic>> _getProfitableInvoices(Map<String, List<List<dynamic>>> processedTransactionsMap) {
+  List<List<dynamic>> _getProfitableInvoices(
+      Map<String, List<List<dynamic>>> processedTransactionsMap) {
     final invoices = processedTransactionsMap['invoicesList'] ?? [[]];
     final receipts = processedTransactionsMap['returnsList'] ?? [[]];
     final profitableInvoices = [...invoices, ...receipts];
     return removeIndicesFromInnerLists(profitableInvoices, [4, 6]);
   }
 
-  List<List<dynamic>> _getCommissions(Map<String, List<List<dynamic>>> processedTransactionsMap, String name) {
+  List<List<dynamic>> _getCommissions(
+      Map<String, List<List<dynamic>>> processedTransactionsMap, String name) {
     final transactions = processedTransactionsMap[name] ?? [[]];
     return removeIndicesFromInnerLists(transactions, [4, 5]);
   }
