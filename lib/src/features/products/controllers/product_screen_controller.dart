@@ -64,6 +64,15 @@ class ProductScreenController implements ScreenDataController {
     }
     final transactions = _transactionsDbCache.data;
     for (var transactionMap in transactions) {
+      // below type conversion were done after changing from web to windows,
+      // the error was int are not acceptable as doubles
+      transactionMap.forEach((key, value) {
+        if (transactionMap[key] is int) {
+          transactionMap[key] = transactionMap[key].toDouble();
+        }
+      });
+      transactionMap['number'] = transactionMap['number'].toInt();
+      // end of conversion
       Transaction transaction = Transaction.fromMap(transactionMap);
       int totalQuantity = 0;
       double totalProfit = 0;
@@ -73,14 +82,12 @@ class ProductScreenController implements ScreenDataController {
       DateTime date = transaction.date;
       for (var item in transaction.items ?? []) {
         if (item['dbRef'] != product.dbRef) continue;
-        if (type == TransactionType.customerInvoice.name ||
-            type == TransactionType.vendorReturn.name) {
+        if (type == TransactionType.customerInvoice.name || type == TransactionType.vendorReturn.name) {
           totalQuantity -= item['soldQuantity'] as int;
           totalQuantity -= item['giftQuantity'] as int;
           totalProfit += item['itemTotalProfit'] ?? 0;
           totalSalesmanCommission += item['salesmanTotalCommission'] ?? 0;
-        } else if (type == TransactionType.vendorInvoice.name ||
-            type == TransactionType.customerReturn.name) {
+        } else if (type == TransactionType.vendorInvoice.name || type == TransactionType.customerReturn.name) {
           totalQuantity += item['soldQuantity'] as int;
           totalQuantity += item['giftQuantity'] as int;
           if (type == TransactionType.customerReturn.name) {
@@ -135,7 +142,7 @@ class ProductScreenController implements ScreenDataController {
         date: product.initialDate,
         currency: 'na',
         transactionType: TransactionType.initialCredit.name,
-        totalAmount: product.initialQuantity as double,
+        totalAmount: double.parse(product.initialQuantity.toString()),
         transactionTotalProfit: 0);
   }
 
@@ -151,8 +158,7 @@ class ProductScreenController implements ScreenDataController {
     return [totalQuantity, totalProfit, totalSalesmanCommission];
   }
 
-  List<List<dynamic>> _getOnlyProfitInvoices(
-      List<List<dynamic>> processedTransactions, int profitIndex) {
+  List<List<dynamic>> _getOnlyProfitInvoices(List<List<dynamic>> processedTransactions, int profitIndex) {
     List<List<dynamic>> result = [];
     for (var innerList in processedTransactions) {
       if (innerList.length > profitIndex && innerList[profitIndex] != 0) {

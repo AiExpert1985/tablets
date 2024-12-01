@@ -51,8 +51,13 @@ class VendorScreenController implements ScreenDataController {
   }
 
   @override
-  Map<String, dynamic> getItemScreenData(BuildContext context, Map<String, dynamic> customerData) {
-    final vendor = Vendor.fromMap(customerData);
+  Map<String, dynamic> getItemScreenData(BuildContext context, Map<String, dynamic> vendorData) {
+    // below type conversion was needed when I converted from web to windows app
+    if (vendorData['initialAmount'] is int) {
+      vendorData['initialAmount'] = vendorData['initialAmount'].toDouble();
+    }
+    // end of conversion
+    final vendor = Vendor.fromMap(vendorData);
     final vendorTransactions = getVendorTransactions(vendor.dbRef);
     if (vendor.initialAmount > 0) {
       vendorTransactions.add(_createInitialDebtTransaction(vendor));
@@ -95,8 +100,7 @@ class VendorScreenController implements ScreenDataController {
     ).toMap();
   }
 
-  List<List<dynamic>> _vendorMatching(
-      List<Map<String, dynamic>> vendorTransactions, BuildContext context) {
+  List<List<dynamic>> _vendorMatching(List<Map<String, dynamic>> vendorTransactions, BuildContext context) {
     List<List<dynamic>> matchingTransactions = [];
     for (int i = 0; i < vendorTransactions.length; i++) {
       final transaction = Transaction.fromMap(vendorTransactions[i]);
@@ -109,9 +113,7 @@ class VendorScreenController implements ScreenDataController {
       matchingTransactions.add([
         transaction,
         translateDbTextToScreenText(context, transactionType),
-        transaction.transactionType == TransactionType.initialCredit.name
-            ? ''
-            : transaction.number.toString(),
+        transaction.transactionType == TransactionType.initialCredit.name ? '' : transaction.number.toString(),
         transaction.date,
         transactionAmount,
       ]);

@@ -30,6 +30,7 @@ class ProductsScreen extends ConsumerWidget {
     // didn't reach the page through pressing the page button
     // in this case he didn't load required dbCaches so, I should hide buttons because
     // using them might cause bugs in the program
+
     Widget screenWidget = settingsData.isEmpty
         ? const HomeScreen()
         : const AppScreenFrame(
@@ -103,36 +104,30 @@ class ListHeaders extends ConsumerWidget {
     final settingsController = ref.read(settingsFormDataProvider.notifier);
     final hideProductBuyingPrice = settingsController.getProperty(hideProductBuyingPriceKey);
     final hideProductProfit = settingsController.getProperty(hideProductProfitKey);
-    final hideMainScreenColumnTotals =
-        settingsController.getProperty(hideMainScreenColumnTotalsKey);
+    final hideMainScreenColumnTotals = settingsController.getProperty(hideMainScreenColumnTotalsKey);
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const MainScreenPlaceholder(width: 20, isExpanded: false),
+            SortableMainScreenHeaderCell(screenDataNotifier, productNameKey, S.of(context).product_name),
+            SortableMainScreenHeaderCell(screenDataNotifier, productCodeKey, S.of(context).product_code),
+            SortableMainScreenHeaderCell(screenDataNotifier, productCategoryKey, S.of(context).product_category),
             SortableMainScreenHeaderCell(
-                screenDataNotifier, productNameKey, S.of(context).product_name),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, productCodeKey, S.of(context).product_code),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, productCategoryKey, S.of(context).product_category),
-            SortableMainScreenHeaderCell(screenDataNotifier, productCommissionKey,
-                S.of(context).product_salesman_commission),
+                screenDataNotifier, productCommissionKey, S.of(context).product_salesman_commission),
             if (!hideProductBuyingPrice)
               SortableMainScreenHeaderCell(
                   screenDataNotifier, productBuyingPriceKey, S.of(context).product_buying_price),
-            SortableMainScreenHeaderCell(screenDataNotifier, productSellingWholeSaleKey,
-                S.of(context).product_sell_whole_price),
-            SortableMainScreenHeaderCell(screenDataNotifier, productSellingRetailKey,
-                S.of(context).product_sell_retail_price),
             SortableMainScreenHeaderCell(
-                screenDataNotifier, productQuantityKey, S.of(context).product_stock_quantity),
+                screenDataNotifier, productSellingWholeSaleKey, S.of(context).product_sell_whole_price),
+            SortableMainScreenHeaderCell(
+                screenDataNotifier, productSellingRetailKey, S.of(context).product_sell_retail_price),
+            SortableMainScreenHeaderCell(screenDataNotifier, productQuantityKey, S.of(context).product_stock_quantity),
             SortableMainScreenHeaderCell(
                 screenDataNotifier, productTotalStockPriceKey, S.of(context).product_stock_amount),
             if (!hideProductProfit)
-              SortableMainScreenHeaderCell(
-                  screenDataNotifier, productProfitKey, S.of(context).product_profits),
+              SortableMainScreenHeaderCell(screenDataNotifier, productProfitKey, S.of(context).product_profits),
           ],
         ),
         VerticalGap.m,
@@ -188,7 +183,10 @@ class DataRow extends ConsumerWidget {
     final productRef = productScreenData[productDbRefKey];
     final productDbCache = ref.read(productDbCacheProvider.notifier);
     final productData = productDbCache.getItemByDbRef(productRef);
+    final productCode = productScreenData[productCodeKey];
+    // tempPrint(productCode);
     final product = Product.fromMap(productData);
+    // tempPrint(productScreenData);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),
       child: Row(
@@ -196,7 +194,7 @@ class DataRow extends ConsumerWidget {
         children: [
           MainScreenNumberedEditButton(sequence, () => _showEditProductForm(context, ref, product)),
           MainScreenTextCell(productScreenData[productNameKey]),
-          MainScreenTextCell(productScreenData[productCodeKey]),
+          MainScreenTextCell(productCode),
           MainScreenTextCell(productScreenData[productCategoryKey]),
           MainScreenTextCell(productScreenData[productCommissionKey]),
           if (!hideProductBuyingPrice) MainScreenTextCell(productScreenData[productBuyingPriceKey]),

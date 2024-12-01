@@ -64,6 +64,7 @@ dependencies:
   multi_select_flutter: ^4.1.3
   calendar_date_picker2: ^1.1.7
   syncfusion_flutter_sliders: ^27.2.4
+  file_selector: ^1.0.3
 
 dev_dependencies:
   flutter_test:

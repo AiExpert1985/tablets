@@ -110,8 +110,7 @@ InputDecoration formFieldDecoration({String? label, bool hideBorders = false}) {
   );
 }
 
-List<Map<String, dynamic>> convertAsyncValueListToList(
-    AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
+List<Map<String, dynamic>> convertAsyncValueListToList(AsyncValue<List<Map<String, dynamic>>> asyncProductList) {
   return asyncProductList.when(
       data: (products) => products,
       error: (e, st) {
@@ -137,7 +136,7 @@ String formatDate(DateTime date) => DateFormat('yyyy/MM/dd').format(date);
 
 // used to create thousand comma separators for numbers displayed in the UI
 // it can be used with or without decimal places using numDecimalPlaces optional parameter
-String doubleToStringWithComma(double value, {int? numDecimalPlaces}) {
+String doubleToStringWithComma(dynamic value, {int? numDecimalPlaces}) {
   String valueString;
   if (numDecimalPlaces != null) {
     valueString = value.toStringAsFixed(numDecimalPlaces); // Keeping 2 decimal places
@@ -149,8 +148,8 @@ String doubleToStringWithComma(double value, {int? numDecimalPlaces}) {
   String wholePart = parts[0];
   String decimalPart = parts.length > 1 ? '.${parts[1]}' : '';
   // Add commas to the whole part
-  String formattedWholePart = wholePart.replaceAllMapped(
-      RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match match) => '${match[1]},');
+  String formattedWholePart =
+      wholePart.replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match match) => '${match[1]},');
   // Combine the whole part and the decimal part
   return formattedWholePart + decimalPart;
 }
@@ -158,9 +157,8 @@ String doubleToStringWithComma(double value, {int? numDecimalPlaces}) {
 // order a list of lists based on date, from latest to oldest
 List<List<dynamic>> sortListOfListsByDate(List<List<dynamic>> list, int dateIndex) {
   list.sort((a, b) {
-    final dateA = a[dateIndex] is Timestamp
-        ? a[dateIndex].toDate()
-        : a[dateIndex]; // Assuming dateKey is the key for the date
+    final dateA =
+        a[dateIndex] is Timestamp ? a[dateIndex].toDate() : a[dateIndex]; // Assuming dateKey is the key for the date
     final dateB = b[dateIndex] is Timestamp ? b[dateIndex].toDate() : b[dateIndex];
     return dateB.compareTo(dateA); // Descending order
   });
@@ -177,8 +175,7 @@ List<List<dynamic>> sortListOfListsByNumber(List<List<dynamic>> list, int number
   return list;
 }
 
-void sortMapsByProperty(List<Map<String, dynamic>> list, String propertyName,
-    {isAscending = false}) {
+void sortMapsByProperty(List<Map<String, dynamic>> list, String propertyName, {isAscending = false}) {
   if (list.isEmpty || !list[0].containsKey(propertyName)) return;
   list.sort((a, b) {
     dynamic itemA = a[propertyName] ?? '';
@@ -198,8 +195,7 @@ void sortMapsByProperty(List<Map<String, dynamic>> list, String propertyName,
 }
 
 // return a copy of the original list after removing one or more specific indices from the list
-List<List<dynamic>> removeIndicesFromInnerLists(
-    List<List<dynamic>> data, List<int> indicesToRemove) {
+List<List<dynamic>> removeIndicesFromInnerLists(List<List<dynamic>> data, List<int> indicesToRemove) {
   List<List<dynamic>> result = [];
   indicesToRemove.sort((a, b) => b.compareTo(a));
   for (var innerList in data) {

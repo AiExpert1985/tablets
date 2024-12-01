@@ -30,10 +30,7 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -56,7 +53,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyD0mLO4QjR10H92fO0ZnbWJBQEpqC8Z-wU',
-    appId: '1:10059288829:web:8ba2348e76b143d44fae94',
+    appId: '1:10059288829:web:34f0585f74ee57574fae94',
     messagingSenderId: '10059288829',
     projectId: 'tablets-519a0',
     authDomain: 'tablets-519a0.firebaseapp.com',
@@ -70,6 +67,15 @@ class DefaultFirebaseOptions {
     projectId: 'tablets-519a0',
     storageBucket: 'tablets-519a0.appspot.com',
     iosBundleId: 'com.tablets.app',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyD0mLO4QjR10H92fO0ZnbWJBQEpqC8Z-wU',
+    appId: '1:10059288829:web:6340e4b18fd41bba4fae94',
+    messagingSenderId: '10059288829',
+    projectId: 'tablets-519a0',
+    authDomain: 'tablets-519a0.firebaseapp.com',
+    storageBucket: 'tablets-519a0.appspot.com',
   );
 
 }
