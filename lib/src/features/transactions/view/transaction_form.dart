@@ -88,8 +88,8 @@ class TransactionForm extends ConsumerWidget {
       fields: _getFormWidget(context, transactionType),
       buttons: _actionButtons(
           context, formController, formDataNotifier, formImagesNotifier, dbCache, screenController),
-      width: width,
-      height: height,
+      width: width is double ? width : width.toDouble(),
+      height: height is double ? height : height.toDouble(),
     );
   }
 

@@ -378,7 +378,8 @@ class TransactionFormInputField extends ConsumerWidget {
   }
 }
 
-Widget buildDataCell(width, cell, {height = 45, isTitle = false, isFirst = false, isLast = false}) {
+Widget buildDataCell(double width, Widget cell,
+    {height = 45, isTitle = false, isFirst = false, isLast = false}) {
   return Container(
       decoration: BoxDecoration(
         border: Border(
@@ -391,7 +392,7 @@ Widget buildDataCell(width, cell, {height = 45, isTitle = false, isFirst = false
             bottom: const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0)),
       ),
       width: width,
-      height: height,
+      height: height is double ? height : height.toDouble(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
