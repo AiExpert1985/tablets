@@ -9,7 +9,7 @@ class Salesman implements BaseItem {
   @override
   List<String> imageUrls;
   String? phone;
-  double salary;
+  num salary;
 
   Salesman({
     required this.dbRef,
@@ -20,8 +20,7 @@ class Salesman implements BaseItem {
   });
 
   @override
-  String get coverImageUrl =>
-      imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
+  String get coverImageUrl => imageUrls.isNotEmpty ? imageUrls[imageUrls.length - 1] : constants.defaultImageUrl;
 
   @override
   Map<String, dynamic> toMap() {

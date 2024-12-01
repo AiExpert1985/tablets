@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -104,36 +105,25 @@ class ListHeaders extends ConsumerWidget {
     final screenDataNotifier = ref.read(salesmanScreenDataNotifier.notifier);
     final settingsController = ref.read(settingsFormDataProvider.notifier);
     final hideSalesmanProfit = settingsController.getProperty(hideSalesmanProfitKey);
-    final hideMainScreenColumnTotals =
-        settingsController.getProperty(hideMainScreenColumnTotalsKey);
+    final hideMainScreenColumnTotals = settingsController.getProperty(hideMainScreenColumnTotalsKey);
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const MainScreenPlaceholder(width: 20, isExpanded: false),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, salesmanNameKey, S.of(context).salesman_name),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, commissionKey, S.of(context).sum_of_commissions),
+            SortableMainScreenHeaderCell(screenDataNotifier, salesmanNameKey, S.of(context).salesman_name),
+            SortableMainScreenHeaderCell(screenDataNotifier, commissionKey, S.of(context).sum_of_commissions),
             SortableMainScreenHeaderCell(screenDataNotifier, customersKey, S.of(context).customers),
             SortableMainScreenHeaderCell(screenDataNotifier, totalDebtsKey, S.of(context).debts),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, openInvoicesKey, S.of(context).open_invoices),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, numReceiptsKey, S.of(context).receipts_number),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, receiptsAmountKey, S.of(context).receipts_amount),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, numInvoicesKey, S.of(context).invoices_number),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, invoicesAmountKey, S.of(context).invoices_amount),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, numReturnsKey, S.of(context).returns_number),
-            SortableMainScreenHeaderCell(
-                screenDataNotifier, receiptsAmountKey, S.of(context).returns_amount),
-            if (!hideSalesmanProfit)
-              SortableMainScreenHeaderCell(screenDataNotifier, profitKey, S.of(context).profits),
+            SortableMainScreenHeaderCell(screenDataNotifier, openInvoicesKey, S.of(context).open_invoices),
+            SortableMainScreenHeaderCell(screenDataNotifier, numReceiptsKey, S.of(context).receipts_number),
+            SortableMainScreenHeaderCell(screenDataNotifier, receiptsAmountKey, S.of(context).receipts_amount),
+            SortableMainScreenHeaderCell(screenDataNotifier, numInvoicesKey, S.of(context).invoices_number),
+            SortableMainScreenHeaderCell(screenDataNotifier, invoicesAmountKey, S.of(context).invoices_amount),
+            SortableMainScreenHeaderCell(screenDataNotifier, numReturnsKey, S.of(context).returns_number),
+            SortableMainScreenHeaderCell(screenDataNotifier, receiptsAmountKey, S.of(context).returns_amount),
+            if (!hideSalesmanProfit) SortableMainScreenHeaderCell(screenDataNotifier, profitKey, S.of(context).profits),
           ],
         ),
         VerticalGap.m,
@@ -177,6 +167,7 @@ class DataRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    tempPrint('hi');
     final settingsController = ref.read(settingsFormDataProvider.notifier);
     final hideSalesmanProfit = settingsController.getProperty(hideSalesmanProfitKey);
     final reportController = ref.read(salesmanReportControllerProvider);
@@ -185,27 +176,27 @@ class DataRow extends ConsumerWidget {
     final customerData = salesmanDbCache.getItemByDbRef(customerRef);
     final salesman = Salesman.fromMap(customerData);
     final name = salesmanScreenData[salesmanNameKey] as String;
-    final commission = salesmanScreenData[commissionKey] as double;
+    final commission = salesmanScreenData[commissionKey].toDouble();
     final commissionDetails = salesmanScreenData[commissionDetailsKey] as List<List<dynamic>>;
-    final numCustomers = salesmanScreenData[customersKey] as double;
+    final numCustomers = salesmanScreenData[customersKey].toDouble();
     final customersList = salesmanScreenData[customersDetailsKey] as List<List<dynamic>>;
-    final totalDebt = salesmanScreenData[totalDebtsKey] as double;
-    final dueDebt = salesmanScreenData[dueDbetsKey] as double;
+    final totalDebt = salesmanScreenData[totalDebtsKey].toDouble();
+    final dueDebt = salesmanScreenData[dueDbetsKey].toDouble();
     final debtDetails = salesmanScreenData[debtsDetailsKey] as List<List<dynamic>>;
-    final openInvoices = salesmanScreenData[openInvoicesKey] as double;
-    final dueInvoices = salesmanScreenData[dueInvoicesKey] as double;
+    final openInvoices = salesmanScreenData[openInvoicesKey].toDouble();
+    final dueInvoices = salesmanScreenData[dueInvoicesKey].toDouble();
     final openInvoicesDetails = salesmanScreenData[openInvoicesDetailsKey] as List<List<dynamic>>;
-    final profit = salesmanScreenData[profitKey] as double;
+    final profit = salesmanScreenData[profitKey].toDouble();
     final profitTransactions = salesmanScreenData[profitDetailsKey] as List<List<dynamic>>;
-    final numInvoices = salesmanScreenData[numInvoicesKey] as double;
+    final numInvoices = salesmanScreenData[numInvoicesKey].toDouble();
     final invoices = salesmanScreenData[invoicesKey] as List<List<dynamic>>;
-    final numReceipts = salesmanScreenData[numReceiptsKey] as double;
+    final numReceipts = salesmanScreenData[numReceiptsKey].toDouble();
     final receipts = salesmanScreenData[receiptsKey] as List<List<dynamic>>;
-    final invoicesAmount = salesmanScreenData[invoicesAmountKey] as double;
-    final receiptAmount = salesmanScreenData[receiptsAmountKey] as double;
+    final invoicesAmount = salesmanScreenData[invoicesAmountKey].toDouble();
+    final receiptAmount = salesmanScreenData[receiptsAmountKey].toDouble();
     final returns = salesmanScreenData[returnsKey] as List<List<dynamic>>;
-    final numReturns = salesmanScreenData[numReturnsKey] as double;
-    final returnsAmount = salesmanScreenData[returnsAmountKey] as double;
+    final numReturns = salesmanScreenData[numReturnsKey].toDouble();
+    final returnsAmount = salesmanScreenData[returnsAmountKey].toDouble();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3.0),
@@ -219,8 +210,7 @@ class DataRow extends ConsumerWidget {
           MainScreenTextCell(name),
           MainScreenClickableCell(
             commission,
-            () => reportController.showTransactionReport(context, commissionDetails, name,
-                sumIndex: 4),
+            () => reportController.showTransactionReport(context, commissionDetails, name, sumIndex: 4),
           ),
           MainScreenClickableCell(
             numCustomers,
@@ -261,8 +251,7 @@ class DataRow extends ConsumerWidget {
           if (!hideSalesmanProfit)
             MainScreenClickableCell(
               profit,
-              () => reportController.showTransactionReport(context, profitTransactions, name,
-                  isProfit: true),
+              () => reportController.showTransactionReport(context, profitTransactions, name, isProfit: true),
             ),
         ],
       ),
