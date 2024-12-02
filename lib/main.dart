@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tablets/src/app.dart';
 import 'package:tablets/src/common/functions/app_inialization.dart' as my_initializer;
@@ -19,6 +20,9 @@ void main() async {
   // * https://docs.flutter.dev/testing/errors
   registerErrorHandlers();
   my_initializer.customInialization();
+
+// Enable offline persistence (make firebase work offline)
+  FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
 
   runApp(const ProviderScope(
     child: MyApp(),
@@ -41,8 +45,7 @@ void registerErrorHandlers() {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: const Text(
-            'An error occurred -- handled by the registerErrorHandlers() function in main.dart'),
+        title: const Text('An error occurred -- handled by the registerErrorHandlers() function in main.dart'),
       ),
       body: Center(child: Text(details.toString())),
     );

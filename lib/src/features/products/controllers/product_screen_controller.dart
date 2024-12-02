@@ -74,27 +74,27 @@ class ProductScreenController implements ScreenDataController {
       transactionMap['number'] = transactionMap['number'].toInt();
       // end of conversion
       Transaction transaction = Transaction.fromMap(transactionMap);
-      int totalQuantity = 0;
-      double totalProfit = 0;
-      double totalSalesmanCommission = 0;
+      num totalQuantity = 0;
+      num totalProfit = 0;
+      num totalSalesmanCommission = 0;
       String type = transaction.transactionType;
       String number = '${transaction.number}';
       DateTime date = transaction.date;
       for (var item in transaction.items ?? []) {
         if (item['dbRef'] != product.dbRef) continue;
         if (type == TransactionType.customerInvoice.name || type == TransactionType.vendorReturn.name) {
-          totalQuantity -= item['soldQuantity'] as int;
-          totalQuantity -= item['giftQuantity'] as int;
+          totalQuantity -= item['soldQuantity'];
+          totalQuantity -= item['giftQuantity'];
           totalProfit += item['itemTotalProfit'] ?? 0;
           totalSalesmanCommission += item['salesmanTotalCommission'] ?? 0;
         } else if (type == TransactionType.vendorInvoice.name || type == TransactionType.customerReturn.name) {
-          totalQuantity += item['soldQuantity'] as int;
-          totalQuantity += item['giftQuantity'] as int;
+          totalQuantity += item['soldQuantity'];
+          totalQuantity += item['giftQuantity'];
           if (type == TransactionType.customerReturn.name) {
             totalProfit -= item['itemTotalProfit'] ?? 0;
           }
         } else if (type == TransactionType.damagedItems.name) {
-          totalQuantity -= item['soldQuantity'] as int;
+          totalQuantity -= item['soldQuantity'];
           totalProfit -= (item['soldQuantity'] ?? 0) * (item['buyingPrice'] ?? 0);
         } else {
           continue;
@@ -147,11 +147,11 @@ class ProductScreenController implements ScreenDataController {
   }
 
   List<dynamic> _getProductTotals(List<List<dynamic>> productTransactions) {
-    int totalQuantity = 0;
-    double totalProfit = 0.0;
-    double totalSalesmanCommission = 0.0;
+    num totalQuantity = 0;
+    num totalProfit = 0.0;
+    num totalSalesmanCommission = 0.0;
     for (var transaction in productTransactions) {
-      totalQuantity += transaction[4] as int;
+      totalQuantity += transaction[4];
       totalProfit += transaction[5];
       totalSalesmanCommission += transaction[6];
     }
