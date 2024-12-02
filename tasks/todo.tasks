@@ -1,13 +1,6 @@
 Tasks:
-    ☐ سعر المادة يكون مختلف من زبون الى اخر حسب نوع التعامل المسجل - مفرد او جملة
-    ☐ جعل ارقام قوائم الزبائن اوتوماتيكية
-    ☐ في القائمة الجانبية الرئيسية ابقاء فقط الاعدادات و هي تفتح الاصناف و الاعدادات الاولية و المناطق
-    ☐ امكانية ترتيب القوائم بضغطة زر حسب العمور الذي تم اختياره
-    
-Improvements:
-    ☐ create TransactionItem, to avoid the error prone map calling for transaction items,
-       it means calling item ProductItem.fromMap(map) then item.dbRef is better than calling item['dbRef']
-       note that TransactionItem is different from Product, where TransactionItem contains, name, price, soldQuantity, giftQuantity, ... etc
+    ☐ في حالة الاوفلاين لا يتم حذف صور الايتم الذي تم حذفه لذلك يجب ايجاد طريقة لحذفه,
+     احد الافكار هي خزن هذه اللنكات في قاعدة بيانات و تجييك عند فتح البرنامج اذا كان هنالك اي لنك يتم حذفه مثلا
 
 After Finish:
     ☐ read about the reaons for using the global error capture and print in main.dart
