@@ -69,6 +69,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "date_picker_hint":
             MessageLookupByLibrary.simpleMessage("Select a date"),
         "days": MessageLookupByLibrary.simpleMessage("Days"),
+        "db_backup_failure": MessageLookupByLibrary.simpleMessage(
+            "Error happened during database backup"),
+        "db_backup_success": MessageLookupByLibrary.simpleMessage(
+            "Database backup were successful"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
             "An error happened while adding to the database"),
         "db_error_deleting_doc": MessageLookupByLibrary.simpleMessage(

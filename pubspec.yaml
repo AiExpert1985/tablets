@@ -66,6 +66,7 @@ dependencies:
   syncfusion_flutter_sliders: ^27.2.4
   file_selector: ^1.0.3
   connectivity_plus: ^6.1.0
+  archive: ^3.6.1
 
 dev_dependencies:
   flutter_test:

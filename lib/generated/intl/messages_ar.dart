@@ -67,6 +67,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "date_picker_hint":
             MessageLookupByLibrary.simpleMessage("اختيار التاريخ"),
         "days": MessageLookupByLibrary.simpleMessage("يوم"),
+        "db_backup_failure": MessageLookupByLibrary.simpleMessage(
+            "حدث خطأ اثناء خزن نسخة احتياطية"),
+        "db_backup_success":
+            MessageLookupByLibrary.simpleMessage("تم خزن نسخة احتياطية"),
         "db_error_adding_doc": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ اثناء اضافة معلومات جديدة الى قاعدة البيانات"),
         "db_error_deleting_doc": MessageLookupByLibrary.simpleMessage(

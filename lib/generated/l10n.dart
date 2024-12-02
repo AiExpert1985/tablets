@@ -2429,6 +2429,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Database backup were successful`
+  String get db_backup_success {
+    return Intl.message(
+      'Database backup were successful',
+      name: 'db_backup_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error happened during database backup`
+  String get db_backup_failure {
+    return Intl.message(
+      'Error happened during database backup',
+      name: 'db_backup_failure',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

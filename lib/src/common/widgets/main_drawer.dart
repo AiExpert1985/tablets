@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
@@ -69,8 +70,8 @@ Future<void> _initializeSettings(WidgetRef ref) async {
 }
 
 /// initialize all dbCaches and settings, and move on the the target page
-void processAndMoveToTargetPage(
-    BuildContext context, WidgetRef ref, ScreenDataController screenController, String route, String pageTitle) async {
+void processAndMoveToTargetPage(BuildContext context, WidgetRef ref,
+    ScreenDataController screenController, String route, String pageTitle) async {
   final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
   final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
   // page is loading only used to show a loading spinner (better user experience)
@@ -129,8 +130,11 @@ class CustomersButton extends ConsumerWidget {
 
     final route = AppRoute.customers.name;
     final pageTitle = S.of(context).customers;
-    return MainDrawerButton('customers', S.of(context).customers,
-        () async => processAndMoveToTargetPage(context, ref, customerScreenController, route, pageTitle));
+    return MainDrawerButton(
+        'customers',
+        S.of(context).customers,
+        () async =>
+            processAndMoveToTargetPage(context, ref, customerScreenController, route, pageTitle));
   }
 }
 
@@ -191,8 +195,11 @@ class SalesmenButton extends ConsumerWidget {
     final salesmanScreenController = ref.read(salesmanScreenControllerProvider);
     final route = AppRoute.salesman.name;
     final pageTitle = S.of(context).salesmen;
-    return MainDrawerButton('salesman', S.of(context).salesmen,
-        () async => processAndMoveToTargetPage(context, ref, salesmanScreenController, route, pageTitle));
+    return MainDrawerButton(
+        'salesman',
+        S.of(context).salesmen,
+        () async =>
+            processAndMoveToTargetPage(context, ref, salesmanScreenController, route, pageTitle));
   }
 }
 
@@ -204,8 +211,11 @@ class VendorsButton extends ConsumerWidget {
     final vendorScreenController = ref.read(vendorScreenControllerProvider);
     final route = AppRoute.vendors.name;
     final pageTitle = S.of(context).vendors;
-    return MainDrawerButton('vendors', S.of(context).vendors,
-        () async => processAndMoveToTargetPage(context, ref, vendorScreenController, route, pageTitle));
+    return MainDrawerButton(
+        'vendors',
+        S.of(context).vendors,
+        () async =>
+            processAndMoveToTargetPage(context, ref, vendorScreenController, route, pageTitle));
   }
 }
 
@@ -217,8 +227,11 @@ class TransactionsButton extends ConsumerWidget {
     final transactionScreenController = ref.read(transactionScreenControllerProvider);
     final route = AppRoute.transactions.name;
     final pageTitle = S.of(context).transactions;
-    return MainDrawerButton('transactions', S.of(context).transactions,
-        () async => processAndMoveToTargetPage(context, ref, transactionScreenController, route, pageTitle));
+    return MainDrawerButton(
+        'transactions',
+        S.of(context).transactions,
+        () async => processAndMoveToTargetPage(
+            context, ref, transactionScreenController, route, pageTitle));
   }
 }
 
@@ -397,7 +410,7 @@ class BackupButton extends ConsumerWidget {
       height: 150,
       child: InkWell(
         onTap: () async {
-          // backupDataBase(context, ref);
+          backupDataBase(context, ref);
         },
         child: Card(
           elevation: 4,

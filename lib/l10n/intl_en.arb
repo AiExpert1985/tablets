@@ -236,5 +236,7 @@
     "category_search": "Category search",
     "region_search": "Region search",
     "region": "Region",
-    "date_entery_date": "Data entry date"
+    "date_entery_date": "Data entry date",
+    "db_backup_success": "Database backup were successful",
+    "db_backup_failure": "Error happened during database backup"
 }
