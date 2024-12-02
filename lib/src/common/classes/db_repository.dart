@@ -10,19 +10,6 @@ class DbRepository {
   final String _collectionName;
   final String _dbReferenceKey = 'dbRef';
 
-  //// below function were update when I used offline firebase
-  // Future<bool> addItem(BaseItem item) async {
-  //   try {
-  //     final docRef = _firestore.collection(_collectionName).doc();
-  //     await docRef.set(item.toMap());
-  //     tempPrint('success!');
-  //     return true;
-  //   } catch (e) {
-  //     errorPrint(e, stackTrace: StackTrace.current);
-  //     return false;
-  //   }
-  // }
-
   Future<void> addItem(BaseItem item) async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.wifi) ||
@@ -44,24 +31,6 @@ class DbRepository {
       errorPrint('Error adding item to local cache: $e');
     });
   }
-
-  //// below function were update when I used offline firebase
-  // Future<bool> updateItem(BaseItem updatedItem) async {
-  //   try {
-  //     final query = _firestore
-  //         .collection(_collectionName)
-  //         .where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
-  //     final querySnapshot = await query.get(const GetOptions(source: Source.cache));
-  //     if (querySnapshot.size > 0) {
-  //       final documentRef = querySnapshot.docs[0].reference;
-  //       await documentRef.update(updatedItem.toMap());
-  //     }
-  //     return true;
-  //   } catch (error) {
-  //     errorPrint(error, stackTrace: StackTrace.current);
-  //     return false;
-  //   }
-  // }
 
   Future<void> updateItem(BaseItem updatedItem) async {
     final connectivityResult = await Connectivity().checkConnectivity();
