@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
-import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -69,12 +68,11 @@ class SettingsParameters extends ConsumerWidget {
               child: IconButton(
                 onPressed: () async {
                   final settingsData = settingDataNotifier.data;
-                  final isSuccess = await repository.updateItem(Settings.fromMap(settingsData));
-                  if (isSuccess && context.mounted) {
-                    success(context, S.of(context).db_success_updaging_doc);
-                    // finally we update the dbCache to mirror the change in db
-                    dbCache.update(settingsData, DbCacheOperationTypes.edit);
-                  }
+                  repository.updateItem(Settings.fromMap(settingsData));
+
+                  // success(context, S.of(context).db_success_updaging_doc);
+                  // finally we update the dbCache to mirror the change in db
+                  dbCache.update(settingsData, DbCacheOperationTypes.edit);
                 },
                 icon: const SaveIcon(),
               ),

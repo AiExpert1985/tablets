@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:tablets/src/common/interfaces/base_item.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 
@@ -9,49 +10,122 @@ class DbRepository {
   final String _collectionName;
   final String _dbReferenceKey = 'dbRef';
 
-  Future<bool> addItem(BaseItem item) async {
-    try {
-      final docRef = _firestore.collection(_collectionName).doc();
-      await docRef.set(item.toMap(), SetOptions());
-      tempPrint('success!');
-      return true;
-    } catch (e) {
-      errorPrint(e, stackTrace: StackTrace.current);
-      return false;
+  //// below function were update when I used offline firebase
+  // Future<bool> addItem(BaseItem item) async {
+  //   try {
+  //     final docRef = _firestore.collection(_collectionName).doc();
+  //     await docRef.set(item.toMap());
+  //     tempPrint('success!');
+  //     return true;
+  //   } catch (e) {
+  //     errorPrint(e, stackTrace: StackTrace.current);
+  //     return false;
+  //   }
+  // }
+
+  Future<void> addItem(BaseItem item) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.wifi) ||
+        connectivityResult.contains(ConnectivityResult.ethernet) ||
+        connectivityResult.contains(ConnectivityResult.vpn)) {
+      // Device is connected to the internet
+      try {
+        await _firestore.collection(_collectionName).doc().set(item.toMap());
+        tempPrint('Item added successfully!');
+      } catch (e) {
+        errorPrint('Error adding item: $e');
+      }
+    }
+    // Device is offline
+    final docRef = _firestore.collection(_collectionName).doc();
+    docRef.set(item.toMap()).then((_) {
+      tempPrint('Item added to local cache!');
+    }).catchError((e) {
+      errorPrint('Error adding item to local cache: $e');
+    });
+  }
+
+  //// below function were update when I used offline firebase
+  // Future<bool> updateItem(BaseItem updatedItem) async {
+  //   try {
+  //     final query = _firestore
+  //         .collection(_collectionName)
+  //         .where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
+  //     final querySnapshot = await query.get(const GetOptions(source: Source.cache));
+  //     if (querySnapshot.size > 0) {
+  //       final documentRef = querySnapshot.docs[0].reference;
+  //       await documentRef.update(updatedItem.toMap());
+  //     }
+  //     return true;
+  //   } catch (error) {
+  //     errorPrint(error, stackTrace: StackTrace.current);
+  //     return false;
+  //   }
+  // }
+
+  Future<void> updateItem(BaseItem updatedItem) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.wifi) ||
+        connectivityResult.contains(ConnectivityResult.ethernet) ||
+        connectivityResult.contains(ConnectivityResult.vpn)) {
+      // Device is connected to the internet
+      try {
+        final query = _firestore
+            .collection(_collectionName)
+            .where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
+        final querySnapshot = await query.get(const GetOptions(source: Source.cache));
+        if (querySnapshot.size > 0) {
+          final documentRef = querySnapshot.docs[0].reference;
+          await documentRef.update(updatedItem.toMap());
+        }
+      } catch (error) {
+        errorPrint(error, stackTrace: StackTrace.current);
+      }
+    }
+    // when offline
+    final query =
+        _firestore.collection(_collectionName).where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
+    final querySnapshot = await query.get(const GetOptions(source: Source.cache));
+    if (querySnapshot.size > 0) {
+      final documentRef = querySnapshot.docs[0].reference;
+      await documentRef.update(updatedItem.toMap()).then((_) {
+        tempPrint('Item update in local cache!');
+      }).catchError((e) {
+        errorPrint('Error updating item in local cache: $e');
+      });
     }
   }
 
-  Future<bool> updateItem(BaseItem updatedItem) async {
-    try {
-      final query = _firestore
-          .collection(_collectionName)
-          .where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
-      final querySnapshot = await query.get(const GetOptions(source: Source.cache));
-      if (querySnapshot.size > 0) {
-        final documentRef = querySnapshot.docs[0].reference;
-        await documentRef.update(updatedItem.toMap());
+  Future<void> deleteItem(BaseItem item) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.wifi) ||
+        connectivityResult.contains(ConnectivityResult.ethernet) ||
+        connectivityResult.contains(ConnectivityResult.vpn)) {
+      // Device is connected to the internet
+      try {
+        final querySnapshot = await _firestore
+            .collection(_collectionName)
+            .where(_dbReferenceKey, isEqualTo: item.dbRef)
+            .get(const GetOptions(source: Source.cache));
+        if (querySnapshot.size > 0) {
+          final documentRef = querySnapshot.docs[0].reference;
+          await documentRef.delete();
+        }
+      } catch (error) {
+        errorPrint(error, stackTrace: StackTrace.current);
       }
-      return true;
-    } catch (error) {
-      errorPrint(error, stackTrace: StackTrace.current);
-      return false;
     }
-  }
-
-  Future<bool> deleteItem(BaseItem item) async {
-    try {
-      final querySnapshot = await _firestore
-          .collection(_collectionName)
-          .where(_dbReferenceKey, isEqualTo: item.dbRef)
-          .get(const GetOptions(source: Source.cache));
-      if (querySnapshot.size > 0) {
-        final documentRef = querySnapshot.docs[0].reference;
-        await documentRef.delete();
-      }
-      return true;
-    } catch (error) {
-      errorPrint(error, stackTrace: StackTrace.current);
-      return false;
+    final querySnapshot = await _firestore
+        .collection(_collectionName)
+        .where(_dbReferenceKey, isEqualTo: item.dbRef)
+        .get(const GetOptions(source: Source.cache));
+    if (querySnapshot.size > 0) {
+      final documentRef = querySnapshot.docs[0].reference;
+      await documentRef.delete().then((_) {
+        tempPrint('Item deleted from local cache!');
+      }).catchError((e) {
+        errorPrint('Error deleting item from local cache: $e');
+      });
     }
   }
 

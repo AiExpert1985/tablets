@@ -65,6 +65,7 @@ dependencies:
   calendar_date_picker2: ^1.1.7
   syncfusion_flutter_sliders: ^27.2.4
   file_selector: ^1.0.3
+  connectivity_plus: ^6.1.0
 
 dev_dependencies:
   flutter_test:
