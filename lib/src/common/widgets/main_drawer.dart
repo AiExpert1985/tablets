@@ -5,6 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/print_document.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/daily_backup_provider.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
@@ -127,7 +128,7 @@ class HomeButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     return MainDrawerButton('home', S.of(context).home_page, () async {
-      // printDocument();
+      printDocument();
       await initializeAllDbCaches(context, ref);
       if (context.mounted) {
         Navigator.of(context).pop();

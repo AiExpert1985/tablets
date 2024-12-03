@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:tablets/src/common/functions/debug_print.dart';
+
 class Logger {
   static Future<File> _getLogFile() async {
     final logFilePath = getFilePath();
@@ -8,10 +10,14 @@ class Logger {
   }
 
   static Future<void> logError(String error) async {
-    final file = await _getLogFile();
-    // Append the error message with a timestamp
-    final timestamp = DateTime.now().toIso8601String();
-    await file.writeAsString('$timestamp: $error\n', mode: FileMode.append);
+    try {
+      final file = await _getLogFile();
+      // Append the error message with a timestamp
+      final timestamp = DateTime.now().toIso8601String();
+      await file.writeAsString('$timestamp: $error\n', mode: FileMode.append);
+    } catch (e) {
+      tempPrint('error during writing to log file');
+    }
   }
 
   static String getFilePath() {

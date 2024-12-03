@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/save_file_to_system.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:archive/archive.dart';
@@ -78,7 +79,7 @@ Future<void> _saveDbFiles(
     }
     final zipData = ZipEncoder().encode(archive);
 
-    final zipFilePath = getExecutablePath();
+    final zipFilePath = getBackupFilePath();
     if (zipFilePath == null) {
       return;
     }
@@ -96,39 +97,5 @@ Future<void> _saveDbFiles(
       failure(context, S.of(context).db_backup_failure);
     }
     errorPrint('backup database failed -- $e');
-  }
-}
-
-String? getExecutablePath() {
-  try {
-    // Get the path to the executable
-    String executablePath = Platform.resolvedExecutable;
-
-    // Get the application folder path
-    String appFolderPath = Directory(executablePath).parent.path;
-
-    // Define the path for the 'database_backup' folder
-    Directory backupDir = Directory('$appFolderPath/database_backup');
-
-    // Check if the 'database_backup' folder exists
-    if (!backupDir.existsSync()) {
-      // If it doesn't exist, create it
-      backupDir.createSync(recursive: true);
-    }
-
-    // Get the current date for the backup file name
-    final currentDate = DateTime.now();
-    final day = currentDate.day.toString().padLeft(2, '0'); // Pad day
-    final month = currentDate.month.toString().padLeft(2, '0'); // Pad month
-    final year = currentDate.year;
-
-    // Create the backup file name
-    final zipFileName = 'tablets_backup_$year$month$day.zip';
-
-    // Return the full path to the backup file
-    return '${backupDir.path}/$zipFileName'; // Use backupDir.path here
-  } catch (e) {
-    errorPrint('Error during getting backup file path -- $e');
-    return null;
   }
 }
