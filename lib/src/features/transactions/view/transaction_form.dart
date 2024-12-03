@@ -5,6 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/print_document.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -117,6 +118,12 @@ class TransactionForm extends ConsumerWidget {
           },
           icon: const DeleteIcon(),
         ),
+      IconButton(
+        onPressed: () {
+          _onPrintPressed(context, formDataNotifier);
+        },
+        icon: const PrintIcon(),
+      ),
     ];
   }
 
@@ -175,5 +182,10 @@ class TransactionForm extends ConsumerWidget {
         screenController.setFeatureScreenData(context);
       }
     }
+  }
+
+  void _onPrintPressed(BuildContext context, ItemFormData formDataNotifier) async {
+    final customerInvoicePdf = await getCustomerInvoicePdf(context, formDataNotifier.data);
+    printDocument(customerInvoicePdf);
   }
 }

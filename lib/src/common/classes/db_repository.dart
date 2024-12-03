@@ -18,7 +18,7 @@ class DbRepository {
       // Device is connected to the internet
       try {
         await _firestore.collection(_collectionName).doc().set(item.toMap());
-        logPrint('Item added to live firestore successfully!');
+        errorLog('Item added to live firestore successfully!');
         return;
       } catch (e) {
         errorPrint('Error adding item to live firestore: $e');
@@ -28,7 +28,7 @@ class DbRepository {
     // Device is offline
     final docRef = _firestore.collection(_collectionName).doc();
     docRef.set(item.toMap()).then((_) {
-      logPrint('Item added to firestore cache!');
+      errorLog('Item added to firestore cache!');
     }).catchError((e) {
       errorPrint('Error adding item to firestore cache: $e');
     });
@@ -41,12 +41,14 @@ class DbRepository {
         connectivityResult.contains(ConnectivityResult.vpn)) {
       // Device is connected to the internet
       try {
-        final query = _firestore.collection(_collectionName).where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
+        final query = _firestore
+            .collection(_collectionName)
+            .where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
         final querySnapshot = await query.get(const GetOptions(source: Source.cache));
         if (querySnapshot.size > 0) {
           final documentRef = querySnapshot.docs[0].reference;
           await documentRef.update(updatedItem.toMap());
-          logPrint('Item updated in live firestore successfully!');
+          errorLog('Item updated in live firestore successfully!');
         }
         return;
       } catch (e) {
@@ -55,12 +57,13 @@ class DbRepository {
       }
     }
     // when offline
-    final query = _firestore.collection(_collectionName).where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
+    final query =
+        _firestore.collection(_collectionName).where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
     final querySnapshot = await query.get(const GetOptions(source: Source.cache));
     if (querySnapshot.size > 0) {
       final documentRef = querySnapshot.docs[0].reference;
       await documentRef.update(updatedItem.toMap()).then((_) {
-        logPrint('Item updated in firestore cache!');
+        errorLog('Item updated in firestore cache!');
       }).catchError((e) {
         errorPrint('Error updating item in firebase cache: $e');
       });
@@ -81,7 +84,7 @@ class DbRepository {
         if (querySnapshot.size > 0) {
           final documentRef = querySnapshot.docs[0].reference;
           await documentRef.delete();
-          logPrint('Item deleted from live firestore successfully!');
+          errorLog('Item deleted from live firestore successfully!');
         }
         return;
       } catch (e) {
@@ -96,7 +99,7 @@ class DbRepository {
     if (querySnapshot.size > 0) {
       final documentRef = querySnapshot.docs[0].reference;
       await documentRef.delete().then((_) {
-        logPrint('Item deleted from firestore cache!');
+        errorLog('Item deleted from firestore cache!');
       }).catchError((e) {
         errorPrint('Error deleting item from firestore cache: $e');
       });
@@ -105,7 +108,9 @@ class DbRepository {
 
   Stream<List<Map<String, dynamic>>> watchItemListAsMaps() {
     final ref = _firestore.collection(_collectionName);
-    return ref.snapshots().map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+    return ref
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
   /// below function was not tested
@@ -115,7 +120,9 @@ class DbRepository {
       fromFirestore: (doc, _) => BaseItem.fromMap(doc.data()!),
       toFirestore: (BaseItem product, options) => product.toMap(),
     );
-    return ref.snapshots().map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+    return ref
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
   Future<BaseItem> fetchItemAsObject({String? filterKey, String? filterValue}) async {
@@ -141,7 +148,10 @@ class DbRepository {
           .where(filterKey, isLessThan: '$filterValue\uf8ff');
     }
     final snapshot = await query.get(const GetOptions(source: Source.cache));
-    return snapshot.docs.map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>).toList().first;
+    return snapshot.docs
+        .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
+        .toList()
+        .first;
   }
 
   Future<List<BaseItem>> fetchItemListAsObjects({String? filterKey, String? filterValue}) async {
@@ -160,7 +170,8 @@ class DbRepository {
   }
 
   /// below function was not tested
-  Future<List<Map<String, dynamic>>> fetchItemListAsMaps({String? filterKey, String? filterValue}) async {
+  Future<List<Map<String, dynamic>>> fetchItemListAsMaps(
+      {String? filterKey, String? filterValue}) async {
     Query query = _firestore.collection(_collectionName);
     if (filterKey != null) {
       query = query
