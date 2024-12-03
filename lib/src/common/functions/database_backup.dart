@@ -86,16 +86,48 @@ Future<void> _saveDbFiles(
   }
 }
 
+// String getExecutablePath() {
+//   String executablePath = Platform.resolvedExecutable;
+
+//   String appFolderPath = Directory(executablePath).parent.path;
+
+//   final currentDate = DateTime.now();
+//   final day = currentDate.day;
+//   final month = currentDate.month;
+//   final year = currentDate.year;
+//   final zipFileName = 'tablets_backup_$year$month$day.zip';
+
+//   return '$appFolderPath/$zipFileName';
+// }
+
 String getExecutablePath() {
+  // Get the path to the executable
   String executablePath = Platform.resolvedExecutable;
 
+  // Get the application folder path
   String appFolderPath = Directory(executablePath).parent.path;
 
+  // Define the path for the 'database_backup' folder
+  Directory backupDir = Directory('$appFolderPath/database_backup');
+
+  // Check if the 'database_backup' folder exists
+  if (!backupDir.existsSync()) {
+    // If it doesn't exist, create it
+    backupDir.createSync(recursive: true);
+    tempPrint('Created directory: ${backupDir.path}');
+  } else {
+    tempPrint('Directory already exists: ${backupDir.path}');
+  }
+
+  // Get the current date for the backup file name
   final currentDate = DateTime.now();
-  final day = currentDate.day;
-  final month = currentDate.month;
+  final day = currentDate.day.toString().padLeft(2, '0'); // Pad day
+  final month = currentDate.month.toString().padLeft(2, '0'); // Pad month
   final year = currentDate.year;
+
+  // Create the backup file name
   final zipFileName = 'tablets_backup_$year$month$day.zip';
 
-  return '$appFolderPath/$zipFileName';
+  // Return the full path to the backup file
+  return '${backupDir.path}/$zipFileName'; // Use backupDir.path here
 }
