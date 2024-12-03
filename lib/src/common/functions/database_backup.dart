@@ -8,12 +8,17 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:archive/archive.dart';
+import 'package:tablets/src/common/providers/daily_backup_provider.dart';
 
-void backupDataBase(BuildContext context, WidgetRef ref) async {
-  final dataBaseNames = _getDataBaseNames(context);
-  final dataBaseMaps = await _getDataBaseMaps(context, ref);
-  if (context.mounted) {
-    await _saveDbFiles(context, dataBaseMaps, dataBaseNames); // Change function name
+Future<void> backupDataBase(BuildContext context, WidgetRef ref) async {
+  try {
+    final dataBaseNames = _getDataBaseNames(context);
+    final dataBaseMaps = await _getDataBaseMaps(context, ref);
+    if (context.mounted) {
+      await _saveDbFiles(context, ref, dataBaseMaps, dataBaseNames);
+    }
+  } catch (e) {
+    errorPrint('Error during database backup -- $e');
   }
 }
 
@@ -28,7 +33,10 @@ Future<List<List<Map<String, dynamic>>>> _getDataBaseMaps(BuildContext context, 
   final productsData = formatDateForJson(getProductsDbCacheData(ref), 'initialDate');
   final customersData = formatDateForJson(getCustomersDbCacheData(ref), 'initialDate');
   final vendorsData = formatDateForJson(getVendorsDbCacheData(ref), 'initialDate');
-  if (context.mounted) {
+  final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
+  final dailyBackupStatus = dailyBackupNotifier.state;
+  if (context.mounted && dailyBackupStatus) {
+    // note that we only remove dialog when it is not auto daily backup
     Navigator.of(context).pop();
   }
   final dataBaseMaps = [
@@ -59,7 +67,7 @@ List<String> _getDataBaseNames(BuildContext context) {
 
 // Change the name of the function to _saveDbFiles
 Future<void> _saveDbFiles(
-    BuildContext context, List<List<Map<String, dynamic>>> allData, List<String> fileNames) async {
+    BuildContext context, WidgetRef ref, List<List<Map<String, dynamic>>> allData, List<String> fileNames) async {
   try {
     final archive = Archive();
     for (int i = 0; i < allData.length; i++) {
@@ -71,10 +79,15 @@ Future<void> _saveDbFiles(
     final zipData = ZipEncoder().encode(archive);
 
     final zipFilePath = getExecutablePath();
+    if (zipFilePath == null) {
+      return;
+    }
     final zipFile = File(zipFilePath);
     if (zipData != null) {
       await zipFile.writeAsBytes(zipData);
-      if (context.mounted) {
+      final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
+      final dailyBackupStatus = dailyBackupNotifier.state;
+      if (context.mounted && dailyBackupStatus) {
         success(context, S.of(context).db_backup_success);
       }
     }
@@ -82,52 +95,40 @@ Future<void> _saveDbFiles(
     if (context.mounted) {
       failure(context, S.of(context).db_backup_failure);
     }
-    errorPrint('backup database failed, $e');
+    errorPrint('backup database failed -- $e');
   }
 }
 
-// String getExecutablePath() {
-//   String executablePath = Platform.resolvedExecutable;
+String? getExecutablePath() {
+  try {
+    // Get the path to the executable
+    String executablePath = Platform.resolvedExecutable;
 
-//   String appFolderPath = Directory(executablePath).parent.path;
+    // Get the application folder path
+    String appFolderPath = Directory(executablePath).parent.path;
 
-//   final currentDate = DateTime.now();
-//   final day = currentDate.day;
-//   final month = currentDate.month;
-//   final year = currentDate.year;
-//   final zipFileName = 'tablets_backup_$year$month$day.zip';
+    // Define the path for the 'database_backup' folder
+    Directory backupDir = Directory('$appFolderPath/database_backup');
 
-//   return '$appFolderPath/$zipFileName';
-// }
+    // Check if the 'database_backup' folder exists
+    if (!backupDir.existsSync()) {
+      // If it doesn't exist, create it
+      backupDir.createSync(recursive: true);
+    }
 
-String getExecutablePath() {
-  // Get the path to the executable
-  String executablePath = Platform.resolvedExecutable;
+    // Get the current date for the backup file name
+    final currentDate = DateTime.now();
+    final day = currentDate.day.toString().padLeft(2, '0'); // Pad day
+    final month = currentDate.month.toString().padLeft(2, '0'); // Pad month
+    final year = currentDate.year;
 
-  // Get the application folder path
-  String appFolderPath = Directory(executablePath).parent.path;
+    // Create the backup file name
+    final zipFileName = 'tablets_backup_$year$month$day.zip';
 
-  // Define the path for the 'database_backup' folder
-  Directory backupDir = Directory('$appFolderPath/database_backup');
-
-  // Check if the 'database_backup' folder exists
-  if (!backupDir.existsSync()) {
-    // If it doesn't exist, create it
-    backupDir.createSync(recursive: true);
-    tempPrint('Created directory: ${backupDir.path}');
-  } else {
-    tempPrint('Directory already exists: ${backupDir.path}');
+    // Return the full path to the backup file
+    return '${backupDir.path}/$zipFileName'; // Use backupDir.path here
+  } catch (e) {
+    errorPrint('Error during getting backup file path -- $e');
+    return null;
   }
-
-  // Get the current date for the backup file name
-  final currentDate = DateTime.now();
-  final day = currentDate.day.toString().padLeft(2, '0'); // Pad day
-  final month = currentDate.month.toString().padLeft(2, '0'); // Pad month
-  final year = currentDate.year;
-
-  // Create the backup file name
-  final zipFileName = 'tablets_backup_$year$month$day.zip';
-
-  // Return the full path to the backup file
-  return '${backupDir.path}/$zipFileName'; // Use backupDir.path here
 }

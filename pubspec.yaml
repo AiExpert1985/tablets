@@ -67,6 +67,8 @@ dependencies:
   file_selector: ^1.0.3
   connectivity_plus: ^6.1.0
   archive: ^3.6.1
+  printing: ^5.13.4
+  pdf: ^3.11.1
 
 dev_dependencies:
   flutter_test:

@@ -8,12 +8,16 @@ void errorPrint(dynamic message, {stackTrace}) {
   String details = stackText.substring(0, trimEnd);
   debugPrint('||===== Catched Error ====> $message =====> $details======||');
   // write error to the log file
-  Logger.logError(message);
+  Logger.logError('$message');
 }
 
 /// Temporary print for texting code
-void tempPrint(message) {
+void tempPrint(dynamic message) {
   debugPrint('||===== Debug Print ====> $message ======||');
   // write error to the log file
-  Logger.logError(message);
+  Logger.logError('$message');
+}
+
+void logPrint(dynamic message) {
+  Logger.logError('$message');
 }

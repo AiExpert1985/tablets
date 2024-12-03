@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/daily_backup_provider.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
@@ -72,14 +73,16 @@ Future<void> _initializeSettings(WidgetRef ref) async {
 
 /// every time app runs, I create backup. if backup is done, it will not updated
 /// unless user manually modify it through pressing backup button
-void _autoDatabaseBackup(BuildContext context, WidgetRef ref) {
-  final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
-  final dailyBackupStatus = dailyBackupNotifier.state;
-  if (!dailyBackupStatus) {
-    backupDataBase(context, ref);
-    dailyBackupNotifier.update((state) {
-      return true;
-    });
+void _autoDatabaseBackup(BuildContext context, WidgetRef ref) async {
+  try {
+    final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
+    final dailyBackupStatus = dailyBackupNotifier.state;
+    if (!dailyBackupStatus) {
+      await backupDataBase(context, ref);
+      dailyBackupNotifier.update((state) => true);
+    }
+  } catch (e) {
+    errorPrint('Error during database auto backup (e)');
   }
 }
 
@@ -124,6 +127,7 @@ class HomeButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     return MainDrawerButton('home', S.of(context).home_page, () async {
+      // printDocument();
       await initializeAllDbCaches(context, ref);
       if (context.mounted) {
         Navigator.of(context).pop();

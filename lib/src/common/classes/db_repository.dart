@@ -18,7 +18,7 @@ class DbRepository {
       // Device is connected to the internet
       try {
         await _firestore.collection(_collectionName).doc().set(item.toMap());
-        tempPrint('Item added to live firestore successfully!');
+        logPrint('Item added to live firestore successfully!');
         return;
       } catch (e) {
         errorPrint('Error adding item to live firestore: $e');
@@ -28,7 +28,7 @@ class DbRepository {
     // Device is offline
     final docRef = _firestore.collection(_collectionName).doc();
     docRef.set(item.toMap()).then((_) {
-      tempPrint('Item added to firestore cache!');
+      logPrint('Item added to firestore cache!');
     }).catchError((e) {
       errorPrint('Error adding item to firestore cache: $e');
     });
@@ -46,7 +46,7 @@ class DbRepository {
         if (querySnapshot.size > 0) {
           final documentRef = querySnapshot.docs[0].reference;
           await documentRef.update(updatedItem.toMap());
-          tempPrint('Item updated in live firestore successfully!');
+          logPrint('Item updated in live firestore successfully!');
         }
         return;
       } catch (e) {
@@ -60,7 +60,7 @@ class DbRepository {
     if (querySnapshot.size > 0) {
       final documentRef = querySnapshot.docs[0].reference;
       await documentRef.update(updatedItem.toMap()).then((_) {
-        tempPrint('Item updated in firestore cache!');
+        logPrint('Item updated in firestore cache!');
       }).catchError((e) {
         errorPrint('Error updating item in firebase cache: $e');
       });
@@ -81,7 +81,7 @@ class DbRepository {
         if (querySnapshot.size > 0) {
           final documentRef = querySnapshot.docs[0].reference;
           await documentRef.delete();
-          tempPrint('Item deleted from live firestore successfully!');
+          logPrint('Item deleted from live firestore successfully!');
         }
         return;
       } catch (e) {
@@ -96,7 +96,7 @@ class DbRepository {
     if (querySnapshot.size > 0) {
       final documentRef = querySnapshot.docs[0].reference;
       await documentRef.delete().then((_) {
-        tempPrint('Item deleted from firestore cache!');
+        logPrint('Item deleted from firestore cache!');
       }).catchError((e) {
         errorPrint('Error deleting item from firestore cache: $e');
       });
