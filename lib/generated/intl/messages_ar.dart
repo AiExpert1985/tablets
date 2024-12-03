@@ -197,7 +197,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("عدد القوائم المطبوعة "),
         "num_printed_receipts":
             MessageLookupByLibrary.simpleMessage("عدد الوصولات المطبوعة "),
-        "number": MessageLookupByLibrary.simpleMessage("الرقم"),
+        "number": MessageLookupByLibrary.simpleMessage("رقم"),
         "open_invoices":
             MessageLookupByLibrary.simpleMessage("القوائم المفتوحة"),
         "page_not_found": MessageLookupByLibrary.simpleMessage(
@@ -366,7 +366,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("المبلغ كتابة"),
         "transaction_type": MessageLookupByLibrary.simpleMessage("نوع التعامل"),
         "transaction_type_customer_invoice":
-            MessageLookupByLibrary.simpleMessage("قائمة زبون"),
+            MessageLookupByLibrary.simpleMessage("قائمة بيع"),
         "transaction_type_customer_receipt":
             MessageLookupByLibrary.simpleMessage("وصل قبض"),
         "transaction_type_customer_return":
