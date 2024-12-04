@@ -87,8 +87,7 @@ class TransactionForm extends ConsumerWidget {
       backgroundColor: backgroundColor,
       formKey: formController.formKey,
       fields: _getFormWidget(context, transactionType),
-      buttons: _actionButtons(
-          context, formController, formDataNotifier, formImagesNotifier, dbCache, screenController),
+      buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier, dbCache, screenController),
       width: width is double ? width : width.toDouble(),
       height: height is double ? height : height.toDouble(),
     );
@@ -105,16 +104,16 @@ class TransactionForm extends ConsumerWidget {
     return [
       IconButton(
         onPressed: () {
-          _onSavePressed(context, formController, formDataNotifier, formImagesNotifier,
-              transactionDbCache, screenController);
+          _onSavePressed(
+              context, formController, formDataNotifier, formImagesNotifier, transactionDbCache, screenController);
         },
         icon: const SaveIcon(),
       ),
       if (isEditMode)
         IconButton(
           onPressed: () {
-            _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController,
-                transactionDbCache, screenController);
+            _onDeletePressed(
+                context, formDataNotifier, formImagesNotifier, formController, transactionDbCache, screenController);
           },
           icon: const DeleteIcon(),
         ),
@@ -164,8 +163,7 @@ class TransactionForm extends ConsumerWidget {
     DbCache transactionDbCache,
     TransactionScreenController screenController,
   ) async {
-    final confirmation = await showDeleteConfirmationDialog(
-        context: context, message: formDataNotifier.data['name']);
+    final confirmation = await showDeleteConfirmationDialog(context: context, message: formDataNotifier.data['name']);
     final formData = formDataNotifier.data;
     if (confirmation != null) {
       final imageUrls = formImagesNotifier.saveChanges();
@@ -185,7 +183,6 @@ class TransactionForm extends ConsumerWidget {
   }
 
   void _onPrintPressed(BuildContext context, ItemFormData formDataNotifier) async {
-    final customerInvoicePdf = await getCustomerInvoicePdf(context, formDataNotifier.data);
-    printDocument(customerInvoicePdf);
+    printDocument(context, formDataNotifier.data);
   }
 }
