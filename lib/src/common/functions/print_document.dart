@@ -51,16 +51,20 @@ Future<Document> getCustomerInvoicePdf(
           mainAxisAlignment: pw.MainAxisAlignment.start,
           children: [
             pw.Image(image),
-            pw.SizedBox(height: 40),
+            pw.SizedBox(height: 15),
             _buildFirstRow(context, arabicFont, type, number),
-            pw.SizedBox(height: 30),
+            pw.SizedBox(height: 15),
             _buildSecondRow(context, arabicFont, type, number),
-            pw.SizedBox(height: 15),
+            pw.SizedBox(height: 10),
             _buildThirdRow(context, arabicFont, type, number),
-            pw.SizedBox(height: 15),
+            pw.SizedBox(height: 10),
             _buildForthRow(context, arabicFont, type, number),
-            pw.SizedBox(height: 30),
+            pw.SizedBox(height: 20),
             _pdfItemsTitles(arabicFont),
+            pw.SizedBox(height: 10),
+            _itemsRow(arabicFont),
+            _itemsRow2(arabicFont),
+            _itemsRow3(arabicFont),
           ],
         ); // Center
       },
@@ -100,7 +104,7 @@ pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String type, St
     children: [
       pw.SizedBox(width: 5), // margin
       _pdfRectangularTextField('حي المحاربين', 'العنوان', arabicFont),
-      _pdfRectangularTextField('077019990001', 'هاتف الزبون', arabicFont),
+      _pdfRectangularTextField('077019990001', 'موبايل', arabicFont),
       _pdfRectangularTextField('محمد نوفل كريم', 'اسم الزبون', arabicFont),
       pw.SizedBox(width: 5), // margin
     ],
@@ -124,7 +128,7 @@ pw.Widget _buildForthRow(BuildContext context, Font arabicFont, String type, Str
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
-      _pdfRectangularTextField('لا يوجد ملاحظات', 'الملاحظات', arabicFont, width: 558),
+      _pdfRectangularTextField('', 'الملاحظات', arabicFont, width: 558),
     ],
   );
 }
@@ -135,10 +139,11 @@ pw.Widget _pdfRectangularTextField(String text, String label, Font arabicFont,
   return pw.Stack(children: [
     pw.Container(
       width: width,
-      height: 35, // Increased height to provide more space for the label
+      height: 30, // Increased height to provide more space for the label
       decoration: pw.BoxDecoration(
         borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
         border: pw.Border.all(color: PdfColors.grey), // Border color
+        color: PdfColors.grey50,
       ),
       padding:
           const pw.EdgeInsets.symmetric(horizontal: 0), // Set padding to 0 to avoid extra space
@@ -149,7 +154,7 @@ pw.Widget _pdfRectangularTextField(String text, String label, Font arabicFont,
           textDirection: pw.TextDirection.rtl,
           style: pw.TextStyle(
             font: arabicFont,
-            fontSize: 14,
+            fontSize: 13,
           ),
         ),
       ),
@@ -158,7 +163,7 @@ pw.Widget _pdfRectangularTextField(String text, String label, Font arabicFont,
       top: -5, // Adjusted position to move the label down
       right: 10, // Position at the right
       child: pw.Container(
-        color: PdfColors.white, // White background for the label
+        color: PdfColors.grey50, // White background for the label
         padding: const pw.EdgeInsets.symmetric(horizontal: 4), // Horizontal padding for the label
         child: pw.Text(
           label,
@@ -185,12 +190,12 @@ pw.Widget _pdfItemsTitles(Font arabicFont) {
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
         children: [
-          _itemListTitleText(arabicFont, 'المجموع'),
-          _itemListTitleText(arabicFont, 'السعر'),
-          _itemListTitleText(arabicFont, 'الهدية'),
-          _itemListTitleText(arabicFont, 'العدد'),
-          _itemListTitleText(arabicFont, 'اسم المادة'),
-          _itemListTitleText(arabicFont, 'ت'),
+          _itemListCell(arabicFont, 'المجموع', 70, isTitle: true),
+          _itemListCell(arabicFont, 'السعر', 70, isTitle: true),
+          _itemListCell(arabicFont, 'الهدية', 70, isTitle: true),
+          _itemListCell(arabicFont, 'العدد', 70, isTitle: true),
+          _itemListCell(arabicFont, 'اسم المادة', 200, isTitle: true),
+          _itemListCell(arabicFont, 'ت', 40, isTitle: true),
         ],
       ),
     )
@@ -208,15 +213,92 @@ Future<void> _printPDf(Document pdf) async {
   }
 }
 
-pw.Widget _itemListTitleText(Font arabicFont, String text) {
-  return pw.Text(
-    text,
-    textAlign: pw.TextAlign.center,
-    textDirection: pw.TextDirection.rtl,
-    style: pw.TextStyle(
-      font: arabicFont,
-      fontSize: 12,
-      color: PdfColors.white,
+pw.Widget _itemListCell(Font arabicFont, String text, double width,
+    {double height = 35, bool isTitle = false}) {
+  return pw.Container(
+    height: height,
+    width: width,
+    child: pw.Text(
+      text,
+      textAlign: pw.TextAlign.center,
+      textDirection: pw.TextDirection.rtl,
+      style: pw.TextStyle(
+        font: arabicFont,
+        fontSize: 12,
+        color: isTitle ? PdfColors.white : PdfColors.black,
+      ),
+    ),
+  );
+}
+
+pw.Widget _itemsRow(Font arabicFont) {
+  return pw.Container(
+    width: 558,
+    height: 30, // Height for the label
+    decoration: const pw.BoxDecoration(
+      border: pw.Border(
+        bottom: pw.BorderSide(color: PdfColors.grey, width: 0.5), // Bottom border only
+      ),
+    ),
+    padding: const pw.EdgeInsets.symmetric(vertical: 0), // Set padding to 0 to avoid extra space
+    child: pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+      children: [
+        _itemListCell(arabicFont, '10000', 70),
+        _itemListCell(arabicFont, '2000', 70),
+        _itemListCell(arabicFont, '1', 70),
+        _itemListCell(arabicFont, '5', 70),
+        _itemListCell(arabicFont, 'جاي جيهان', 200),
+        _itemListCell(arabicFont, '1', 40),
+      ],
+    ),
+  );
+}
+
+pw.Widget _itemsRow2(Font arabicFont) {
+  return pw.Container(
+    width: 558,
+    height: 30, // Height for the label
+    decoration: const pw.BoxDecoration(
+      border: pw.Border(
+        bottom: pw.BorderSide(color: PdfColors.grey, width: 0.5), // Bottom border only
+      ),
+    ),
+    padding: const pw.EdgeInsets.symmetric(vertical: 0), // Set padding to 0 to avoid extra space
+    child: pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+      children: [
+        _itemListCell(arabicFont, '25000', 70),
+        _itemListCell(arabicFont, '5000', 70),
+        _itemListCell(arabicFont, '1', 70),
+        _itemListCell(arabicFont, '5', 70),
+        _itemListCell(arabicFont, 'رز جيهان', 200),
+        _itemListCell(arabicFont, '2', 40),
+      ],
+    ),
+  );
+}
+
+pw.Widget _itemsRow3(Font arabicFont) {
+  return pw.Container(
+    width: 558,
+    height: 30, // Height for the label
+    decoration: const pw.BoxDecoration(
+      border: pw.Border(
+        bottom: pw.BorderSide(color: PdfColors.grey, width: 0.5), // Bottom border only
+      ),
+    ),
+    padding: const pw.EdgeInsets.symmetric(vertical: 0), // Set padding to 0 to avoid extra space
+    child: pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+      children: [
+        _itemListCell(arabicFont, '12000', 70),
+        _itemListCell(arabicFont, '4000', 70),
+        _itemListCell(arabicFont, '1', 70),
+        _itemListCell(arabicFont, '3', 70),
+        _itemListCell(arabicFont, 'حليب الطازج', 200),
+        _itemListCell(arabicFont, '3', 40),
+      ],
     ),
   );
 }
