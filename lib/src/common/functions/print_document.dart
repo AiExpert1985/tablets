@@ -11,6 +11,10 @@ import 'package:tablets/src/features/transactions/controllers/transaction_screen
 import 'package:printing/printing.dart';
 import 'package:flutter/services.dart';
 
+// (25,25,112)
+
+const highlightColor = PdfColor(0.2, 0.2, 0.5);
+
 Future<void> printDocument(BuildContext context, Map<String, dynamic> transactionData) async {
   try {
     final filePath = gePdfpath('test_file');
@@ -51,7 +55,6 @@ Future<Document> getCustomerInvoicePdf(
           mainAxisAlignment: pw.MainAxisAlignment.start,
           children: [
             pw.Image(image),
-            pw.SizedBox(height: 15),
             _buildFirstRow(context, arabicFont, type, number),
             pw.SizedBox(height: 15),
             _buildSecondRow(context, arabicFont, type, number),
@@ -67,6 +70,12 @@ Future<Document> getCustomerInvoicePdf(
             _itemsRow3(arabicFont),
             pw.SizedBox(height: 30),
             _totals(arabicFont),
+            pw.Spacer(),
+            _signituresRow(arabicFont),
+            pw.SizedBox(height: 30),
+            footerBar(arabicFont, 'الشركة غير مسؤولة عن انتهاء الصلاحية بعد استلام البضاعة',
+                'تاريخ طباعة القائمة    2/10/2024'),
+            pw.SizedBox(height: 15),
           ],
         ); // Center
       },
@@ -88,14 +97,25 @@ pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String type, Str
   );
 }
 
+pw.Widget _signituresRow(Font arabicFont) {
+  return pw.Row(
+    mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+    children: [
+      _arabicText(arabicFont, 'المستلم'),
+      _arabicText(arabicFont, 'السائق'),
+      _arabicText(arabicFont, 'المجهز'),
+    ],
+  );
+}
+
 pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String type, String number) {
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
       pw.SizedBox(width: 5), // margin
-      _pdfRectangularTextField('حي المحاربين', 'العنوان', arabicFont),
-      _pdfRectangularTextField('077019990001', 'موبايل', arabicFont),
-      _pdfRectangularTextField('محمد نوفل كريم', 'اسم الزبون', arabicFont),
+      _labedTextField('حي المحاربين', 'العنوان', arabicFont),
+      _labedTextField('077019990001', 'موبايل', arabicFont),
+      _labedTextField('محمد نوفل كريم', 'اسم الزبون', arabicFont),
       pw.SizedBox(width: 5), // margin
     ],
   );
@@ -106,9 +126,10 @@ pw.Widget _buildThirdRow(BuildContext context, Font arabicFont, String type, Str
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
       pw.SizedBox(width: 5), // margin
-      _pdfRectangularTextField('دينار', 'العملة', arabicFont),
-      _pdfRectangularTextField('اجل', 'طريقة الدفع', arabicFont),
-      _pdfRectangularTextField('خالد جاسم علي', 'المندوب', arabicFont),
+      _labedTextField('دينار', 'العملة', arabicFont, width: 85),
+      _labedTextField('اجل', 'الدفع', arabicFont, width: 85),
+      _labedTextField('1/10/2024', 'التاريخ', arabicFont),
+      _labedTextField('خالد جاسم علي', 'المندوب', arabicFont),
       pw.SizedBox(width: 5), // margin
     ],
   );
@@ -118,13 +139,12 @@ pw.Widget _buildForthRow(BuildContext context, Font arabicFont, String type, Str
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
-      _pdfRectangularTextField('', 'الملاحظات', arabicFont, width: 558),
+      _labedTextField('', 'الملاحظات', arabicFont, width: 558),
     ],
   );
 }
 
-pw.Widget _pdfRectangularTextField(String text, String label, Font arabicFont,
-    {double width = 180}) {
+pw.Widget _labedTextField(String text, String label, Font arabicFont, {double width = 180}) {
   // return pw.Stack(children: [
   return pw.Stack(children: [
     pw.Container(
@@ -159,7 +179,7 @@ pw.Widget _pdfItemsTitles(Font arabicFont) {
       decoration: pw.BoxDecoration(
         borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
         border: pw.Border.all(color: PdfColors.grey), // Border color
-        color: PdfColors.blueGrey,
+        color: highlightColor,
       ),
       padding: const pw.EdgeInsets.all(0), // Set padding to 0 to avoid extra space
       child: pw.Row(
@@ -314,7 +334,7 @@ pw.Widget totalsItem(Font arabicFont, String text1, String text2,
         ? pw.BoxDecoration(
             borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
             border: pw.Border.all(color: PdfColors.grey), // Border color
-            color: PdfColors.blueGrey,
+            color: highlightColor,
           )
         : null,
     width: width,
@@ -334,23 +354,16 @@ pw.Widget footerBar(
   String text1,
   String text2,
 ) {
-  return pw.Container(
-    decoration: pw.BoxDecoration(
-      borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
-      border: pw.Border.all(color: PdfColors.grey), // Border color
-      color: PdfColors.blueGrey,
-    ),
-    width: 555,
-    height: 20,
-    padding: const pw.EdgeInsets.symmetric(horizontal: 10),
-    child: pw.Row(
-      children: [
-        _itemListCell(arabicFont, text2, 70),
-        pw.Spacer(),
-        _itemListCell(arabicFont, text1, 100),
-      ],
-    ),
+  final childWidget = pw.Row(
+    children: [
+      pw.SizedBox(width: 14),
+      _arabicText(arabicFont, text2, fontSize: 8, textColor: PdfColors.white),
+      pw.Spacer(),
+      _arabicText(arabicFont, text1, fontSize: 8, textColor: PdfColors.white),
+      pw.SizedBox(width: 14),
+    ],
   );
+  return _decoratedContainer(childWidget, 555, height: 22, bgColor: highlightColor);
 }
 
 pw.Widget _arabicText(Font arabicFont, String text,
@@ -364,5 +377,25 @@ pw.Widget _arabicText(Font arabicFont, String text,
       fontSize: fontSize,
       color: textColor,
     ),
+  );
+}
+
+pw.Widget _decoratedContainer(pw.Widget widgetChild, double width,
+    {bool isDecorated = true,
+    PdfColor bgColor = PdfColors.grey50,
+    PdfColor borderColor = PdfColors.grey300,
+    double height = 30}) {
+  return pw.Container(
+    width: width,
+    height: height, // Increased height to provide more space for the label
+    decoration: isDecorated
+        ? pw.BoxDecoration(
+            borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
+            border: pw.Border.all(color: borderColor), // Border color
+            color: bgColor,
+          )
+        : null,
+    padding: const pw.EdgeInsets.symmetric(horizontal: 0), // Set padding to 0 to avoid extra space
+    child: widgetChild,
   );
 }
