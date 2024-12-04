@@ -65,6 +65,8 @@ Future<Document> getCustomerInvoicePdf(
             _itemsRow(arabicFont),
             _itemsRow2(arabicFont),
             _itemsRow3(arabicFont),
+            pw.SizedBox(height: 30),
+            _totals(arabicFont),
           ],
         ); // Center
       },
@@ -77,23 +79,11 @@ pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String type, Str
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.center,
     children: [
-      pw.Text(
-        number,
-        textDirection: pw.TextDirection.rtl,
-        style: pw.TextStyle(font: arabicFont, fontSize: 18), // Use the Arabic font
-      ),
+      _arabicText(arabicFont, number, fontSize: 18),
       pw.SizedBox(width: 5),
-      pw.Text(
-        S.of(context).number,
-        textDirection: pw.TextDirection.rtl,
-        style: pw.TextStyle(font: arabicFont, fontSize: 18), // Use the Arabic font
-      ),
+      _arabicText(arabicFont, S.of(context).number, fontSize: 18),
       pw.SizedBox(width: 10),
-      pw.Text(
-        type,
-        textDirection: pw.TextDirection.rtl,
-        style: pw.TextStyle(font: arabicFont, fontSize: 18), // Use the Arabic font
-      ),
+      _arabicText(arabicFont, type, fontSize: 18),
     ],
   );
 }
@@ -138,38 +128,23 @@ pw.Widget _pdfRectangularTextField(String text, String label, Font arabicFont,
   // return pw.Stack(children: [
   return pw.Stack(children: [
     pw.Container(
-      width: width,
-      height: 30, // Increased height to provide more space for the label
-      decoration: pw.BoxDecoration(
-        borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
-        border: pw.Border.all(color: PdfColors.grey), // Border color
-        color: PdfColors.grey50,
-      ),
-      padding:
-          const pw.EdgeInsets.symmetric(horizontal: 0), // Set padding to 0 to avoid extra space
-      child: pw.Center(
-        child: pw.Text(
-          text,
-          textAlign: pw.TextAlign.center,
-          textDirection: pw.TextDirection.rtl,
-          style: pw.TextStyle(
-            font: arabicFont,
-            fontSize: 13,
-          ),
+        width: width,
+        height: 30, // Increased height to provide more space for the label
+        decoration: pw.BoxDecoration(
+          borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
+          border: pw.Border.all(color: PdfColors.grey), // Border color
+          color: PdfColors.grey50,
         ),
-      ),
-    ),
+        padding:
+            const pw.EdgeInsets.symmetric(horizontal: 0), // Set padding to 0 to avoid extra space
+        child: _arabicText(arabicFont, text)),
     pw.Positioned(
       top: -5, // Adjusted position to move the label down
       right: 10, // Position at the right
       child: pw.Container(
         color: PdfColors.grey50, // White background for the label
         padding: const pw.EdgeInsets.symmetric(horizontal: 4), // Horizontal padding for the label
-        child: pw.Text(
-          label,
-          textDirection: pw.TextDirection.rtl,
-          style: pw.TextStyle(fontSize: 7, font: arabicFont, color: PdfColors.grey),
-        ),
+        child: _arabicText(arabicFont, label, textColor: PdfColors.grey, fontSize: 7),
       ),
     ),
   ]);
@@ -215,19 +190,11 @@ Future<void> _printPDf(Document pdf) async {
 
 pw.Widget _itemListCell(Font arabicFont, String text, double width,
     {double height = 35, bool isTitle = false}) {
+  final textColor = isTitle ? PdfColors.white : PdfColors.black;
   return pw.Container(
     height: height,
     width: width,
-    child: pw.Text(
-      text,
-      textAlign: pw.TextAlign.center,
-      textDirection: pw.TextDirection.rtl,
-      style: pw.TextStyle(
-        font: arabicFont,
-        fontSize: 12,
-        color: isTitle ? PdfColors.white : PdfColors.black,
-      ),
-    ),
+    child: _arabicText(arabicFont, text, textColor: textColor),
   );
 }
 
@@ -244,8 +211,8 @@ pw.Widget _itemsRow(Font arabicFont) {
     child: pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
       children: [
-        _itemListCell(arabicFont, '10000', 70),
-        _itemListCell(arabicFont, '2000', 70),
+        _itemListCell(arabicFont, '10,000', 70),
+        _itemListCell(arabicFont, '2,000', 70),
         _itemListCell(arabicFont, '1', 70),
         _itemListCell(arabicFont, '5', 70),
         _itemListCell(arabicFont, 'جاي جيهان', 200),
@@ -268,8 +235,8 @@ pw.Widget _itemsRow2(Font arabicFont) {
     child: pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
       children: [
-        _itemListCell(arabicFont, '25000', 70),
-        _itemListCell(arabicFont, '5000', 70),
+        _itemListCell(arabicFont, '25,000', 70),
+        _itemListCell(arabicFont, '5,000', 70),
         _itemListCell(arabicFont, '1', 70),
         _itemListCell(arabicFont, '5', 70),
         _itemListCell(arabicFont, 'رز جيهان', 200),
@@ -292,13 +259,110 @@ pw.Widget _itemsRow3(Font arabicFont) {
     child: pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
       children: [
-        _itemListCell(arabicFont, '12000', 70),
-        _itemListCell(arabicFont, '4000', 70),
+        _itemListCell(arabicFont, '12,000', 70),
+        _itemListCell(arabicFont, '4,000', 70),
         _itemListCell(arabicFont, '1', 70),
         _itemListCell(arabicFont, '3', 70),
         _itemListCell(arabicFont, 'حليب الطازج', 200),
         _itemListCell(arabicFont, '3', 40),
       ],
+    ),
+  );
+}
+
+pw.Widget _totals(Font arabicFont) {
+  return pw.Container(
+    width: 558, // Set a fixed width for the container
+    child: pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
+      invoiceAmountColumn(arabicFont),
+      debtColumn(arabicFont),
+    ]),
+  );
+}
+
+pw.Widget invoiceAmountColumn(Font arabicFont) {
+  return pw.Column(
+    children: [
+      totalsItem(arabicFont, 'مبلغ القائمة', '47,000'),
+      totalsItem(arabicFont, 'الخصم', '2,000'),
+      totalsItem(arabicFont, 'المبلغ النهائي', '45,000', isColored: true),
+    ],
+  );
+}
+
+pw.Widget debtColumn(Font arabicFont) {
+  return pw.Container(
+      padding: const pw.EdgeInsets.all(5),
+      decoration: pw.BoxDecoration(
+        borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
+        border: pw.Border.all(color: PdfColors.grey300, width: 0.1), // Border color
+        color: PdfColors.grey50,
+      ),
+      child: pw.Column(
+        children: [
+          totalsItem(arabicFont, 'الدين السابق', '100,000'),
+          totalsItem(arabicFont, 'الدين الحالي', '145,000'),
+          totalsItem(arabicFont, ' اخر تسديد', '1/10/2024'),
+        ],
+      ));
+}
+
+pw.Widget totalsItem(Font arabicFont, String text1, String text2,
+    {bool isColored = false, double width = 175}) {
+  return pw.Container(
+    decoration: isColored
+        ? pw.BoxDecoration(
+            borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
+            border: pw.Border.all(color: PdfColors.grey), // Border color
+            color: PdfColors.blueGrey,
+          )
+        : null,
+    width: width,
+    padding: const pw.EdgeInsets.symmetric(horizontal: 10),
+    child: pw.Row(
+      children: [
+        _itemListCell(arabicFont, text2, 70, isTitle: isColored),
+        pw.Spacer(),
+        _itemListCell(arabicFont, text1, 100, isTitle: isColored),
+      ],
+    ),
+  );
+}
+
+pw.Widget footerBar(
+  Font arabicFont,
+  String text1,
+  String text2,
+) {
+  return pw.Container(
+    decoration: pw.BoxDecoration(
+      borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
+      border: pw.Border.all(color: PdfColors.grey), // Border color
+      color: PdfColors.blueGrey,
+    ),
+    width: 555,
+    height: 20,
+    padding: const pw.EdgeInsets.symmetric(horizontal: 10),
+    child: pw.Row(
+      children: [
+        _itemListCell(arabicFont, text2, 70),
+        pw.Spacer(),
+        _itemListCell(arabicFont, text1, 100),
+      ],
+    ),
+  );
+}
+
+pw.Widget _arabicText(Font arabicFont, String text,
+    {PdfColor textColor = PdfColors.black, double fontSize = 12}) {
+  return pw.Text(
+    text,
+    textAlign: pw.TextAlign.center,
+    textDirection: pw.TextDirection.rtl,
+    style: pw.TextStyle(
+      font: arabicFont,
+      fontSize: fontSize,
+      color: textColor,
     ),
   );
 }
