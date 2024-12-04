@@ -29,26 +29,38 @@ Future<void> printDocument(BuildContext context, Map<String, dynamic> transactio
   }
 }
 
-Future<Document> getCustomerInvoicePdf(BuildContext context, Map<String, dynamic> transactionData) async {
+Future<pw.ImageProvider> loadImage(String path) async {
+  final ByteData bytes = await rootBundle.load(path);
+  final Uint8List list = bytes.buffer.asUint8List();
+  return pw.MemoryImage(list);
+}
+
+Future<Document> getCustomerInvoicePdf(
+    BuildContext context, Map<String, dynamic> transactionData) async {
   final pdf = pw.Document();
   final type = translateDbTextToScreenText(context, transactionData[transactionTypeKey]);
   final number = transactionData[transactionNumberKey].toString();
-  final arabicFont = pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
-
+  final arabicFont =
+      pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
+  final image = await loadImage('assets/images/invoice_logo.PNG');
   pdf.addPage(
     pw.Page(
+      margin: pw.EdgeInsets.zero,
       build: (pw.Context ctx) {
         return pw.Column(
+          mainAxisAlignment: pw.MainAxisAlignment.start,
           children: [
+            pw.Image(image),
+            pw.SizedBox(height: 40),
             _buildFirstRow(context, arabicFont, type, number),
-            pw.SizedBox(height: 25),
+            pw.SizedBox(height: 30),
             _buildSecondRow(context, arabicFont, type, number),
             pw.SizedBox(height: 15),
             _buildThirdRow(context, arabicFont, type, number),
             pw.SizedBox(height: 15),
             _buildForthRow(context, arabicFont, type, number),
-            pw.SizedBox(height: 15),
-            _pdfItemList(arabicFont),
+            pw.SizedBox(height: 30),
+            _pdfItemsTitles(arabicFont),
           ],
         ); // Center
       },
@@ -64,19 +76,19 @@ pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String type, Str
       pw.Text(
         number,
         textDirection: pw.TextDirection.rtl,
-        style: pw.TextStyle(font: arabicFont, fontSize: 22), // Use the Arabic font
+        style: pw.TextStyle(font: arabicFont, fontSize: 18), // Use the Arabic font
       ),
       pw.SizedBox(width: 5),
       pw.Text(
         S.of(context).number,
         textDirection: pw.TextDirection.rtl,
-        style: pw.TextStyle(font: arabicFont, fontSize: 22), // Use the Arabic font
+        style: pw.TextStyle(font: arabicFont, fontSize: 18), // Use the Arabic font
       ),
-      pw.SizedBox(width: 5),
+      pw.SizedBox(width: 10),
       pw.Text(
         type,
         textDirection: pw.TextDirection.rtl,
-        style: pw.TextStyle(font: arabicFont, fontSize: 22), // Use the Arabic font
+        style: pw.TextStyle(font: arabicFont, fontSize: 18), // Use the Arabic font
       ),
     ],
   );
@@ -86,11 +98,11 @@ pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String type, St
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
-      _pdfRectangularTextField('حي المحاربين', 'العنوان', arabicFont, width: 150),
-      pw.SizedBox(width: 5),
-      _pdfRectangularTextField('077019990001', 'هاتف الزبون', arabicFont, width: 135),
-      pw.SizedBox(width: 5),
-      _pdfRectangularTextField('محمد نوفل كريم', 'اسم الزبون', arabicFont, width: 200),
+      pw.SizedBox(width: 5), // margin
+      _pdfRectangularTextField('حي المحاربين', 'العنوان', arabicFont),
+      _pdfRectangularTextField('077019990001', 'هاتف الزبون', arabicFont),
+      _pdfRectangularTextField('محمد نوفل كريم', 'اسم الزبون', arabicFont),
+      pw.SizedBox(width: 5), // margin
     ],
   );
 }
@@ -99,11 +111,11 @@ pw.Widget _buildThirdRow(BuildContext context, Font arabicFont, String type, Str
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
-      _pdfRectangularTextField('دينار', 'العملة', arabicFont, width: 150),
-      pw.SizedBox(width: 5),
-      _pdfRectangularTextField('اجل', 'طريقة الدفع', arabicFont, width: 135),
-      pw.SizedBox(width: 5),
-      _pdfRectangularTextField('خالد جاسم علي', 'المندوب', arabicFont, width: 200),
+      pw.SizedBox(width: 5), // margin
+      _pdfRectangularTextField('دينار', 'العملة', arabicFont),
+      _pdfRectangularTextField('اجل', 'طريقة الدفع', arabicFont),
+      _pdfRectangularTextField('خالد جاسم علي', 'المندوب', arabicFont),
+      pw.SizedBox(width: 5), // margin
     ],
   );
 }
@@ -112,12 +124,13 @@ pw.Widget _buildForthRow(BuildContext context, Font arabicFont, String type, Str
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
-      _pdfRectangularTextField('لا يوجد ملاحظات', 'الملاحظات', arabicFont, width: 495),
+      _pdfRectangularTextField('لا يوجد ملاحظات', 'الملاحظات', arabicFont, width: 558),
     ],
   );
 }
 
-pw.Widget _pdfRectangularTextField(String text, String label, Font arabicFont, {double width = 200}) {
+pw.Widget _pdfRectangularTextField(String text, String label, Font arabicFont,
+    {double width = 180}) {
   // return pw.Stack(children: [
   return pw.Stack(children: [
     pw.Container(
@@ -127,7 +140,8 @@ pw.Widget _pdfRectangularTextField(String text, String label, Font arabicFont, {
         borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
         border: pw.Border.all(color: PdfColors.grey), // Border color
       ),
-      padding: const pw.EdgeInsets.all(0), // Set padding to 0 to avoid extra space
+      padding:
+          const pw.EdgeInsets.symmetric(horizontal: 0), // Set padding to 0 to avoid extra space
       child: pw.Center(
         child: pw.Text(
           text,
@@ -135,7 +149,7 @@ pw.Widget _pdfRectangularTextField(String text, String label, Font arabicFont, {
           textDirection: pw.TextDirection.rtl,
           style: pw.TextStyle(
             font: arabicFont,
-            fontSize: 16,
+            fontSize: 14,
           ),
         ),
       ),
@@ -149,18 +163,18 @@ pw.Widget _pdfRectangularTextField(String text, String label, Font arabicFont, {
         child: pw.Text(
           label,
           textDirection: pw.TextDirection.rtl,
-          style: pw.TextStyle(fontSize: 6, font: arabicFont, color: PdfColors.grey),
+          style: pw.TextStyle(fontSize: 7, font: arabicFont, color: PdfColors.grey),
         ),
       ),
     ),
   ]);
 }
 
-pw.Widget _pdfItemList(Font arabicFont) {
+pw.Widget _pdfItemsTitles(Font arabicFont) {
   // return pw.Stack(children: [
-  return pw.Row(children: [
+  return pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceAround, children: [
     pw.Container(
-      width: 495,
+      width: 558,
       height: 35, // Increased height to provide more space for the label
       decoration: pw.BoxDecoration(
         borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
@@ -168,17 +182,16 @@ pw.Widget _pdfItemList(Font arabicFont) {
         color: PdfColors.blueGrey,
       ),
       padding: const pw.EdgeInsets.all(0), // Set padding to 0 to avoid extra space
-      child: pw.Center(
-        child: pw.Text(
-          'ت',
-          textAlign: pw.TextAlign.center,
-          textDirection: pw.TextDirection.rtl,
-          style: pw.TextStyle(
-            font: arabicFont,
-            fontSize: 16,
-            // color: PdfColors.white,
-          ),
-        ),
+      child: pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+        children: [
+          _itemListTitleText(arabicFont, 'المجموع'),
+          _itemListTitleText(arabicFont, 'السعر'),
+          _itemListTitleText(arabicFont, 'الهدية'),
+          _itemListTitleText(arabicFont, 'العدد'),
+          _itemListTitleText(arabicFont, 'اسم المادة'),
+          _itemListTitleText(arabicFont, 'ت'),
+        ],
       ),
     )
   ]);
@@ -193,4 +206,17 @@ Future<void> _printPDf(Document pdf) async {
   } catch (e) {
     errorLog('Printing failed - ($e)');
   }
+}
+
+pw.Widget _itemListTitleText(Font arabicFont, String text) {
+  return pw.Text(
+    text,
+    textAlign: pw.TextAlign.center,
+    textDirection: pw.TextDirection.rtl,
+    style: pw.TextStyle(
+      font: arabicFont,
+      fontSize: 12,
+      color: PdfColors.white,
+    ),
+  );
 }

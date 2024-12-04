@@ -95,8 +95,8 @@ InputDecoration formFieldDecoration({String? label, bool hideBorders = false}) {
             label,
             // textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 13,
-              color: Colors.black38,
+              fontSize: 14,
+              color: Colors.black87,
             ),
           ),
     alignLabelWithHint: true,
