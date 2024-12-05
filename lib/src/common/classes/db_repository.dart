@@ -106,79 +106,95 @@ class DbRepository {
     }
   }
 
-  Stream<List<Map<String, dynamic>>> watchItemListAsMaps() {
-    final ref = _firestore.collection(_collectionName);
-    return ref
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
-  }
+  // Stream<List<Map<String, dynamic>>> watchItemListAsMaps() {
+  //   final ref = _firestore.collection(_collectionName);
+  //   return ref
+  //       .snapshots()
+  //       .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+  // }
 
-  /// below function was not tested
-  Stream<List<BaseItem>> watchItemListAsItems() {
-    final query = _firestore.collection(_collectionName);
-    final ref = query.withConverter(
-      fromFirestore: (doc, _) => BaseItem.fromMap(doc.data()!),
-      toFirestore: (BaseItem product, options) => product.toMap(),
-    );
-    return ref
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
-  }
+  // /// below function was not tested
+  // Stream<List<BaseItem>> watchItemListAsItems() {
+  //   final query = _firestore.collection(_collectionName);
+  //   final ref = query.withConverter(
+  //     fromFirestore: (doc, _) => BaseItem.fromMap(doc.data()!),
+  //     toFirestore: (BaseItem product, options) => product.toMap(),
+  //   );
+  //   return ref
+  //       .snapshots()
+  //       .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+  // }
 
-  Future<BaseItem> fetchItemAsObject({String? filterKey, String? filterValue}) async {
-    Query query = _firestore.collection(_collectionName);
-    if (filterKey != null) {
-      query = query
-          .where(filterKey, isGreaterThanOrEqualTo: filterValue)
-          .where(filterKey, isLessThan: '$filterValue\uf8ff');
-    }
-    final ref = query.withConverter(
-      fromFirestore: (doc, _) => BaseItem.fromMap(doc.data()!),
-      toFirestore: (BaseItem product, options) => product.toMap(),
-    );
-    final snapshot = await ref.get(const GetOptions(source: Source.cache));
-    return snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList().first;
-  }
+  // Future<BaseItem> fetchItemAsObject({String? filterKey, String? filterValue}) async {
+  //   Query query = _firestore.collection(_collectionName);
+  //   if (filterKey != null) {
+  //     query = query
+  //         .where(filterKey, isGreaterThanOrEqualTo: filterValue)
+  //         .where(filterKey, isLessThan: '$filterValue\uf8ff');
+  //   }
+  //   final ref = query.withConverter(
+  //     fromFirestore: (doc, _) => BaseItem.fromMap(doc.data()!),
+  //     toFirestore: (BaseItem product, options) => product.toMap(),
+  //   );
+  //   final snapshot = await ref.get(const GetOptions(source: Source.cache));
+  //   return snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList().first;
+  // }
 
   Future<Map<String, dynamic>> fetchItemAsMap({String? filterKey, String? filterValue}) async {
-    Query query = _firestore.collection(_collectionName);
-    if (filterKey != null) {
-      query = query
-          .where(filterKey, isGreaterThanOrEqualTo: filterValue)
-          .where(filterKey, isLessThan: '$filterValue\uf8ff');
+    try {
+      Query query = _firestore.collection(_collectionName);
+      if (filterKey != null) {
+        query = query
+            .where(filterKey, isGreaterThanOrEqualTo: filterValue)
+            .where(filterKey, isLessThan: '$filterValue\uf8ff');
+      }
+      final snapshot = await query.get(const GetOptions(source: Source.cache));
+      return snapshot.docs
+          .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
+          .toList()
+          .first;
+    } catch (e) {
+      errorLog('Error during fetching items from firbase - $e');
+      return {};
     }
-    final snapshot = await query.get(const GetOptions(source: Source.cache));
-    return snapshot.docs
-        .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
-        .toList()
-        .first;
   }
 
-  Future<List<BaseItem>> fetchItemListAsObjects({String? filterKey, String? filterValue}) async {
-    Query query = _firestore.collection(_collectionName);
-    if (filterKey != null) {
-      query = query
-          .where(filterKey, isGreaterThanOrEqualTo: filterValue)
-          .where(filterKey, isLessThan: '$filterValue\uf8ff');
-    }
-    final ref = query.withConverter(
-      fromFirestore: (doc, _) => BaseItem.fromMap(doc.data()!),
-      toFirestore: (BaseItem product, options) => product.toMap(),
-    );
-    final snapshot = await ref.get(const GetOptions(source: Source.cache));
-    return snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList();
-  }
+  // Future<List<BaseItem>> fetchItemListAsObjects({String? filterKey, String? filterValue}) async {
+  //   try {
+  //     Query query = _firestore.collection(_collectionName);
+  //     if (filterKey != null) {
+  //       query = query
+  //           .where(filterKey, isGreaterThanOrEqualTo: filterValue)
+  //           .where(filterKey, isLessThan: '$filterValue\uf8ff');
+  //     }
+  //     final ref = query.withConverter(
+  //       fromFirestore: (doc, _) => BaseItem.fromMap(doc.data()!),
+  //       toFirestore: (BaseItem product, options) => product.toMap(),
+  //     );
+  //     final snapshot = await ref.get(const GetOptions(source: Source.cache));
+  //     return snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList();
+  //   } catch (e) {
+  //     errorLog('Error during fetching items from firbase - $e');
+  //     return [];
+  //   }
+  // }
 
-  /// below function was not tested
   Future<List<Map<String, dynamic>>> fetchItemListAsMaps(
       {String? filterKey, String? filterValue}) async {
-    Query query = _firestore.collection(_collectionName);
-    if (filterKey != null) {
-      query = query
-          .where(filterKey, isGreaterThanOrEqualTo: filterValue)
-          .where(filterKey, isLessThan: '$filterValue\uf8ff');
+    try {
+      Query query = _firestore.collection(_collectionName);
+      if (filterKey != null) {
+        query = query
+            .where(filterKey, isGreaterThanOrEqualTo: filterValue)
+            .where(filterKey, isLessThan: '$filterValue\uf8ff');
+      }
+      final snapshot = await query.get(const GetOptions(source: Source.cache));
+      return snapshot.docs
+          .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      errorLog('Error during fetching items from firbase - $e');
+      return [];
     }
-    final snapshot = await query.get(const GetOptions(source: Source.cache));
-    return snapshot.docs.map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>).toList();
   }
 }
