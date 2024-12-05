@@ -156,6 +156,12 @@ String doubleToStringWithComma(dynamic value, {int? numDecimalPlaces}) {
   return formattedWholePart + decimalPart;
 }
 
+String doubleToIntString(dynamic value) {
+  if (value is String) return value;
+  if (value is double) return value.toInt().toString();
+  return value.toString();
+}
+
 // order a list of lists based on date, from latest to oldest
 List<List<dynamic>> sortListOfListsByDate(List<List<dynamic>> list, int dateIndex) {
   list.sort((a, b) {

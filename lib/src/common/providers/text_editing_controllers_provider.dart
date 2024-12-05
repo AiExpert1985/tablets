@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 
 class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   TextControllerNotifier() : super({});
@@ -8,7 +9,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   void updateControllers(Map<String, dynamic> properties) {
     final newState = {...state};
     properties.forEach((key, value) {
-      String? text = value is! String ? value?.toString() : value;
+      String? text = value is! String ? doubleToIntString(value) : value;
       if (newState[key] != null) {
         newState[key].text = text;
       } else {
@@ -62,7 +63,8 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
       return false;
     }
     if (state[property][index][subProperty] is! TextEditingController) {
-      errorPrint('Invalid subController: state[$property][$index][$subProperty] is not a TextEditingController');
+      errorPrint(
+          'Invalid subController: state[$property][$index][$subProperty] is not a TextEditingController');
       return false;
     }
     return true;
@@ -94,7 +96,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     }
     if (index >= 0 && index < list.length) {
       subProperties.forEach((key, value) {
-        String? text = value is! String ? value?.toString() : value;
+        String? text = value is! String ? doubleToIntString(value) : value;
         list[index][key].text = text;
       });
       newState[property] = list;
@@ -129,6 +131,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   Map<String, dynamic> get data => state;
 }
 
-final textFieldsControllerProvider = StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
+final textFieldsControllerProvider =
+    StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
   return TextControllerNotifier();
 });

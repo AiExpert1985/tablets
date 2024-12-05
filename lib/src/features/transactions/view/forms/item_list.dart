@@ -93,13 +93,7 @@ List<Widget> _buildDataRows(
               isFirst: true),
           _buildDropDownWithSearch(formDataNotifier, textEditingNotifier, index, nameColumnWidth,
               productDbCache, productScreenController, context),
-          buildDataCell(
-            soldQuantityColumnWidth,
-            Text(formDataNotifier
-                    .getSubProperty(itemsKey, index, itemStockQuantityKey)
-                    ?.toString() ??
-                ''),
-          ),
+
           if (!hidePrice)
             TransactionFormInputField(
                 index, priceColumnWidth, itemsKey, itemSellingPriceKey, transactionType),
@@ -107,14 +101,30 @@ List<Widget> _buildDataRows(
           TransactionFormInputField(
               index, soldQuantityColumnWidth, itemsKey, itemSoldQuantityKey, transactionType),
           if (!hideGifts)
-            TransactionFormInputField(
-                index, giftQuantityColumnWidth, itemsKey, itemGiftQuantityKey, transactionType),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.red, // Set the border color to red
+                  width: 0.5, // Set the border width
+                ),
+                borderRadius: BorderRadius.circular(8.0), // Optional: Set border radius
+              ),
+              child: TransactionFormInputField(
+                  index, giftQuantityColumnWidth, itemsKey, itemGiftQuantityKey, transactionType),
+            ),
           if (!hidePrice)
             TransactionFormInputField(
                 index, soldTotalAmountColumnWidth, itemsKey, itemTotalAmountKey, transactionType,
                 // textEditingNotifier: textEditingNotifier,
-                isLast: true,
+                isLast: false,
                 isReadOnly: true),
+          buildDataCell(
+              soldQuantityColumnWidth,
+              Text(formDataNotifier
+                      .getSubProperty(itemsKey, index, itemStockQuantityKey)
+                      ?.toString() ??
+                  ''),
+              isLast: true),
         ]);
   });
 }
@@ -188,37 +198,40 @@ Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
   final titles = [
     _buildAddItemButton(formDataNotifier, textEditingNotifier),
     Text(S.of(context).item_name),
-    Text(S.of(context).stock),
     if (!hidePrice) Text(S.of(context).item_price),
     Text(S.of(context).item_sold_quantity),
     if (!hideGifts) Text(S.of(context).item_gifts_quantity),
     if (!hidePrice) Text(S.of(context).item_total_price),
+    Text(S.of(context).stock),
   ];
 
   final widths = [
     sequenceColumnWidth,
     nameColumnWidth,
-    soldQuantityColumnWidth,
     if (!hidePrice) priceColumnWidth,
     soldQuantityColumnWidth,
     if (!hideGifts) giftQuantityColumnWidth,
     if (!hidePrice) soldTotalAmountColumnWidth,
+    soldQuantityColumnWidth,
   ];
 
-  return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        ...List.generate(titles.length, (index) {
-          return buildDataCell(
-            widths[index],
-            titles[index],
-            isTitle: true,
-            isFirst: index == 0,
-            isLast: index == titles.length - 1,
-          );
-        })
-      ]);
+  return Container(
+    color: const Color.fromARGB(255, 244, 245, 171),
+    child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ...List.generate(titles.length, (index) {
+            return buildDataCell(
+              widths[index],
+              titles[index],
+              isTitle: true,
+              isFirst: index == 0,
+              isLast: index == titles.length - 1,
+            );
+          })
+        ]),
+  );
 }
 
 dynamic _getTotal(ItemFormData formDataNotifier, String property, String subProperty) {
@@ -383,13 +396,9 @@ Widget buildDataCell(double width, Widget cell,
   return Container(
       decoration: BoxDecoration(
         border: Border(
-            left: !isLast
-                ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0)
-                : BorderSide.none,
-            right: !isFirst
-                ? const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0)
-                : BorderSide.none,
-            bottom: const BorderSide(color: Color.fromARGB(31, 133, 132, 132), width: 1.0)),
+            left: !isLast ? const BorderSide(color: Colors.black12, width: 1.0) : BorderSide.none,
+            right: !isFirst ? const BorderSide(color: Colors.black12, width: 1.0) : BorderSide.none,
+            bottom: const BorderSide(color: Colors.black12, width: 1.0)),
       ),
       width: width,
       height: height is double ? height : height.toDouble(),
