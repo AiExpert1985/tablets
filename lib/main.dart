@@ -22,6 +22,7 @@ void main() async {
   my_initializer.customInialization();
 
 // Enable offline persistence (make firebase work offline)
+  // FirebaseFirestore.instance.settings = const Settings();
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
 
   runApp(const ProviderScope(
@@ -45,7 +46,8 @@ void registerErrorHandlers() {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: const Text('An error occurred -- handled by the registerErrorHandlers() function in main.dart'),
+        title: const Text(
+            'An error occurred -- handled by the registerErrorHandlers() function in main.dart'),
       ),
       body: Center(child: Text(details.toString())),
     );

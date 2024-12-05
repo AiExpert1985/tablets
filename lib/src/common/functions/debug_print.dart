@@ -17,7 +17,7 @@ void tempPrint(dynamic message) {
 }
 
 void errorLog(dynamic message) {
-  tempPrint(message);
+  // tempPrint(message);
   Logger.logError('$message');
 }
 

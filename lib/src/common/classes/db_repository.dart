@@ -140,24 +140,24 @@ class DbRepository {
   //   return snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList().first;
   // }
 
-  Future<Map<String, dynamic>> fetchItemAsMap({String? filterKey, String? filterValue}) async {
-    try {
-      Query query = _firestore.collection(_collectionName);
-      if (filterKey != null) {
-        query = query
-            .where(filterKey, isGreaterThanOrEqualTo: filterValue)
-            .where(filterKey, isLessThan: '$filterValue\uf8ff');
-      }
-      final snapshot = await query.get(const GetOptions(source: Source.cache));
-      return snapshot.docs
-          .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
-          .toList()
-          .first;
-    } catch (e) {
-      errorLog('Error during fetching items from firbase - $e');
-      return {};
-    }
-  }
+  // Future<Map<String, dynamic>> fetchItemAsMap({String? filterKey, String? filterValue}) async {
+  //   try {
+  //     Query query = _firestore.collection(_collectionName);
+  //     if (filterKey != null) {
+  //       query = query
+  //           .where(filterKey, isGreaterThanOrEqualTo: filterValue)
+  //           .where(filterKey, isLessThan: '$filterValue\uf8ff');
+  //     }
+  //     final snapshot = await query.get(const GetOptions(source: Source.cache));
+  //     return snapshot.docs
+  //         .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
+  //         .toList()
+  //         .first;
+  //   } catch (e) {
+  //     errorLog('Error during fetching items from firbase - $e');
+  //     return {};
+  //   }
+  // }
 
   // Future<List<BaseItem>> fetchItemListAsObjects({String? filterKey, String? filterValue}) async {
   //   try {
@@ -179,21 +179,56 @@ class DbRepository {
   //   }
   // }
 
+  // Future<List<Map<String, dynamic>>> fetchItemListAsMaps(
+  //     {String? filterKey, String? filterValue}) async {
+  //   try {
+  //     Query query = _firestore.collection(_collectionName);
+  //     if (filterKey != null) {
+  //       query = query
+  //           .where(filterKey, isGreaterThanOrEqualTo: filterValue)
+  //           .where(filterKey, isLessThan: '$filterValue\uf8ff');
+  //     }
+  //     final snapshot = await query.get(const GetOptions(source: Source.cache));
+  //     return snapshot.docs
+  //         .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
+  //         .toList();
+  //   } catch (e) {
+  //     errorLog('Error during fetching items from firbase - $e');
+  //     return [];
+  //   }
+  // }
+
+  /// below function fetch data from firestore if there is internet connection
+  /// if not, it fetch from cache
   Future<List<Map<String, dynamic>>> fetchItemListAsMaps(
       {String? filterKey, String? filterValue}) async {
     try {
       Query query = _firestore.collection(_collectionName);
+
       if (filterKey != null) {
         query = query
             .where(filterKey, isGreaterThanOrEqualTo: filterValue)
             .where(filterKey, isLessThan: '$filterValue\uf8ff');
       }
-      final snapshot = await query.get(const GetOptions(source: Source.cache));
-      return snapshot.docs
-          .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
-          .toList();
+      // Attempt to fetch data from Firestore
+      final connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult.contains(ConnectivityResult.wifi) ||
+          connectivityResult.contains(ConnectivityResult.ethernet) ||
+          connectivityResult.contains(ConnectivityResult.vpn)) {
+        final snapshot = await query.get();
+        tempPrint('data fetched from firebase live data');
+        return snapshot.docs
+            .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
+            .toList();
+      } else {
+        tempPrint('data fetched from cache');
+        final cachedSnapshot = await query.get(const GetOptions(source: Source.cache));
+        return cachedSnapshot.docs
+            .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
+            .toList();
+      }
     } catch (e) {
-      errorLog('Error during fetching items from firbase - $e');
+      errorLog('Error during fetching items from Firebase - $e');
       return [];
     }
   }

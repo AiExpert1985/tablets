@@ -58,8 +58,6 @@ Future<void> _initializeCustomerDbCache(BuildContext context, WidgetRef ref) asy
     final customerData = await ref.read(customerRepositoryProvider).fetchItemListAsMaps();
     customerDbCache.set(customerData);
   }
-  successLog(customerDbCache.data);
-  successLog('customerDbCache was successfully loaded');
 }
 
 Future<void> _initializeTransactionDbCache(BuildContext context, WidgetRef ref) async {
@@ -68,8 +66,6 @@ Future<void> _initializeTransactionDbCache(BuildContext context, WidgetRef ref) 
     final transactionData = await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
     transactionDbCache.set(transactionData);
   }
-  successLog(transactionDbCache.data);
-  successLog('transactionDbCache was successfully loaded');
 }
 
 Future<void> _initializeProductDbCache(BuildContext context, WidgetRef ref) async {
@@ -78,8 +74,6 @@ Future<void> _initializeProductDbCache(BuildContext context, WidgetRef ref) asyn
     final productData = await ref.read(productRepositoryProvider).fetchItemListAsMaps();
     productDbCache.set(productData);
   }
-  successLog(productDbCache.data);
-  successLog('productDbCache was successfully loaded');
 }
 
 Future<void> _initializeVendorDbCache(BuildContext context, WidgetRef ref) async {
@@ -88,8 +82,6 @@ Future<void> _initializeVendorDbCache(BuildContext context, WidgetRef ref) async
     final vendorData = await ref.read(vendorRepositoryProvider).fetchItemListAsMaps();
     vendorDbCache.set(vendorData);
   }
-  successLog(vendorDbCache.data);
-  successLog('vendorDbCache was successfully loaded');
 }
 
 Future<void> _initializeSalesmanDbCache(BuildContext context, WidgetRef ref) async {
@@ -98,8 +90,6 @@ Future<void> _initializeSalesmanDbCache(BuildContext context, WidgetRef ref) asy
     final salesmanData = await ref.read(salesmanRepositoryProvider).fetchItemListAsMaps();
     salesmanDbCache.set(salesmanData);
   }
-  successLog(salesmanDbCache.data);
-  successLog('salesmanDbCache was successfully loaded');
 }
 
 Future<void> _initializeCategoriesDbCache(BuildContext context, WidgetRef ref) async {
@@ -108,8 +98,6 @@ Future<void> _initializeCategoriesDbCache(BuildContext context, WidgetRef ref) a
     final salesmanData = await ref.read(categoryRepositoryProvider).fetchItemListAsMaps();
     categoriesDbCache.set(salesmanData);
   }
-  successLog(categoriesDbCache.data);
-  successLog('categoryDbCache was successfully loaded');
 }
 
 Future<void> _initializeRegionsDbCache(BuildContext context, WidgetRef ref) async {
@@ -118,8 +106,6 @@ Future<void> _initializeRegionsDbCache(BuildContext context, WidgetRef ref) asyn
     final salesmanData = await ref.read(regionRepositoryProvider).fetchItemListAsMaps();
     regionDbCache.set(salesmanData);
   }
-  successLog(regionDbCache.data);
-  successLog('regionDbCache was successfully loaded');
 }
 
 Future<void> _initializeSettingsDbCache(BuildContext context, WidgetRef ref) async {
@@ -128,8 +114,6 @@ Future<void> _initializeSettingsDbCache(BuildContext context, WidgetRef ref) asy
     final settingsData = await ref.read(settingsRepositoryProvider).fetchItemListAsMaps();
     settingsDbCache.set(settingsData);
   }
-  successLog(settingsDbCache.data);
-  successLog('settingDbCache was successfully loaded');
 }
 
 List<Map<String, dynamic>> getTransactionDbCacheData(WidgetRef ref) {
