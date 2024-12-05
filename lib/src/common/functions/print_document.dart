@@ -11,8 +11,6 @@ import 'package:tablets/src/features/transactions/controllers/transaction_screen
 import 'package:printing/printing.dart';
 import 'package:flutter/services.dart';
 
-// (25,25,112)
-
 const highlightColor = PdfColor(0.2, 0.2, 0.5);
 
 Future<void> printDocument(BuildContext context, Map<String, dynamic> transactionData) async {
@@ -39,13 +37,11 @@ Future<pw.ImageProvider> loadImage(String path) async {
   return pw.MemoryImage(list);
 }
 
-Future<Document> getCustomerInvoicePdf(
-    BuildContext context, Map<String, dynamic> transactionData) async {
+Future<Document> getCustomerInvoicePdf(BuildContext context, Map<String, dynamic> transactionData) async {
   final pdf = pw.Document();
   final type = translateDbTextToScreenText(context, transactionData[transactionTypeKey]);
   final number = transactionData[transactionNumberKey].toString();
-  final arabicFont =
-      pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
+  final arabicFont = pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
   final image = await loadImage('assets/images/invoice_logo.PNG');
   pdf.addPage(
     pw.Page(
@@ -113,8 +109,9 @@ pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String type, St
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
       pw.SizedBox(width: 5), // margin
-      _labedTextField('حي المحاربين', 'العنوان', arabicFont),
-      _labedTextField('077019990001', 'موبايل', arabicFont),
+      _labedTextField('اجل', 'الدفع', arabicFont, width: 60),
+      _labedTextField('حي المحاربين', 'العنوان', arabicFont, width: 160),
+      _labedTextField('077019990001', 'موبايل', arabicFont, width: 120),
       _labedTextField('محمد نوفل كريم', 'اسم الزبون', arabicFont),
       pw.SizedBox(width: 5), // margin
     ],
@@ -127,8 +124,9 @@ pw.Widget _buildThirdRow(BuildContext context, Font arabicFont, String type, Str
     children: [
       pw.SizedBox(width: 5), // margin
       _labedTextField('دينار', 'العملة', arabicFont, width: 85),
-      _labedTextField('اجل', 'الدفع', arabicFont, width: 85),
+
       _labedTextField('1/10/2024', 'التاريخ', arabicFont),
+      _labedTextField('07502223333', 'موبايل', arabicFont),
       _labedTextField('خالد جاسم علي', 'المندوب', arabicFont),
       pw.SizedBox(width: 5), // margin
     ],
@@ -155,8 +153,7 @@ pw.Widget _labedTextField(String text, String label, Font arabicFont, {double wi
           border: pw.Border.all(color: PdfColors.grey), // Border color
           color: PdfColors.grey50,
         ),
-        padding:
-            const pw.EdgeInsets.symmetric(horizontal: 0), // Set padding to 0 to avoid extra space
+        padding: const pw.EdgeInsets.symmetric(horizontal: 0), // Set padding to 0 to avoid extra space
         child: _arabicText(arabicFont, text)),
     pw.Positioned(
       top: -5, // Adjusted position to move the label down
@@ -208,8 +205,7 @@ Future<void> _printPDf(Document pdf) async {
   }
 }
 
-pw.Widget _itemListCell(Font arabicFont, String text, double width,
-    {double height = 35, bool isTitle = false}) {
+pw.Widget _itemListCell(Font arabicFont, String text, double width, {double height = 35, bool isTitle = false}) {
   final textColor = isTitle ? PdfColors.white : PdfColors.black;
   return pw.Container(
     height: height,
@@ -327,8 +323,7 @@ pw.Widget debtColumn(Font arabicFont) {
       ));
 }
 
-pw.Widget totalsItem(Font arabicFont, String text1, String text2,
-    {bool isColored = false, double width = 175}) {
+pw.Widget totalsItem(Font arabicFont, String text1, String text2, {bool isColored = false, double width = 175}) {
   return pw.Container(
     decoration: isColored
         ? pw.BoxDecoration(
@@ -366,8 +361,7 @@ pw.Widget footerBar(
   return _decoratedContainer(childWidget, 555, height: 22, bgColor: highlightColor);
 }
 
-pw.Widget _arabicText(Font arabicFont, String text,
-    {PdfColor textColor = PdfColors.black, double fontSize = 12}) {
+pw.Widget _arabicText(Font arabicFont, String text, {PdfColor textColor = PdfColors.black, double fontSize = 10}) {
   return pw.Text(
     text,
     textAlign: pw.TextAlign.center,
@@ -384,7 +378,7 @@ pw.Widget _decoratedContainer(pw.Widget widgetChild, double width,
     {bool isDecorated = true,
     PdfColor bgColor = PdfColors.grey50,
     PdfColor borderColor = PdfColors.grey300,
-    double height = 30}) {
+    double height = 25}) {
   return pw.Container(
     width: width,
     height: height, // Increased height to provide more space for the label
@@ -395,7 +389,7 @@ pw.Widget _decoratedContainer(pw.Widget widgetChild, double width,
             color: bgColor,
           )
         : null,
-    padding: const pw.EdgeInsets.symmetric(horizontal: 0), // Set padding to 0 to avoid extra space
+    padding: const pw.EdgeInsets.only(bottom: 0, left: 0), // Set padding to 0 to avoid extra space
     child: widgetChild,
   );
 }
