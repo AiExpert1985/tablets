@@ -69,20 +69,23 @@ Widget _buildColumnTitles(BuildContext context, bool hideGifts, bool hidePrice) 
     if (!hidePrice) soldTotalAmountColumnWidth,
   ];
 
-  return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        ...List.generate(titles.length, (index) {
-          return buildDataCell(
-            widths[index],
-            titles[index],
-            isTitle: true,
-            isFirst: index == 0,
-            isLast: index == titles.length - 1,
-          );
-        })
-      ]);
+  return Container(
+    color: const Color.fromARGB(255, 227, 240, 247),
+    child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ...List.generate(titles.length, (index) {
+            return buildDataCell(
+              widths[index],
+              titles[index],
+              isTitle: true,
+              isFirst: index == 0,
+              isLast: index == titles.length - 1,
+            );
+          })
+        ]),
+  );
 }
 
 Widget buildDataCell(

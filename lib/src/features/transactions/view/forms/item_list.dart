@@ -216,7 +216,7 @@ Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
   ];
 
   return Container(
-    color: const Color.fromARGB(255, 244, 245, 171),
+    color: const Color.fromARGB(255, 227, 240, 247),
     child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
