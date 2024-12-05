@@ -90,12 +90,12 @@ Future<void> _saveDbFiles(BuildContext context, WidgetRef ref,
       final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
       final dailyBackupStatus = dailyBackupNotifier.state;
       if (context.mounted && dailyBackupStatus) {
-        success(context, S.of(context).db_backup_success);
+        successUserMessage(context, S.of(context).db_backup_success);
       }
     }
   } catch (e) {
     if (context.mounted) {
-      failure(context, S.of(context).db_backup_failure);
+      failureUserMessage(context, S.of(context).db_backup_failure);
     }
     errorPrint('backup database failed -- $e');
   }

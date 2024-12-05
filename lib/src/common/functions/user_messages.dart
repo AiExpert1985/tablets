@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 
-void success(BuildContext context, String message) =>
+void successUserMessage(BuildContext context, String message) =>
     _message(context, message, ToastificationType.success);
 
-void failure(BuildContext context, String message) =>
+void failureUserMessage(BuildContext context, String message) =>
     _message(context, message, ToastificationType.error);
 
-void info(BuildContext context, String message) =>
+void infoUserMessage(BuildContext context, String message) =>
     _message(context, message, ToastificationType.info);
 
 void _message(BuildContext context, String message, type) {

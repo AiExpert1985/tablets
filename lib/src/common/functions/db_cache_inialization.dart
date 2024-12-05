@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/features/categories/repository/category_db_cache_provider.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
@@ -25,9 +26,8 @@ import 'package:tablets/src/features/vendors/repository/vendor_repository_provid
 //! from database again
 
 Future<void> initializeAllDbCaches(BuildContext context, WidgetRef ref) async {
-  if (context.mounted) {
-    await _initializeTransactionDbCache(context, ref);
-  }
+  await _initializeTransactionDbCache(context, ref);
+
   // initialize related dbCaches
   if (context.mounted) {
     await _initializeCustomerDbCache(context, ref);
@@ -58,54 +58,68 @@ Future<void> _initializeCustomerDbCache(BuildContext context, WidgetRef ref) asy
     final customerData = await ref.read(customerRepositoryProvider).fetchItemListAsMaps();
     customerDbCache.set(customerData);
   }
+  successLog(customerDbCache.data);
+  successLog('customerDbCache was successfully loaded');
 }
 
 Future<void> _initializeTransactionDbCache(BuildContext context, WidgetRef ref) async {
-  final transactionDbCach = ref.read(transactionDbCacheProvider.notifier);
-  if (transactionDbCach.data.isEmpty) {
+  final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+  if (transactionDbCache.data.isEmpty) {
     final transactionData = await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
-    transactionDbCach.set(transactionData);
+    transactionDbCache.set(transactionData);
   }
+  successLog(transactionDbCache.data);
+  successLog('transactionDbCache was successfully loaded');
 }
 
 Future<void> _initializeProductDbCache(BuildContext context, WidgetRef ref) async {
-  final productDbCach = ref.read(productDbCacheProvider.notifier);
-  if (productDbCach.data.isEmpty) {
+  final productDbCache = ref.read(productDbCacheProvider.notifier);
+  if (productDbCache.data.isEmpty) {
     final productData = await ref.read(productRepositoryProvider).fetchItemListAsMaps();
-    productDbCach.set(productData);
+    productDbCache.set(productData);
   }
+  successLog(productDbCache.data);
+  successLog('productDbCache was successfully loaded');
 }
 
 Future<void> _initializeVendorDbCache(BuildContext context, WidgetRef ref) async {
-  final vendorDbCach = ref.read(vendorDbCacheProvider.notifier);
-  if (vendorDbCach.data.isEmpty) {
+  final vendorDbCache = ref.read(vendorDbCacheProvider.notifier);
+  if (vendorDbCache.data.isEmpty) {
     final vendorData = await ref.read(vendorRepositoryProvider).fetchItemListAsMaps();
-    vendorDbCach.set(vendorData);
+    vendorDbCache.set(vendorData);
   }
+  successLog(vendorDbCache.data);
+  successLog('vendorDbCache was successfully loaded');
 }
 
 Future<void> _initializeSalesmanDbCache(BuildContext context, WidgetRef ref) async {
-  final salesmanDbCach = ref.read(salesmanDbCacheProvider.notifier);
-  if (salesmanDbCach.data.isEmpty) {
+  final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
+  if (salesmanDbCache.data.isEmpty) {
     final salesmanData = await ref.read(salesmanRepositoryProvider).fetchItemListAsMaps();
-    salesmanDbCach.set(salesmanData);
+    salesmanDbCache.set(salesmanData);
   }
+  successLog(salesmanDbCache.data);
+  successLog('salesmanDbCache was successfully loaded');
 }
 
 Future<void> _initializeCategoriesDbCache(BuildContext context, WidgetRef ref) async {
-  final categoriesDbCach = ref.read(categoryDbCacheProvider.notifier);
-  if (categoriesDbCach.data.isEmpty) {
+  final categoriesDbCache = ref.read(categoryDbCacheProvider.notifier);
+  if (categoriesDbCache.data.isEmpty) {
     final salesmanData = await ref.read(categoryRepositoryProvider).fetchItemListAsMaps();
-    categoriesDbCach.set(salesmanData);
+    categoriesDbCache.set(salesmanData);
   }
+  successLog(categoriesDbCache.data);
+  successLog('categoryDbCache was successfully loaded');
 }
 
 Future<void> _initializeRegionsDbCache(BuildContext context, WidgetRef ref) async {
-  final regionDbCach = ref.read(regionDbCacheProvider.notifier);
-  if (regionDbCach.data.isEmpty) {
+  final regionDbCache = ref.read(regionDbCacheProvider.notifier);
+  if (regionDbCache.data.isEmpty) {
     final salesmanData = await ref.read(regionRepositoryProvider).fetchItemListAsMaps();
-    regionDbCach.set(salesmanData);
+    regionDbCache.set(salesmanData);
   }
+  successLog(regionDbCache.data);
+  successLog('regionDbCache was successfully loaded');
 }
 
 Future<void> _initializeSettingsDbCache(BuildContext context, WidgetRef ref) async {
@@ -114,6 +128,8 @@ Future<void> _initializeSettingsDbCache(BuildContext context, WidgetRef ref) asy
     final settingsData = await ref.read(settingsRepositoryProvider).fetchItemListAsMaps();
     settingsDbCache.set(settingsData);
   }
+  successLog(settingsDbCache.data);
+  successLog('settingDbCache was successfully loaded');
 }
 
 List<Map<String, dynamic>> getTransactionDbCacheData(WidgetRef ref) {

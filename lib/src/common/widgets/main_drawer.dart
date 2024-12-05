@@ -5,6 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/daily_backup_provider.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
@@ -63,10 +64,15 @@ class MainDrawer extends ConsumerWidget {
   }
 }
 
-Future<void> _initializeSettings(WidgetRef ref) async {
+void _initializeSettings(BuildContext context, WidgetRef ref) {
   final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
   if (settingsDataNotifier.data.isEmpty) {
     final settingsData = ref.read(settingsDbCacheProvider);
+    if (settingsData.isEmpty) {
+      errorLog('try to access settingDbCache, while it is not loaded yet');
+      failureUserMessage(context, 'try to access settingDbCache, while it is not loaded yet');
+      return;
+    }
     settingsDataNotifier.initialize(initialData: settingsData[0]);
   }
 }
@@ -101,7 +107,7 @@ void processAndMoveToTargetPage(BuildContext context, WidgetRef ref,
   await initializeAllDbCaches(context, ref);
   // we inialize settings
   if (context.mounted) {
-    await _initializeSettings(ref);
+    _initializeSettings(context, ref);
   }
   // load dbCache data into screenData, which will be used later for show data in the
   // page main screen, and also for search
@@ -191,8 +197,11 @@ class SettingsButton extends ConsumerWidget {
         // before loading initializing dbCaches and settings we show loading spinner &
         // when done it is cleared using below pageLoadingNotifier.state = false;
         pageLoadingNotifier.state = true;
+
         await initializeAllDbCaches(context, ref);
-        await _initializeSettings(ref);
+        if (context.mounted) {
+          _initializeSettings(context, ref);
+        }
         pageLoadingNotifier.state = false;
         if (context.mounted) {
           Navigator.of(context).pop();

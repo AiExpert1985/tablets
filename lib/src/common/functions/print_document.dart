@@ -32,7 +32,7 @@ Future<void> printDocument(BuildContext context, Map<String, dynamic> transactio
     final filePath = gePdfpath('test_file');
     if (context.mounted) {
       final pdf = await getCustomerInvoicePdf(context, transactionData);
-      // _printPDf(pdf);
+      _printPDf(pdf);
       if (filePath == null) return;
 
       final file = File(filePath);
