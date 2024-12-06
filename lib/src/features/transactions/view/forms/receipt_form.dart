@@ -5,7 +5,6 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/gaps.dart';
@@ -53,8 +52,6 @@ class ReceiptForm extends ConsumerWidget {
             VerticalGap.l,
             _buildSecondRow(context, formDataNotifier, textEditingNotifier, isVendor),
             VerticalGap.l,
-            _buildThirdRow(context, formDataNotifier),
-            VerticalGap.l,
             _buildForthRow(context, formDataNotifier),
             VerticalGap.l,
             _buildFifthRow(context, formDataNotifier, hideTransactionAmountAsText),
@@ -94,6 +91,17 @@ class ReceiptForm extends ConsumerWidget {
               formDataNotifier.updateProperties({salesmanKey: item[nameKey]});
             },
           ),
+        HorizontalGap.l,
+        FormDatePickerField(
+          initialValue: formDataNotifier.getProperty(dateKey) is Timestamp
+              ? formDataNotifier.getProperty(dateKey).toDate()
+              : formDataNotifier.getProperty(dateKey),
+          name: dateKey,
+          label: S.of(context).transaction_date,
+          onChangedFn: (date) {
+            formDataNotifier.updateProperties({dateKey: Timestamp.fromDate(date!)});
+          },
+        ),
       ],
     );
   }
@@ -102,16 +110,13 @@ class ReceiptForm extends ConsumerWidget {
       TextControllerNotifier textEditingNotifier, bool isVendor) {
     return Row(
       children: [
-        DropDownListFormField(
-          initialValue: formDataNotifier.getProperty(currencyKey),
-          itemList: [
-            S.of(context).transaction_payment_Dinar,
-            S.of(context).transaction_payment_Dollar,
-          ],
-          label: S.of(context).transaction_currency,
-          name: currencyKey,
+        FormInputField(
+          dataType: constants.FieldDataType.num,
+          name: numberKey,
+          label: S.of(context).transaction_number,
+          initialValue: formDataNotifier.getProperty(numberKey),
           onChangedFn: (value) {
-            formDataNotifier.updateProperties({currencyKey: value});
+            formDataNotifier.updateProperties({numberKey: value});
           },
         ),
         HorizontalGap.l,
@@ -129,6 +134,7 @@ class ReceiptForm extends ConsumerWidget {
             textEditingNotifier.updateControllers(updatedProperties);
           },
         ),
+
         // hide for vendors, because there is no discount
         if (!isVendor) HorizontalGap.l,
         // hide for vendors, because there is no discount
@@ -147,44 +153,17 @@ class ReceiptForm extends ConsumerWidget {
               textEditingNotifier.updateControllers(updatedProperties);
             },
           ),
-      ],
-    );
-  }
-
-  Widget _buildThirdRow(BuildContext context, ItemFormData formDataNotifier) {
-    return Row(
-      children: [
-        FormInputField(
-          dataType: constants.FieldDataType.num,
-          name: numberKey,
-          label: S.of(context).transaction_number,
-          initialValue: formDataNotifier.getProperty(numberKey),
-          onChangedFn: (value) {
-            formDataNotifier.updateProperties({numberKey: value});
-          },
-        ),
         HorizontalGap.l,
         DropDownListFormField(
-          initialValue: formDataNotifier.getProperty(paymentTypeKey),
+          initialValue: formDataNotifier.getProperty(currencyKey),
           itemList: [
-            S.of(context).transaction_payment_cash,
-            S.of(context).transaction_payment_credit,
+            S.of(context).transaction_payment_Dinar,
+            S.of(context).transaction_payment_Dollar,
           ],
-          label: S.of(context).transaction_payment_type,
-          name: paymentTypeKey,
+          label: S.of(context).transaction_currency,
+          name: currencyKey,
           onChangedFn: (value) {
-            formDataNotifier.updateProperties({paymentTypeKey: value});
-          },
-        ),
-        HorizontalGap.l,
-        FormDatePickerField(
-          initialValue: formDataNotifier.getProperty(dateKey) is Timestamp
-              ? formDataNotifier.getProperty(dateKey).toDate()
-              : formDataNotifier.getProperty(dateKey),
-          name: dateKey,
-          label: S.of(context).transaction_date,
-          onChangedFn: (date) {
-            formDataNotifier.updateProperties({dateKey: Timestamp.fromDate(date!)});
+            formDataNotifier.updateProperties({currencyKey: value});
           },
         ),
       ],
@@ -231,15 +210,24 @@ class ReceiptForm extends ConsumerWidget {
 
   Widget _buildTotalsRow(BuildContext context, ItemFormData formDataNotifier,
       TextControllerNotifier textEditingNotifier) {
-    return SizedBox(
-        width: customerInvoiceFormWidth * 0.6,
+    return Container(
+        color: const Color.fromARGB(255, 227, 240, 247),
+        // width: customerInvoiceFormWidth * 0.6,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            const SizedBox(width: 200),
+            Text(
+              S.of(context).invoice_total_price,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
+            ),
             FormInputField(
+              // textColor: Colors.white,
+              fontSize: 18,
               controller: textEditingNotifier.getController(totalAmountKey),
               isReadOnly: true,
               dataType: constants.FieldDataType.num,
-              label: S.of(context).invoice_total_price,
+              // label: S.of(context).invoice_total_price,
               name: totalAmountKey,
               initialValue: formDataNotifier.getProperty(totalAmountKey),
               onChangedFn: (value) {

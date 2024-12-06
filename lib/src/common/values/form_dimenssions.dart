@@ -28,7 +28,7 @@ final Map<String, dynamic> transactionFormDimenssions = {
   TransactionType.vendorReturn.name: {'height': 750, 'width': 800},
   TransactionType.damagedItems.name: {'height': 650, 'width': 550},
   TransactionType.gifts.name: {'height': 650, 'width': 550},
-  TransactionType.customerReceipt.name: {'height': 500, 'width': 800},
-  TransactionType.vendorReceipt.name: {'height': 500, 'width': 800},
+  TransactionType.customerReceipt.name: {'height': 400, 'width': 800},
+  TransactionType.vendorReceipt.name: {'height': 400, 'width': 800},
   TransactionType.expenditures.name: {'height': 500, 'width': 800},
 };

@@ -271,22 +271,22 @@ class FastAccessButtons extends ConsumerWidget {
       children: [
         FastAccessButton(
           TransactionType.customerInvoice.name,
-          textColor: Colors.green[400],
+          textColor: Colors.green[50],
         ),
         VerticalGap.l,
         FastAccessButton(
           TransactionType.customerReceipt.name,
-          textColor: Colors.red,
+          textColor: Colors.red[50],
         ),
         VerticalGap.l,
         FastAccessButton(
           TransactionType.customerReturn.name,
-          textColor: Colors.grey[600],
+          textColor: Colors.grey[300],
         ),
         VerticalGap.l,
         FastAccessButton(
           TransactionType.gifts.name,
-          textColor: Colors.orangeAccent,
+          textColor: Colors.orange[50],
         ),
       ],
     );
@@ -309,7 +309,7 @@ class FastAccessButton extends ConsumerWidget {
     final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        foregroundColor: textColor,
+        backgroundColor: textColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
@@ -327,10 +327,10 @@ class FastAccessButton extends ConsumerWidget {
         );
       },
       child: Container(
-        height: 60,
-        width: 40,
-        padding: const EdgeInsets.all(2),
-        child: Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
+        height: 55,
+        width: 34,
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+        child: Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 15)),
       ),
     );
   }

@@ -51,8 +51,6 @@ class InvoiceForm extends ConsumerWidget {
             VerticalGap.m,
             SecondRow(transactionType),
             VerticalGap.m,
-            const ThirdRow(),
-            VerticalGap.m,
             const ForthRow(),
             VerticalGap.m,
             const FifthRow(),
@@ -125,6 +123,17 @@ class FirstRow extends ConsumerWidget {
                   .updateProperties({salesmanKey: item['name'], salesmanDbRefKey: item['dbRef']});
             },
           ),
+        HorizontalGap.l,
+        FormDatePickerField(
+          initialValue: formDataNotifier.getProperty(dateKey) is Timestamp
+              ? formDataNotifier.getProperty(dateKey).toDate()
+              : formDataNotifier.getProperty(dateKey),
+          name: dateKey,
+          label: S.of(context).transaction_date,
+          onChangedFn: (date) {
+            formDataNotifier.updateProperties({dateKey: Timestamp.fromDate(date!)});
+          },
+        ),
       ],
     );
   }
@@ -140,16 +149,13 @@ class SecondRow extends ConsumerWidget {
     final transactionUtils = ref.read(transactionUtilsControllerProvider);
     return Row(
       children: [
-        DropDownListFormField(
-          initialValue: formDataNotifier.getProperty(currencyKey),
-          itemList: [
-            S.of(context).transaction_payment_Dinar,
-            S.of(context).transaction_payment_Dollar,
-          ],
-          label: S.of(context).transaction_currency,
-          name: currencyKey,
+        FormInputField(
+          dataType: constants.FieldDataType.num,
+          name: numberKey,
+          label: S.of(context).transaction_number,
+          initialValue: formDataNotifier.getProperty(numberKey),
           onChangedFn: (value) {
-            formDataNotifier.updateProperties({currencyKey: value});
+            formDataNotifier.updateProperties({numberKey: value});
           },
         ),
         HorizontalGap.l,
@@ -176,25 +182,17 @@ class SecondRow extends ConsumerWidget {
             textEditingNotifier.updateControllers(updatedProperties);
           },
         ),
-      ],
-    );
-  }
-}
-
-class ThirdRow extends ConsumerWidget {
-  const ThirdRow({super.key});
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    return Row(
-      children: [
-        FormInputField(
-          dataType: constants.FieldDataType.num,
-          name: numberKey,
-          label: S.of(context).transaction_number,
-          initialValue: formDataNotifier.getProperty(numberKey),
+        HorizontalGap.l,
+        DropDownListFormField(
+          initialValue: formDataNotifier.getProperty(currencyKey),
+          itemList: [
+            S.of(context).transaction_payment_Dinar,
+            S.of(context).transaction_payment_Dollar,
+          ],
+          label: S.of(context).transaction_currency,
+          name: currencyKey,
           onChangedFn: (value) {
-            formDataNotifier.updateProperties({numberKey: value});
+            formDataNotifier.updateProperties({currencyKey: value});
           },
         ),
         HorizontalGap.l,
@@ -208,17 +206,6 @@ class ThirdRow extends ConsumerWidget {
           name: paymentTypeKey,
           onChangedFn: (value) {
             formDataNotifier.updateProperties({paymentTypeKey: value});
-          },
-        ),
-        HorizontalGap.l,
-        FormDatePickerField(
-          initialValue: formDataNotifier.getProperty(dateKey) is Timestamp
-              ? formDataNotifier.getProperty(dateKey).toDate()
-              : formDataNotifier.getProperty(dateKey),
-          name: dateKey,
-          label: S.of(context).transaction_date,
-          onChangedFn: (date) {
-            formDataNotifier.updateProperties({dateKey: Timestamp.fromDate(date!)});
           },
         ),
       ],

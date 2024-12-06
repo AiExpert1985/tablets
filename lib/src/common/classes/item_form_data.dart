@@ -128,4 +128,8 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
     dataTypesBuffer.write('}');
     return dataTypesBuffer.toString();
   }
+
+  void reset() {
+    state = {};
+  }
 }
