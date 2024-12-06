@@ -86,7 +86,19 @@ class TransactionForm extends ConsumerWidget {
     return FormFrame(
       backgroundColor: backgroundColor,
       formKey: formController.formKey,
-      fields: _getFormWidget(context, transactionType),
+      fields: Stack(children: [
+        _getFormWidget(context, transactionType),
+        Positioned(
+          top: 8, // Adjust the top position as needed
+          left: 8, // Adjust the left position as needed
+          child: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              Navigator.of(context).pop(); // Dismiss the dialog
+            },
+          ),
+        ),
+      ]),
       buttons: _actionButtons(
           context, formController, formDataNotifier, formImagesNotifier, dbCache, screenController),
       width: width is double ? width : width.toDouble(),
