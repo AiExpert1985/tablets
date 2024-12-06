@@ -19,6 +19,20 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     state = {...newState};
   }
 
+  // TODO not working properly needs testing
+  /// remove a complete row of subControllers
+  void removeSubControllers(String property, int index) {
+    Map<String, dynamic> newState = Map.from(state);
+    if (!isValidController(property) || newState[property] is! List) return;
+    newState[property][index].forEach((subProperty, controller) {
+      if (!isValidSubController(property, index, subProperty)) return;
+      removeSubController(property, index, subProperty);
+    });
+    // finally, remove the map
+    newState[property].removeAt(index);
+    state = {...newState};
+  }
+
   void removeSubController(String property, int index, String subProperty) {
     if (!isValidSubController(property, index, subProperty)) return;
     final list = state[property];

@@ -41,4 +41,5 @@ Map<String, dynamic> emptyInvoiceItem = {
   itemGiftQuantityKey: 0,
   itemTotalAmountKey: 0,
   itemTotalWeightKey: 0,
+  itemStockQuantityKey: 0,
 };

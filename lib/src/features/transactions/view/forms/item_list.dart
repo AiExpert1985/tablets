@@ -146,6 +146,9 @@ Widget _buildAddItemButton(
   );
 }
 
+// TODO when last item removed, there still data, i need to solve that
+// TODO I was working on using remove textEditingController.subControllers(...) but
+// TODO stopped due to lack of time
 Widget _buildDeleteItemButton(ItemFormData formDataNotifier,
     TextControllerNotifier textEditingNotifier, int index, double width, String transactionType,
     {bool isFirst = false}) {
