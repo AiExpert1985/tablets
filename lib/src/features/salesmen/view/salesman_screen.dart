@@ -227,11 +227,11 @@ class DataRow extends ConsumerWidget {
             () => reportController.showCustomers(context, customersList, name),
           ),
           MainScreenClickableCell(
-            '$totalDebt \n ($dueDebt)',
+            '${totalDebt.toInt()} \n (${dueDebt.toInt()})',
             () => reportController.showDebtReport(context, debtDetails, name),
           ),
           MainScreenClickableCell(
-            '$openInvoices ($dueInvoices)',
+            '${openInvoices.toInt()} (${dueInvoices.toInt()})',
             () => reportController.showInvoicesReport(context, openInvoicesDetails, name),
           ),
           MainScreenClickableCell(
