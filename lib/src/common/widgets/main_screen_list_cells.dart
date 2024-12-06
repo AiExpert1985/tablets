@@ -13,6 +13,7 @@ class MainScreenTextCell extends StatelessWidget {
   final bool isHeader;
   final bool isWarning;
   final bool isColumnTotal;
+  final bool isHighlighted;
 
   const MainScreenTextCell(
     this.data, {
@@ -21,6 +22,7 @@ class MainScreenTextCell extends StatelessWidget {
     this.isHeader = false,
     this.isWarning = false,
     this.isColumnTotal = false,
+    this.isHighlighted = false,
   });
 
   @override
@@ -44,7 +46,10 @@ class MainScreenTextCell extends StatelessWidget {
               fontSize: 16,
               fontWeight: FontWeight.bold,
             )
-          : TextStyle(fontSize: 16, color: isWarning ? Colors.red : null),
+          : TextStyle(
+              fontSize: 16,
+              color: isWarning ? Colors.red : null,
+              fontWeight: isHighlighted ? FontWeight.bold : null),
     );
     if (isExpanded) {
       cell = Expanded(child: cell);
@@ -95,7 +100,12 @@ class MainScreenClickableCell extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget cell = InkWell(
       onTap: onTap,
-      child: MainScreenTextCell(data, isWarning: isWarning, isExpanded: false),
+      child: MainScreenTextCell(
+        data,
+        isWarning: isWarning,
+        isExpanded: false,
+        isHighlighted: true,
+      ),
     );
     if (isExpanded) {
       cell = Expanded(child: cell);
