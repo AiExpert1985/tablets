@@ -55,9 +55,7 @@ class FormInputField extends ConsumerWidget {
   }
 
   dynamic _getInitialValue() {
-    tempPrint(initialValue is! String ? doubleToIntString(initialValue) : initialValue);
     if (controller != null) return null;
-    tempPrint('hi');
     return initialValue is! String ? doubleToIntString(initialValue) : initialValue;
   }
 

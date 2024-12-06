@@ -16,7 +16,7 @@ class Logger {
       final timestamp = DateTime.now().toIso8601String();
       await file.writeAsString('$timestamp: $error\n', mode: FileMode.append);
     } catch (e) {
-      tempPrint('error during writing to log file');
+      errorPrint('error during writing to log file');
     }
   }
 

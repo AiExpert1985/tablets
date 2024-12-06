@@ -100,7 +100,7 @@
     "transaction_expenditure_type": "نوع المصاريف",
     "transaction_type_expenditures": "مصاريف",
     "transaction_expenditure_money_transer": "عمولة حوالة",
-    "transaction_type_gifts": "هدية",
+    "transaction_type_gifts": "هدية زبون",
     "transaction_type_customer_receipt": "وصل قبض",
     "transaction_type_vendor_receipt": "وصل دفع",
     "transaction_type_vender_return": "ارجاع مجهز",

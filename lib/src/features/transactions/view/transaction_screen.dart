@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/features_keys.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
@@ -214,43 +215,123 @@ class TransactionsFloatingButtons extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final drawerController = ref.watch(transactionDrawerControllerProvider);
     const iconsColor = Color.fromARGB(255, 126, 106, 211);
-    return SpeedDial(
-      direction: SpeedDialDirection.up,
-      switchLabelPosition: false,
-      animatedIcon: AnimatedIcons.menu_close,
-      spaceBetweenChildren: 10,
-      animatedIconTheme: const IconThemeData(size: 28.0),
-      visible: true,
-      curve: Curves.bounceInOut,
+    return Column(
       children: [
-        SpeedDialChild(
-            child: const Icon(Icons.pie_chart, color: Colors.white),
-            backgroundColor: iconsColor,
-            onTap: () async {
-              final allTransactions =
-                  await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
-              if (context.mounted) {
-                drawerController.showReports(context, allTransactions);
-              }
-            }),
-        SpeedDialChild(
-          child: const Icon(Icons.search, color: Colors.white),
-          backgroundColor: iconsColor,
-          onTap: () => drawerController.showSearchForm(context),
-        ),
-        SpeedDialChild(
-          child: const Icon(Icons.add, color: Colors.white),
-          backgroundColor: iconsColor,
-          onTap: () {
-            // reset background color when form is closed
-            ref.read(backgroundColorProvider.notifier).state = Colors.white;
-            showDialog(
-              context: context,
-              builder: (BuildContext ctx) => const TransactionGroupSelection(),
-            ).whenComplete(() {});
-          },
+        const FastAccessButtons(),
+        VerticalGap.xl,
+        SpeedDial(
+          direction: SpeedDialDirection.up,
+          switchLabelPosition: false,
+          animatedIcon: AnimatedIcons.menu_close,
+          spaceBetweenChildren: 10,
+          animatedIconTheme: const IconThemeData(size: 28.0),
+          visible: true,
+          curve: Curves.bounceInOut,
+          children: [
+            SpeedDialChild(
+                child: const Icon(Icons.pie_chart, color: Colors.white),
+                backgroundColor: iconsColor,
+                onTap: () async {
+                  final allTransactions =
+                      await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
+                  if (context.mounted) {
+                    drawerController.showReports(context, allTransactions);
+                  }
+                }),
+            SpeedDialChild(
+              child: const Icon(Icons.search, color: Colors.white),
+              backgroundColor: iconsColor,
+              onTap: () => drawerController.showSearchForm(context),
+            ),
+            SpeedDialChild(
+              child: const Icon(Icons.add, color: Colors.white),
+              backgroundColor: iconsColor,
+              onTap: () {
+                // reset background color when form is closed
+                ref.read(backgroundColorProvider.notifier).state = Colors.white;
+                showDialog(
+                  context: context,
+                  builder: (BuildContext ctx) => const TransactionGroupSelection(),
+                ).whenComplete(() {});
+              },
+            ),
+          ],
         ),
       ],
+    );
+  }
+}
+
+class FastAccessButtons extends ConsumerWidget {
+  const FastAccessButtons({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      children: [
+        FastAccessButton(
+          TransactionType.customerInvoice.name,
+          textColor: Colors.green[400],
+        ),
+        VerticalGap.l,
+        FastAccessButton(
+          TransactionType.customerReceipt.name,
+          textColor: Colors.red,
+        ),
+        VerticalGap.l,
+        FastAccessButton(
+          TransactionType.customerReturn.name,
+          textColor: Colors.grey[600],
+        ),
+        VerticalGap.l,
+        FastAccessButton(
+          TransactionType.gifts.name,
+          textColor: Colors.orangeAccent,
+        ),
+      ],
+    );
+  }
+}
+
+class FastAccessButton extends ConsumerWidget {
+  const FastAccessButton(this.formType, {this.textColor, super.key});
+  final String formType;
+  final Color? textColor;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    String label = translateDbTextToScreenText(context, formType);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: textColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+      onPressed: () {
+        TransactionShowForm.showForm(
+          context,
+          imagePickerNotifier,
+          formDataNotifier,
+          settingsDataNotifier,
+          textEditingNotifier,
+          backgroundColorNofifier,
+          formType: formType,
+          transactionDbCache: transactionDbCache,
+        );
+      },
+      child: Container(
+        height: 60,
+        width: 40,
+        padding: const EdgeInsets.all(2),
+        child: Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
+      ),
     );
   }
 }

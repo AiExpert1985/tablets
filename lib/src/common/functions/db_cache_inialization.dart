@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/features/categories/repository/category_db_cache_provider.dart';
 import 'package:tablets/src/features/categories/repository/category_repository_provider.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';

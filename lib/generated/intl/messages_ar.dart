@@ -375,7 +375,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("اتلاف مواد"),
         "transaction_type_expenditures":
             MessageLookupByLibrary.simpleMessage("مصاريف"),
-        "transaction_type_gifts": MessageLookupByLibrary.simpleMessage("هدية"),
+        "transaction_type_gifts":
+            MessageLookupByLibrary.simpleMessage("هدية زبون"),
         "transaction_type_initial_credit":
             MessageLookupByLibrary.simpleMessage("رصيد اولي"),
         "transaction_type_vender_invoice":

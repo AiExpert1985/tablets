@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/file_system_path.dart';
 import 'package:tablets/src/common/functions/utils.dart';
@@ -38,7 +37,7 @@ Future<void> printDocument(BuildContext context, Map<String, dynamic> transactio
       final file = File(filePath);
       await file.writeAsBytes(await pdf.save());
     }
-    tempPrint('PDF saved at: $filePath');
+    successLog('PDF saved at: $filePath');
   } catch (e) {
     errorLog('Pdf creation failed - ($e)');
   }

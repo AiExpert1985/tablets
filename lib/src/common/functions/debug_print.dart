@@ -7,17 +7,14 @@ void errorPrint(dynamic message, {stackTrace}) {
   int trimEnd = stackText.length < 225 ? stackText.length : 225;
   String details = stackText.substring(0, trimEnd);
   debugPrint('||===== Catched Error ====> $message =====> $details======||');
-  // write error to the log file
-  errorLog('$message');
 }
 
-/// Temporary print for texting code
+/// printing for debug puprose, which needs to be later removedd
 void tempPrint(dynamic message) {
   debugPrint('||===== Debug Print ====> $message ======||');
 }
 
 void errorLog(dynamic message) {
-  // tempPrint(message);
   Logger.logError('$message');
 }
 
