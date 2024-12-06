@@ -13,14 +13,19 @@ class ItemFormController {
 
   void submitData() => formKey.currentState!.save();
 
-  void saveItemToDb(BuildContext context, BaseItem item, bool isEditMode) async {
+  void saveItemToDb(BuildContext context, BaseItem item, bool isEditMode,
+      {bool keepDialogOpen = false}) async {
     isEditMode ? _repository.updateItem(item) : _repository.addItem(item);
-    _closeForm(context);
+    if (!keepDialogOpen) {
+      _closeForm(context);
+    }
   }
 
-  void deleteItemFromDb(BuildContext context, BaseItem item) async {
+  void deleteItemFromDb(BuildContext context, BaseItem item, {bool keepDialogOpen = false}) async {
     _repository.deleteItem(item);
-    _closeForm(context);
+    if (!keepDialogOpen) {
+      _closeForm(context);
+    }
   }
 
   void _closeForm(BuildContext context) {

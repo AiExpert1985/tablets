@@ -153,7 +153,7 @@ class TransactionForm extends ConsumerWidget {
     final imageUrls = formImagesNotifier.saveChanges();
     final itemData = {...formData, 'imageUrls': imageUrls};
     final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
-    formController.saveItemToDb(context, transaction, isEditMode);
+    formController.saveItemToDb(context, transaction, isEditMode, keepDialogOpen: true);
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     if (itemData[transactionDateKey] is DateTime) {
       // in our form the data type usually is DateTime, but the date type in dbCache should be
@@ -184,7 +184,7 @@ class TransactionForm extends ConsumerWidget {
       final itemData = {...formData, 'imageUrls': imageUrls};
       final transaction = Transaction.fromMap(itemData);
       if (context.mounted) {
-        formController.deleteItemFromDb(context, transaction);
+        formController.deleteItemFromDb(context, transaction, keepDialogOpen: true);
       }
       // update the bdCache (database mirror) so that we don't need to fetch data from db
       const operationType = DbCacheOperationTypes.delete;
