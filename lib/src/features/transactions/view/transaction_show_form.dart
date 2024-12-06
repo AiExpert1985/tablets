@@ -44,6 +44,7 @@ class TransactionShowForm {
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType),
     ).whenComplete(() {
       imagePickerNotifier.close();

@@ -219,9 +219,10 @@ class ReceiptForm extends ConsumerWidget {
             const SizedBox(width: 200),
             Text(
               S.of(context).invoice_total_price,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
             FormInputField(
+              hideBorders: true,
               // textColor: Colors.white,
               fontSize: 18,
               controller: textEditingNotifier.getController(totalAmountKey),
