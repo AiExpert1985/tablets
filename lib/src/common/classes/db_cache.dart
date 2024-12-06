@@ -92,7 +92,7 @@ class DbCache extends StateNotifier<List<Map<String, dynamic>>> {
       {required String filterKey, required String filterValue}) {
     List<Map<String, dynamic>> filteredList = deepCopyDbCache(state);
     if (filterValue != '') {
-      filteredList = state.where((map) => map[filterKey] == filterValue).toList();
+      filteredList = state.where((map) => map[filterKey].contains(filterValue)).toList();
     }
     return Future.value(filteredList);
   }
