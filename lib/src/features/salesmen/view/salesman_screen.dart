@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -227,11 +228,11 @@ class DataRow extends ConsumerWidget {
             () => reportController.showCustomers(context, customersList, name),
           ),
           MainScreenClickableCell(
-            '${totalDebt.toInt()} \n (${dueDebt.toInt()})',
+            '${doubleToStringWithComma(totalDebt)} \n (${doubleToStringWithComma(dueDebt)})',
             () => reportController.showDebtReport(context, debtDetails, name),
           ),
           MainScreenClickableCell(
-            '${openInvoices.toInt()} (${dueInvoices.toInt()})',
+            '${doubleToStringWithComma(openInvoices)} (${doubleToStringWithComma(dueInvoices)})',
             () => reportController.showInvoicesReport(context, openInvoicesDetails, name),
           ),
           MainScreenClickableCell(
