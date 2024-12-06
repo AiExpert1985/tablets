@@ -134,12 +134,12 @@ class HomeButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     return MainDrawerButton('home', S.of(context).home_page, () async {
       await initializeAllDbCaches(context, ref);
-      if (context.mounted) {
-        Navigator.of(context).pop();
-      }
       pageTitleNotifier.state = '';
       if (context.mounted) {
         context.goNamed(AppRoute.home.name);
+      }
+      if (context.mounted) {
+        Navigator.of(context).pop();
       }
     });
   }

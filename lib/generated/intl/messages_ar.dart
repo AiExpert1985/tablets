@@ -176,6 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "loading_data": MessageLookupByLibrary.simpleMessage("تحميل البيانات"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
         "logout": MessageLookupByLibrary.simpleMessage("خروج"),
+        "main_menu": MessageLookupByLibrary.simpleMessage("القائمة الرئيسية"),
         "max_debt_amount_allowed":
             MessageLookupByLibrary.simpleMessage("اقصى حد للدين"),
         "max_debt_duration_allowed":

@@ -22,9 +22,10 @@ class AppScreenFrame extends ConsumerWidget {
           alignment: Alignment.center,
           child: AppBar(
             title: _buildPageTitle(context, pageTitle),
+            leadingWidth: 140,
             leading: Builder(
               builder: (context) => IconButton(
-                icon: const Icon(Icons.menu, color: Colors.white),
+                icon: const MainMenuIcon(),
                 onPressed: () => Scaffold.of(context).openDrawer(),
               ),
             ),

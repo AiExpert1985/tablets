@@ -15,6 +15,22 @@ class ApproveIcon extends StatelessWidget {
   }
 }
 
+class MainMenuIcon extends StatelessWidget {
+  const MainMenuIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      const Icon(Icons.menu, color: Colors.white),
+      HorizontalGap.s,
+      Text(
+        S.of(context).main_menu,
+        style: const TextStyle(color: Colors.white, fontSize: 14),
+      )
+    ]);
+  }
+}
+
 class SaveIcon extends StatelessWidget {
   const SaveIcon({super.key});
 

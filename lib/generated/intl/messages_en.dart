@@ -182,6 +182,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "loading_data": MessageLookupByLibrary.simpleMessage("Loading data"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "logout": MessageLookupByLibrary.simpleMessage("logout"),
+        "main_menu": MessageLookupByLibrary.simpleMessage("Main menu"),
         "max_debt_amount_allowed":
             MessageLookupByLibrary.simpleMessage("max Debt Amount "),
         "max_debt_duration_allowed":

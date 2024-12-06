@@ -157,6 +157,7 @@ String doubleToStringWithComma(dynamic value, {int? numDecimalPlaces}) {
 }
 
 String doubleToIntString(dynamic value) {
+  if (value == null) return '';
   if (value is String) return value;
   if (value is double) return value.toInt().toString();
   return value.toString();

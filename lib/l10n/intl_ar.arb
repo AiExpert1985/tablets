@@ -238,5 +238,6 @@
     "region": "المنطقة",
     "date_entery_date": "تاريخ الادخال",
     "db_backup_success": "تم خزن نسخة احتياطية",
-    "db_backup_failure": "حدث خطأ اثناء خزن نسخة احتياطية"
+    "db_backup_failure": "حدث خطأ اثناء خزن نسخة احتياطية",
+    "main_menu": "القائمة الرئيسية"
 }

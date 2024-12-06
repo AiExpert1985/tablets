@@ -310,7 +310,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         return SizedBox(
           width: widget.width / widget.titleList.length,
           child: Text(
-            item.toString(),
+            item is String ? item : doubleToStringWithComma(item),
             textAlign: TextAlign.center,
           ),
         );
