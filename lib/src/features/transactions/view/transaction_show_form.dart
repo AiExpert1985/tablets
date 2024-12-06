@@ -50,7 +50,6 @@ class TransactionShowForm {
         imagePickerNotifier.close();
         //TODO I commented out textEdigtingNotifier to solve issue temporaritly, I must
         //TODO find the error and fix it.
-        // textEditingNotifier.disposeControllers();
       } catch (e) {
         errorLog('Error during disposing on transaction formCompletion - $e');
       }
@@ -60,6 +59,8 @@ class TransactionShowForm {
   static void initializeFormData(BuildContext context, ItemFormData formDataNotifier,
       ItemFormData settingsDataNotifier, String transactionType,
       {Transaction? transaction, DbCache? transactionDbCache}) {
+    // note here if transaction is null, it it equivalent to calling
+    // formDataNotifier.intialize();
     formDataNotifier.initialize(initialData: transaction?.toMap());
     if (transaction != null) return; // if we are in edit, we don't need further initialization
     String paymentType = settingsDataNotifier.getProperty(settingsPaymentTypeKey) ??
@@ -96,6 +97,10 @@ class TransactionShowForm {
   // for example total price it updated by the item prices
   static void initializeTextFieldControllers(
       TextControllerNotifier textEditingNotifier, ItemFormData formDataNotifier) {
+    // before creating new controllers, I dispose previous ones,
+    // I previously disposed them on form close, but I did cause error say there are
+    // controllers called after being disposed, so I moved the dispose here
+    textEditingNotifier.disposeControllers();
     List items = formDataNotifier.getProperty(itemsKey);
     for (var i = 0; i < items.length; i++) {
       final price = formDataNotifier.getSubProperty(itemsKey, i, itemSellingPriceKey);
