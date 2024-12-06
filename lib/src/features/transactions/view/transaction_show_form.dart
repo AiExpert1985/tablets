@@ -46,13 +46,7 @@ class TransactionShowForm {
       context: context,
       builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType),
     ).whenComplete(() {
-      try {
-        imagePickerNotifier.close();
-        //TODO I commented out textEdigtingNotifier to solve issue temporaritly, I must
-        //TODO find the error and fix it.
-      } catch (e) {
-        errorLog('Error during disposing on transaction formCompletion - $e');
-      }
+      imagePickerNotifier.close();
     });
   }
 
