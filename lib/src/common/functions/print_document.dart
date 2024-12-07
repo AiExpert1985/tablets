@@ -67,7 +67,6 @@ Future<Document> getCustomerInvoicePdf(
   final pdf = pw.Document();
   final transaction = Transaction.fromMap(transactionData);
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
-  tempPrint(transaction.nameDbRef!);
   final customerData = customerDbCache.getItemByDbRef(transaction.nameDbRef!);
   final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
   final salesmanData = salesmanDbCache.getItemByDbRef(transaction.salesmanDbRef!);
@@ -94,9 +93,7 @@ Future<Document> getCustomerInvoicePdf(
   final itemsWeigt = doubleToStringWithComma(transaction.totalWeight);
 
   final customerScreenController = ref.read(customerScreenControllerProvider);
-  tempPrint(customerData);
   final customerScreenData = customerScreenController.getItemScreenData(context, customerData);
-  tempPrint('ok');
   final debtAfter = doubleToStringWithComma(customerScreenData['totalDebt']);
   final debtBefore =
       doubleToStringWithComma(customerScreenData['totalDebt'] - transaction.totalAmount);

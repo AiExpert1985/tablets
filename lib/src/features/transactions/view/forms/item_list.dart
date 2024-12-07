@@ -210,8 +210,7 @@ Widget _buildDeleteItemButton(ItemFormData formDataNotifier,
 Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
     TextControllerNotifier textEditingNotifier, bool hideGifts, bool hidePrice) {
   final titles = [
-    // _buildAddItemButton(formDataNotifier, textEditingNotifier),
-    const SizedBox(width: sequenceColumnWidth),
+    _buildAddItemButton(formDataNotifier, textEditingNotifier),
     Text(S.of(context).item_name),
     if (!hidePrice) Text(S.of(context).item_price),
     Text(S.of(context).item_sold_quantity),
