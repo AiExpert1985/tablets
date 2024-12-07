@@ -2,12 +2,18 @@ import 'dart:io';
 
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
+import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_report_controller.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
-void importCustomerExcel() async {
+void importCustomerExcel(WidgetRef ref) async {
+  final repository = ref.read(customerRepositoryProvider);
+
   try {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -41,7 +47,8 @@ void importCustomerExcel() async {
               'imageUrls': [defaultImageUrl],
             };
             final customer = Customer.fromMap(customerData);
-            tempPrint(customer.name);
+            repository.addItem(customer);
+            tempPrint('done $i');
           }
         }
         // Process the Excel data
