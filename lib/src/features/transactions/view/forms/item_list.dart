@@ -92,7 +92,7 @@ List<Widget> _buildDataRows(
               formDataNotifier, textEditingNotifier, index, sequenceColumnWidth, transactionType,
               isFirst: true),
           _buildDropDownWithSearch(formDataNotifier, textEditingNotifier, index, nameColumnWidth,
-              productDbCache, productScreenController, context),
+              productDbCache, productScreenController, context, items.length),
 
           if (!hidePrice)
             TransactionFormInputField(
@@ -144,6 +144,17 @@ Widget _buildAddItemButton(
     },
     icon: const Icon(Icons.add, color: Colors.green),
   );
+}
+
+void addNewRow(formDataNotifier, textEditingNotifier) {
+  formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem);
+  textEditingNotifier.updateSubControllers(itemsKey, {
+    itemSellingPriceKey: 0,
+    itemSoldQuantityKey: 0,
+    itemGiftQuantityKey: 0,
+    itemTotalAmountKey: 0,
+    itemTotalWeightKey: 0
+  });
 }
 
 // TODO when last item removed, there still data, i need to solve that
@@ -199,7 +210,8 @@ Widget _buildDeleteItemButton(ItemFormData formDataNotifier,
 Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
     TextControllerNotifier textEditingNotifier, bool hideGifts, bool hidePrice) {
   final titles = [
-    _buildAddItemButton(formDataNotifier, textEditingNotifier),
+    // _buildAddItemButton(formDataNotifier, textEditingNotifier),
+    const SizedBox(width: sequenceColumnWidth),
     Text(S.of(context).item_name),
     if (!hidePrice) Text(S.of(context).item_price),
     Text(S.of(context).item_sold_quantity),
@@ -261,14 +273,14 @@ dynamic _getTotal(ItemFormData formDataNotifier, String property, String subProp
 }
 
 Widget _buildDropDownWithSearch(
-  ItemFormData formDataNotifier,
-  TextControllerNotifier textEditingNotifier,
-  int index,
-  double width,
-  DbCache productDbCache,
-  ProductScreenController productScreenController,
-  BuildContext context,
-) {
+    ItemFormData formDataNotifier,
+    TextControllerNotifier textEditingNotifier,
+    int index,
+    double width,
+    DbCache productDbCache,
+    ProductScreenController productScreenController,
+    BuildContext context,
+    int numRows) {
   return buildDataCell(
     width,
     DropDownWithSearchFormField(
@@ -296,6 +308,10 @@ Widget _buildDropDownWithSearch(
         final price = formDataNotifier.getSubProperty(itemsKey, index, itemSellingPriceKey);
         textEditingNotifier.updateSubControllers(itemsKey, {itemSellingPriceKey: price},
             index: index);
+// add new empty row if current row is last one, (always keep one empty row)
+        if (index == numRows - 1) {
+          addNewRow(formDataNotifier, textEditingNotifier);
+        }
       },
     ),
   );

@@ -189,6 +189,7 @@ class TransactionForm extends ConsumerWidget {
     TransactionScreenController screenController,
   ) {
     if (!formController.validateData()) return;
+    removeEmptyRows(formDataNotifier);
     formController.submitData();
     final formData = {...formDataNotifier.data};
     final imageUrls = formImagesNotifier.saveChanges();
@@ -212,6 +213,16 @@ class TransactionForm extends ConsumerWidget {
 
     //// open new form when saving
     // _showForm(context, ref, transactionType);
+  }
+
+  /// delete rows where there is not item name
+  void removeEmptyRows(ItemFormData formDataNotifier) {
+    final items = formDataNotifier.getProperty(itemsKey);
+    for (var i = 0; i < items.length; i++) {
+      if (items[i]['name'] == '') {
+        formDataNotifier.removeSubProperties(itemsKey, i);
+      }
+    }
   }
 
   Future<void> _onDeletePressed(
@@ -248,7 +259,6 @@ class TransactionForm extends ConsumerWidget {
   void _onPrintPressed(BuildContext context, WidgetRef ref, ItemFormData formDataNotifier) async {
     printDocument(context, ref, formDataNotifier.data);
     formDataNotifier.updateProperties({isPrintedKey: true});
-    tempPrint(formDataNotifier.getProperty(isPrintedKey));
   }
 
   // void _onNavigationPressed(
