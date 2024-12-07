@@ -125,24 +125,24 @@ class TransactionForm extends ConsumerWidget {
     WidgetRef ref,
   ) {
     return [
+      // IconButton(
+      //   onPressed: () {
+      //     final formData = formNavigation.first();
+      //     _onNavigationPressed(formData, context, ref);
+      //   },
+      //   icon: const GoFirstIcon(),
+      // ),
+      // IconButton(
+      //   onPressed: () {
+      //     final formData = formNavigation.previous();
+      //     _onNavigationPressed(formData, context, ref);
+      //   },
+      //   icon: const GoPreviousIcon(),
+      // ),
+      // const SizedBox(width: 250),
       IconButton(
         onPressed: () {
-          final formData = formNavigation.first();
-          _onNavigationPressed(formData, context, ref);
-        },
-        icon: const GoFirstIcon(),
-      ),
-      IconButton(
-        onPressed: () {
-          final formData = formNavigation.previous();
-          _onNavigationPressed(formData, context, ref);
-        },
-        icon: const GoPreviousIcon(),
-      ),
-      const SizedBox(width: 250),
-      IconButton(
-        onPressed: () {
-          _onSavePressed(context, formController, formDataNotifier, formImagesNotifier,
+          _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
               transactionDbCache, screenController);
         },
         icon: const SaveIcon(),
@@ -161,26 +161,27 @@ class TransactionForm extends ConsumerWidget {
         },
         icon: const PrintIcon(),
       ),
-      const SizedBox(width: 250),
-      IconButton(
-        onPressed: () {
-          final formData = formNavigation.next();
-          _onNavigationPressed(formData, context, ref);
-        },
-        icon: const GoNextIcon(),
-      ),
-      IconButton(
-        onPressed: () {
-          final formData = formNavigation.last();
-          _onNavigationPressed(formData, context, ref);
-        },
-        icon: const GoLastIcon(),
-      ),
+      // const SizedBox(width: 250),
+      // IconButton(
+      //   onPressed: () {
+      //     final formData = formNavigation.next();
+      //     _onNavigationPressed(formData, context, ref);
+      //   },
+      //   icon: const GoNextIcon(),
+      // ),
+      // IconButton(
+      //   onPressed: () {
+      //     final formData = formNavigation.last();
+      //     _onNavigationPressed(formData, context, ref);
+      //   },
+      //   icon: const GoLastIcon(),
+      // ),
     ];
   }
 
   void _onSavePressed(
     BuildContext context,
+    WidgetRef ref,
     ItemFormController formController,
     ItemFormData formDataNotifier,
     ImageSliderNotifier formImagesNotifier,
@@ -206,6 +207,9 @@ class TransactionForm extends ConsumerWidget {
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
     }
+    Navigator.of(context).pop();
+    //// open new form when saving
+    // _showForm(context, ref, transactionType);
   }
 
   Future<void> _onDeletePressed(
@@ -234,6 +238,9 @@ class TransactionForm extends ConsumerWidget {
         screenController.setFeatureScreenData(context);
       }
     }
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   void _onPrintPressed(BuildContext context, ItemFormData formDataNotifier) async {
@@ -245,22 +252,25 @@ class TransactionForm extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) {
-    // _showForm(formData, context, ref);
+    final transaction = Transaction.fromMap(formData);
+    final transactionType = transaction.transactionType;
+    _showForm(context, ref, transactionType, transaction: transaction);
   }
 
   void _showForm(
-    Map<String, dynamic> formData,
     BuildContext context,
     WidgetRef ref,
-  ) {
+    String transactionType, {
+    Transaction? transaction,
+  }) {
     Navigator.of(context).pop();
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final dbCache = ref.read(transactionDbCacheProvider.notifier);
     backgroundColorNofifier.state = Colors.white;
-    final transaction = Transaction.fromMap(formData);
     TransactionShowForm.showForm(
       context,
       ref,
@@ -269,8 +279,9 @@ class TransactionForm extends ConsumerWidget {
       settingsDataNotifier,
       textEditingNotifier,
       backgroundColorNofifier,
+      formType: transactionType,
+      transactionDbCache: dbCache,
       transaction: transaction,
-      formType: transaction.transactionType,
     );
   }
 }
