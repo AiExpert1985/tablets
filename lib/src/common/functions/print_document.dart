@@ -1,14 +1,20 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/file_system_path.dart';
 import 'package:tablets/src/common/functions/utils.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/salesmen/model/salesman.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:printing/printing.dart';
 import 'package:flutter/services.dart';
+
+import '../../features/transactions/model/transaction.dart';
 
 const darkBgColor = PdfColor(0.2, 0.2, 0.5);
 const lightBgColor = PdfColor(0.85, 0.85, 0.99);
@@ -26,11 +32,12 @@ Future<void> _printPDf(Document pdf) async {
   }
 }
 
-Future<void> printDocument(BuildContext context, Map<String, dynamic> transactionData) async {
+Future<void> printDocument(
+    BuildContext context, WidgetRef ref, Map<String, dynamic> transactionData) async {
   try {
     final filePath = gePdfpath('test_file');
     if (context.mounted) {
-      final pdf = await getCustomerInvoicePdf(context, transactionData);
+      final pdf = await getCustomerInvoicePdf(context, ref, transactionData);
       _printPDf(pdf);
       if (filePath == null) return;
 
@@ -50,10 +57,36 @@ Future<pw.ImageProvider> loadImage(String path) async {
 }
 
 Future<Document> getCustomerInvoicePdf(
-    BuildContext context, Map<String, dynamic> transactionData) async {
+    BuildContext context, WidgetRef ref, Map<String, dynamic> transactionData) async {
+  tempPrint('1');
   final pdf = pw.Document();
-  final type = translateDbTextToScreenText(context, transactionData[transactionTypeKey]);
-  final number = transactionData[transactionNumberKey].toString();
+  final transaction = Transaction.fromMap(transactionData);
+  final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+  final customerData = customerDbCache.getItemByDbRef(transaction.nameDbRef!);
+  final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
+  final salesmanData = salesmanDbCache.getItemByDbRef(transaction.salesmanDbRef!);
+  final type = translateDbTextToScreenText(context, transaction.transactionType);
+  final number = transaction.number.toString();
+  final customerName = transaction.name;
+  final customerPhone = customerData['phone'] ?? '';
+  final customerRegion = customerData['region'] ?? '';
+  final salesmanName = salesmanData['name'] ?? '';
+  final salesmanPhone = salesmanData['phone'] ?? '';
+  // final items = transaction.items;
+  final paymentType = translateDbTextToScreenText(context, transaction.paymentType!);
+  final date = formatDate(transaction.date);
+  final totalAmount = doubleToStringWithComma(transaction.totalAmount);
+  final totalWeight = doubleToStringWithComma(transaction.totalWeight);
+  final discount = doubleToStringWithComma(transaction.discount);
+  const debtBefore = '';
+  const debtAfter = '';
+  final currency = translateDbTextToScreenText(context, transaction.currency);
+  final now = DateTime.now();
+
+  final printingDate = DateFormat.yMd('ar').format(now);
+
+  final printingTime = DateFormat.jm('ar').format(now);
+
   final arabicFont =
       pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
   final image = await loadImage('assets/images/invoice_logo.PNG');
@@ -65,9 +98,10 @@ Future<Document> getCustomerInvoicePdf(
           mainAxisAlignment: pw.MainAxisAlignment.start,
           children: [
             pw.Image(image),
-            _buildFirstRow(context, arabicFont, type, number),
+            _buildFirstRow(
+                context, arabicFont, customerName, customerPhone, customerRegion, paymentType),
             pw.SizedBox(height: 8),
-            _buildSecondRow(context, arabicFont, type, number),
+            _buildSecondRow(context, arabicFont, salesmanName!, salesmanPhone!, type, number, date),
             pw.SizedBox(height: 12),
             _itemTitles(arabicFont),
             pw.SizedBox(height: 4),
@@ -75,12 +109,12 @@ Future<Document> getCustomerInvoicePdf(
             _itemsRow2(arabicFont),
             _itemsRow3(arabicFont),
             pw.SizedBox(height: 10),
-            _totals(arabicFont),
+            _totals(arabicFont, totalAmount, discount, debtBefore, debtAfter, currency),
             pw.Spacer(),
             _signituresRow(arabicFont),
             pw.SizedBox(height: 25),
             footerBar(arabicFont, 'الشركة غير مسؤولة عن انتهاء الصلاحية بعد استلام البضاعة',
-                'وقت طباعة القائمة    2/10/2024 11:30 ص '),
+                'وقت الطباعة     $printingDate   $printingTime '),
             pw.SizedBox(height: 15),
           ],
         ); // Center
@@ -90,30 +124,34 @@ Future<Document> getCustomerInvoicePdf(
   return pdf;
 }
 
-pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String type, String number) {
+pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String customerName,
+    String customerPhone, String customerRegion, String paymentType) {
+  tempPrint('inside first row');
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
       pw.SizedBox(width: 5), // margin
-      _labedContainer('اجل', 'الدفع', arabicFont, width: 80),
-      _labedContainer('حي المحاربين', 'العنوان', arabicFont, width: 158),
-      _labedContainer('077019990001', 'رقم الزبون', arabicFont, width: 90),
-      _labedContainer('محمد نوفل كريم', 'اسم الزبون', arabicFont),
+      _labedContainer(paymentType, 'الدفع', arabicFont, width: 80),
+      _labedContainer(customerRegion, 'العنوان', arabicFont, width: 158),
+      _labedContainer(customerPhone, 'رقم الزبون', arabicFont, width: 90),
+      _labedContainer(customerName, 'اسم الزبون', arabicFont),
       pw.SizedBox(width: 5), // margin
     ],
   );
 }
 
-pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String type, String number) {
+pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String salesmanName,
+    String salesmanPhone, String type, String number, String date) {
+  tempPrint('inside second row');
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
       pw.SizedBox(width: 5), // margin
-      _labedContainer('1/10/2024', 'تاريخ القائمة', arabicFont, width: 80),
-      _labedContainer('13', 'رقم القائمة', arabicFont, width: 60),
-      _labedContainer('قائمة بيع', 'نوع القائمة', arabicFont, width: 80),
-      _labedContainer('07702255331', 'رقم المندوب', arabicFont, width: 90),
-      _labedContainer('علي جاسم الشاهين', 'المندوب', arabicFont),
+      _labedContainer(date, 'تاريخ القائمة', arabicFont, width: 80),
+      _labedContainer(number, 'رقم القائمة', arabicFont, width: 60),
+      _labedContainer(type, 'نوع القائمة', arabicFont, width: 80),
+      _labedContainer(salesmanPhone, 'رقم المندوب', arabicFont, width: 90),
+      _labedContainer(salesmanName, 'المندوب', arabicFont),
       pw.SizedBox(width: 5), // margin
     ],
   );
@@ -192,27 +230,29 @@ pw.Widget _itemsRow3(Font arabicFont) {
   );
 }
 
-pw.Widget _totals(Font arabicFont) {
+pw.Widget _totals(Font arabicFont, String totalAmount, String discount, String debtBefore,
+    String debtAfter, String currency) {
   return pw.Container(
     width: 558, // Set a fixed width for the container
     height: 130,
     child: pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
-      invoiceAmountColumn(arabicFont),
+      invoiceAmountColumn(arabicFont, totalAmount, discount, debtBefore, debtAfter, currency),
       weightColumn(arabicFont),
     ]),
   );
 }
 
-pw.Widget invoiceAmountColumn(Font arabicFont) {
+pw.Widget invoiceAmountColumn(Font arabicFont, String totalAmount, String discount,
+    String debtBefore, String debtAfter, String currency) {
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
     children: [
       pw.SizedBox(height: 10),
-      totalsItem(arabicFont, 'مبلغ القائمة', '47,000', lightBgColor),
-      totalsItem(arabicFont, 'الخصم', '2,000', lightBgColor),
-      totalsItem(arabicFont, 'الطلب السابق', '100,000', lightBgColor),
-      totalsItem(arabicFont, 'المجموع الكلي', '145,000', darkBgColor, textColor: PdfColors.white),
-      _arabicText(arabicFont, 'دينار'),
+      totalsItem(arabicFont, 'مبلغ القائمة', totalAmount, lightBgColor),
+      totalsItem(arabicFont, 'الخصم', discount, lightBgColor),
+      totalsItem(arabicFont, 'الطلب السابق', debtBefore, lightBgColor),
+      totalsItem(arabicFont, 'المجموع الكلي', debtAfter, darkBgColor, textColor: PdfColors.white),
+      _arabicText(arabicFont, currency),
     ],
   );
 }

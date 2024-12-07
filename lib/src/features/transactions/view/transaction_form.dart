@@ -9,13 +9,11 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/print_document.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
-import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
-import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
@@ -26,7 +24,6 @@ import 'package:tablets/src/features/transactions/view/forms/expenditure_form.da
 import 'package:tablets/src/features/transactions/view/forms/invoice_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/receipt_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/statement_form.dart';
-import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
 
 class TransactionForm extends ConsumerWidget {
   const TransactionForm(this.isEditMode, this.transactionType, {super.key});
@@ -157,7 +154,7 @@ class TransactionForm extends ConsumerWidget {
         ),
       IconButton(
         onPressed: () {
-          _onPrintPressed(context, formDataNotifier);
+          _onPrintPressed(context, ref, formDataNotifier);
         },
         icon: const PrintIcon(),
       ),
@@ -243,45 +240,45 @@ class TransactionForm extends ConsumerWidget {
     }
   }
 
-  void _onPrintPressed(BuildContext context, ItemFormData formDataNotifier) async {
-    printDocument(context, formDataNotifier.data);
+  void _onPrintPressed(BuildContext context, WidgetRef ref, ItemFormData formDataNotifier) async {
+    printDocument(context, ref, formDataNotifier.data);
   }
 
-  void _onNavigationPressed(
-    Map<String, dynamic> formData,
-    BuildContext context,
-    WidgetRef ref,
-  ) {
-    final transaction = Transaction.fromMap(formData);
-    final transactionType = transaction.transactionType;
-    _showForm(context, ref, transactionType, transaction: transaction);
-  }
+  // void _onNavigationPressed(
+  //   Map<String, dynamic> formData,
+  //   BuildContext context,
+  //   WidgetRef ref,
+  // ) {
+  //   final transaction = Transaction.fromMap(formData);
+  //   final transactionType = transaction.transactionType;
+  //   _showForm(context, ref, transactionType, transaction: transaction);
+  // }
 
-  void _showForm(
-    BuildContext context,
-    WidgetRef ref,
-    String transactionType, {
-    Transaction? transaction,
-  }) {
-    Navigator.of(context).pop();
-    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
-    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
-    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
-    final dbCache = ref.read(transactionDbCacheProvider.notifier);
-    backgroundColorNofifier.state = Colors.white;
-    TransactionShowForm.showForm(
-      context,
-      ref,
-      imagePickerNotifier,
-      formDataNotifier,
-      settingsDataNotifier,
-      textEditingNotifier,
-      backgroundColorNofifier,
-      formType: transactionType,
-      transactionDbCache: dbCache,
-      transaction: transaction,
-    );
-  }
+  // void _showForm(
+  //   BuildContext context,
+  //   WidgetRef ref,
+  //   String transactionType, {
+  //   Transaction? transaction,
+  // }) {
+  //   Navigator.of(context).pop();
+  //   final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+  //   final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+  //   final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+  //   final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+  //   final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+  //   final dbCache = ref.read(transactionDbCacheProvider.notifier);
+  //   backgroundColorNofifier.state = Colors.white;
+  //   TransactionShowForm.showForm(
+  //     context,
+  //     ref,
+  //     imagePickerNotifier,
+  //     formDataNotifier,
+  //     settingsDataNotifier,
+  //     textEditingNotifier,
+  //     backgroundColorNofifier,
+  //     formType: transactionType,
+  //     transactionDbCache: dbCache,
+  //     transaction: transaction,
+  //   );
+  // }
 }
