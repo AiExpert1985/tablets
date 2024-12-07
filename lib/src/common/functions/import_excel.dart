@@ -8,8 +8,8 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_report_controller.dart';
-import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
+import 'package:tablets/src/features/products/model/product.dart';
+import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 
 void importCustomerExcel(WidgetRef ref) async {
   final repository = ref.read(customerRepositoryProvider);
@@ -48,9 +48,9 @@ void importCustomerExcel(WidgetRef ref) async {
             };
             final customer = Customer.fromMap(customerData);
             repository.addItem(customer);
-            tempPrint('done $i');
           }
         }
+        tempPrint('done');
         // Process the Excel data
       } else {
         errorPrint('File path is null.');
@@ -61,34 +61,61 @@ void importCustomerExcel(WidgetRef ref) async {
   }
 }
 
-// void importProductExcel() async {
-//   try {
-//     FilePickerResult? result = await FilePicker.platform.pickFiles(
-//       type: FileType.custom,
-//       allowedExtensions: ['xlsx'],
-//     );
-//     if (result != null) {
-//       String? filePath = result.files.single.path;
-//       if (filePath != null) {
-//         var file = File(filePath);
-//         var bytes = await file.readAsBytes();
-//         var excel = Excel.decodeBytes(bytes);
-//         for (var table in excel.tables.keys) {
-//           // tempPrint(table); //sheet Name
-//           // tempPrint(excel.tables[table]!.maxColumns);
-//           // tempPrint(excel.tables[table]!.maxRows);
-//           for (var row in excel.tables[table]!.rows) {
-//             for (var cell in row) {
-//               tempPrint(cell?.value);
-//             }
-//           }
-//         }
-//         // Process the Excel data
-//       } else {
-//         errorPrint('File path is null.');
-//       }
-//     }
-//   } catch (e) {
-//     errorPrint('Error while importing excel - $e');
-//   }
-// }
+void importProductExcel(WidgetRef ref) async {
+  final repository = ref.read(productRepositoryProvider);
+  try {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['xlsx'],
+    );
+    if (result != null) {
+      String? filePath = result.files.single.path;
+      if (filePath != null) {
+        var file = File(filePath);
+        var bytes = await file.readAsBytes();
+        var excel = Excel.decodeBytes(bytes);
+        for (var table in excel.tables.keys) {
+          // tempPrint(table); //sheet Name
+          // tempPrint(excel.tables[table]!.maxColumns);
+          // tempPrint(excel.tables[table]!.maxRows);
+          // for (var row in excel.tables[table]!.rows) {
+          final rows = excel.tables[table]!.rows;
+          for (var i = 0; i < rows.length; i++) {
+            final row = rows[i];
+            if (i == 0) continue;
+            final productData = {
+              'code': (row[0]!.value as IntCellValue).value.toInt(), //TODO
+              'name': row[1]!.value.toString(),
+              'buyingPrice': (row[2]!.value as IntCellValue).value.toDouble(), //TODO
+              'sellRetailPrice': (row[3]!.value as IntCellValue).value.toDouble(), //TODO
+              'sellWholePrice': (row[4]!.value as IntCellValue).value.toDouble(), //TODO
+              'dbRef': generateRandomString(len: 8),
+              'imageUrls': [defaultImageUrl],
+              'alertWhenExceeds': 1000,
+              'altertWhenLessThan': 10,
+              'category': 'غير معرف',
+
+              'categoryDbRef': 'kfdsrsgh',
+
+              'initialQuantity': 0,
+
+              'numItemsInsidePackage': 0,
+              'packageType': 'كارتون',
+              'packageWeight': 0,
+              'salesmanCommission': 70,
+              'initialDate': DateTime.now(),
+            };
+            final product = Product.fromMap(productData);
+            repository.addItem(product);
+          }
+        }
+        tempPrint('done');
+        // Process the Excel data
+      } else {
+        errorPrint('File path is null.');
+      }
+    }
+  } catch (e) {
+    errorPrint('Error while importing excel - $e');
+  }
+}

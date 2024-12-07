@@ -142,7 +142,8 @@ class HomeButton extends ConsumerWidget {
       if (context.mounted) {
         Navigator.of(context).pop();
       }
-      importCustomerExcel(ref);
+      // importCustomerExcel(ref);
+      importProductExcel(ref);
     });
   }
 }
