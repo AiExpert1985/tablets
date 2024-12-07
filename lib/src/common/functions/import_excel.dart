@@ -44,6 +44,7 @@ void importCustomerExcel(WidgetRef ref) async {
               'paymentDurationLimit': 21,
               'dbRef': generateRandomString(len: 8),
               'initialDate': DateTime.now(),
+              'creditLimit': 1000000,
               'imageUrls': [defaultImageUrl],
             };
             final customer = Customer.fromMap(customerData);
@@ -94,11 +95,8 @@ void importProductExcel(WidgetRef ref) async {
               'alertWhenExceeds': 1000,
               'altertWhenLessThan': 10,
               'category': 'غير معرف',
-
               'categoryDbRef': 'kfdsrsgh',
-
               'initialQuantity': 0,
-
               'numItemsInsidePackage': 0,
               'packageType': 'كارتون',
               'packageWeight': 0,
