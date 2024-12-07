@@ -1,0 +1,87 @@
+import 'dart:io';
+
+import 'package:excel/excel.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/features/customers/model/customer.dart';
+
+void importCustomerExcel() async {
+  try {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['xlsx'],
+    );
+    if (result != null) {
+      String? filePath = result.files.single.path;
+      if (filePath != null) {
+        var file = File(filePath);
+        var bytes = await file.readAsBytes();
+        var excel = Excel.decodeBytes(bytes);
+        for (var table in excel.tables.keys) {
+          // tempPrint(table); //sheet Name
+          // tempPrint(excel.tables[table]!.maxColumns);
+          // tempPrint(excel.tables[table]!.maxRows);
+          // for (var row in excel.tables[table]!.rows) {
+          final rows = excel.tables[table]!.rows;
+          for (var i = 0; i < rows.length; i++) {
+            final row = rows[i];
+            if (i == 0) continue;
+            final customerData = {
+              'name': row[0]!.value.toString(),
+              'sellingPriceType': row[1]!.value!.toString(),
+              'regionDbRef': 'sgdfgdfg',
+              'region': 'غير معرف',
+              'salesman': 'غير معرف',
+              'salesmanDbRef': 'hjfdracd',
+              'paymentDurationLimit': 21,
+              'dbRef': generateRandomString(len: 8),
+              'initialDate': DateTime.now(),
+              'imageUrls': [defaultImageUrl],
+            };
+            final customer = Customer.fromMap(customerData);
+            tempPrint(customer.name);
+          }
+        }
+        // Process the Excel data
+      } else {
+        errorPrint('File path is null.');
+      }
+    }
+  } catch (e) {
+    errorPrint('Error while importing excel - $e');
+  }
+}
+
+// void importProductExcel() async {
+//   try {
+//     FilePickerResult? result = await FilePicker.platform.pickFiles(
+//       type: FileType.custom,
+//       allowedExtensions: ['xlsx'],
+//     );
+//     if (result != null) {
+//       String? filePath = result.files.single.path;
+//       if (filePath != null) {
+//         var file = File(filePath);
+//         var bytes = await file.readAsBytes();
+//         var excel = Excel.decodeBytes(bytes);
+//         for (var table in excel.tables.keys) {
+//           // tempPrint(table); //sheet Name
+//           // tempPrint(excel.tables[table]!.maxColumns);
+//           // tempPrint(excel.tables[table]!.maxRows);
+//           for (var row in excel.tables[table]!.rows) {
+//             for (var cell in row) {
+//               tempPrint(cell?.value);
+//             }
+//           }
+//         }
+//         // Process the Excel data
+//       } else {
+//         errorPrint('File path is null.');
+//       }
+//     }
+//   } catch (e) {
+//     errorPrint('Error while importing excel - $e');
+//   }
+// }
