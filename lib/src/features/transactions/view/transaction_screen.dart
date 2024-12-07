@@ -178,6 +178,7 @@ class DataRow extends ConsumerWidget {
     backgroundColorNofifier.state = Colors.white;
     TransactionShowForm.showForm(
       context,
+      ref,
       imagePickerNotifier,
       formDataNotifier,
       settingsDataNotifier,
@@ -317,6 +318,7 @@ class FastAccessButton extends ConsumerWidget {
       onPressed: () {
         TransactionShowForm.showForm(
           context,
+          ref,
           imagePickerNotifier,
           formDataNotifier,
           settingsDataNotifier,

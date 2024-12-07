@@ -239,5 +239,9 @@
     "date_entery_date": "Data entry date",
     "db_backup_success": "Database backup were successful",
     "db_backup_failure": "Error happened during database backup",
-    "main_menu": "Main menu"
+    "main_menu": "Main menu",
+    "next": "Next",
+    "previous": "Previous",
+    "first": "First",
+    "last": "Last"
 }

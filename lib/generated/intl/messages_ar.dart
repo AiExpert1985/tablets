@@ -102,6 +102,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_importing_image":
             MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء استيراد الصور"),
         "failure": MessageLookupByLibrary.simpleMessage("فشل"),
+        "first": MessageLookupByLibrary.simpleMessage("الاول"),
         "from": MessageLookupByLibrary.simpleMessage("من"),
         "from_date": MessageLookupByLibrary.simpleMessage("من تاريخ"),
         "go_home_page":
@@ -172,6 +173,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_sold_quantity": MessageLookupByLibrary.simpleMessage("العدد"),
         "item_total_price":
             MessageLookupByLibrary.simpleMessage("السعر الكلي للمادة"),
+        "last": MessageLookupByLibrary.simpleMessage("الاخير"),
         "later_debt": MessageLookupByLibrary.simpleMessage("الدين بعد"),
         "loading_data": MessageLookupByLibrary.simpleMessage("تحميل البيانات"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
@@ -186,6 +188,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "monthly_profit_report":
             MessageLookupByLibrary.simpleMessage("تقرير الارباح الشهرية"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
+        "next": MessageLookupByLibrary.simpleMessage("التالي"),
         "no": MessageLookupByLibrary.simpleMessage("لا"),
         "no_data_available":
             MessageLookupByLibrary.simpleMessage("لا يوجد بيانات"),
@@ -212,6 +215,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pending_transactions":
             MessageLookupByLibrary.simpleMessage("غير مثبت"),
         "phone": MessageLookupByLibrary.simpleMessage("رقم الهاتف"),
+        "previous": MessageLookupByLibrary.simpleMessage("السابق"),
         "previous_debt": MessageLookupByLibrary.simpleMessage("الدين قبل"),
         "print": MessageLookupByLibrary.simpleMessage("طباعة"),
         "printing_transactions":

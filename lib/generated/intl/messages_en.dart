@@ -103,6 +103,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error_importing_image": MessageLookupByLibrary.simpleMessage(
             "An error happend while importing images"),
         "failure": MessageLookupByLibrary.simpleMessage("Failure"),
+        "first": MessageLookupByLibrary.simpleMessage("First"),
         "from": MessageLookupByLibrary.simpleMessage("From"),
         "from_date": MessageLookupByLibrary.simpleMessage("From date"),
         "go_home_page":
@@ -178,6 +179,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_sold_quantity":
             MessageLookupByLibrary.simpleMessage("Sold Qtty."),
         "item_total_price": MessageLookupByLibrary.simpleMessage("Total"),
+        "last": MessageLookupByLibrary.simpleMessage("Last"),
         "later_debt": MessageLookupByLibrary.simpleMessage("Later debt"),
         "loading_data": MessageLookupByLibrary.simpleMessage("Loading data"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
@@ -192,6 +194,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "monthly_profit_report":
             MessageLookupByLibrary.simpleMessage("Monthly profit report"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "next": MessageLookupByLibrary.simpleMessage("Next"),
         "no": MessageLookupByLibrary.simpleMessage("No"),
         "no_data_available":
             MessageLookupByLibrary.simpleMessage("No data available"),
@@ -216,6 +219,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pending_transactions":
             MessageLookupByLibrary.simpleMessage("Pending transactions"),
         "phone": MessageLookupByLibrary.simpleMessage("Phone number"),
+        "previous": MessageLookupByLibrary.simpleMessage("Previous"),
         "previous_debt": MessageLookupByLibrary.simpleMessage("Previous debt"),
         "print": MessageLookupByLibrary.simpleMessage("Print"),
         "printing_transactions":

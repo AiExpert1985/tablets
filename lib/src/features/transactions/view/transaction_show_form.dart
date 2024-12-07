@@ -9,6 +9,7 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
+import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/transactions/view/transaction_form.dart';
@@ -16,6 +17,7 @@ import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 class TransactionShowForm {
   static void showForm(
       BuildContext context,
+      WidgetRef ref,
       ImageSliderNotifier imagePickerNotifier,
       ItemFormData formDataNotifier,
       ItemFormData settingsDataNotifier,
@@ -41,6 +43,10 @@ class TransactionShowForm {
     );
     initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
     bool isEditMode = transaction != null;
+
+    // initalize form navigator
+    final formNavigator = ref.read(formNavigatorProvider);
+    formNavigator.initialize(transactionType, formDataNotifier.data['dbRef']);
 
     showDialog(
       context: context,

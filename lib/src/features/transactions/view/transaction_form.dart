@@ -5,14 +5,18 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/print_document.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
@@ -22,6 +26,7 @@ import 'package:tablets/src/features/transactions/view/forms/expenditure_form.da
 import 'package:tablets/src/features/transactions/view/forms/invoice_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/receipt_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/statement_form.dart';
+import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
 
 class TransactionForm extends ConsumerWidget {
   const TransactionForm(this.isEditMode, this.transactionType, {super.key});
@@ -79,6 +84,7 @@ class TransactionForm extends ConsumerWidget {
     final backgroundColor = ref.watch(backgroundColorProvider);
     final screenController = ref.read(transactionScreenControllerProvider);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
+    final formNavigation = ref.read(formNavigatorProvider);
     // final transactionTypeTranslated = translateScreenTextToDbText(context, transactionType);
     ref.watch(imagePickerProvider);
     final height = transactionFormDimenssions[transactionType]['height'];
@@ -99,8 +105,8 @@ class TransactionForm extends ConsumerWidget {
           ),
         ),
       ]),
-      buttons: _actionButtons(
-          context, formController, formDataNotifier, formImagesNotifier, dbCache, screenController),
+      buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier,
+          dbCache, screenController, formNavigation, ref),
       width: width is double ? width : width.toDouble(),
       height: height is double ? height : height.toDouble(),
     );
@@ -113,8 +119,25 @@ class TransactionForm extends ConsumerWidget {
     ImageSliderNotifier formImagesNotifier,
     DbCache transactionDbCache,
     TransactionScreenController screenController,
+    FromNavigator formNavigation,
+    WidgetRef ref,
   ) {
     return [
+      IconButton(
+        onPressed: () {
+          final formData = formNavigation.first();
+          _onNavigationPressed(formData, context, ref);
+        },
+        icon: const GoFirstIcon(),
+      ),
+      IconButton(
+        onPressed: () {
+          final formData = formNavigation.previous();
+          _onNavigationPressed(formData, context, ref);
+        },
+        icon: const GoPreviousIcon(),
+      ),
+      const SizedBox(width: 250),
       IconButton(
         onPressed: () {
           _onSavePressed(context, formController, formDataNotifier, formImagesNotifier,
@@ -135,6 +158,21 @@ class TransactionForm extends ConsumerWidget {
           _onPrintPressed(context, formDataNotifier);
         },
         icon: const PrintIcon(),
+      ),
+      const SizedBox(width: 250),
+      IconButton(
+        onPressed: () {
+          final formData = formNavigation.next();
+          _onNavigationPressed(formData, context, ref);
+        },
+        icon: const GoNextIcon(),
+      ),
+      IconButton(
+        onPressed: () {
+          final formData = formNavigation.last();
+          _onNavigationPressed(formData, context, ref);
+        },
+        icon: const GoLastIcon(),
       ),
     ];
   }
@@ -198,5 +236,57 @@ class TransactionForm extends ConsumerWidget {
 
   void _onPrintPressed(BuildContext context, ItemFormData formDataNotifier) async {
     printDocument(context, formDataNotifier.data);
+  }
+
+  void _onNavigationPressed(
+    Map<String, dynamic> formData,
+    BuildContext context,
+    WidgetRef ref,
+    // ItemFormData formDataNotifier,
+    // ImageSliderNotifier imagePickerNotifier,
+    // TextControllerNotifier textEditingNotifier,
+  ) {
+    tempPrint(formData['number']);
+    _showForm(formData, context, ref
+        // imagePickerNotifier,
+        // textEditingNotifier,
+        // formDataNotifier,
+        );
+  }
+
+  void _showForm(
+    Map<String, dynamic> formData,
+    BuildContext context,
+    WidgetRef ref,
+    // ImageSliderNotifier imagePickerNotifier,
+    // TextControllerNotifier textEditingNotifier,
+    // ItemFormData formDataNotifier,
+  ) {
+    // try {
+    //   imagePickerNotifier.initialize();
+    //   formDataNotifier.initialize(initialData: formData);
+    //   TransactionShowForm.initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
+    // } catch (e) {
+    //   errorPrint('Error during transaction form navigation -- $e');
+    // }
+    Navigator.of(context).pop();
+    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    backgroundColorNofifier.state = Colors.white;
+    final transaction = Transaction.fromMap(formData);
+    TransactionShowForm.showForm(
+      context,
+      ref,
+      imagePickerNotifier,
+      formDataNotifier,
+      settingsDataNotifier,
+      textEditingNotifier,
+      backgroundColorNofifier,
+      transaction: transaction,
+      formType: transaction.transactionType,
+    );
   }
 }

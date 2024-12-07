@@ -2459,6 +2459,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Next`
+  String get next {
+    return Intl.message(
+      'Next',
+      name: 'next',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Previous`
+  String get previous {
+    return Intl.message(
+      'Previous',
+      name: 'previous',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First`
+  String get first {
+    return Intl.message(
+      'First',
+      name: 'first',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Last`
+  String get last {
+    return Intl.message(
+      'Last',
+      name: 'last',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -146,6 +146,7 @@ class TransactionTypeSelection extends ConsumerWidget {
                 if (context.mounted) {
                   TransactionShowForm.showForm(
                     context,
+                    ref,
                     imagePickerNotifier,
                     formDataNotifier,
                     settingsDataNotifier,

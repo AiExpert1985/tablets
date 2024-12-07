@@ -173,6 +173,78 @@ class ShareIcon extends StatelessWidget {
   }
 }
 
+class GoNextIcon extends StatelessWidget {
+  const GoNextIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(
+          Icons.navigate_next,
+          color: Colors.green,
+        ),
+        VerticalGap.s,
+        Text(S.of(context).next),
+      ],
+    );
+  }
+}
+
+class GoPreviousIcon extends StatelessWidget {
+  const GoPreviousIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(
+          Icons.navigate_before,
+          color: Colors.green,
+        ),
+        VerticalGap.s,
+        Text(S.of(context).previous),
+      ],
+    );
+  }
+}
+
+class GoFirstIcon extends StatelessWidget {
+  const GoFirstIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(
+          Icons.first_page,
+          color: Colors.green,
+        ),
+        VerticalGap.s,
+        Text(S.of(context).first),
+      ],
+    );
+  }
+}
+
+class GoLastIcon extends StatelessWidget {
+  const GoLastIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(
+          Icons.last_page,
+          color: Colors.green,
+        ),
+        VerticalGap.s,
+        Text(S.of(context).last),
+      ],
+    );
+  }
+}
+
 class LocaleAwareLogoutIcon extends StatelessWidget {
   const LocaleAwareLogoutIcon({super.key});
 
