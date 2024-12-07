@@ -5,6 +5,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/print_document.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
@@ -154,9 +155,10 @@ class TransactionForm extends ConsumerWidget {
         ),
       IconButton(
         onPressed: () {
-          _onPrintPressed(context, ref, formDataNotifier);
           _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
-              transactionDbCache, screenController);
+              transactionDbCache, screenController,
+              keepDialog: true);
+          _onPrintPressed(context, ref, formDataNotifier);
         },
         icon: formDataNotifier.getProperty(isPrintedKey) ? const PrintedIcon() : const PrintIcon(),
       ),
@@ -179,14 +181,14 @@ class TransactionForm extends ConsumerWidget {
   }
 
   void _onSavePressed(
-    BuildContext context,
-    WidgetRef ref,
-    ItemFormController formController,
-    ItemFormData formDataNotifier,
-    ImageSliderNotifier formImagesNotifier,
-    DbCache transactionDbCache,
-    TransactionScreenController screenController,
-  ) {
+      BuildContext context,
+      WidgetRef ref,
+      ItemFormController formController,
+      ItemFormData formDataNotifier,
+      ImageSliderNotifier formImagesNotifier,
+      DbCache transactionDbCache,
+      TransactionScreenController screenController,
+      {bool keepDialog = false}) {
     if (!formController.validateData()) return;
     removeEmptyRows(formDataNotifier);
     formController.submitData();
@@ -207,8 +209,9 @@ class TransactionForm extends ConsumerWidget {
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
     }
-
-    Navigator.of(context).pop();
+    if (!keepDialog) {
+      Navigator.of(context).pop();
+    }
 
     //// open new form when saving
     // _showForm(context, ref, transactionType);
