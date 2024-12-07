@@ -277,6 +277,7 @@ class TransactionForm extends ConsumerWidget {
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     backgroundColorNofifier.state = Colors.white;
     final transaction = Transaction.fromMap(formData);
+    return;
     TransactionShowForm.showForm(
       context,
       ref,
