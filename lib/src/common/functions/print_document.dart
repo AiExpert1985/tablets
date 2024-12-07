@@ -8,6 +8,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/file_system_path.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
@@ -35,6 +36,11 @@ Future<void> _printPDf(Document pdf) async {
 Future<void> printDocument(
     BuildContext context, WidgetRef ref, Map<String, dynamic> transactionData) async {
   try {
+    // now we only print customer invoices
+    if (transactionData['transactionType'] != TransactionType.customerInvoice.name) {
+      errorPrint('not customer invoice, because currently we only print customer invoices');
+      return;
+    }
     final filePath = gePdfpath('test_file');
     if (context.mounted) {
       final pdf = await getCustomerInvoicePdf(context, ref, transactionData);
@@ -64,6 +70,7 @@ Future<Document> getCustomerInvoicePdf(
   final customerData = customerDbCache.getItemByDbRef(transaction.nameDbRef!);
   final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
   final salesmanData = salesmanDbCache.getItemByDbRef(transaction.salesmanDbRef!);
+
   final type = translateDbTextToScreenText(context, transaction.transactionType);
   final number = transaction.number.toString();
   final customerName = transaction.name;
@@ -185,7 +192,6 @@ pw.Widget _itemTitles(Font arabicFont) {
 }
 
 pw.Widget _buildItems(Font arabicFont, List<dynamic> items) {
-  tempPrint('_buildItems');
   List<pw.Widget> itemWidgets = [];
   for (int i = 0; i < items.length; i++) {
     final item = items[i];

@@ -154,6 +154,10 @@ class TransactionForm extends ConsumerWidget {
         ),
       IconButton(
         onPressed: () {
+          // validate and save before printing
+          // _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
+          //     transactionDbCache, screenController,
+          //     isPrinting: true);
           _onPrintPressed(context, ref, formDataNotifier);
         },
         icon: const PrintIcon(),
@@ -177,14 +181,14 @@ class TransactionForm extends ConsumerWidget {
   }
 
   void _onSavePressed(
-    BuildContext context,
-    WidgetRef ref,
-    ItemFormController formController,
-    ItemFormData formDataNotifier,
-    ImageSliderNotifier formImagesNotifier,
-    DbCache transactionDbCache,
-    TransactionScreenController screenController,
-  ) {
+      BuildContext context,
+      WidgetRef ref,
+      ItemFormController formController,
+      ItemFormData formDataNotifier,
+      ImageSliderNotifier formImagesNotifier,
+      DbCache transactionDbCache,
+      TransactionScreenController screenController,
+      {bool isPrinting = false}) {
     if (!formController.validateData()) return;
     formController.submitData();
     final formData = {...formDataNotifier.data};
@@ -204,7 +208,9 @@ class TransactionForm extends ConsumerWidget {
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
     }
-    Navigator.of(context).pop();
+    if (!isPrinting) {
+      Navigator.of(context).pop();
+    }
     //// open new form when saving
     // _showForm(context, ref, transactionType);
   }
