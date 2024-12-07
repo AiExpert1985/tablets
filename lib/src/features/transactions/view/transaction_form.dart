@@ -78,6 +78,7 @@ class TransactionForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    tempPrint('show form has been called');
     final formController = ref.read(transactionFormControllerProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
@@ -92,6 +93,7 @@ class TransactionForm extends ConsumerWidget {
     return FormFrame(
       backgroundColor: backgroundColor,
       formKey: formController.formKey,
+      // formKey: GlobalKey<FormState>(),
       fields: Stack(children: [
         _getFormWidget(context, transactionType),
         Positioned(
@@ -242,33 +244,15 @@ class TransactionForm extends ConsumerWidget {
     Map<String, dynamic> formData,
     BuildContext context,
     WidgetRef ref,
-    // ItemFormData formDataNotifier,
-    // ImageSliderNotifier imagePickerNotifier,
-    // TextControllerNotifier textEditingNotifier,
   ) {
-    tempPrint(formData['number']);
-    _showForm(formData, context, ref
-        // imagePickerNotifier,
-        // textEditingNotifier,
-        // formDataNotifier,
-        );
+    // _showForm(formData, context, ref);
   }
 
   void _showForm(
     Map<String, dynamic> formData,
     BuildContext context,
     WidgetRef ref,
-    // ImageSliderNotifier imagePickerNotifier,
-    // TextControllerNotifier textEditingNotifier,
-    // ItemFormData formDataNotifier,
   ) {
-    // try {
-    //   imagePickerNotifier.initialize();
-    //   formDataNotifier.initialize(initialData: formData);
-    //   TransactionShowForm.initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
-    // } catch (e) {
-    //   errorPrint('Error during transaction form navigation -- $e');
-    // }
     Navigator.of(context).pop();
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
@@ -277,7 +261,6 @@ class TransactionForm extends ConsumerWidget {
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     backgroundColorNofifier.state = Colors.white;
     final transaction = Transaction.fromMap(formData);
-    return;
     TransactionShowForm.showForm(
       context,
       ref,
