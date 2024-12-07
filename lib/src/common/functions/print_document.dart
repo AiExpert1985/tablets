@@ -210,7 +210,6 @@ pw.Widget _buildItems(Font arabicFont, List<dynamic> items) {
 
 pw.Widget _itemsRow(Font arabicFont, String sequence, String name, String quantity, String gift,
     String price, String total) {
-  tempPrint('hi');
   return pw.Container(
     width: 554,
     padding: const pw.EdgeInsets.all(2),

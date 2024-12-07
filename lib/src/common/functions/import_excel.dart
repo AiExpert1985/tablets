@@ -26,10 +26,6 @@ void importCustomerExcel(WidgetRef ref) async {
         var bytes = await file.readAsBytes();
         var excel = Excel.decodeBytes(bytes);
         for (var table in excel.tables.keys) {
-          // tempPrint(table); //sheet Name
-          // tempPrint(excel.tables[table]!.maxColumns);
-          // tempPrint(excel.tables[table]!.maxRows);
-          // for (var row in excel.tables[table]!.rows) {
           final rows = excel.tables[table]!.rows;
           for (var i = 0; i < rows.length; i++) {
             final row = rows[i];
@@ -51,7 +47,6 @@ void importCustomerExcel(WidgetRef ref) async {
             repository.addItem(customer);
           }
         }
-        tempPrint('done');
         // Process the Excel data
       } else {
         errorPrint('File path is null.');
@@ -76,10 +71,6 @@ void importProductExcel(WidgetRef ref) async {
         var bytes = await file.readAsBytes();
         var excel = Excel.decodeBytes(bytes);
         for (var table in excel.tables.keys) {
-          // tempPrint(table); //sheet Name
-          // tempPrint(excel.tables[table]!.maxColumns);
-          // tempPrint(excel.tables[table]!.maxRows);
-          // for (var row in excel.tables[table]!.rows) {
           final rows = excel.tables[table]!.rows;
           for (var i = 0; i < rows.length; i++) {
             final row = rows[i];
@@ -107,7 +98,6 @@ void importProductExcel(WidgetRef ref) async {
             repository.addItem(product);
           }
         }
-        tempPrint('done');
         // Process the Excel data
       } else {
         errorPrint('File path is null.');

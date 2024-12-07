@@ -6,6 +6,7 @@ import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/import_excel.dart';
+import 'package:tablets/src/common/functions/import_json.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/daily_backup_provider.dart';
@@ -96,7 +97,7 @@ void _autoDatabaseBackup(BuildContext context, WidgetRef ref) async {
 /// initialize all dbCaches and settings, and move on the the target page
 void processAndMoveToTargetPage(BuildContext context, WidgetRef ref,
     ScreenDataController screenController, String route, String pageTitle) async {
-  // _autoDatabaseBackup(context, ref);
+  _autoDatabaseBackup(context, ref);
   final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
   final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
   // page is loading only used to show a loading spinner (better user experience)
@@ -142,7 +143,8 @@ class HomeButton extends ConsumerWidget {
       if (context.mounted) {
         Navigator.of(context).pop();
       }
-      importCustomerExcel(ref);
+      // uploadDefaultSettings(ref);
+      // importCustomerExcel(ref);
       // importProductExcel(ref);
     });
   }
