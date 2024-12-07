@@ -5,10 +5,12 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/print_document.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -83,6 +85,7 @@ class TransactionForm extends ConsumerWidget {
     final formNavigation = ref.read(formNavigatorProvider);
     // final transactionTypeTranslated = translateScreenTextToDbText(context, transactionType);
     ref.watch(imagePickerProvider);
+    ref.watch(transactionFormDataProvider);
     final height = transactionFormDimenssions[transactionType]['height'];
     final width = transactionFormDimenssions[transactionType]['width'];
     return FormFrame(
@@ -152,13 +155,11 @@ class TransactionForm extends ConsumerWidget {
         ),
       IconButton(
         onPressed: () {
-          // validate and save before printing
-          // _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
-          //     transactionDbCache, screenController,
-          //     isPrinting: true);
           _onPrintPressed(context, ref, formDataNotifier);
+          _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
+              transactionDbCache, screenController);
         },
-        icon: const PrintIcon(),
+        icon: formDataNotifier.getProperty(isPrintedKey) ? const PrintedIcon() : const PrintIcon(),
       ),
       // const SizedBox(width: 250),
       // IconButton(
@@ -179,14 +180,14 @@ class TransactionForm extends ConsumerWidget {
   }
 
   void _onSavePressed(
-      BuildContext context,
-      WidgetRef ref,
-      ItemFormController formController,
-      ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier,
-      DbCache transactionDbCache,
-      TransactionScreenController screenController,
-      {bool isPrinting = false}) {
+    BuildContext context,
+    WidgetRef ref,
+    ItemFormController formController,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+    DbCache transactionDbCache,
+    TransactionScreenController screenController,
+  ) {
     if (!formController.validateData()) return;
     formController.submitData();
     final formData = {...formDataNotifier.data};
@@ -206,9 +207,9 @@ class TransactionForm extends ConsumerWidget {
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
     }
-    if (!isPrinting) {
-      Navigator.of(context).pop();
-    }
+
+    Navigator.of(context).pop();
+
     //// open new form when saving
     // _showForm(context, ref, transactionType);
   }
@@ -246,6 +247,8 @@ class TransactionForm extends ConsumerWidget {
 
   void _onPrintPressed(BuildContext context, WidgetRef ref, ItemFormData formDataNotifier) async {
     printDocument(context, ref, formDataNotifier.data);
+    formDataNotifier.updateProperties({isPrintedKey: true});
+    tempPrint(formDataNotifier.getProperty(isPrintedKey));
   }
 
   // void _onNavigationPressed(

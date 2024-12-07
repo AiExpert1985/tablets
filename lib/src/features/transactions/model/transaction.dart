@@ -43,6 +43,7 @@ class Transaction implements BaseItem {
   double? itemsTotalProfit;
   double? salesmanTransactionComssion;
   double totalAmount;
+  bool isPrinted;
   Transaction({
     //required for all classes (BaseItem implementation)
     required this.dbRef,
@@ -69,6 +70,7 @@ class Transaction implements BaseItem {
     required this.transactionTotalProfit,
     this.itemsTotalProfit,
     this.salesmanTransactionComssion,
+    required this.isPrinted,
   });
 
   @override
@@ -99,6 +101,7 @@ class Transaction implements BaseItem {
       'transactionTotalProfit': transactionTotalProfit,
       'itemsTotalProfit': itemsTotalProfit,
       'salesmanTransactionComssion': salesmanTransactionComssion,
+      'isPrinted': isPrinted,
     };
   }
 
@@ -136,6 +139,7 @@ class Transaction implements BaseItem {
       salesmanTransactionComssion: map['salesmanTransactionComssion'] is double
           ? map['salesmanTransactionComssion']
           : map['salesmanTransactionComssion']?.toDouble(),
+      isPrinted: map['isPrinted'] ?? false,
     );
   }
 

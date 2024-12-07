@@ -97,10 +97,12 @@ class VendorScreenController implements ScreenDataController {
       transactionType: TransactionType.initialCredit.name,
       totalAmount: vendor.initialAmount,
       transactionTotalProfit: 0,
+      isPrinted: false,
     ).toMap();
   }
 
-  List<List<dynamic>> _vendorMatching(List<Map<String, dynamic>> vendorTransactions, BuildContext context) {
+  List<List<dynamic>> _vendorMatching(
+      List<Map<String, dynamic>> vendorTransactions, BuildContext context) {
     List<List<dynamic>> matchingTransactions = [];
     for (int i = 0; i < vendorTransactions.length; i++) {
       final transaction = Transaction.fromMap(vendorTransactions[i]);
@@ -113,7 +115,9 @@ class VendorScreenController implements ScreenDataController {
       matchingTransactions.add([
         transaction,
         translateDbTextToScreenText(context, transactionType),
-        transaction.transactionType == TransactionType.initialCredit.name ? '' : transaction.number.toString(),
+        transaction.transactionType == TransactionType.initialCredit.name
+            ? ''
+            : transaction.number.toString(),
         transaction.date,
         transactionAmount,
       ]);

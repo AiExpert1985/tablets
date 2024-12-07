@@ -90,6 +90,7 @@ class TransactionShowForm {
       numberKey: transactionNumber,
       totalAsTextKey: null,
       notesKey: "",
+      isPrintedKey: false,
     });
     formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem);
   }

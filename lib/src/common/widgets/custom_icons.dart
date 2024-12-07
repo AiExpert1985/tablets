@@ -155,6 +155,32 @@ class PrintIcon extends StatelessWidget {
   }
 }
 
+class PrintedIcon extends StatelessWidget {
+  const PrintedIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(2),
+      color: Colors.green[900],
+      child: Column(children: [
+        // Image.asset(
+        //   'assets/icons/buttons/print.png',
+        //   width: 25,
+        //   height: 22,
+        // ),
+        const Icon(
+          Icons.print,
+          color: Colors.white,
+        ),
+        VerticalGap.s,
+
+        Text(S.of(context).printed, style: const TextStyle(color: Colors.white)),
+      ]),
+    );
+  }
+}
+
 class ShareIcon extends StatelessWidget {
   const ShareIcon({super.key});
 
