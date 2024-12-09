@@ -35,6 +35,7 @@ Future<void> _printPDf(Document pdf) async {
 Future<void> printDocument(
     BuildContext context, WidgetRef ref, Map<String, dynamic> transactionData) async {
   try {
+    tempPrint(transactionData);
     // now we only print customer invoices
     if (transactionData['transactionType'] != TransactionType.customerInvoice.name) {
       errorPrint('not customer invoice, because currently we only print customer invoices');

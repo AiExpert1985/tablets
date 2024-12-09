@@ -65,17 +65,24 @@ class TransactionShowForm {
     ).whenComplete(() {
       imagePickerNotifier.close();
       // removeEmptyRows(formDataNotifier);
+      final formController = ref.read(transactionFormControllerProvider);
+      final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+      final screenController = ref.read(transactionScreenControllerProvider);
+      final dbCache = ref.read(transactionDbCacheProvider.notifier);
       if (context.mounted) {
+        // if no transaction name, automatically delete the transaction
         if (formDataNotifier.data[nameKey] == '') {
-          final formController = ref.read(transactionFormControllerProvider);
-          final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-          final screenController = ref.read(transactionScreenControllerProvider);
-          final dbCache = ref.read(transactionDbCacheProvider.notifier);
           deleteTransaction(context, formDataNotifier, imagePickerNotifier, formController, dbCache,
               screenController,
-              showConfiramtion: false);
+              showConfiramtion: false, keepDialog: true);
         } else {
-          saveTransaction(context, ref, formDataNotifier.data, true);
+          // we update item on close, unless the dialog were closed due to delete button
+          // we need to check, if transaction is in dbCache it means dialog was not close
+          // due to delete button, i.e. item was updated
+          final transDbRef = formDataNotifier.data[dbRefKey];
+          if (dbCache.getItemByDbRef(transDbRef).isNotEmpty) {
+            saveTransaction(context, ref, formDataNotifier.data, true);
+          }
         }
       }
     });
@@ -88,7 +95,8 @@ class TransactionShowForm {
       ItemFormController formController,
       DbCache transactionDbCache,
       TransactionScreenController screenController,
-      {bool showConfiramtion = true}) async {
+      {bool showConfiramtion = true,
+      bool keepDialog = false}) async {
     if (showConfiramtion) {
       final confirmation = await showDeleteConfirmationDialog(
           context: context, message: formDataNotifier.data['name']);
@@ -108,6 +116,10 @@ class TransactionShowForm {
     // redo screenData calculations
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
+    }
+
+    if (context.mounted && !keepDialog) {
+      Navigator.of(context).pop();
     }
   }
 
