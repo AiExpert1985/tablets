@@ -84,7 +84,7 @@ List<Widget> _buildDataRows(
       return const SizedBox.shrink(); // Return an empty widget if the controller is missing
     }
     return Container(
-      color: (index + 1) % 2 == 0 ? Colors.grey[200] : null,
+      color: (index + 1) % 2 == 0 ? Colors.grey[300] : null,
       child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -214,12 +214,14 @@ Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
     TextControllerNotifier textEditingNotifier, bool hideGifts, bool hidePrice) {
   final titles = [
     _buildAddItemButton(formDataNotifier, textEditingNotifier),
-    Text(S.of(context).item_name),
-    Text(S.of(context).item_sold_quantity),
-    if (!hideGifts) Text(S.of(context).item_gifts_quantity),
-    if (!hidePrice) Text(S.of(context).item_price),
-    if (!hidePrice) Text(S.of(context).item_total_price),
-    Text(S.of(context).stock),
+    Text(S.of(context).item_name, style: const TextStyle(color: Colors.white)),
+    Text(S.of(context).item_sold_quantity, style: const TextStyle(color: Colors.white)),
+    if (!hideGifts)
+      Text(S.of(context).item_gifts_quantity, style: const TextStyle(color: Colors.white)),
+    if (!hidePrice) Text(S.of(context).item_price, style: const TextStyle(color: Colors.white)),
+    if (!hidePrice)
+      Text(S.of(context).item_total_price, style: const TextStyle(color: Colors.white)),
+    Text(S.of(context).stock, style: const TextStyle(color: Colors.white)),
   ];
 
   final widths = [
@@ -233,7 +235,7 @@ Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
   ];
 
   return Container(
-    color: const Color.fromARGB(255, 227, 240, 247),
+    color: Colors.blueGrey,
     child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
