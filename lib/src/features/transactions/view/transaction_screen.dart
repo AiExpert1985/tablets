@@ -109,18 +109,12 @@ class ListHeaders extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const MainScreenPlaceholder(width: 20, isExpanded: false),
-        SortableMainScreenHeaderCell(
-            screenDataNotifier, transactionTypeKey, S.of(context).transaction_type),
-        SortableMainScreenHeaderCell(
-            screenDataNotifier, transactionDateKey, S.of(context).transaction_date),
-        SortableMainScreenHeaderCell(
-            screenDataNotifier, transactionNameKey, S.of(context).transaction_name),
-        SortableMainScreenHeaderCell(
-            screenDataNotifier, transactionSalesmanKey, S.of(context).salesman_selection),
-        SortableMainScreenHeaderCell(
-            screenDataNotifier, transactionNumberKey, S.of(context).transaction_number),
-        SortableMainScreenHeaderCell(
-            screenDataNotifier, transactionTotalAmountKey, S.of(context).transaction_amount),
+        SortableMainScreenHeaderCell(screenDataNotifier, transactionTypeKey, S.of(context).transaction_type),
+        SortableMainScreenHeaderCell(screenDataNotifier, transactionDateKey, S.of(context).transaction_date),
+        SortableMainScreenHeaderCell(screenDataNotifier, transactionNameKey, S.of(context).transaction_name),
+        SortableMainScreenHeaderCell(screenDataNotifier, transactionSalesmanKey, S.of(context).salesman_selection),
+        SortableMainScreenHeaderCell(screenDataNotifier, transactionNumberKey, S.of(context).transaction_number),
+        SortableMainScreenHeaderCell(screenDataNotifier, transactionTotalAmountKey, S.of(context).transaction_amount),
         SortableMainScreenHeaderCell(screenDataNotifier, transactionNotesKey, S.of(context).notes),
       ],
     );
@@ -137,10 +131,8 @@ class DataRow extends ConsumerWidget {
     final productRef = transactionScreenData[productDbRefKey];
     final productDbCache = ref.read(transactionDbCacheProvider.notifier);
     final transactionData = productDbCache.getItemByDbRef(productRef);
-    final translatedTransactionType =
-        translateScreenTextToDbText(context, transactionData[transactionTypeKey]);
-    final transaction =
-        Transaction.fromMap({...transactionData, transactionTypeKey: translatedTransactionType});
+    final translatedTransactionType = translateScreenTextToDbText(context, transactionData[transactionTypeKey]);
+    final transaction = Transaction.fromMap({...transactionData, transactionTypeKey: translatedTransactionType});
     final date = transactionScreenData[transactionDateKey].toDate();
     final color = _getSequnceColor(transaction.transactionType);
     return Column(
@@ -201,8 +193,7 @@ class DataRow extends ConsumerWidget {
         transactionType == TransactionType.vendorReturn.name) {
       return Colors.green;
     }
-    if (transactionType == TransactionType.expenditures.name ||
-        transactionType == TransactionType.damagedItems.name) {
+    if (transactionType == TransactionType.expenditures.name || transactionType == TransactionType.damagedItems.name) {
       return Colors.red;
     }
     return Colors.red;
@@ -233,8 +224,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
                 child: const Icon(Icons.pie_chart, color: Colors.white),
                 backgroundColor: iconsColor,
                 onTap: () async {
-                  final allTransactions =
-                      await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
+                  final allTransactions = await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
                   if (context.mounted) {
                     drawerController.showReports(context, allTransactions);
                   }
