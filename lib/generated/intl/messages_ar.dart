@@ -171,8 +171,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_price": MessageLookupByLibrary.simpleMessage("سعر المادة"),
         "item_sequence": MessageLookupByLibrary.simpleMessage("تسلسل"),
         "item_sold_quantity": MessageLookupByLibrary.simpleMessage("العدد"),
-        "item_total_price":
-            MessageLookupByLibrary.simpleMessage("السعر الكلي للمادة"),
+        "item_total_price": MessageLookupByLibrary.simpleMessage("السعر الكلي"),
         "last": MessageLookupByLibrary.simpleMessage("الاخير"),
         "later_debt": MessageLookupByLibrary.simpleMessage("الدين بعد"),
         "loading_data": MessageLookupByLibrary.simpleMessage("تحميل البيانات"),

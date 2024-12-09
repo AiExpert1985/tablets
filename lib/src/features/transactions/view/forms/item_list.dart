@@ -122,10 +122,13 @@ List<Widget> _buildDataRows(
                   isReadOnly: true),
             buildDataCell(
                 soldQuantityColumnWidth,
-                Text(formDataNotifier
-                        .getSubProperty(itemsKey, index, itemStockQuantityKey)
-                        ?.toString() ??
-                    ''),
+                Text(
+                  formDataNotifier
+                          .getSubProperty(itemsKey, index, itemStockQuantityKey)
+                          ?.toString() ??
+                      '',
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
                 isLast: true),
           ]),
     );
@@ -214,14 +217,18 @@ Widget _buildColumnTitles(BuildContext context, ItemFormData formDataNotifier,
     TextControllerNotifier textEditingNotifier, bool hideGifts, bool hidePrice) {
   final titles = [
     _buildAddItemButton(formDataNotifier, textEditingNotifier),
-    Text(S.of(context).item_name, style: const TextStyle(color: Colors.white)),
-    Text(S.of(context).item_sold_quantity, style: const TextStyle(color: Colors.white)),
+    Text(S.of(context).item_name, style: const TextStyle(color: Colors.white, fontSize: 14)),
+    Text(S.of(context).item_sold_quantity,
+        style: const TextStyle(color: Colors.white, fontSize: 14)),
     if (!hideGifts)
-      Text(S.of(context).item_gifts_quantity, style: const TextStyle(color: Colors.white)),
-    if (!hidePrice) Text(S.of(context).item_price, style: const TextStyle(color: Colors.white)),
+      Text(S.of(context).item_gifts_quantity,
+          style: const TextStyle(color: Colors.white, fontSize: 14)),
     if (!hidePrice)
-      Text(S.of(context).item_total_price, style: const TextStyle(color: Colors.white)),
-    Text(S.of(context).stock, style: const TextStyle(color: Colors.white)),
+      Text(S.of(context).item_price, style: const TextStyle(color: Colors.white, fontSize: 14)),
+    if (!hidePrice)
+      Text(S.of(context).item_total_price,
+          style: const TextStyle(color: Colors.white, fontSize: 12)),
+    Text(S.of(context).stock, style: const TextStyle(color: Colors.white, fontSize: 14)),
   ];
 
   final widths = [
