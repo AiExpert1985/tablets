@@ -122,7 +122,6 @@ class TransactionTypeSelection extends ConsumerWidget {
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
 
@@ -151,7 +150,6 @@ class TransactionTypeSelection extends ConsumerWidget {
                     formDataNotifier,
                     settingsDataNotifier,
                     textEditingNotifier,
-                    backgroundColorNofifier,
                     formType: formTypes[index],
                     transactionDbCache: transactionDbCache,
                   );

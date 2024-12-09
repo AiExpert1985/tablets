@@ -5,6 +5,7 @@ import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -22,7 +23,6 @@ class TransactionShowForm {
       ItemFormData formDataNotifier,
       ItemFormData settingsDataNotifier,
       TextControllerNotifier textEditingNotifier,
-      StateController<Color> backgroundColorNofifier,
       {String? formType,
       Transaction? transaction,
       DbCache? transactionDbCache}) {

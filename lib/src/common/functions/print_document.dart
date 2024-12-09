@@ -32,7 +32,8 @@ Future<void> _printPDf(Document pdf) async {
   }
 }
 
-Future<void> printDocument(BuildContext context, WidgetRef ref, Map<String, dynamic> transactionData) async {
+Future<void> printDocument(
+    BuildContext context, WidgetRef ref, Map<String, dynamic> transactionData) async {
   try {
     // now we only print customer invoices
     if (transactionData['transactionType'] != TransactionType.customerInvoice.name) {
@@ -63,12 +64,10 @@ Future<pw.ImageProvider> loadImage(String path) async {
 Future<Document> getCustomerInvoicePdf(
     BuildContext context, WidgetRef ref, Map<String, dynamic> transactionData) async {
   final pdf = pw.Document();
-  tempPrint(1);
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
   final customerData = customerDbCache.getItemByDbRef(transactionData['nameDbRef']);
   final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
   final salesmanData = salesmanDbCache.getItemByDbRef(transactionData['salesmanDbRef']);
-  tempPrint(2);
   final type = translateDbTextToScreenText(context, transactionData['transactionType']);
   final number = transactionData['number'].toString();
   final customerName = transactionData['name'];
@@ -80,7 +79,6 @@ Future<Document> getCustomerInvoicePdf(
   final paymentType = translateDbTextToScreenText(context, transactionData['paymentType']);
   final date = formatDate(transactionData['date']);
   final subtotalAmount = doubleToStringWithComma(transactionData['subTotalAmount']);
-  tempPrint(3);
   final discount = doubleToStringWithComma(transactionData['discount']);
   final currency = translateDbTextToScreenText(context, transactionData['currency']);
   final now = DateTime.now();
@@ -89,46 +87,430 @@ Future<Document> getCustomerInvoicePdf(
   final notes = transactionData['notes'];
   final totalNumOfItems = doubleToStringWithComma(calculateTotalNumOfItems(items));
   final itemsWeigt = doubleToStringWithComma(transactionData['totalWeight']);
-  tempPrint(4);
   final customerScreenController = ref.read(customerScreenControllerProvider);
   final customerScreenData = customerScreenController.getItemScreenData(context, customerData);
   final debtAfter = doubleToStringWithComma(customerScreenData['totalDebt']);
-  final debtBefore = doubleToStringWithComma(customerScreenData['totalDebt'] - transactionData['totalAmount']);
-  tempPrint(5);
-  final arabicFont = pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
+  final debtBefore =
+      doubleToStringWithComma(customerScreenData['totalDebt'] - transactionData['totalAmount']);
+  final arabicFont =
+      pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
   final image = await loadImage('assets/images/invoice_logo.PNG');
-  pdf.addPage(
-    pw.Page(
+  if (items.length <= 20) {
+    pdf.addPage(pw.Page(
       margin: pw.EdgeInsets.zero,
       build: (pw.Context ctx) {
-        return pw.Column(
-          mainAxisAlignment: pw.MainAxisAlignment.start,
-          children: [
-            pw.Image(image),
-            _buildFirstRow(context, arabicFont, customerName, customerPhone, customerRegion, paymentType),
-            pw.SizedBox(height: 8),
-            _buildSecondRow(context, arabicFont, salesmanName!, salesmanPhone!, type, number, date),
-            pw.SizedBox(height: 12),
-            _itemTitles(arabicFont),
-            pw.SizedBox(height: 4),
-            _buildItems(arabicFont, items),
-            // _itemsRow2(arabicFont),
-            // _itemsRow3(arabicFont),
-            pw.SizedBox(height: 10),
-            _totals(arabicFont, subtotalAmount, discount, debtBefore, debtAfter, currency, notes!, totalNumOfItems,
-                itemsWeigt),
-            pw.Spacer(),
-            _signituresRow(arabicFont),
-            pw.SizedBox(height: 25),
-            footerBar(arabicFont, 'الشركة غير مسؤولة عن انتهاء الصلاحية بعد استلام البضاعة',
-                'وقت الطباعة     $printingDate   $printingTime '),
-            pw.SizedBox(height: 15),
-          ],
-        ); // Center
+        return invoicePage(
+          context,
+          arabicFont,
+          image,
+          customerName,
+          customerPhone,
+          customerRegion,
+          paymentType,
+          salesmanName,
+          salesmanPhone,
+          type,
+          number,
+          date,
+          items,
+          subtotalAmount,
+          discount,
+          debtBefore,
+          debtAfter,
+          currency,
+          notes,
+          totalNumOfItems,
+          itemsWeigt,
+          printingDate,
+          printingTime,
+          0,
+          items.length,
+          includeImage: true,
+        );
       },
-    ),
-  );
+    ));
+  } else if (items.length <= 50) {
+    pdf.addPage(
+      pw.Page(
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context ctx) {
+          return invoicePage(
+            context,
+            arabicFont,
+            image,
+            customerName,
+            customerPhone,
+            customerRegion,
+            paymentType,
+            salesmanName,
+            salesmanPhone,
+            type,
+            number,
+            date,
+            items,
+            subtotalAmount,
+            discount,
+            debtBefore,
+            debtAfter,
+            currency,
+            notes,
+            totalNumOfItems,
+            itemsWeigt,
+            printingDate,
+            printingTime,
+            0,
+            25,
+            addTotals: false,
+            includeImage: true,
+          );
+        },
+      ),
+    );
+    pdf.addPage(
+      pw.Page(
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context ctx) {
+          return invoicePage(
+            context,
+            arabicFont,
+            image,
+            customerName,
+            customerPhone,
+            customerRegion,
+            paymentType,
+            salesmanName,
+            salesmanPhone,
+            type,
+            number,
+            date,
+            items,
+            subtotalAmount,
+            discount,
+            debtBefore,
+            debtAfter,
+            currency,
+            notes,
+            totalNumOfItems,
+            itemsWeigt,
+            printingDate,
+            printingTime,
+            25,
+            items.length,
+            startSequence: 26,
+          );
+        },
+      ),
+    );
+  } else if (items.length <= 75) {
+    pdf.addPage(
+      pw.Page(
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context ctx) {
+          return invoicePage(
+            context,
+            arabicFont,
+            image,
+            customerName,
+            customerPhone,
+            customerRegion,
+            paymentType,
+            salesmanName,
+            salesmanPhone,
+            type,
+            number,
+            date,
+            items,
+            subtotalAmount,
+            discount,
+            debtBefore,
+            debtAfter,
+            currency,
+            notes,
+            totalNumOfItems,
+            itemsWeigt,
+            printingDate,
+            printingTime,
+            0,
+            25,
+            addTotals: false,
+            includeImage: true,
+          );
+        },
+      ),
+    );
+    pdf.addPage(
+      pw.Page(
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context ctx) {
+          return invoicePage(
+            context,
+            arabicFont,
+            image,
+            customerName,
+            customerPhone,
+            customerRegion,
+            paymentType,
+            salesmanName,
+            salesmanPhone,
+            type,
+            number,
+            date,
+            items,
+            subtotalAmount,
+            discount,
+            debtBefore,
+            debtAfter,
+            currency,
+            notes,
+            totalNumOfItems,
+            itemsWeigt,
+            printingDate,
+            printingTime,
+            25,
+            50,
+            addTotals: false,
+            startSequence: 26,
+          );
+        },
+      ),
+    );
+    pdf.addPage(
+      pw.Page(
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context ctx) {
+          return invoicePage(
+            context,
+            arabicFont,
+            image,
+            customerName,
+            customerPhone,
+            customerRegion,
+            paymentType,
+            salesmanName,
+            salesmanPhone,
+            type,
+            number,
+            date,
+            items,
+            subtotalAmount,
+            discount,
+            debtBefore,
+            debtAfter,
+            currency,
+            notes,
+            totalNumOfItems,
+            itemsWeigt,
+            printingDate,
+            printingTime,
+            50,
+            items.length,
+            startSequence: 51,
+          );
+        },
+      ),
+    );
+  } else {
+    pdf.addPage(
+      pw.Page(
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context ctx) {
+          return invoicePage(
+            context,
+            arabicFont,
+            image,
+            customerName,
+            customerPhone,
+            customerRegion,
+            paymentType,
+            salesmanName,
+            salesmanPhone,
+            type,
+            number,
+            date,
+            items,
+            subtotalAmount,
+            discount,
+            debtBefore,
+            debtAfter,
+            currency,
+            notes,
+            totalNumOfItems,
+            itemsWeigt,
+            printingDate,
+            printingTime,
+            0,
+            25,
+            addTotals: false,
+            includeImage: true,
+          );
+        },
+      ),
+    );
+    pdf.addPage(
+      pw.Page(
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context ctx) {
+          return invoicePage(
+            context,
+            arabicFont,
+            image,
+            customerName,
+            customerPhone,
+            customerRegion,
+            paymentType,
+            salesmanName,
+            salesmanPhone,
+            type,
+            number,
+            date,
+            items,
+            subtotalAmount,
+            discount,
+            debtBefore,
+            debtAfter,
+            currency,
+            notes,
+            totalNumOfItems,
+            itemsWeigt,
+            printingDate,
+            printingTime,
+            25,
+            50,
+            addTotals: false,
+            startSequence: 26,
+          );
+        },
+      ),
+    );
+    pdf.addPage(
+      pw.Page(
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context ctx) {
+          return invoicePage(
+            context,
+            arabicFont,
+            image,
+            customerName,
+            customerPhone,
+            customerRegion,
+            paymentType,
+            salesmanName,
+            salesmanPhone,
+            type,
+            number,
+            date,
+            items,
+            subtotalAmount,
+            discount,
+            debtBefore,
+            debtAfter,
+            currency,
+            notes,
+            totalNumOfItems,
+            itemsWeigt,
+            printingDate,
+            printingTime,
+            50,
+            75,
+            startSequence: 51,
+          );
+        },
+      ),
+    );
+    pdf.addPage(
+      pw.Page(
+        margin: pw.EdgeInsets.zero,
+        build: (pw.Context ctx) {
+          return invoicePage(
+            context,
+            arabicFont,
+            image,
+            customerName,
+            customerPhone,
+            customerRegion,
+            paymentType,
+            salesmanName,
+            salesmanPhone,
+            type,
+            number,
+            date,
+            items,
+            subtotalAmount,
+            discount,
+            debtBefore,
+            debtAfter,
+            currency,
+            notes,
+            totalNumOfItems,
+            itemsWeigt,
+            printingDate,
+            printingTime,
+            75,
+            items.length,
+            addTotals: true,
+            startSequence: 76,
+          );
+        },
+      ),
+    );
+  }
   return pdf;
+}
+
+pw.Widget invoicePage(
+    BuildContext context,
+    Font arabicFont,
+    dynamic image,
+    String customerName,
+    String customerPhone,
+    String customerRegion,
+    String paymentType,
+    String salesmanName,
+    String salesmanPhone,
+    String type,
+    String number,
+    String date,
+    List<dynamic> items,
+    String subtotalAmount,
+    String discount,
+    String debtBefore,
+    String debtAfter,
+    String currency,
+    String notes,
+    String totalNumOfItems,
+    String itemsWeigt,
+    String printingDate,
+    String printingTime,
+    int startItem,
+    int endItem,
+    {bool addTotals = true,
+    bool includeImage = false,
+    int startSequence = 1}) {
+  return pw.Column(
+    mainAxisAlignment: pw.MainAxisAlignment.start,
+    children: [
+      if (includeImage) pw.Image(image),
+      _buildFirstRow(context, arabicFont, customerName, customerPhone, customerRegion, paymentType),
+      pw.SizedBox(height: 8),
+      _buildSecondRow(context, arabicFont, salesmanName, salesmanPhone, type, number, date),
+      pw.SizedBox(height: 10),
+      _itemTitles(arabicFont),
+      pw.SizedBox(height: 2),
+      _buildItems(
+          arabicFont, items.sublist(startItem, items.length < endItem ? items.length : endItem),
+          startingSequence: startSequence),
+      pw.SizedBox(height: 8),
+      if (addTotals)
+        _totals(arabicFont, subtotalAmount, discount, debtBefore, debtAfter, currency, notes,
+            totalNumOfItems, itemsWeigt),
+      pw.Spacer(),
+      _signituresRow(arabicFont),
+      pw.SizedBox(height: 5),
+      footerBar(arabicFont, 'الشركة غير مسؤولة عن انتهاء الصلاحية بعد استلام البضاعة',
+          'وقت الطباعة     $printingDate   $printingTime '),
+      pw.SizedBox(height: 10),
+    ],
+  ); // Center
 }
 
 num calculateTotalNumOfItems(List<dynamic> items) {
@@ -139,8 +521,8 @@ num calculateTotalNumOfItems(List<dynamic> items) {
   return numItems;
 }
 
-pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String customerName, String customerPhone,
-    String customerRegion, String paymentType) {
+pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String customerName,
+    String customerPhone, String customerRegion, String paymentType) {
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
@@ -154,8 +536,8 @@ pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String customerN
   );
 }
 
-pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String salesmanName, String salesmanPhone, String type,
-    String number, String date) {
+pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String salesmanName,
+    String salesmanPhone, String type, String number, String date) {
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
@@ -186,7 +568,7 @@ pw.Widget _itemTitles(Font arabicFont) {
   return _coloredContainer(childWidget, bgColor: darkBgColor, 554, height: 20);
 }
 
-pw.Widget _buildItems(Font arabicFont, List<dynamic> items) {
+pw.Widget _buildItems(Font arabicFont, List<dynamic> items, {int startingSequence = 1}) {
   List<pw.Widget> itemWidgets = [];
   for (int i = 0; i < items.length; i++) {
     final item = items[i];
@@ -194,7 +576,7 @@ pw.Widget _buildItems(Font arabicFont, List<dynamic> items) {
     if (item['name'] == '') continue;
     itemWidgets.add(_itemsRow(
       arabicFont,
-      (i + 1).toString(),
+      (startingSequence + i).toString(),
       item['name'],
       doubleToStringWithComma(item['soldQuantity']),
       doubleToStringWithComma(item['giftQuantity']),
@@ -205,21 +587,22 @@ pw.Widget _buildItems(Font arabicFont, List<dynamic> items) {
   return pw.Column(children: itemWidgets);
 }
 
-pw.Widget _itemsRow(
-    Font arabicFont, String sequence, String name, String quantity, String gift, String price, String total) {
+pw.Widget _itemsRow(Font arabicFont, String sequence, String name, String quantity, String gift,
+    String price, String total) {
   return pw.Container(
+    height: 20,
     width: 554,
-    padding: const pw.EdgeInsets.all(2),
+    padding: const pw.EdgeInsets.all(1),
     child: pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
       children: [
-        _arabicText(arabicFont, total, width: 70, isBordered: true),
-        _arabicText(arabicFont, price, width: 70, isBordered: true),
+        _arabicText(arabicFont, total, width: 70, isBordered: true, fontSize: 9),
+        _arabicText(arabicFont, price, width: 70, isBordered: true, fontSize: 9),
         _arabicText(arabicFont, gift,
-            width: 70, isBordered: true, borderColor: PdfColors.red, textColor: PdfColors.red),
-        _arabicText(arabicFont, quantity, width: 70, isBordered: true),
-        _arabicText(arabicFont, name, width: 200, isBordered: true),
-        _arabicText(arabicFont, sequence, width: 40, isBordered: true),
+            width: 70, isBordered: true, textColor: PdfColors.red, fontSize: 9),
+        _arabicText(arabicFont, quantity, width: 70, isBordered: true, fontSize: 9),
+        _arabicText(arabicFont, name, width: 200, isBordered: true, fontSize: 9),
+        _arabicText(arabicFont, sequence, width: 40, isBordered: true, fontSize: 9),
       ],
     ),
   );
@@ -263,11 +646,11 @@ pw.Widget _itemsRow(
 //   );
 // }
 
-pw.Widget _totals(Font arabicFont, String totalAmount, String discount, String debtBefore, String debtAfter,
-    String currency, String notes, String itemsNumber, String itemsWeigt) {
+pw.Widget _totals(Font arabicFont, String totalAmount, String discount, String debtBefore,
+    String debtAfter, String currency, String notes, String itemsNumber, String itemsWeigt) {
   return pw.Container(
     width: 558, // Set a fixed width for the container
-    height: 130,
+    height: 120,
     child: pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
       invoiceAmountColumn(arabicFont, totalAmount, discount, debtBefore, debtAfter, currency),
       weightColumn(arabicFont, notes, itemsNumber, itemsWeigt),
@@ -275,12 +658,11 @@ pw.Widget _totals(Font arabicFont, String totalAmount, String discount, String d
   );
 }
 
-pw.Widget invoiceAmountColumn(
-    Font arabicFont, String totalAmount, String discount, String debtBefore, String debtAfter, String currency) {
+pw.Widget invoiceAmountColumn(Font arabicFont, String totalAmount, String discount,
+    String debtBefore, String debtAfter, String currency) {
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
     children: [
-      pw.SizedBox(height: 10),
       totalsItem(arabicFont, 'مبلغ القائمة', totalAmount, lightBgColor),
       totalsItem(arabicFont, 'الخصم', discount, lightBgColor),
       totalsItem(arabicFont, 'الطلب السابق', debtBefore, lightBgColor),
@@ -294,7 +676,7 @@ pw.Widget weightColumn(Font arabicFont, String notes, String itemsNumber, String
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.start,
     children: [
-      _labedContainer(notes, 'الملاحظات', arabicFont, width: 250, height: 50),
+      _labedContainer(notes, 'الملاحظات', arabicFont, width: 250, height: 40),
       pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
@@ -365,12 +747,14 @@ pw.Widget _labedContainer(String text, String label, Font arabicFont,
   return pw.Stack(children: [
     pw.Container(
       padding: const pw.EdgeInsets.only(top: 17),
-      child: _coloredContainer(childWidget, width, height: height, bgColor: bgColor, borderColor: borderColor),
+      child: _coloredContainer(childWidget, width,
+          height: height, bgColor: bgColor, borderColor: borderColor),
     ),
     pw.Positioned(
       top: 3, // Adjusted position to move the label down
       right: 5, // Position at the right
-      child: _arabicText(arabicFont, label, textColor: PdfColors.red, fontSize: 7, bgColor: PdfColors.white),
+      child: _arabicText(arabicFont, label,
+          textColor: PdfColors.red, fontSize: 7, bgColor: PdfColors.white),
     ),
   ]);
 }
