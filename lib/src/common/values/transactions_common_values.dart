@@ -5,7 +5,7 @@ const String numberKey = 'number';
 const String dateKey = 'date';
 const String currencyKey = 'currency';
 const String notesKey = 'notes';
-const String transactionTypeKey = 'transactionType';
+const String transTypeKey = 'transactionType';
 const String paymentTypeKey = 'paymentType';
 const String salesmanKey = 'salesman';
 const String itemsKey = 'items';
@@ -36,12 +36,12 @@ const String itemsTotalProfitKey = 'itemsTotalProfit'; // profit of all items in
 const String isPrintedKey = 'isPrinted';
 
 Map<String, dynamic> emptyInvoiceItem = {
-  nameKey: '',
-  itemSellingPriceKey: 0,
-  itemWeightKey: 0,
-  itemSoldQuantityKey: 0,
-  itemGiftQuantityKey: 0,
-  itemTotalAmountKey: 0,
-  itemTotalWeightKey: 0,
-  itemStockQuantityKey: 0,
+  itemNameKey: '-',
+  itemSellingPriceKey: 10,
+  itemWeightKey: 10,
+  itemSoldQuantityKey: 10,
+  itemGiftQuantityKey: 10,
+  itemTotalAmountKey: 10,
+  itemTotalWeightKey: 10,
+  itemStockQuantityKey: 10,
 };

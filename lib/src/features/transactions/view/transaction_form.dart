@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -137,26 +136,25 @@ class TransactionForm extends ConsumerWidget {
       //   icon: const GoPreviousIcon(),
       // ),
       // const SizedBox(width: 250),
+      // IconButton(
+      //   onPressed: () {
+      //     _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
+      //         transactionDbCache, screenController);
+      //   },
+      //   icon: const SaveIcon(),
+      // ),
       IconButton(
         onPressed: () {
-          _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
+          _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController,
               transactionDbCache, screenController);
         },
-        icon: const SaveIcon(),
+        icon: const DeleteIcon(),
       ),
-      if (isEditMode)
-        IconButton(
-          onPressed: () {
-            _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController,
-                transactionDbCache, screenController);
-          },
-          icon: const DeleteIcon(),
-        ),
       IconButton(
         onPressed: () {
-          _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
-              transactionDbCache, screenController,
-              keepDialog: true);
+          // _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
+          //     transactionDbCache, screenController,
+          //     keepDialog: true);
           _onPrintPressed(context, ref, formDataNotifier);
         },
         icon: formDataNotifier.getProperty(isPrintedKey) ? const PrintedIcon() : const PrintIcon(),
@@ -179,52 +177,52 @@ class TransactionForm extends ConsumerWidget {
     ];
   }
 
-  void _onSavePressed(
-      BuildContext context,
-      WidgetRef ref,
-      ItemFormController formController,
-      ItemFormData formDataNotifier,
-      ImageSliderNotifier formImagesNotifier,
-      DbCache transactionDbCache,
-      TransactionScreenController screenController,
-      {bool keepDialog = false}) {
-    if (!formController.validateData()) return;
-    removeEmptyRows(formDataNotifier);
-    formController.submitData();
-    final formData = {...formDataNotifier.data};
-    final imageUrls = formImagesNotifier.saveChanges();
-    final itemData = {...formData, 'imageUrls': imageUrls};
-    final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
-    formController.saveItemToDb(context, transaction, isEditMode, keepDialogOpen: true);
-    // update the bdCache (database mirror) so that we don't need to fetch data from db
-    if (itemData[transactionDateKey] is DateTime) {
-      // in our form the data type usually is DateTime, but the date type in dbCache should be
-      // Timestamp, as to mirror the datatype of firebase
-      itemData[transactionDateKey] = firebase.Timestamp.fromDate(formData[transactionDateKey]);
-    }
-    final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
-    transactionDbCache.update(itemData, operationType);
-    // redo screenData calculations
-    if (context.mounted) {
-      screenController.setFeatureScreenData(context);
-    }
-    if (!keepDialog) {
-      Navigator.of(context).pop();
-    }
+  // void _onSavePressed(
+  //     BuildContext context,
+  //     WidgetRef ref,
+  //     ItemFormController formController,
+  //     ItemFormData formDataNotifier,
+  //     ImageSliderNotifier formImagesNotifier,
+  //     DbCache transactionDbCache,
+  //     TransactionScreenController screenController,
+  //     {bool keepDialog = false}) {
+  //   if (!formController.validateData()) return;
+  //   removeEmptyRows(formDataNotifier);
+  //   formController.submitData();
+  //   final formData = {...formDataNotifier.data};
+  //   final imageUrls = formImagesNotifier.saveChanges();
+  //   final itemData = {...formData, 'imageUrls': imageUrls};
+  //   final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
+  //   formController.saveItemToDb(context, transaction, isEditMode, keepDialogOpen: true);
+  //   // update the bdCache (database mirror) so that we don't need to fetch data from db
+  //   if (itemData[transactionDateKey] is DateTime) {
+  //     // in our form the data type usually is DateTime, but the date type in dbCache should be
+  //     // Timestamp, as to mirror the datatype of firebase
+  //     itemData[transactionDateKey] = firebase.Timestamp.fromDate(formData[transactionDateKey]);
+  //   }
+  //   final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
+  //   transactionDbCache.update(itemData, operationType);
+  //   // redo screenData calculations
+  //   if (context.mounted) {
+  //     screenController.setFeatureScreenData(context);
+  //   }
+  //   if (!keepDialog) {
+  //     Navigator.of(context).pop();
+  //   }
 
-    //// open new form when saving
-    // _showForm(context, ref, transactionType);
-  }
+  //   //// open new form when saving
+  //   // _showForm(context, ref, transactionType);
+  // }
 
-  /// delete rows where there is not item name
-  void removeEmptyRows(ItemFormData formDataNotifier) {
-    final items = formDataNotifier.getProperty(itemsKey);
-    for (var i = 0; i < items.length; i++) {
-      if (items[i]['name'] == '') {
-        formDataNotifier.removeSubProperties(itemsKey, i);
-      }
-    }
-  }
+  // /// delete rows where there is not item name
+  // void removeEmptyRows(ItemFormData formDataNotifier) {
+  //   final items = formDataNotifier.getProperty(itemsKey);
+  //   for (var i = 0; i < items.length; i++) {
+  //     if (items[i]['name'] == '') {
+  //       formDataNotifier.removeSubProperties(itemsKey, i);
+  //     }
+  //   }
+  // }
 
   Future<void> _onDeletePressed(
     BuildContext context,

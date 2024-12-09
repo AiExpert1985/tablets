@@ -446,7 +446,7 @@ Widget buildDataCell(double width, Widget cell,
 // if customer is not selected yet then default is salewhole type
 double _getItemPrice(
     BuildContext context, ItemFormData formDataNotifier, Map<String, dynamic> item) {
-  final transactionType = formDataNotifier.getProperty(transactionTypeKey);
+  final transactionType = formDataNotifier.getProperty(transTypeKey);
   if (transactionType == TransactionType.expenditures.name ||
       transactionType == TransactionType.customerReceipt.name ||
       transactionType == TransactionType.vendorReceipt.name) {
