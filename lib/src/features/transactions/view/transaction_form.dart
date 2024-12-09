@@ -104,8 +104,8 @@ class TransactionForm extends ConsumerWidget {
           ),
         ),
       ]),
-      buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier,
-          dbCache, screenController, formNavigation, ref),
+      buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier, dbCache, screenController,
+          formNavigation, ref),
       width: width is double ? width : width.toDouble(),
       height: height is double ? height : height.toDouble(),
     );
@@ -139,23 +139,23 @@ class TransactionForm extends ConsumerWidget {
       // const SizedBox(width: 250),
       IconButton(
         onPressed: () {
-          _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
-              transactionDbCache, screenController);
+          _onSavePressed(
+              context, ref, formController, formDataNotifier, formImagesNotifier, transactionDbCache, screenController);
         },
         icon: const SaveIcon(),
       ),
       if (isEditMode)
         IconButton(
           onPressed: () {
-            _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController,
-                transactionDbCache, screenController);
+            _onDeletePressed(
+                context, formDataNotifier, formImagesNotifier, formController, transactionDbCache, screenController);
           },
           icon: const DeleteIcon(),
         ),
       IconButton(
         onPressed: () {
-          _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
-              transactionDbCache, screenController,
+          _onSavePressed(
+              context, ref, formController, formDataNotifier, formImagesNotifier, transactionDbCache, screenController,
               keepDialog: true);
           _onPrintPressed(context, ref, formDataNotifier);
         },
@@ -234,8 +234,7 @@ class TransactionForm extends ConsumerWidget {
     DbCache transactionDbCache,
     TransactionScreenController screenController,
   ) async {
-    final confirmation = await showDeleteConfirmationDialog(
-        context: context, message: formDataNotifier.data['name']);
+    final confirmation = await showDeleteConfirmationDialog(context: context, message: formDataNotifier.data['name']);
     final formData = formDataNotifier.data;
     if (confirmation != null) {
       final imageUrls = formImagesNotifier.saveChanges();
