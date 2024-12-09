@@ -22,17 +22,18 @@ const labelsColor = PdfColors.red;
 
 Future<void> _printPDf(Document pdf) async {
   try {
-    // Use the Printing package to print the document
-    await Printing.layoutPdf(
-      onLayout: (PdfPageFormat format) async => await pdf.save(),
-      usePrinterSettings: true,
-    );
+    for (int i = 0; i < 2; i++) {
+      await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => await pdf.save(),
+      );
+    }
   } catch (e) {
     errorLog('Printing failed - ($e)');
   }
 }
 
-Future<void> printDocument(BuildContext context, WidgetRef ref, Map<String, dynamic> transactionData) async {
+Future<void> printDocument(
+    BuildContext context, WidgetRef ref, Map<String, dynamic> transactionData) async {
   try {
     // now we only print customer invoices
     if (transactionData['transactionType'] != TransactionType.customerInvoice.name) {
@@ -93,9 +94,11 @@ Future<Document> getCustomerInvoicePdf(
   final customerScreenController = ref.read(customerScreenControllerProvider);
   final customerScreenData = customerScreenController.getItemScreenData(context, customerData);
   final debtAfter = doubleToStringWithComma(customerScreenData['totalDebt']);
-  final debtBefore = doubleToStringWithComma(customerScreenData['totalDebt'] - transactionData['totalAmount']);
+  final debtBefore =
+      doubleToStringWithComma(customerScreenData['totalDebt'] - transactionData['totalAmount']);
   tempPrint(5);
-  final arabicFont = pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
+  final arabicFont =
+      pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
   final image = await loadImage('assets/images/invoice_logo.PNG');
   pdf.addPage(
     pw.Page(
@@ -105,7 +108,8 @@ Future<Document> getCustomerInvoicePdf(
           mainAxisAlignment: pw.MainAxisAlignment.start,
           children: [
             pw.Image(image),
-            _buildFirstRow(context, arabicFont, customerName, customerPhone, customerRegion, paymentType),
+            _buildFirstRow(
+                context, arabicFont, customerName, customerPhone, customerRegion, paymentType),
             pw.SizedBox(height: 8),
             _buildSecondRow(context, arabicFont, salesmanName!, salesmanPhone!, type, number, date),
             pw.SizedBox(height: 12),
@@ -115,8 +119,8 @@ Future<Document> getCustomerInvoicePdf(
             // _itemsRow2(arabicFont),
             // _itemsRow3(arabicFont),
             pw.SizedBox(height: 10),
-            _totals(arabicFont, subtotalAmount, discount, debtBefore, debtAfter, currency, notes!, totalNumOfItems,
-                itemsWeigt),
+            _totals(arabicFont, subtotalAmount, discount, debtBefore, debtAfter, currency, notes!,
+                totalNumOfItems, itemsWeigt),
             pw.Spacer(),
             _signituresRow(arabicFont),
             pw.SizedBox(height: 25),
@@ -139,8 +143,8 @@ num calculateTotalNumOfItems(List<dynamic> items) {
   return numItems;
 }
 
-pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String customerName, String customerPhone,
-    String customerRegion, String paymentType) {
+pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String customerName,
+    String customerPhone, String customerRegion, String paymentType) {
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
@@ -154,8 +158,8 @@ pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String customerN
   );
 }
 
-pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String salesmanName, String salesmanPhone, String type,
-    String number, String date) {
+pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String salesmanName,
+    String salesmanPhone, String type, String number, String date) {
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
     children: [
@@ -205,8 +209,8 @@ pw.Widget _buildItems(Font arabicFont, List<dynamic> items) {
   return pw.Column(children: itemWidgets);
 }
 
-pw.Widget _itemsRow(
-    Font arabicFont, String sequence, String name, String quantity, String gift, String price, String total) {
+pw.Widget _itemsRow(Font arabicFont, String sequence, String name, String quantity, String gift,
+    String price, String total) {
   return pw.Container(
     width: 554,
     padding: const pw.EdgeInsets.all(2),
@@ -263,8 +267,8 @@ pw.Widget _itemsRow(
 //   );
 // }
 
-pw.Widget _totals(Font arabicFont, String totalAmount, String discount, String debtBefore, String debtAfter,
-    String currency, String notes, String itemsNumber, String itemsWeigt) {
+pw.Widget _totals(Font arabicFont, String totalAmount, String discount, String debtBefore,
+    String debtAfter, String currency, String notes, String itemsNumber, String itemsWeigt) {
   return pw.Container(
     width: 558, // Set a fixed width for the container
     height: 130,
@@ -275,8 +279,8 @@ pw.Widget _totals(Font arabicFont, String totalAmount, String discount, String d
   );
 }
 
-pw.Widget invoiceAmountColumn(
-    Font arabicFont, String totalAmount, String discount, String debtBefore, String debtAfter, String currency) {
+pw.Widget invoiceAmountColumn(Font arabicFont, String totalAmount, String discount,
+    String debtBefore, String debtAfter, String currency) {
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
     children: [
@@ -365,12 +369,14 @@ pw.Widget _labedContainer(String text, String label, Font arabicFont,
   return pw.Stack(children: [
     pw.Container(
       padding: const pw.EdgeInsets.only(top: 17),
-      child: _coloredContainer(childWidget, width, height: height, bgColor: bgColor, borderColor: borderColor),
+      child: _coloredContainer(childWidget, width,
+          height: height, bgColor: bgColor, borderColor: borderColor),
     ),
     pw.Positioned(
       top: 3, // Adjusted position to move the label down
       right: 5, // Position at the right
-      child: _arabicText(arabicFont, label, textColor: PdfColors.red, fontSize: 7, bgColor: PdfColors.white),
+      child: _arabicText(arabicFont, label,
+          textColor: PdfColors.red, fontSize: 7, bgColor: PdfColors.white),
     ),
   ]);
 }
