@@ -9,7 +9,6 @@ import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
-import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
@@ -18,11 +17,11 @@ import 'package:tablets/src/features/transactions/controllers/transaction_screen
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
-import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/view/forms/expenditure_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/invoice_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/receipt_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/statement_form.dart';
+import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
 
 class TransactionForm extends ConsumerWidget {
   const TransactionForm(this.isEditMode, this.transactionType, {super.key});
@@ -145,8 +144,8 @@ class TransactionForm extends ConsumerWidget {
       // ),
       IconButton(
         onPressed: () {
-          _onDeletePressed(context, formDataNotifier, formImagesNotifier, formController,
-              transactionDbCache, screenController);
+          TransactionShowForm.deleteTransaction(context, formDataNotifier, formImagesNotifier,
+              formController, transactionDbCache, screenController);
         },
         icon: const DeleteIcon(),
       ),
@@ -223,37 +222,6 @@ class TransactionForm extends ConsumerWidget {
   //     }
   //   }
   // }
-
-  Future<void> _onDeletePressed(
-    BuildContext context,
-    ItemFormData formDataNotifier,
-    ImageSliderNotifier formImagesNotifier,
-    ItemFormController formController,
-    DbCache transactionDbCache,
-    TransactionScreenController screenController,
-  ) async {
-    final confirmation = await showDeleteConfirmationDialog(
-        context: context, message: formDataNotifier.data['name']);
-    final formData = formDataNotifier.data;
-    if (confirmation != null) {
-      final imageUrls = formImagesNotifier.saveChanges();
-      final itemData = {...formData, 'imageUrls': imageUrls};
-      final transaction = Transaction.fromMap(itemData);
-      if (context.mounted) {
-        formController.deleteItemFromDb(context, transaction, keepDialogOpen: true);
-      }
-      // update the bdCache (database mirror) so that we don't need to fetch data from db
-      const operationType = DbCacheOperationTypes.delete;
-      transactionDbCache.update(itemData, operationType);
-      // redo screenData calculations
-      if (context.mounted) {
-        screenController.setFeatureScreenData(context);
-      }
-    }
-    if (context.mounted) {
-      Navigator.of(context).pop();
-    }
-  }
 
   void _onPrintPressed(BuildContext context, WidgetRef ref, ItemFormData formDataNotifier) async {
     printDocument(context, ref, formDataNotifier.data);

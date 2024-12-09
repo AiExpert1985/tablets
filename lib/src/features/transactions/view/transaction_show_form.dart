@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
@@ -49,7 +51,7 @@ class TransactionShowForm {
 
     if (!isEditMode) {
       // if the transaction is new, we save it directly with empty data
-      saveTransactionInDb(context, ref, formDataNotifier.data, false);
+      saveTransaction(context, ref, formDataNotifier.data, false);
     }
 
     // // initalize form navigator
@@ -62,14 +64,54 @@ class TransactionShowForm {
       builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType),
     ).whenComplete(() {
       imagePickerNotifier.close();
+      // removeEmptyRows(formDataNotifier);
       if (context.mounted) {
-        // removeEmptyRows(formDataNotifier);
-        saveTransactionInDb(context, ref, formDataNotifier.data, true);
+        if (formDataNotifier.data[nameKey] == '') {
+          final formController = ref.read(transactionFormControllerProvider);
+          final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+          final screenController = ref.read(transactionScreenControllerProvider);
+          final dbCache = ref.read(transactionDbCacheProvider.notifier);
+          deleteTransaction(context, formDataNotifier, imagePickerNotifier, formController, dbCache,
+              screenController,
+              showConfiramtion: false);
+        } else {
+          saveTransaction(context, ref, formDataNotifier.data, true);
+        }
       }
     });
   }
 
-  static void saveTransactionInDb(
+  static Future<void> deleteTransaction(
+      BuildContext context,
+      ItemFormData formDataNotifier,
+      ImageSliderNotifier formImagesNotifier,
+      ItemFormController formController,
+      DbCache transactionDbCache,
+      TransactionScreenController screenController,
+      {bool showConfiramtion = true}) async {
+    if (showConfiramtion) {
+      final confirmation = await showDeleteConfirmationDialog(
+          context: context, message: formDataNotifier.data['name']);
+      if (confirmation == null) return;
+    }
+    final formData = formDataNotifier.data;
+
+    final imageUrls = formImagesNotifier.saveChanges();
+    final itemData = {...formData, 'imageUrls': imageUrls};
+    final transaction = Transaction.fromMap(itemData);
+    if (context.mounted) {
+      formController.deleteItemFromDb(context, transaction, keepDialogOpen: true);
+    }
+    // update the bdCache (database mirror) so that we don't need to fetch data from db
+    const operationType = DbCacheOperationTypes.delete;
+    transactionDbCache.update(itemData, operationType);
+    // redo screenData calculations
+    if (context.mounted) {
+      screenController.setFeatureScreenData(context);
+    }
+  }
+
+  static void saveTransaction(
     BuildContext context,
     WidgetRef ref,
     Map<String, dynamic> formData,
@@ -80,10 +122,10 @@ class TransactionShowForm {
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
     final screenController = ref.read(transactionScreenControllerProvider);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
-    if (isEditing) {
-      if (!formController.validateData()) return;
-      formController.submitData();
-    }
+    // if (isEditing) {
+    //   if (!formController.validateData()) return;
+    //   formController.submitData();
+    // }
     final formData = {...formDataNotifier.data};
     final imageUrls = formImagesNotifier.saveChanges();
     final itemData = {...formData, 'imageUrls': imageUrls};
