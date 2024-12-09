@@ -198,6 +198,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "no": MessageLookupByLibrary.simpleMessage("No"),
         "no_data_available":
             MessageLookupByLibrary.simpleMessage("No data available"),
+        "no_name_print_error":
+            MessageLookupByLibrary.simpleMessage("You must enter name"),
         "notes": MessageLookupByLibrary.simpleMessage("Notes"),
         "num_due_invoices":
             MessageLookupByLibrary.simpleMessage("Due invoices"),

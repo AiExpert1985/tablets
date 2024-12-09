@@ -80,7 +80,7 @@ class DbCache extends StateNotifier<List<Map<String, dynamic>>> {
         return state[index];
       }
     }
-    errorPrint('item not found');
+    errorPrint('item not found in dbCache');
     return {};
   }
 

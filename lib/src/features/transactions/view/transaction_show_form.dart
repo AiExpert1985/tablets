@@ -64,7 +64,6 @@ class TransactionShowForm {
       builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType),
     ).whenComplete(() {
       imagePickerNotifier.close();
-      // removeEmptyRows(formDataNotifier);
       final formController = ref.read(transactionFormControllerProvider);
       final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
       final screenController = ref.read(transactionScreenControllerProvider);
@@ -81,6 +80,7 @@ class TransactionShowForm {
           // due to delete button, i.e. item was updated
           final transDbRef = formDataNotifier.data[dbRefKey];
           if (dbCache.getItemByDbRef(transDbRef).isNotEmpty) {
+            removeEmptyRows(formDataNotifier);
             saveTransaction(context, ref, formDataNotifier.data, true);
           }
         }

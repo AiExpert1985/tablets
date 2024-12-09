@@ -191,6 +191,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "no": MessageLookupByLibrary.simpleMessage("لا"),
         "no_data_available":
             MessageLookupByLibrary.simpleMessage("لا يوجد بيانات"),
+        "no_name_print_error":
+            MessageLookupByLibrary.simpleMessage("يجب ادخال الاسم"),
         "notes": MessageLookupByLibrary.simpleMessage("الملاحظات"),
         "num_due_invoices":
             MessageLookupByLibrary.simpleMessage("القوائم المتجاوزة"),

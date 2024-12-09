@@ -244,5 +244,6 @@
     "previous": "السابق",
     "first": "الاول",
     "last": "الاخير",
-    "printed": "مطبوع"
+    "printed": "مطبوع",
+    "no_name_print_error": "يجب ادخال الاسم"
 }
