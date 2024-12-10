@@ -139,9 +139,7 @@ class TransactionShowForm {
     // }
     Map<String, dynamic> formData = {...formDataNotifier.data};
     // we need to remove empty rows (rows without item name, which is usally last one)
-    tempPrint('before $formData');
     formData = removeEmptyRows(formData);
-    tempPrint('after $formData');
     final imageUrls = formImagesNotifier.saveChanges();
     final itemData = {...formData, 'imageUrls': imageUrls};
     final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});

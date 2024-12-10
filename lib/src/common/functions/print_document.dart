@@ -75,7 +75,7 @@ Future<Document> getCustomerInvoicePdf(
   final customerRegion = customerData['region'] ?? '';
   final salesmanName = salesmanData['name'] ?? '';
   final salesmanPhone = salesmanData['phone'] ?? '';
-  final items = transactionData['items'] as List<dynamic>;
+  final items = transactionData['items'] as List;
   final paymentType = translateDbTextToScreenText(context, transactionData['paymentType']);
   final date = formatDate(transactionData['date']);
   final subtotalAmount = doubleToStringWithComma(transactionData['subTotalAmount']);
