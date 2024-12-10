@@ -229,6 +229,9 @@ class TransactionForm extends ConsumerWidget {
       failureUserMessage(context, S.of(context).no_name_print_error);
       return;
     }
+    // first we need to save changes done to the form, then print, because if we don't save,
+    // then the debt of customer will not accurately calculated
+    TransactionShowForm.saveTransaction(context, ref, formDataNotifier.data, true);
     printDocument(context, ref, formDataNotifier.data);
     formDataNotifier.updateProperties({isPrintedKey: true});
   }

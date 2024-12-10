@@ -80,7 +80,6 @@ class TransactionShowForm {
           // due to delete button, i.e. item was updated
           final transDbRef = formDataNotifier.data[dbRefKey];
           if (dbCache.getItemByDbRef(transDbRef).isNotEmpty) {
-            removeEmptyRows(formDataNotifier);
             saveTransaction(context, ref, formDataNotifier.data, true);
           }
         }
@@ -138,7 +137,11 @@ class TransactionShowForm {
     //   if (!formController.validateData()) return;
     //   formController.submitData();
     // }
-    final formData = {...formDataNotifier.data};
+    Map<String, dynamic> formData = {...formDataNotifier.data};
+    // we need to remove empty rows (rows without item name, which is usally last one)
+    tempPrint('before $formData');
+    formData = removeEmptyRows(formData);
+    tempPrint('after $formData');
     final imageUrls = formImagesNotifier.saveChanges();
     final itemData = {...formData, 'imageUrls': imageUrls};
     final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
@@ -158,13 +161,18 @@ class TransactionShowForm {
   }
 
   /// delete rows where there is not item name
-  static void removeEmptyRows(ItemFormData formDataNotifier) {
-    final items = formDataNotifier.getProperty(itemsKey);
-    for (var i = 0; i < items.length; i++) {
-      if (items[i]['name'] == '') {
-        formDataNotifier.removeSubProperties(itemsKey, i);
+  static Map<String, dynamic> removeEmptyRows(Map<String, dynamic> formData) {
+    List<Map<String, dynamic>> items = [];
+    for (var i = 0; i < formData[itemsKey].length; i++) {
+      final item = formData[itemsKey][i];
+      // only add items with non empty name field
+      if (item[nameKey] != '') {
+        Map<String, dynamic> newItem = {};
+        item.forEach((key, value) => newItem[key] = value);
+        items.add(newItem);
       }
     }
+    return {...formData, itemsKey: items};
   }
 
   static void initializeFormData(BuildContext context, ItemFormData formDataNotifier,
