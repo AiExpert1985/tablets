@@ -79,10 +79,8 @@ class DbCache extends StateNotifier<List<Map<String, dynamic>>> {
   }
 
   Map<String, dynamic> getItemByProperty(String propertyKey, dynamic propertyValue) {
-    tempPrint('inside dbCache');
     for (int index = 0; index < state.length; index++) {
       if (state[index][propertyKey] == propertyValue) {
-        tempPrint('found');
         return state[index];
       }
     }

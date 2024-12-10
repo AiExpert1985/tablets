@@ -156,7 +156,7 @@ List<Widget> _buildDataRows(
 //   );
 // }
 
-void addNewRow(formDataNotifier, textEditingNotifier) {
+void addNewRow(ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
   formDataNotifier.updateSubProperties(itemsKey, {
     itemCodeKey: null,
     itemNameKey: '',
@@ -201,7 +201,7 @@ Widget _buildDeleteItemButton(
             formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem, index: 0);
           } else {
             formDataNotifier.removeSubProperties(itemsKey, index);
-            textEditingNotifier.removeSubController(itemsKey, index, itemSellingPriceKey);
+            textEditingNotifier.removeSubControllers(itemsKey, index);
           }
 
           // update all transaction totals due to item removal
@@ -505,7 +505,6 @@ class CodeFormInputField extends ConsumerWidget {
                 index: index);
 // add new empty row if current row is last one, (always keep one empty row)
             if (index == numRows - 1) {
-              tempPrint(numRows);
               addNewRow(formDataNotifier, textEditingNotifier);
             }
           }),
