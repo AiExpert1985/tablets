@@ -27,6 +27,7 @@ const String itemSoldQuantityKey = 'soldQuantity';
 const String itemGiftQuantityKey = 'giftQuantity';
 const String itemTotalAmountKey = 'itemTotalAmount';
 const String itemTotalWeightKey = 'itemTotalWeight';
+const String itemCodeKey = 'code';
 const String subTotalAmountKey = 'subTotalAmount';
 const String salesmanDbRefKey = 'salesmanDbRef';
 const String sellingPriceTypeKey = 'sellingPriceType';

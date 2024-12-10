@@ -173,6 +173,18 @@ class TransactionShowForm {
     // note here if transaction is null, it it equivalent to calling
     // formDataNotifier.intialize();
     formDataNotifier.initialize(initialData: transaction?.toMap());
+    // add empty row of items for both new forms & updating forms
+    formDataNotifier.updateSubProperties(itemsKey, {
+      itemCodeKey: null,
+      itemNameKey: '',
+      itemSellingPriceKey: 0,
+      itemWeightKey: 0,
+      itemSoldQuantityKey: 0,
+      itemGiftQuantityKey: 0,
+      itemTotalAmountKey: 0,
+      itemTotalWeightKey: 0,
+      itemStockQuantityKey: 0,
+    });
     if (transaction != null) return; // if we are in edit, we don't need further initialization
     String paymentType = settingsDataNotifier.getProperty(settingsPaymentTypeKey) ??
         S.of(context).transaction_payment_credit;
@@ -202,16 +214,6 @@ class TransactionShowForm {
       notesKey: "",
       isPrintedKey: false,
     });
-    formDataNotifier.updateSubProperties(itemsKey, {
-      itemNameKey: '',
-      itemSellingPriceKey: 0,
-      itemWeightKey: 0,
-      itemSoldQuantityKey: 0,
-      itemGiftQuantityKey: 0,
-      itemTotalAmountKey: 0,
-      itemTotalWeightKey: 0,
-      itemStockQuantityKey: 0,
-    });
   }
 
   // for below text field we need to add  controllers because the are updated by other fields
@@ -224,11 +226,13 @@ class TransactionShowForm {
     textEditingNotifier.disposeControllers();
     List items = formDataNotifier.getProperty(itemsKey);
     for (var i = 0; i < items.length; i++) {
+      final code = formDataNotifier.getSubProperty(itemsKey, i, itemCodeKey);
       final price = formDataNotifier.getSubProperty(itemsKey, i, itemSellingPriceKey);
       final weight = formDataNotifier.getSubProperty(itemsKey, i, itemWeightKey);
       final soldQuantity = formDataNotifier.getSubProperty(itemsKey, i, itemSoldQuantityKey);
       final giftQuantity = formDataNotifier.getSubProperty(itemsKey, i, itemGiftQuantityKey);
       textEditingNotifier.updateSubControllers(itemsKey, {
+        itemCodeKey: code,
         itemSellingPriceKey: price,
         itemSoldQuantityKey: soldQuantity,
         itemGiftQuantityKey: giftQuantity,

@@ -245,5 +245,6 @@
     "first": "First",
     "last": "Last",
     "printed": "Printed",
-    "no_name_print_error": "You must enter name"
+    "no_name_print_error": "You must enter name",
+    "code": "Code"
 }

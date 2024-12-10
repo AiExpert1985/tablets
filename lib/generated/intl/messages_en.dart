@@ -45,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "category_selection":
             MessageLookupByLibrary.simpleMessage("Select category"),
         "choose_image": MessageLookupByLibrary.simpleMessage("Choose image"),
+        "code": MessageLookupByLibrary.simpleMessage("Code"),
         "commission": MessageLookupByLibrary.simpleMessage("Commission"),
         "count": MessageLookupByLibrary.simpleMessage("Count"),
         "create_new_account":

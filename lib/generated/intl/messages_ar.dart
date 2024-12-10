@@ -44,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "category_selection":
             MessageLookupByLibrary.simpleMessage("اختيار الصنف "),
         "choose_image": MessageLookupByLibrary.simpleMessage("اختر صورة"),
+        "code": MessageLookupByLibrary.simpleMessage("الرمز"),
         "commission": MessageLookupByLibrary.simpleMessage("العمولة"),
         "count": MessageLookupByLibrary.simpleMessage("العدد"),
         "create_new_account":
@@ -165,8 +166,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "invoices_number": MessageLookupByLibrary.simpleMessage("عدد القوائم"),
         "item_available_quantity":
             MessageLookupByLibrary.simpleMessage("المخزون"),
-        "item_gifts_quantity":
-            MessageLookupByLibrary.simpleMessage("عدد الهدايا"),
+        "item_gifts_quantity": MessageLookupByLibrary.simpleMessage("الهدية"),
         "item_name": MessageLookupByLibrary.simpleMessage("اسم المادة"),
         "item_price": MessageLookupByLibrary.simpleMessage("سعر المادة"),
         "item_sequence": MessageLookupByLibrary.simpleMessage("تسلسل"),
