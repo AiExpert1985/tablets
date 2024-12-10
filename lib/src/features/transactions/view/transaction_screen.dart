@@ -112,13 +112,13 @@ class ListHeaders extends ConsumerWidget {
         SortableMainScreenHeaderCell(
             screenDataNotifier, transactionTypeKey, S.of(context).transaction_type),
         SortableMainScreenHeaderCell(
+            screenDataNotifier, transactionNumberKey, S.of(context).transaction_number),
+        SortableMainScreenHeaderCell(
             screenDataNotifier, transactionDateKey, S.of(context).transaction_date),
         SortableMainScreenHeaderCell(
             screenDataNotifier, transactionNameKey, S.of(context).transaction_name),
         SortableMainScreenHeaderCell(
             screenDataNotifier, transactionSalesmanKey, S.of(context).salesman_selection),
-        SortableMainScreenHeaderCell(
-            screenDataNotifier, transactionNumberKey, S.of(context).transaction_number),
         SortableMainScreenHeaderCell(
             screenDataNotifier, transactionTotalAmountKey, S.of(context).transaction_amount),
         SortableMainScreenHeaderCell(screenDataNotifier, transactionNotesKey, S.of(context).notes),
@@ -156,10 +156,10 @@ class DataRow extends ConsumerWidget {
                 color: color,
               ),
               MainScreenTextCell(transactionScreenData[transactionTypeKey]),
+              MainScreenTextCell(transactionScreenData[transactionNumberKey]),
               MainScreenTextCell(date),
               MainScreenTextCell(transactionScreenData[transactionNameKey]),
               MainScreenTextCell(transactionScreenData[transactionSalesmanKey]),
-              MainScreenTextCell(transactionScreenData[transactionNumberKey]),
               MainScreenTextCell(transactionScreenData[transactionTotalAmountKey]),
               MainScreenTextCell(transactionScreenData[transactionNotesKey]),
             ],

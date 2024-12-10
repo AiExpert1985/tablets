@@ -120,10 +120,8 @@ List<Widget> _buildDataRows(
             buildDataCell(
               soldQuantityColumnWidth,
               Text(
-                formDataNotifier
-                        .getSubProperty(itemsKey, index, itemStockQuantityKey)
-                        ?.toString() ??
-                    '',
+                doubleToIntString(
+                    formDataNotifier.getSubProperty(itemsKey, index, itemStockQuantityKey)),
                 style: const TextStyle(fontWeight: FontWeight.w500),
               ),
             ),
