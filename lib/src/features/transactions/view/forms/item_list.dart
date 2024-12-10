@@ -202,7 +202,8 @@ Widget _buildDeleteItemButton(
           textEditingNotifier.removeSubControllers(itemsKey, index);
 
           // update all transaction totals due to item removal
-          final subTotalAmount = _getTotal(formDataNotifier, itemsKey, subTotalAmountKey);
+
+          final subTotalAmount = _getTotal(formDataNotifier, itemsKey, itemTotalAmountKey);
           final discount = formDataNotifier.getProperty(discountKey);
           // for gifts we don't charget customer
           final totalAmount =
