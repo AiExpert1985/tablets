@@ -184,6 +184,8 @@ class TransactionShowForm {
       itemTotalAmountKey: 0,
       itemTotalWeightKey: 0,
       itemStockQuantityKey: 0,
+      itemTotalProfitKey: 0,
+      itemSalesmanTotalCommissionKey: 0,
     });
     if (transaction != null) return; // if we are in edit, we don't need further initialization
     String paymentType = settingsDataNotifier.getProperty(settingsPaymentTypeKey) ??

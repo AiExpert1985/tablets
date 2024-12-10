@@ -157,7 +157,19 @@ List<Widget> _buildDataRows(
 // }
 
 void addNewRow(formDataNotifier, textEditingNotifier) {
-  formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem);
+  formDataNotifier.updateSubProperties(itemsKey, {
+    itemCodeKey: null,
+    itemNameKey: '',
+    itemSellingPriceKey: 0,
+    itemWeightKey: 0,
+    itemSoldQuantityKey: 0,
+    itemGiftQuantityKey: 0,
+    itemTotalAmountKey: 0,
+    itemTotalWeightKey: 0,
+    itemStockQuantityKey: 0,
+    itemTotalProfitKey: 0,
+    itemSalesmanTotalCommissionKey: 0,
+  });
   textEditingNotifier.updateSubControllers(itemsKey, {
     itemCodeKey: null,
     itemSellingPriceKey: 0,

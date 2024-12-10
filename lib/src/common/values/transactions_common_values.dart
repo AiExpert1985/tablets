@@ -37,6 +37,7 @@ const String itemsTotalProfitKey = 'itemsTotalProfit'; // profit of all items in
 const String isPrintedKey = 'isPrinted';
 
 Map<String, dynamic> emptyInvoiceItem = {
+  itemCodeKey: null,
   itemNameKey: '',
   itemSellingPriceKey: 0,
   itemWeightKey: 0,
@@ -45,4 +46,6 @@ Map<String, dynamic> emptyInvoiceItem = {
   itemTotalAmountKey: 0,
   itemTotalWeightKey: 0,
   itemStockQuantityKey: 0,
+  itemTotalProfitKey: 0,
+  itemSalesmanTotalCommissionKey: 0,
 };
