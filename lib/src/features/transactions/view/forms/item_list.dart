@@ -127,13 +127,16 @@ List<Widget> _buildDataRows(
                 style: const TextStyle(fontWeight: FontWeight.w500),
               ),
             ),
-            _buildDeleteItemButton(
-              formDataNotifier,
-              textEditingNotifier,
-              index,
-              sequenceColumnWidth,
-              transactionType,
-            ),
+            // don't add delete button to last row because it will be always empty
+            index < items.length - 1
+                ? _buildDeleteItemButton(
+                    formDataNotifier,
+                    textEditingNotifier,
+                    index,
+                    sequenceColumnWidth,
+                    transactionType,
+                  )
+                : buildDataCell(sequenceColumnWidth, const Text(''), isLast: true),
           ]),
     );
   });
@@ -180,9 +183,8 @@ void addNewRow(ItemFormData formDataNotifier, TextControllerNotifier textEditing
   });
 }
 
-// TODO when last item removed, there still data, i need to solve that
-// TODO I was working on using remove textEditingController.subControllers(...) but
-// TODO stopped due to lack of time
+// note that we don't allow deleting last row, the delete button is not activated for it
+// so, we don't need to check if the row is last row
 Widget _buildDeleteItemButton(
   ItemFormData formDataNotifier,
   TextControllerNotifier textEditingNotifier,
@@ -196,13 +198,8 @@ Widget _buildDeleteItemButton(
         onPressed: () {
           final items = formDataNotifier.getProperty(itemsKey) as List<Map<String, dynamic>>;
           final deletedItem = {...items[index]};
-          // if there is only one item, it is not deleted, but formData & textEditingData is reseted
-          if (items.length <= 1) {
-            formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem, index: 0);
-          } else {
-            formDataNotifier.removeSubProperties(itemsKey, index);
-            textEditingNotifier.removeSubControllers(itemsKey, index);
-          }
+          formDataNotifier.removeSubProperties(itemsKey, index);
+          textEditingNotifier.removeSubControllers(itemsKey, index);
 
           // update all transaction totals due to item removal
           final subTotalAmount = _getTotal(formDataNotifier, itemsKey, subTotalAmountKey);
