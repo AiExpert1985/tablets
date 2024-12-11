@@ -1,9 +1,9 @@
 String? validateNumberField(String? fieldValue, String errorMessage) {
-  if (fieldValue == null || fieldValue is! num || fieldValue is! double || fieldValue is! int) {
+  if (fieldValue == null) {
     return errorMessage;
   }
   // remove thousand separator
-  fieldValue.replaceAll(',', '');
+  fieldValue = fieldValue.replaceAll(',', '');
   if (double.tryParse(fieldValue) == null) {
     return errorMessage;
   }

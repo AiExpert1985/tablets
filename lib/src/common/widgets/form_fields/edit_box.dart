@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:flutter_multi_formatter/formatters/currency_input_formatter.dart';
 import 'package:flutter_multi_formatter/formatters/money_input_formatter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,14 +49,17 @@ class FormInputField extends ConsumerWidget {
       child: FormBuilderTextField(
         // if controller is used, initialValue should be neglected
         initialValue: _getInitialValue(),
-        inputFormatters: [
-          CurrencyInputFormatter(
-              // trailingSymbol: CurrencySymbols.EURO_SIGN,
-              useSymbolPadding: true,
-              mantissaLength: 0 // the length of the fractional side
+        // only use input formatter if type is number, this is used for thousand separator
+        inputFormatters: dataType == FieldDataType.num
+            ? [
+                CurrencyInputFormatter(
+                    thousandSeparator: ThousandSeparator.Comma,
+                    useSymbolPadding: true,
+                    mantissaLength: 0 // the length of the fractional side
 
-              ),
-        ],
+                    ),
+              ]
+            : null,
         readOnly: isReadOnly,
         controller: controller,
         // enabled: !isReadOnly,
@@ -97,10 +101,12 @@ class FormInputField extends ConsumerWidget {
   FormFieldValidator<String>? _validator(BuildContext context) {
     return (value) {
       if (dataType == FieldDataType.text) {
-        return validation.validateTextField(value, S.of(context).input_validation_error_message_for_text);
+        return validation.validateTextField(
+            value, S.of(context).input_validation_error_message_for_text);
       }
       if (dataType == FieldDataType.num) {
-        return validation.validateNumberField(value, S.of(context).input_validation_error_message_for_numbers);
+        return validation.validateNumberField(
+            value, S.of(context).input_validation_error_message_for_numbers);
       }
       return null;
     };
