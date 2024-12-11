@@ -80,10 +80,9 @@ class FormInputField extends ConsumerWidget {
     try {
       if (value == null) return;
       if (dataType == FieldDataType.num) {
-        tempPrint(value);
-        value = value.replaceAll(',', '');
-        tempPrint(value);
         if (value.toString().trim().isEmpty) return;
+        // if number contains thousand separator, we remove it
+        value = value.replaceAll(',', '');
         final parsedValue = double.parse(value);
         onChangedFn(parsedValue);
         return;
