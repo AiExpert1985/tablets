@@ -71,7 +71,7 @@ class FormInputField extends ConsumerWidget {
 
   dynamic _getInitialValue() {
     if (controller != null) return null;
-    return initialValue is! String ? doubleToIntString(initialValue) : initialValue;
+    return initialValue is! String ? doubleToStringWithComma(initialValue) : initialValue;
   }
 
   void _onChanged(String? value) {

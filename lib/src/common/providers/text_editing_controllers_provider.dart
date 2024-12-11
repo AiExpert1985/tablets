@@ -119,7 +119,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     }
     if (index >= 0 && index < list.length) {
       subProperties.forEach((key, value) {
-        String? text = value is! String ? doubleToIntString(value) : value;
+        String? text = value is! String ? doubleToStringWithComma(value) : value;
         list[index][key].text = text;
       });
       newState[property] = list;
