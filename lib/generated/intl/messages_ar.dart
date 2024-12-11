@@ -270,8 +270,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "regions": MessageLookupByLibrary.simpleMessage("المناطق"),
         "reload_page":
             MessageLookupByLibrary.simpleMessage("اعادة تحميل الصفحة"),
-        "remaining_amount":
-            MessageLookupByLibrary.simpleMessage("المتبقى من القائمة"),
+        "remaining_amount": MessageLookupByLibrary.simpleMessage("المتبقى "),
         "reports": MessageLookupByLibrary.simpleMessage("تقارير"),
         "returns_amount":
             MessageLookupByLibrary.simpleMessage("مبلغ الارجاعات"),

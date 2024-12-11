@@ -150,7 +150,7 @@
     "internal_transaction": "تعاملات داخلية",
     "current_debt": "الدين الكلي",
     "num_open_invoice": "القوائم المفتوحة",
-    "remaining_amount": "المتبقى من القائمة",
+    "remaining_amount": "المتبقى ",
     "paid_amount": "المبلغ المسدد من القائمة",
     "receipt_number": "رقم التسديد",
     "receipt_date": "تاريخ التسديد",

@@ -19,7 +19,7 @@ void showReportDialog(
   String? dropdownLabel,
   int? sumIndex,
   double width = 800,
-  double height = 700,
+  double height = 650,
   // if useOriginalTransaction is ture, it means first item is the orginal transaction
   // it will not be displayed in the rows of data, but used to show the orginal transaction
   // as a read only dialog when the row is pressed.
@@ -60,6 +60,7 @@ class _DateFilterDialog extends StatefulWidget {
   final int? sumIndex;
   final bool useOriginalTransaction;
   final bool isCount;
+  final bool useAbsoluteNumbers;
 
   const _DateFilterDialog({
     required this.width,
@@ -74,6 +75,7 @@ class _DateFilterDialog extends StatefulWidget {
     this.sumIndex,
     required this.useOriginalTransaction,
     required this.isCount,
+    this.useAbsoluteNumbers = false,
   });
 
   @override
@@ -89,7 +91,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   @override
   void initState() {
     if (widget.dateIndex != null) {
-      sortListOfListsByDate(widget.dataList, widget.dateIndex!);
+      sortListOfListsByDate(widget.dataList, widget.dateIndex!, isAscending: true);
     }
     super.initState();
     filteredList = List.from(widget.dataList);
@@ -107,8 +109,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
             VerticalGap.xl,
             if (widget.dateIndex != null) _buildDateSelectionRow(),
             VerticalGap.l,
-            if (widget.dropdownIndex != null && widget.dropdownList != null)
-              _buildMultiSelectDropdown(),
+            if (widget.dropdownIndex != null && widget.dropdownList != null) _buildMultiSelectDropdown(),
           ],
         ),
       ),
@@ -137,15 +138,13 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         } catch (e) {
           return false;
         }
-        bool dateInRange =
-            (startDate == null || date.isAfter(startDate!.subtract(const Duration(days: 1)))) &&
-                (endDate == null || date.isBefore(endDate!.add(const Duration(days: 1))));
+        bool dateInRange = (startDate == null || date.isAfter(startDate!.subtract(const Duration(days: 1)))) &&
+            (endDate == null || date.isBefore(endDate!.add(const Duration(days: 1))));
 
         // Filter by dropdown selection if applicable
         if (widget.dropdownIndex != null && widget.dropdownList != null) {
           String dropdownValue = list[widget.dropdownIndex!].toString();
-          return dateInRange &&
-              (selectedDropdownValues.isEmpty || selectedDropdownValues.contains(dropdownValue));
+          return dateInRange && (selectedDropdownValues.isEmpty || selectedDropdownValues.contains(dropdownValue));
         }
         return dateInRange;
       }
@@ -200,9 +199,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       ),
       confirmText: Text(S.of(context).select),
       cancelText: Text(S.of(context).cancel),
-      items: widget.dropdownList!
-          .map((String value) => MultiSelectItem<String>(value, value))
-          .toList(),
+      items: widget.dropdownList!.map((String value) => MultiSelectItem<String>(value, value)).toList(),
       title: Text(widget.dropdownLabel ?? ''),
       buttonText: Text(
         widget.dropdownLabel ?? '',
@@ -219,8 +216,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     );
   }
 
-  Widget _buildDatePicker(
-      String name, DateTime? initialValue, String labelText, ValueChanged<DateTime?> onChanged) {
+  Widget _buildDatePicker(String name, DateTime? initialValue, String labelText, ValueChanged<DateTime?> onChanged) {
     return Expanded(
       child: FormBuilderDateTimePicker(
         textAlign: TextAlign.center,
@@ -255,11 +251,9 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         children: widget.titleList.map((item) {
           return SizedBox(
             width: widget.width / widget.titleList.length,
-            child: Text(
-              item,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
+            child: Text(item,
+                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                textAlign: TextAlign.center),
           );
         }).toList(),
       ),
@@ -270,18 +264,15 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       width: widget.width,
-      height: widget.height * 0.5, // Set a fixed height for the list
-      child: ListView.separated(
+      height: widget.height * 0.3, // Set a fixed height for the list
+      child: ListView.builder(
         itemCount: filteredList.length,
-        separatorBuilder: (context, index) => const Divider(thickness: 0.2, color: Colors.grey),
+        // separatorBuilder: (context, index) => const Divider(thickness: 0.5, color: Colors.grey),
         itemBuilder: (context, index) {
           final data = filteredList[index];
           Widget displayedWidget = widget.useOriginalTransaction
               ? InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5.0),
-                    child: _buildDataRow(data),
-                  ),
+                  child: _buildDataRow(data),
                   onTap: () {
                     if (widget.useOriginalTransaction) {
                       // if useOriginalTransaction the, first item is alway the orginal transaction
@@ -307,12 +298,12 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: itemsToDisplay.map((item) {
         if (item is DateTime) item = formatDate(item);
-        return SizedBox(
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          decoration: BoxDecoration(border: Border.all(width: 0.2)),
           width: widget.width / widget.titleList.length,
-          child: Text(
-            item is String ? item : doubleToStringWithComma(item),
-            textAlign: TextAlign.center,
-          ),
+          child: Text(item is String ? item : doubleToStringWithComma(item, isAbsoluteValue: widget.useAbsoluteNumbers),
+              textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
         );
       }).toList(),
     );
@@ -335,8 +326,10 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(S.of(context).total, style: const TextStyle(fontSize: 18)),
-            Text(doubleToStringWithComma(sum), style: const TextStyle(fontSize: 18))
+            Text(S.of(context).total,
+                style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)),
+            Text(doubleToStringWithComma(sum),
+                style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold))
           ],
         ),
       ),
@@ -352,8 +345,10 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(S.of(context).count, style: const TextStyle(fontSize: 18)),
-            Text(doubleToStringWithComma(count.toDouble()), style: const TextStyle(fontSize: 18))
+            Text(S.of(context).count,
+                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
+            Text(doubleToStringWithComma(count.toDouble()),
+                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
           ],
         ),
       ),

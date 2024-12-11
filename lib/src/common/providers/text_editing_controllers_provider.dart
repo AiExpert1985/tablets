@@ -9,7 +9,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   void updateControllers(Map<String, dynamic> properties) {
     final newState = {...state};
     properties.forEach((key, value) {
-      String? text = value is! String ? doubleToIntString(value) : value;
+      String? text = value is! String ? doubleToStringWithComma(value) : value;
       if (newState[key] != null) {
         newState[key].text = text;
       } else {
@@ -87,8 +87,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
       return false;
     }
     if (state[property][index][subProperty] is! TextEditingController) {
-      errorPrint(
-          'Invalid subController: state[$property][$index][$subProperty] is not a TextEditingController');
+      errorPrint('Invalid subController: state[$property][$index][$subProperty] is not a TextEditingController');
       return false;
     }
     return true;
@@ -99,7 +98,7 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
     final newState = {...state};
     Map<String, TextEditingController> subControllers = {};
     subProperties.forEach((key, value) {
-      String? text = value is! String ? value?.toString() : value;
+      String? text = value is! String ? doubleToStringWithComma(value) : value;
       subControllers[key] = TextEditingController(text: text);
     });
     if (!newState.containsKey(property)) {
@@ -155,7 +154,6 @@ class TextControllerNotifier extends StateNotifier<Map<String, dynamic>> {
   Map<String, dynamic> get data => state;
 }
 
-final textFieldsControllerProvider =
-    StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
+final textFieldsControllerProvider = StateNotifierProvider<TextControllerNotifier, Map<String, dynamic>>((ref) {
   return TextControllerNotifier();
 });
