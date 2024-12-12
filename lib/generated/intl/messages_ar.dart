@@ -110,8 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("العودة الى الصفحة الرئيسية"),
         "gps_x": MessageLookupByLibrary.simpleMessage("احداثيات الطول"),
         "gps_y": MessageLookupByLibrary.simpleMessage("احداثيات العرض"),
-        "greeting":
-            MessageLookupByLibrary.simpleMessage("مرحبا بك في نظام الواح"),
+        "greeting": MessageLookupByLibrary.simpleMessage(""),
         "hide_amount_as_text":
             MessageLookupByLibrary.simpleMessage("اخفاء حقل كتابة المبلغ"),
         "hide_customer_profit":

@@ -60,8 +60,10 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
 
   @override
   Widget build(BuildContext context) {
-    // Access the notifier using ref.read
-    _setGreeting(context, ref);
+    // if the greeting is the defautl, then change it
+    if (customizableGreeting == S.of(context).greeting) {
+      _setGreeting(context, ref);
+    }
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
