@@ -152,6 +152,7 @@ class SecondRow extends ConsumerWidget {
         FormInputField(
           dataType: constants.FieldDataType.num,
           name: numberKey,
+          controller: textEditingNotifier.getController(numberKey),
           label: S.of(context).transaction_number,
           initialValue: formDataNotifier.getProperty(numberKey),
           onChangedFn: (value) {
@@ -163,6 +164,7 @@ class SecondRow extends ConsumerWidget {
           initialValue: formDataNotifier.getProperty(discountKey),
           name: discountKey,
           dataType: constants.FieldDataType.num,
+          controller: textEditingNotifier.getController(discountKey),
           label: S.of(context).transaction_discount,
           onChangedFn: (value) {
             formDataNotifier.updateProperties({discountKey: value});
@@ -218,12 +220,14 @@ class ForthRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    // final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     return Row(
       children: [
         FormInputField(
           isRequired: false,
           dataType: constants.FieldDataType.text,
           name: notesKey,
+          // controller: textEditingNotifier.getController(notesKey),
           label: S.of(context).transaction_notes,
           initialValue: formDataNotifier.getProperty(notesKey),
           onChangedFn: (value) {

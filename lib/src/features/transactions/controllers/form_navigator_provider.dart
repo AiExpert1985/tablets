@@ -65,7 +65,6 @@ class FromNavigator {
       currentIndex = currentIndex! + 1;
       isReadOnly = true;
     }
-    tempPrint(currentIndex);
     return navigatorTransactions![currentIndex!];
   }
 
@@ -76,7 +75,6 @@ class FromNavigator {
       currentIndex = currentIndex! - 1;
       isReadOnly = true;
     }
-    tempPrint(currentIndex);
     return navigatorTransactions![currentIndex!];
   }
 
@@ -85,7 +83,6 @@ class FromNavigator {
     saveNewFormData();
     currentIndex = navigatorTransactions!.length - 1;
     isReadOnly = false;
-    tempPrint(currentIndex);
     return navigatorTransactions![currentIndex!];
   }
 
@@ -94,7 +91,6 @@ class FromNavigator {
     saveNewFormData();
     currentIndex = 0;
     isReadOnly = true;
-    tempPrint(currentIndex);
     return navigatorTransactions![currentIndex!];
   }
 

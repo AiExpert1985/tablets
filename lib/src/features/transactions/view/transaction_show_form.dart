@@ -111,6 +111,7 @@ class TransactionShowForm {
   // for example total price it updated by the item prices
   static void initializeTextFieldControllers(
       TextControllerNotifier textEditingNotifier, ItemFormData formDataNotifier) {
+    tempPrint('initialize text editors');
     // before creating new controllers, I dispose previous ones,
     // I previously disposed them on form close, but I did cause error say there are
     // controllers called after being disposed, so I moved the dispose here
@@ -135,8 +136,18 @@ class TransactionShowForm {
       // formData like itemWeight & totalItemAmounts doesn't comply to these two condistions
       final totalAmount = formDataNotifier.getProperty(totalAmountKey);
       final totalWeight = formDataNotifier.getProperty(totalWeightKey);
-      textEditingNotifier
-          .updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
+      // below 4 (number, discount, notes,) are need for form navigation, when loadng new data inside form, this is the way to update
+      // data seen by user
+      final number = formDataNotifier.getProperty(transactionNumberKey);
+      final discount = formDataNotifier.getProperty(discountKey);
+      final notes = formDataNotifier.getProperty(notesKey);
+      textEditingNotifier.updateControllers({
+        totalAmountKey: totalAmount,
+        totalWeightKey: totalWeight,
+        transactionNumberKey: number,
+        discountKey: discount,
+        notesKey: notes,
+      });
     }
   }
 

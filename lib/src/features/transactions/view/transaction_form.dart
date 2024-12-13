@@ -90,18 +90,21 @@ class TransactionForm extends ConsumerWidget {
     final screenController = ref.read(transactionScreenControllerProvider);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     final formNavigation = ref.read(formNavigatorProvider);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     formNavigation.initialize(transactionType, formDataNotifier.getProperty(dbRefKey));
-    tempPrint(formNavigation.navigatorTransactions?.length);
-    tempPrint('current index = ${formNavigation.currentIndex}');
+    tempPrint('Number of transactions = ${formNavigation.navigatorTransactions?.length}');
+    tempPrint('current navigator index = ${formNavigation.currentIndex}');
     tempPrint('isReadOnly = ${formNavigation.isReadOnly}');
-    for (var trans in formNavigation.navigatorTransactions ?? []) {
-      tempPrint(trans[transactionNumberKey]);
-    }
-    tempPrint(formDataNotifier.data);
+
+    tempPrint('transaction number in form: ${formDataNotifier.getProperty(numberKey)}');
+
+    tempPrint(
+        'transaction number in textEditor ${textEditingNotifier.getController(numberKey).text}');
     // final transactionTypeTranslated = translateScreenTextToDbText(context, transactionType);
     final backgroundColor = ref.watch(backgroundColorProvider);
     ref.watch(imagePickerProvider);
     ref.watch(transactionFormDataProvider);
+    ref.watch(textFieldsControllerProvider);
     final height = transactionFormDimenssions[transactionType]['height'];
     final width = transactionFormDimenssions[transactionType]['width'];
 
@@ -265,7 +268,6 @@ class TransactionForm extends ConsumerWidget {
     // }
     // final typeAdjustedItems = convertListofDyanmicToListofMaps(items);
     // formDataNotifier.initialize(initialData: {...navigatorFormData, itemsKey: typeAdjustedItems});
-    // tempPrint(formDataNotifier.data);
     // finally, load the new data into textEditors so that it is displayed int he form
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     TransactionShowForm.initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
