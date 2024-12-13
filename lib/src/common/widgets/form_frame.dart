@@ -18,24 +18,24 @@ class FormFrame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: backgroundColor,
-      alignment: Alignment.center,
-      insetPadding: const EdgeInsets.all(10),
-      scrollable: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
-      // title: Text(S.of(context).add_new_user),
-      content: Container(
+    return Center(
+      child: Container(
         padding: const EdgeInsets.all(10),
         width: width,
         height: height,
-        child: Form(
-          key: formKey,
-          child: fields,
+        child: Column(
+          children: [
+            Form(
+              key: formKey,
+              child: fields,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: buttons,
+            ),
+          ],
         ),
       ),
-
-      actions: [OverflowBar(alignment: MainAxisAlignment.center, children: buttons)],
     );
   }
 }

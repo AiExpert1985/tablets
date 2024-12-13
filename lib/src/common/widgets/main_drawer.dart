@@ -5,8 +5,6 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
-import 'package:tablets/src/common/functions/import_excel.dart';
-import 'package:tablets/src/common/functions/import_json.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/daily_backup_provider.dart';
@@ -71,7 +69,7 @@ void _initializeSettings(BuildContext context, WidgetRef ref) {
   if (settingsDataNotifier.data.isEmpty) {
     final settingsData = ref.read(settingsDbCacheProvider);
     if (settingsData.isEmpty) {
-      errorLog('try to access settingDbCache, while it is not loaded yet');
+      debugLog('try to access settingDbCache, while it is not loaded yet');
       failureUserMessage(context, 'try to access settingDbCache, while it is not loaded yet');
       return;
     }

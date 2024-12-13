@@ -35,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "approve": MessageLookupByLibrary.simpleMessage("موافق"),
         "average_invoice_closing_duration":
             MessageLookupByLibrary.simpleMessage("معدل الاغلاق"),
+        "back": MessageLookupByLibrary.simpleMessage("رجوع"),
         "basic_salary": MessageLookupByLibrary.simpleMessage("الراتب الاسمي"),
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),
@@ -337,6 +338,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("رواتب"),
         "transaction_expenditure_type":
             MessageLookupByLibrary.simpleMessage("نوع المصاريف"),
+        "transaction_group_selection":
+            MessageLookupByLibrary.simpleMessage("اختيار نوع التعامل"),
         "transaction_item_gift": MessageLookupByLibrary.simpleMessage("هدية"),
         "transaction_item_name":
             MessageLookupByLibrary.simpleMessage("اسم المادة"),
@@ -384,6 +387,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("هدية زبون"),
         "transaction_type_initial_credit":
             MessageLookupByLibrary.simpleMessage("رصيد اولي"),
+        "transaction_type_selection":
+            MessageLookupByLibrary.simpleMessage("اختيار القائمة"),
         "transaction_type_vender_invoice":
             MessageLookupByLibrary.simpleMessage("قائمة مجهز"),
         "transaction_type_vender_return":

@@ -2529,6 +2529,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Transaction group selection`
+  String get transaction_group_selection {
+    return Intl.message(
+      'Transaction group selection',
+      name: 'transaction_group_selection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Transaction type selection`
+  String get transaction_type_selection {
+    return Intl.message(
+      'Transaction type selection',
+      name: 'transaction_type_selection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get back {
+    return Intl.message(
+      'Back',
+      name: 'back',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/print_document.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
+import 'package:tablets/src/common/widgets/custome_appbar_for_back_return.dart';
+import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
+import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
@@ -23,6 +30,8 @@ import 'package:tablets/src/features/transactions/view/forms/invoice_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/receipt_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/statement_form.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
+import 'package:tablets/src/routers/go_router_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 
 class TransactionForm extends ConsumerWidget {
   const TransactionForm(this.isEditMode, this.transactionType, {super.key});
@@ -86,27 +95,29 @@ class TransactionForm extends ConsumerWidget {
     ref.watch(transactionFormDataProvider);
     final height = transactionFormDimenssions[transactionType]['height'];
     final width = transactionFormDimenssions[transactionType]['width'];
-    return FormFrame(
-      backgroundColor: backgroundColor,
-      formKey: formController.formKey,
-      // formKey: GlobalKey<FormState>(),
-      fields: Stack(children: [
-        _getFormWidget(context, transactionType),
-        Positioned(
-          top: 8, // Adjust the top position as needed
-          left: 8, // Adjust the left position as needed
-          child: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () {
-              Navigator.of(context).pop(); // Dismiss the dialog
-            },
-          ),
-        ),
-      ]),
-      buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier,
-          dbCache, screenController, formNavigation, ref),
-      width: width is double ? width : width.toDouble(),
-      height: height is double ? height : height.toDouble(),
+
+    return Scaffold(
+      appBar: buildArabicAppBar(context, () async {
+        await onReturn(context, ref, formImagesNotifier);
+        if (context.mounted) {
+          Navigator.pop(context);
+        }
+      }, () async {
+        await onReturn(context, ref, formImagesNotifier);
+        if (context.mounted) {
+          context.goNamed(AppRoute.home.name);
+        }
+      }),
+      body: FormFrame(
+        backgroundColor: backgroundColor,
+        formKey: formController.formKey,
+        // formKey: GlobalKey<FormState>(),
+        fields: _getFormWidget(context, transactionType),
+        buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier,
+            dbCache, screenController, formNavigation, ref),
+        width: width is double ? width : width.toDouble(),
+        height: height is double ? height : height.toDouble(),
+      ),
     );
   }
 
@@ -121,32 +132,25 @@ class TransactionForm extends ConsumerWidget {
     WidgetRef ref,
   ) {
     return [
-      // IconButton(
-      //   onPressed: () {
-      //     final formData = formNavigation.first();
-      //     _onNavigationPressed(formData, context, ref);
-      //   },
-      //   icon: const GoFirstIcon(),
-      // ),
-      // IconButton(
-      //   onPressed: () {
-      //     final formData = formNavigation.previous();
-      //     _onNavigationPressed(formData, context, ref);
-      //   },
-      //   icon: const GoPreviousIcon(),
-      // ),
-      // const SizedBox(width: 250),
-      // IconButton(
-      //   onPressed: () {
-      //     _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
-      //         transactionDbCache, screenController);
-      //   },
-      //   icon: const SaveIcon(),
-      // ),
       IconButton(
         onPressed: () {
-          TransactionShowForm.deleteTransaction(context, formDataNotifier, formImagesNotifier,
-              formController, transactionDbCache, screenController);
+          final formData = formNavigation.first();
+          _onNavigationPressed(formDataNotifier, formData, context, ref, formImagesNotifier);
+        },
+        icon: const GoFirstIcon(),
+      ),
+      IconButton(
+        onPressed: () {
+          final formData = formNavigation.previous();
+          _onNavigationPressed(formDataNotifier, formData, context, ref, formImagesNotifier);
+        },
+        icon: const GoPreviousIcon(),
+      ),
+      const SizedBox(width: 250),
+      IconButton(
+        onPressed: () {
+          deleteTransaction(context, formDataNotifier, formImagesNotifier, formController,
+              transactionDbCache, screenController);
         },
         icon: const DeleteIcon(),
       ),
@@ -159,70 +163,23 @@ class TransactionForm extends ConsumerWidget {
         },
         icon: formDataNotifier.getProperty(isPrintedKey) ? const PrintedIcon() : const PrintIcon(),
       ),
-      // const SizedBox(width: 250),
-      // IconButton(
-      //   onPressed: () {
-      //     final formData = formNavigation.next();
-      //     _onNavigationPressed(formData, context, ref);
-      //   },
-      //   icon: const GoNextIcon(),
-      // ),
-      // IconButton(
-      //   onPressed: () {
-      //     final formData = formNavigation.last();
-      //     _onNavigationPressed(formData, context, ref);
-      //   },
-      //   icon: const GoLastIcon(),
-      // ),
+      const SizedBox(width: 250),
+      IconButton(
+        onPressed: () {
+          final formData = formNavigation.next();
+          _onNavigationPressed(formDataNotifier, formData, context, ref, formImagesNotifier);
+        },
+        icon: const GoNextIcon(),
+      ),
+      IconButton(
+        onPressed: () {
+          final formData = formNavigation.last();
+          _onNavigationPressed(formDataNotifier, formData, context, ref, formImagesNotifier);
+        },
+        icon: const GoLastIcon(),
+      ),
     ];
   }
-
-  // void _onSavePressed(
-  //     BuildContext context,
-  //     WidgetRef ref,
-  //     ItemFormController formController,
-  //     ItemFormData formDataNotifier,
-  //     ImageSliderNotifier formImagesNotifier,
-  //     DbCache transactionDbCache,
-  //     TransactionScreenController screenController,
-  //     {bool keepDialog = false}) {
-  //   if (!formController.validateData()) return;
-  //   removeEmptyRows(formDataNotifier);
-  //   formController.submitData();
-  //   final formData = {...formDataNotifier.data};
-  //   final imageUrls = formImagesNotifier.saveChanges();
-  //   final itemData = {...formData, 'imageUrls': imageUrls};
-  //   final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
-  //   formController.saveItemToDb(context, transaction, isEditMode, keepDialogOpen: true);
-  //   // update the bdCache (database mirror) so that we don't need to fetch data from db
-  //   if (itemData[transactionDateKey] is DateTime) {
-  //     // in our form the data type usually is DateTime, but the date type in dbCache should be
-  //     // Timestamp, as to mirror the datatype of firebase
-  //     itemData[transactionDateKey] = firebase.Timestamp.fromDate(formData[transactionDateKey]);
-  //   }
-  //   final operationType = isEditMode ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
-  //   transactionDbCache.update(itemData, operationType);
-  //   // redo screenData calculations
-  //   if (context.mounted) {
-  //     screenController.setFeatureScreenData(context);
-  //   }
-  //   if (!keepDialog) {
-  //     Navigator.of(context).pop();
-  //   }
-
-  //   //// open new form when saving
-  //   // _showForm(context, ref, transactionType);
-  // }
-
-  // /// delete rows where there is not item name
-  // void removeEmptyRows(ItemFormData formDataNotifier) {
-  //   final items = formDataNotifier.getProperty(itemsKey);
-  //   for (var i = 0; i < items.length; i++) {
-  //     if (items[i]['name'] == '') {
-  //       formDataNotifier.removeSubProperties(itemsKey, i);
-  //     }
-  //   }
-  // }
 
   void _onPrintPressed(BuildContext context, WidgetRef ref, ItemFormData formDataNotifier) async {
     if (formDataNotifier.data[nameKey] == '') {
@@ -231,46 +188,146 @@ class TransactionForm extends ConsumerWidget {
     }
     // first we need to save changes done to the form, then print, because if we don't save,
     // then the debt of customer will not accurately calculated
-    TransactionShowForm.saveTransaction(context, ref, formDataNotifier.data, true);
+    saveTransaction(context, ref, formDataNotifier.data, true);
     printDocument(context, ref, formDataNotifier.data);
     formDataNotifier.updateProperties({isPrintedKey: true});
   }
 
-  // void _onNavigationPressed(
-  //   Map<String, dynamic> formData,
-  //   BuildContext context,
-  //   WidgetRef ref,
-  // ) {
-  //   final transaction = Transaction.fromMap(formData);
-  //   final transactionType = transaction.transactionType;
-  //   _showForm(context, ref, transactionType, transaction: transaction);
-  // }
+  void _onNavigationPressed(ItemFormData formDataNotifier, Map<String, dynamic> navigatorFormData,
+      BuildContext context, WidgetRef ref, ImageSliderNotifier formImagesNotifier) {
+    onReturn(context, ref, formImagesNotifier);
+    formDataNotifier.initialize(initialData: navigatorFormData);
+    Map<String, dynamic> newEmpyItem = {
+      itemCodeKey: null,
+      itemNameKey: '',
+      itemSellingPriceKey: 0,
+      itemWeightKey: 0,
+      itemSoldQuantityKey: 0,
+      itemGiftQuantityKey: 0,
+      itemTotalAmountKey: 0,
+      itemTotalWeightKey: 0,
+      itemStockQuantityKey: 0,
+      itemTotalProfitKey: 0,
+      itemSalesmanTotalCommissionKey: 0,
+    };
+    final currentItems = formDataNotifier.getProperty(itemsKey);
+    currentItems.add(newEmpyItem);
+    final typeAdjustedcurrentItems = convertListofDyanmicToListofMaps(currentItems);
+    formDataNotifier.updateProperties({itemsKey: typeAdjustedcurrentItems});
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    TransactionShowForm.initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
+  }
 
-  // void _showForm(
-  //   BuildContext context,
-  //   WidgetRef ref,
-  //   String transactionType, {
-  //   Transaction? transaction,
-  // }) {
-  //   Navigator.of(context).pop();
-  //   final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
-  //   final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-  //   final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-  //   final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
-  //   final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
-  //   final dbCache = ref.read(transactionDbCacheProvider.notifier);
-  //   backgroundColorNofifier.state = Colors.white;
-  //   TransactionShowForm.showForm(
-  //     context,
-  //     ref,
-  //     imagePickerNotifier,
-  //     formDataNotifier,
-  //     settingsDataNotifier,
-  //     textEditingNotifier,
-  //     backgroundColorNofifier,
-  //     formType: transactionType,
-  //     transactionDbCache: dbCache,
-  //     transaction: transaction,
-  //   );
-  // }
+  Future<void> onReturn(
+      BuildContext context, WidgetRef ref, ImageSliderNotifier formImagesNotifier) async {
+    formImagesNotifier.close();
+    final formController = ref.read(transactionFormControllerProvider);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final screenController = ref.read(transactionScreenControllerProvider);
+    final dbCache = ref.read(transactionDbCacheProvider.notifier);
+    if (context.mounted) {
+      bool isDeleted = false;
+      // if no transaction name, automatically delete the transaction
+      if (formDataNotifier.data[nameKey] == '') {
+        isDeleted = await deleteTransaction(context, formDataNotifier, formImagesNotifier,
+            formController, dbCache, screenController);
+      }
+      // if transaction was not deleted, we save its updates
+      if (!isDeleted) {
+        // we update item on close, unless the dialog were closed due to delete button
+        // we need to check, if transaction is in dbCache it means dialog was not close
+        // due to delete button, i.e. item was updated
+        final transDbRef = formDataNotifier.data[dbRefKey];
+        if (dbCache.getItemByDbRef(transDbRef).isNotEmpty) {
+          if (context.mounted) {
+            saveTransaction(context, ref, formDataNotifier.data, true);
+          }
+        }
+      }
+    }
+  }
+
+  static Future<bool> deleteTransaction(
+    BuildContext context,
+    ItemFormData formDataNotifier,
+    ImageSliderNotifier formImagesNotifier,
+    ItemFormController formController,
+    DbCache transactionDbCache,
+    TransactionScreenController screenController,
+  ) async {
+    final confirmation = await showDeleteConfirmationDialog(
+        context: context,
+        message:
+            '${translateDbTextToScreenText(context, formDataNotifier.data[transTypeKey])}  ${formDataNotifier.data[numberKey]}');
+    if (confirmation == null) return false;
+
+    final formData = formDataNotifier.data;
+
+    final imageUrls = formImagesNotifier.saveChanges();
+    final itemData = {...formData, 'imageUrls': imageUrls};
+    final transaction = Transaction.fromMap(itemData);
+    if (context.mounted) {
+      formController.deleteItemFromDb(context, transaction, keepDialogOpen: true);
+    }
+    // update the bdCache (database mirror) so that we don't need to fetch data from db
+    const operationType = DbCacheOperationTypes.delete;
+    transactionDbCache.update(itemData, operationType);
+    // redo screenData calculations
+    if (context.mounted) {
+      screenController.setFeatureScreenData(context);
+    }
+
+    return true;
+  }
+
+  static void saveTransaction(
+    BuildContext context,
+    WidgetRef ref,
+    Map<String, dynamic> formData,
+    bool isEditing,
+  ) {
+    final formController = ref.read(transactionFormControllerProvider);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    final screenController = ref.read(transactionScreenControllerProvider);
+    final dbCache = ref.read(transactionDbCacheProvider.notifier);
+    // if (isEditing) {
+    //   if (!formController.validateData()) return;
+    //   formController.submitData();
+    // }
+    Map<String, dynamic> formData = {...formDataNotifier.data};
+    // we need to remove empty rows (rows without item name, which is usally last one)
+    formData = removeEmptyRows(formData);
+    final imageUrls = formImagesNotifier.saveChanges();
+    final itemData = {...formData, 'imageUrls': imageUrls};
+    final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
+    formController.saveItemToDb(context, transaction, isEditing, keepDialogOpen: true);
+    // update the bdCache (database mirror) so that we don't need to fetch data from db
+    if (itemData[transactionDateKey] is DateTime) {
+      // in our form the data type usually is DateTime, but the date type in dbCache should be
+      // Timestamp, as to mirror the datatype of firebase
+      itemData[transactionDateKey] = firebase.Timestamp.fromDate(formData[transactionDateKey]);
+    }
+    final operationType = isEditing ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
+    dbCache.update(itemData, operationType);
+    // redo screenData calculations
+    if (context.mounted) {
+      screenController.setFeatureScreenData(context);
+    }
+  }
+
+  /// delete rows where there is not item name
+  static Map<String, dynamic> removeEmptyRows(Map<String, dynamic> formData) {
+    List<Map<String, dynamic>> items = [];
+    for (var i = 0; i < formData[itemsKey].length; i++) {
+      final item = formData[itemsKey][i];
+      // only add items with non empty name field
+      if (item[nameKey] != '') {
+        Map<String, dynamic> newItem = {};
+        item.forEach((key, value) => newItem[key] = value);
+        items.add(newItem);
+      }
+    }
+    return {...formData, itemsKey: items};
+  }
 }

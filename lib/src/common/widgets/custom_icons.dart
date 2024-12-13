@@ -31,6 +31,22 @@ class MainMenuIcon extends StatelessWidget {
   }
 }
 
+class HomeReturnIcon extends StatelessWidget {
+  const HomeReturnIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      const Icon(Icons.home, color: Colors.red),
+      HorizontalGap.s,
+      Text(
+        S.of(context).home_page,
+        style: const TextStyle(color: Colors.black, fontSize: 16),
+      )
+    ]);
+  }
+}
+
 class SaveIcon extends StatelessWidget {
   const SaveIcon({super.key});
 

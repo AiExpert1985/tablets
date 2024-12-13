@@ -246,5 +246,8 @@
     "last": "الاخير",
     "printed": "مطبوع",
     "no_name_print_error": "يجب ادخال الاسم",
-    "code": "الرمز"
+    "code": "الرمز",
+    "transaction_group_selection": "اختيار نوع التعامل",
+    "transaction_type_selection": "اختيار القائمة",
+    "back": "رجوع"
 }

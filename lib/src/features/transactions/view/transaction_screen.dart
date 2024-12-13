@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
@@ -249,10 +250,10 @@ class TransactionsFloatingButtons extends ConsumerWidget {
               onTap: () {
                 // reset background color when form is closed
                 ref.read(backgroundColorProvider.notifier).state = normalColor!;
-                showDialog(
-                  context: context,
-                  builder: (BuildContext ctx) => const TransactionGroupSelection(),
-                ).whenComplete(() {});
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context) => const TransactionGroupSelection()),
+                );
               },
             ),
           ],

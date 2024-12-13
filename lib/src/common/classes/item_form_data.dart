@@ -31,7 +31,8 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
     }
     final list = newState[property];
     if (list is! List<Map<String, dynamic>>) {
-      errorPrint('Property "$property" is not of type List');
+      errorPrint('Property "$property" is not of type List<Map<String, dynamic>>');
+
       return;
     }
     if (index == null) {
@@ -67,7 +68,9 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
       return false;
     }
     if (state[property] is! List<Map<String, dynamic>>) {
-      errorPrint('Invalid formData: state[$property] is not a List');
+      tempPrint(state[property]);
+      tempPrint(state[property].runtimeType);
+      errorPrint('Invalid formData: state[$property] is not a List<Map<String, dynamic>>');
       return false;
     }
     if (index < 0 || index >= state[property].length) {

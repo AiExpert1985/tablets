@@ -246,5 +246,8 @@
     "last": "Last",
     "printed": "Printed",
     "no_name_print_error": "You must enter name",
-    "code": "Code"
+    "code": "Code",
+    "transaction_group_selection": "Transaction group selection",
+    "transaction_type_selection": "Transaction type selection",
+    "back": "Back"
 }

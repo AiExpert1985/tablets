@@ -75,6 +75,7 @@ class _DateFilterDialog extends StatefulWidget {
     this.sumIndex,
     required this.useOriginalTransaction,
     required this.isCount,
+    // ignore: unused_element
     this.useAbsoluteNumbers = false,
   });
 
@@ -109,7 +110,8 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
             VerticalGap.xl,
             if (widget.dateIndex != null) _buildDateSelectionRow(),
             VerticalGap.l,
-            if (widget.dropdownIndex != null && widget.dropdownList != null) _buildMultiSelectDropdown(),
+            if (widget.dropdownIndex != null && widget.dropdownList != null)
+              _buildMultiSelectDropdown(),
           ],
         ),
       ),
@@ -138,13 +140,15 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         } catch (e) {
           return false;
         }
-        bool dateInRange = (startDate == null || date.isAfter(startDate!.subtract(const Duration(days: 1)))) &&
-            (endDate == null || date.isBefore(endDate!.add(const Duration(days: 1))));
+        bool dateInRange =
+            (startDate == null || date.isAfter(startDate!.subtract(const Duration(days: 1)))) &&
+                (endDate == null || date.isBefore(endDate!.add(const Duration(days: 1))));
 
         // Filter by dropdown selection if applicable
         if (widget.dropdownIndex != null && widget.dropdownList != null) {
           String dropdownValue = list[widget.dropdownIndex!].toString();
-          return dateInRange && (selectedDropdownValues.isEmpty || selectedDropdownValues.contains(dropdownValue));
+          return dateInRange &&
+              (selectedDropdownValues.isEmpty || selectedDropdownValues.contains(dropdownValue));
         }
         return dateInRange;
       }
@@ -199,7 +203,9 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       ),
       confirmText: Text(S.of(context).select),
       cancelText: Text(S.of(context).cancel),
-      items: widget.dropdownList!.map((String value) => MultiSelectItem<String>(value, value)).toList(),
+      items: widget.dropdownList!
+          .map((String value) => MultiSelectItem<String>(value, value))
+          .toList(),
       title: Text(widget.dropdownLabel ?? ''),
       buttonText: Text(
         widget.dropdownLabel ?? '',
@@ -216,7 +222,8 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     );
   }
 
-  Widget _buildDatePicker(String name, DateTime? initialValue, String labelText, ValueChanged<DateTime?> onChanged) {
+  Widget _buildDatePicker(
+      String name, DateTime? initialValue, String labelText, ValueChanged<DateTime?> onChanged) {
     return Expanded(
       child: FormBuilderDateTimePicker(
         textAlign: TextAlign.center,
@@ -252,7 +259,8 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           return SizedBox(
             width: widget.width / widget.titleList.length,
             child: Text(item,
-                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                style:
+                    const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
                 textAlign: TextAlign.center),
           );
         }).toList(),
@@ -302,8 +310,12 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           decoration: BoxDecoration(border: Border.all(width: 0.2)),
           width: widget.width / widget.titleList.length,
-          child: Text(item is String ? item : doubleToStringWithComma(item, isAbsoluteValue: widget.useAbsoluteNumbers),
-              textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+          child: Text(
+              item is String
+                  ? item
+                  : doubleToStringWithComma(item, isAbsoluteValue: widget.useAbsoluteNumbers),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
         );
       }).toList(),
     );
@@ -327,9 +339,11 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(S.of(context).total,
-                style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)),
+                style: const TextStyle(
+                    fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)),
             Text(doubleToStringWithComma(sum),
-                style: const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold))
+                style:
+                    const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold))
           ],
         ),
       ),
@@ -346,9 +360,11 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(S.of(context).count,
-                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
+                style: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
             Text(doubleToStringWithComma(count.toDouble()),
-                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
+                style:
+                    const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
           ],
         ),
       ),

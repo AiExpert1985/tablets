@@ -11,43 +11,47 @@ class FromNavigator {
   final ItemFormData _formDataNotifier;
   int? currentIndex;
   bool? isReadOnly;
-  List<Map<String, dynamic>>? transactionsOfSameType;
+  // navigatorTransactions represents all transactions of same type as the currently displayed one
+  List<Map<String, dynamic>>? navigatorTransactions;
 
   FromNavigator(
     this._dbCacheNotifier,
     this._formDataNotifier,
   );
 
+  /// during intitalization, we load all transactions of same type as the currently displayed on
+  /// and set the index to the displayed transaction
+  /// and make it read only (unless it is a new transaction)
   void initialize(String transactionType, String dbRef) {
     try {
       // first we copy transactions with same type
       List<Map<String, dynamic>> dbCacheData = _dbCacheNotifier.data;
-      transactionsOfSameType = dbCacheData.where((formData) {
+      navigatorTransactions = dbCacheData.where((formData) {
         return formData[transTypeKey] == transactionType;
       }).toList();
-      transactionsOfSameType!.sort((a, b) => a[numberKey].compareTo(b[numberKey]));
-      // and add empty form to the end (new form)
-      transactionsOfSameType!.add({});
+      navigatorTransactions!.sort((a, b) => a[numberKey].compareTo(b[numberKey]));
+      // // and add empty form to the end (new form)
+      // navigatorTransactions!.add({});
       // then search for dbRef, if found means user is editing new form so we use its inde
       // if not found means user creating new form, means index should point to last empty form
-      currentIndex = transactionsOfSameType!.length - 1;
-      for (int i = 0; i < transactionsOfSameType!.length; i++) {
-        if (transactionsOfSameType![i][dbRefKey] == dbRef) {
+      currentIndex = navigatorTransactions!.length - 1;
+      for (int i = 0; i < navigatorTransactions!.length; i++) {
+        if (navigatorTransactions![i][dbRefKey] == dbRef) {
           currentIndex = i;
         }
       }
       isReadOnly = false;
     } catch (e) {
       String message = 'Error during initializing FormNavigator';
-      errorLog(message);
+      debugLog(message);
       errorPrint(message);
     }
   }
 
   bool isValidRequest() {
-    if (currentIndex == null || transactionsOfSameType == null) {
+    if (currentIndex == null || navigatorTransactions == null) {
       String message = 'FormNavigator was not initialized';
-      errorLog(message);
+      debugLog(message);
       errorPrint(message);
       return false;
     }
@@ -56,12 +60,13 @@ class FromNavigator {
 
   Map<String, dynamic> next() {
     if (!isValidRequest()) return {};
-    if (currentIndex! < transactionsOfSameType!.length - 1) {
+    if ((currentIndex! + 1) < navigatorTransactions!.length - 1) {
       saveNewFormData();
       currentIndex = currentIndex! + 1;
       isReadOnly = true;
     }
-    return transactionsOfSameType![currentIndex!];
+    tempPrint(currentIndex);
+    return navigatorTransactions![currentIndex!];
   }
 
   Map<String, dynamic> previous() {
@@ -71,15 +76,18 @@ class FromNavigator {
       currentIndex = currentIndex! - 1;
       isReadOnly = true;
     }
-    return transactionsOfSameType![currentIndex!];
+    tempPrint(currentIndex);
+    return navigatorTransactions![currentIndex!];
   }
 
   Map<String, dynamic> last() {
     if (!isValidRequest()) return {};
     saveNewFormData();
-    currentIndex = transactionsOfSameType!.length - 1;
+    currentIndex = navigatorTransactions!.length - 1;
+    tempPrint(navigatorTransactions);
     isReadOnly = false;
-    return transactionsOfSameType![currentIndex!];
+    tempPrint(currentIndex);
+    return navigatorTransactions![currentIndex!];
   }
 
   Map<String, dynamic> first() {
@@ -87,7 +95,8 @@ class FromNavigator {
     saveNewFormData();
     currentIndex = 0;
     isReadOnly = true;
-    return transactionsOfSameType![currentIndex!];
+    tempPrint(currentIndex);
+    return navigatorTransactions![currentIndex!];
   }
 
   void allowEdit() {
@@ -97,13 +106,13 @@ class FromNavigator {
   void reset() {
     currentIndex = null;
     isReadOnly = null;
-    transactionsOfSameType = null;
+    navigatorTransactions = null;
   }
 
   void saveNewFormData() {
     if (!isValidRequest()) return;
-    if (currentIndex == transactionsOfSameType!.length - 1) {
-      transactionsOfSameType![currentIndex!] = _formDataNotifier.data;
+    if (currentIndex == navigatorTransactions!.length - 1) {
+      navigatorTransactions![currentIndex!] = _formDataNotifier.data;
     }
   }
 }

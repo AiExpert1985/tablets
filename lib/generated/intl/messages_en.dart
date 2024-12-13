@@ -35,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "average_invoice_closing_duration":
             MessageLookupByLibrary.simpleMessage(
                 "Average invoice closing duration"),
+        "back": MessageLookupByLibrary.simpleMessage("Back"),
         "basic_salary": MessageLookupByLibrary.simpleMessage("Basic salary"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "categories": MessageLookupByLibrary.simpleMessage("Categories"),
@@ -353,6 +354,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Salaries"),
         "transaction_expenditure_type":
             MessageLookupByLibrary.simpleMessage("Expendure type"),
+        "transaction_group_selection":
+            MessageLookupByLibrary.simpleMessage("Transaction group selection"),
         "transaction_item_gift": MessageLookupByLibrary.simpleMessage("Gift"),
         "transaction_item_name": MessageLookupByLibrary.simpleMessage("Item"),
         "transaction_item_price": MessageLookupByLibrary.simpleMessage("Price"),
@@ -398,6 +401,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_type_gifts": MessageLookupByLibrary.simpleMessage("Gifts"),
         "transaction_type_initial_credit":
             MessageLookupByLibrary.simpleMessage("Initial credit Items"),
+        "transaction_type_selection":
+            MessageLookupByLibrary.simpleMessage("Transaction type selection"),
         "transaction_type_vender_invoice":
             MessageLookupByLibrary.simpleMessage("Vender Invoice"),
         "transaction_type_vender_return":
