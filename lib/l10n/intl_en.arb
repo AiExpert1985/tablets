@@ -249,5 +249,6 @@
     "code": "Code",
     "transaction_group_selection": "Transaction group selection",
     "transaction_type_selection": "Transaction type selection",
-    "back": "Back"
+    "back": "Back",
+    "new_item": "New"
 }

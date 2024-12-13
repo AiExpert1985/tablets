@@ -196,6 +196,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "monthly_profit_report":
             MessageLookupByLibrary.simpleMessage("Monthly profit report"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "new_item": MessageLookupByLibrary.simpleMessage("New"),
         "next": MessageLookupByLibrary.simpleMessage("Next"),
         "no": MessageLookupByLibrary.simpleMessage("No"),
         "no_data_available":

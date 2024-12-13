@@ -249,5 +249,6 @@
     "code": "الرمز",
     "transaction_group_selection": "اختيار نوع التعامل",
     "transaction_type_selection": "اختيار القائمة",
-    "back": "رجوع"
+    "back": "رجوع",
+    "new_item": "جديد"
 }

@@ -151,6 +151,25 @@ class AddImageIcon extends StatelessWidget {
   }
 }
 
+class NewIemIcon extends StatelessWidget {
+  const NewIemIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(
+          Icons.add,
+          color: Colors.green,
+          size: 25,
+        ),
+        VerticalGap.s,
+        Text(S.of(context).new_item),
+      ],
+    );
+  }
+}
+
 class PrintIcon extends StatelessWidget {
   const PrintIcon({super.key});
 

@@ -19,6 +19,7 @@ import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
@@ -143,14 +144,16 @@ class TransactionForm extends ConsumerWidget {
       IconButton(
         onPressed: () {
           final formData = formNavigation.first();
-          _onNavigationPressed(formDataNotifier, formData, context, ref, formImagesNotifier);
+          _onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+              targetTransactionData: formData);
         },
         icon: const GoFirstIcon(),
       ),
       IconButton(
         onPressed: () {
           final formData = formNavigation.previous();
-          _onNavigationPressed(formDataNotifier, formData, context, ref, formImagesNotifier);
+          _onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+              targetTransactionData: formData);
         },
         icon: const GoPreviousIcon(),
       ),
@@ -171,18 +174,27 @@ class TransactionForm extends ConsumerWidget {
         },
         icon: formDataNotifier.getProperty(isPrintedKey) ? const PrintedIcon() : const PrintIcon(),
       ),
+      IconButton(
+        onPressed: () {
+          _onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+              isNewTransaction: true);
+        },
+        icon: const NewIemIcon(),
+      ),
       const SizedBox(width: 250),
       IconButton(
         onPressed: () {
           final formData = formNavigation.next();
-          _onNavigationPressed(formDataNotifier, formData, context, ref, formImagesNotifier);
+          _onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+              targetTransactionData: formData);
         },
         icon: const GoNextIcon(),
       ),
       IconButton(
         onPressed: () {
           final formData = formNavigation.last();
-          _onNavigationPressed(formDataNotifier, formData, context, ref, formImagesNotifier);
+          _onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+              targetTransactionData: formData);
         },
         icon: const GoLastIcon(),
       ),
@@ -201,32 +213,52 @@ class TransactionForm extends ConsumerWidget {
     formDataNotifier.updateProperties({isPrintedKey: true});
   }
 
-  void _onNavigationPressed(ItemFormData formDataNotifier, Map<String, dynamic> navigatorFormData,
-      BuildContext context, WidgetRef ref, ImageSliderNotifier formImagesNotifier) {
+  void _onNavigationPressed(ItemFormData formDataNotifier, BuildContext context, WidgetRef ref,
+      ImageSliderNotifier formImagesNotifier,
+      {Map<String, dynamic>? targetTransactionData, bool isNewTransaction = false}) {
     // this step to save currently displayed transacton before moving to the navigated one
     onReturn(context, ref, formImagesNotifier);
-    // now load the target transaction into the form
-
-    List items = navigatorFormData[itemsKey] ?? [];
-    if (items[items.length - 1][itemNameKey] != '') {
-      Map<String, dynamic> newEmpyItem = {
-        itemCodeKey: null,
-        itemNameKey: '',
-        itemSellingPriceKey: 0,
-        itemWeightKey: 0,
-        itemSoldQuantityKey: 0,
-        itemGiftQuantityKey: 0,
-        itemTotalAmountKey: 0,
-        itemTotalWeightKey: 0,
-        itemStockQuantityKey: 0,
-        itemTotalProfitKey: 0,
-        itemSalesmanTotalCommissionKey: 0,
-      };
-      items.add(newEmpyItem);
+    // now load the target transaction into the form, whether it is navigated or new transaction
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+    // note that navigatorFormData shouldn't be null if isNewTransaction is false
+    if (isNewTransaction) {
+      TransactionShowForm.initializeFormData(
+          context, formDataNotifier, settingsDataNotifier, transactionType,
+          transactionDbCache: transactionDbCache);
+      // save the new transaction
+      saveTransaction(context, ref, formDataNotifier.data, false);
+    } else {
+      if (targetTransactionData == null) {
+        errorPrint('Navigating to a null transaction');
+        return;
+      }
+      final targetTransaction = transactionDbCache.getItemByDbRef(targetTransactionData[dbRefKey]);
+      TransactionShowForm.initializeFormData(
+          context, formDataNotifier, settingsDataNotifier, transactionType,
+          transaction: Transaction.fromMap(targetTransaction));
     }
-    final typeAdjustedItems = convertListofDyanmicToListofMaps(items);
-    formDataNotifier.initialize(initialData: {...navigatorFormData, itemsKey: typeAdjustedItems});
-    tempPrint(formDataNotifier.data);
+
+    // List items = navigatorFormData[itemsKey] ?? [];
+    // if (items[items.length - 1][itemNameKey] != '') {
+    //   Map<String, dynamic> newEmpyItem = {
+    //     itemCodeKey: null,
+    //     itemNameKey: '',
+    //     itemSellingPriceKey: 0,
+    //     itemWeightKey: 0,
+    //     itemSoldQuantityKey: 0,
+    //     itemGiftQuantityKey: 0,
+    //     itemTotalAmountKey: 0,
+    //     itemTotalWeightKey: 0,
+    //     itemStockQuantityKey: 0,
+    //     itemTotalProfitKey: 0,
+    //     itemSalesmanTotalCommissionKey: 0,
+    //   };
+    //   items.add(newEmpyItem);
+    // }
+    // final typeAdjustedItems = convertListofDyanmicToListofMaps(items);
+    // formDataNotifier.initialize(initialData: {...navigatorFormData, itemsKey: typeAdjustedItems});
+    // tempPrint(formDataNotifier.data);
     // finally, load the new data into textEditors so that it is displayed int he form
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     TransactionShowForm.initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
