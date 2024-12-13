@@ -160,8 +160,9 @@ class TransactionForm extends ConsumerWidget {
       const SizedBox(width: 250),
       IconButton(
         onPressed: () {
-          deleteTransaction(context, formDataNotifier, formImagesNotifier, formController,
-              transactionDbCache, screenController);
+          deleteTransaction(context, ref, formDataNotifier, formImagesNotifier, formController,
+              transactionDbCache, screenController,
+              formNavigation: formNavigation);
         },
         icon: const DeleteIcon(),
       ),
@@ -213,18 +214,24 @@ class TransactionForm extends ConsumerWidget {
     formDataNotifier.updateProperties({isPrintedKey: true});
   }
 
-  void _onNavigationPressed(ItemFormData formDataNotifier, BuildContext context, WidgetRef ref,
-      ImageSliderNotifier formImagesNotifier,
-      {Map<String, dynamic>? targetTransactionData, bool isNewTransaction = false}) {
-    // this step to save currently displayed transacton before moving to the navigated one
-    onReturn(context, ref, formImagesNotifier);
+  static void _onNavigationPressed(ItemFormData formDataNotifier, BuildContext context,
+      WidgetRef ref, ImageSliderNotifier formImagesNotifier,
+      {Map<String, dynamic>? targetTransactionData,
+      bool isNewTransaction = false,
+      bool isDeleting = false}) {
+    // if we are navigating or creating new transaction, we save previous one, but if we are comming from
+    // delete button inside the form, then we don't save
+    if (!isDeleting) {
+      // this step to save currently displayed transacton before moving to the navigated one
+      onReturn(context, ref, formImagesNotifier);
+    }
     // now load the target transaction into the form, whether it is navigated or new transaction
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
     // note that navigatorFormData shouldn't be null if isNewTransaction is false
     if (isNewTransaction) {
-      TransactionShowForm.initializeFormData(
-          context, formDataNotifier, settingsDataNotifier, transactionType,
+      TransactionShowForm.initializeFormData(context, formDataNotifier, settingsDataNotifier,
+          formDataNotifier.getProperty(transactionTypeKey),
           transactionDbCache: transactionDbCache);
       // save the new transaction
       saveTransaction(context, ref, formDataNotifier.data, false);
@@ -234,8 +241,8 @@ class TransactionForm extends ConsumerWidget {
         return;
       }
       final targetTransaction = transactionDbCache.getItemByDbRef(targetTransactionData[dbRefKey]);
-      TransactionShowForm.initializeFormData(
-          context, formDataNotifier, settingsDataNotifier, transactionType,
+      TransactionShowForm.initializeFormData(context, formDataNotifier, settingsDataNotifier,
+          formDataNotifier.getProperty(transactionTypeKey),
           transaction: Transaction.fromMap(targetTransaction));
     }
 
@@ -264,7 +271,7 @@ class TransactionForm extends ConsumerWidget {
     TransactionShowForm.initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
   }
 
-  Future<void> onReturn(
+  static Future<void> onReturn(
       BuildContext context, WidgetRef ref, ImageSliderNotifier formImagesNotifier) async {
     formImagesNotifier.close();
     final formController = ref.read(transactionFormControllerProvider);
@@ -275,7 +282,7 @@ class TransactionForm extends ConsumerWidget {
       bool isDeleted = false;
       // if no transaction name, automatically delete the transaction
       if (formDataNotifier.data[nameKey] == '') {
-        isDeleted = await deleteTransaction(context, formDataNotifier, formImagesNotifier,
+        isDeleted = await deleteTransaction(context, ref, formDataNotifier, formImagesNotifier,
             formController, dbCache, screenController);
       }
       // if transaction was not deleted, we save its updates
@@ -293,14 +300,16 @@ class TransactionForm extends ConsumerWidget {
     }
   }
 
+  /// when delete transaction, we stay in the form but navigate to previous transaction
   static Future<bool> deleteTransaction(
-    BuildContext context,
-    ItemFormData formDataNotifier,
-    ImageSliderNotifier formImagesNotifier,
-    ItemFormController formController,
-    DbCache transactionDbCache,
-    TransactionScreenController screenController,
-  ) async {
+      BuildContext context,
+      WidgetRef ref,
+      ItemFormData formDataNotifier,
+      ImageSliderNotifier formImagesNotifier,
+      ItemFormController formController,
+      DbCache transactionDbCache,
+      TransactionScreenController screenController,
+      {FromNavigator? formNavigation}) async {
     final confirmation = await showDeleteConfirmationDialog(
         context: context,
         message:
@@ -322,7 +331,18 @@ class TransactionForm extends ConsumerWidget {
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
     }
-
+    // move point to previous transaction
+    if (formNavigation != null && context.mounted) {
+      final targetTransactionData = formNavigation.previous();
+      _onNavigationPressed(
+        formDataNotifier,
+        context,
+        ref,
+        formImagesNotifier,
+        targetTransactionData: targetTransactionData,
+        isDeleting: true,
+      );
+    }
     return true;
   }
 

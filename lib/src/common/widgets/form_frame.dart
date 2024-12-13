@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 
 class FormFrame extends StatelessWidget {
   const FormFrame(
@@ -8,7 +9,7 @@ class FormFrame extends StatelessWidget {
       required this.fields,
       required this.buttons,
       this.width = 800,
-      this.height = 800});
+      this.height = 900});
   final Color? backgroundColor;
   final Widget fields;
   final List<Widget> buttons;
@@ -29,6 +30,7 @@ class FormFrame extends StatelessWidget {
               key: formKey,
               child: fields,
             ),
+            VerticalGap.xl,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: buttons,
