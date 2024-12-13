@@ -68,8 +68,6 @@ class ItemFormData extends StateNotifier<Map<String, dynamic>> {
       return false;
     }
     if (state[property] is! List<Map<String, dynamic>>) {
-      tempPrint(state[property]);
-      tempPrint(state[property].runtimeType);
       errorPrint('Invalid formData: state[$property] is not a List<Map<String, dynamic>>');
       return false;
     }

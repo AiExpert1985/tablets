@@ -89,6 +89,14 @@ class TransactionForm extends ConsumerWidget {
     final screenController = ref.read(transactionScreenControllerProvider);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     final formNavigation = ref.read(formNavigatorProvider);
+    formNavigation.initialize(transactionType, formDataNotifier.getProperty(dbRefKey));
+    tempPrint(formNavigation.navigatorTransactions?.length);
+    tempPrint('current index = ${formNavigation.currentIndex}');
+    tempPrint('isReadOnly = ${formNavigation.isReadOnly}');
+    for (var trans in formNavigation.navigatorTransactions ?? []) {
+      tempPrint(trans[transactionNumberKey]);
+    }
+    tempPrint(formDataNotifier.data);
     // final transactionTypeTranslated = translateScreenTextToDbText(context, transactionType);
     final backgroundColor = ref.watch(backgroundColorProvider);
     ref.watch(imagePickerProvider);
@@ -195,25 +203,31 @@ class TransactionForm extends ConsumerWidget {
 
   void _onNavigationPressed(ItemFormData formDataNotifier, Map<String, dynamic> navigatorFormData,
       BuildContext context, WidgetRef ref, ImageSliderNotifier formImagesNotifier) {
+    // this step to save currently displayed transacton before moving to the navigated one
     onReturn(context, ref, formImagesNotifier);
-    formDataNotifier.initialize(initialData: navigatorFormData);
-    Map<String, dynamic> newEmpyItem = {
-      itemCodeKey: null,
-      itemNameKey: '',
-      itemSellingPriceKey: 0,
-      itemWeightKey: 0,
-      itemSoldQuantityKey: 0,
-      itemGiftQuantityKey: 0,
-      itemTotalAmountKey: 0,
-      itemTotalWeightKey: 0,
-      itemStockQuantityKey: 0,
-      itemTotalProfitKey: 0,
-      itemSalesmanTotalCommissionKey: 0,
-    };
-    final currentItems = formDataNotifier.getProperty(itemsKey);
-    currentItems.add(newEmpyItem);
-    final typeAdjustedcurrentItems = convertListofDyanmicToListofMaps(currentItems);
-    formDataNotifier.updateProperties({itemsKey: typeAdjustedcurrentItems});
+    // now load the target transaction into the form
+
+    List items = navigatorFormData[itemsKey] ?? [];
+    if (items[items.length - 1][itemNameKey] != '') {
+      Map<String, dynamic> newEmpyItem = {
+        itemCodeKey: null,
+        itemNameKey: '',
+        itemSellingPriceKey: 0,
+        itemWeightKey: 0,
+        itemSoldQuantityKey: 0,
+        itemGiftQuantityKey: 0,
+        itemTotalAmountKey: 0,
+        itemTotalWeightKey: 0,
+        itemStockQuantityKey: 0,
+        itemTotalProfitKey: 0,
+        itemSalesmanTotalCommissionKey: 0,
+      };
+      items.add(newEmpyItem);
+    }
+    final typeAdjustedItems = convertListofDyanmicToListofMaps(items);
+    formDataNotifier.initialize(initialData: {...navigatorFormData, itemsKey: typeAdjustedItems});
+    tempPrint(formDataNotifier.data);
+    // finally, load the new data into textEditors so that it is displayed int he form
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     TransactionShowForm.initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
   }

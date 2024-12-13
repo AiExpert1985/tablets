@@ -60,7 +60,7 @@ class FromNavigator {
 
   Map<String, dynamic> next() {
     if (!isValidRequest()) return {};
-    if ((currentIndex! + 1) < navigatorTransactions!.length - 1) {
+    if (currentIndex! < navigatorTransactions!.length - 1) {
       saveNewFormData();
       currentIndex = currentIndex! + 1;
       isReadOnly = true;
@@ -84,7 +84,6 @@ class FromNavigator {
     if (!isValidRequest()) return {};
     saveNewFormData();
     currentIndex = navigatorTransactions!.length - 1;
-    tempPrint(navigatorTransactions);
     isReadOnly = false;
     tempPrint(currentIndex);
     return navigatorTransactions![currentIndex!];

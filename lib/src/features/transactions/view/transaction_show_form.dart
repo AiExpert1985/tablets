@@ -9,7 +9,6 @@ import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
-import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
@@ -49,8 +48,6 @@ class TransactionShowForm {
       TransactionForm.saveTransaction(context, ref, formDataNotifier.data, false);
     }
 
-    final formNavigation = ref.read(formNavigatorProvider);
-    formNavigation.initialize(transactionType, formDataNotifier.getProperty(dbRefKey));
     Navigator.push(
       context,
       MaterialPageRoute(
