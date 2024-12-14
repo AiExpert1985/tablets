@@ -35,8 +35,6 @@ class ExpenditureForm extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildFormTitle(title),
-            VerticalGap.xl,
             _buildFirstRow(context, formDataNotifier),
             VerticalGap.l,
             _buildSecondRow(context, formDataNotifier, textEditingNotifier),

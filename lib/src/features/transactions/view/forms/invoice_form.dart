@@ -45,8 +45,6 @@ class InvoiceForm extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildFormTitle(title),
-            VerticalGap.xl,
             FirstRow(isVendor, transactionType),
             VerticalGap.m,
             SecondRow(transactionType),

@@ -20,6 +20,7 @@ import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
+import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
@@ -113,6 +114,7 @@ class TransactionForm extends ConsumerWidget {
         }
       }),
       body: FormFrame(
+        title: buildFormTitle(translateDbTextToScreenText(context, transactionType)),
         // backgroundColor: backgroundColor,
         // formKey: formController.formKey,
         // formKey: GlobalKey<FormState>(),

@@ -45,8 +45,6 @@ class ReceiptForm extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            buildFormTitle(title),
-            VerticalGap.xl,
             _buildFirstRow(
                 context, formDataNotifier, counterPartyDbCache, salesmanDbCache, isVendor),
             VerticalGap.l,
