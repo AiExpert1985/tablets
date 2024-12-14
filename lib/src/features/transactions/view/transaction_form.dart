@@ -14,6 +14,7 @@ import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/custome_appbar_for_back_return.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
@@ -112,16 +113,23 @@ class TransactionForm extends ConsumerWidget {
         onReturn(context, ref, formImagesNotifier);
         Navigator.pop(context);
       }),
-      body: FormFrame(
-        title: buildFormTitle(translateDbTextToScreenText(context, transactionType)),
-        // backgroundColor: backgroundColor,
-        // formKey: formController.formKey,
-        // formKey: GlobalKey<FormState>(),
-        fields: _getFormWidget(context, transactionType),
-        buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier,
-            dbCache, screenController, formNavigation, ref),
-        width: width is double ? width : width.toDouble(),
-        height: height is double ? height : height.toDouble(),
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const NavigationButtons(),
+          FormFrame(
+            title: buildFormTitle(translateDbTextToScreenText(context, transactionType)),
+            // backgroundColor: backgroundColor,
+            // formKey: formController.formKey,
+            // formKey: GlobalKey<FormState>(),
+            fields: _getFormWidget(context, transactionType),
+            buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier,
+                dbCache, screenController, formNavigation, ref),
+            width: width is double ? width : width.toDouble(),
+            height: height is double ? height : height.toDouble(),
+          ),
+          const CustomerDebtReview(),
+        ],
       ),
     );
   }
@@ -137,25 +145,6 @@ class TransactionForm extends ConsumerWidget {
     WidgetRef ref,
   ) {
     return [
-      IconButton(
-        onPressed: () {
-          final formData = formNavigation.first();
-          formNavigation.isReadOnly = true;
-          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
-              targetTransactionData: formData);
-        },
-        icon: const GoFirstIcon(),
-      ),
-      IconButton(
-        onPressed: () {
-          final formData = formNavigation.previous();
-          formNavigation.isReadOnly = true;
-          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
-              targetTransactionData: formData);
-        },
-        icon: const GoPreviousIcon(),
-      ),
-      const SizedBox(width: 175),
       IconButton(
         onPressed: () {
           formNavigation.isReadOnly = false;
@@ -200,27 +189,6 @@ class TransactionForm extends ConsumerWidget {
               targetTransactionData: formData);
         },
         icon: formDataNotifier.getProperty(isPrintedKey) ? const PrintedIcon() : const PrintIcon(),
-      ),
-
-      const SizedBox(width: 175),
-      IconButton(
-        onPressed: () {
-          formNavigation.isReadOnly = true;
-          final formData = formNavigation.next();
-
-          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
-              targetTransactionData: formData);
-        },
-        icon: const GoNextIcon(),
-      ),
-      IconButton(
-        onPressed: () {
-          final formData = formNavigation.last();
-          formNavigation.isReadOnly = true;
-          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
-              targetTransactionData: formData);
-        },
-        icon: const GoLastIcon(),
       ),
     ];
   }
@@ -401,5 +369,130 @@ class TransactionForm extends ConsumerWidget {
       }
     }
     return {...formData, itemsKey: items};
+  }
+}
+
+class CustomerDebtReview extends ConsumerWidget {
+  const CustomerDebtReview({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: const EdgeInsets.only(left: 20, bottom: 40),
+      child: const Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          ReviewRow('تاريخ اخر وصل', '1/1/2001'),
+          VerticalGap.l,
+          ReviewRow('الدين الكلي', '1000000'),
+          VerticalGap.l,
+          ReviewRow('الدين المستحق', '500000', isWarning: true)
+        ],
+      ),
+    );
+  }
+}
+
+class ReviewRow extends ConsumerWidget {
+  const ReviewRow(this.title, this.content, {this.isWarning = false, super.key});
+  final String title;
+  final String content;
+  final bool isWarning;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Row(
+      children: [
+        Container(
+            width: 150,
+            decoration: BoxDecoration(
+                color: isWarning ? Colors.red : Colors.blueGrey,
+                border: Border.all(width: 0.5)), // R
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            child: Center(
+              child: Text(
+                title,
+                style:
+                    const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            )),
+        Container(
+            width: 150,
+            decoration: BoxDecoration(
+                color: Colors.white, border: Border.all(width: 0.5)), // Rounded corners,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            child: Center(
+              child: Text(
+                content,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            )),
+      ],
+    );
+  }
+}
+
+class NavigationButtons extends ConsumerWidget {
+  const NavigationButtons({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    final formNavigation = ref.read(formNavigatorProvider);
+    return Container(
+      padding: const EdgeInsets.only(right: 20, bottom: 40),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                onPressed: () {
+                  final formData = formNavigation.first();
+                  formNavigation.isReadOnly = true;
+                  TransactionForm.onNavigationPressed(
+                      formDataNotifier, context, ref, formImagesNotifier, formNavigation,
+                      targetTransactionData: formData);
+                },
+                icon: const GoFirstIcon(),
+              ),
+              IconButton(
+                onPressed: () {
+                  final formData = formNavigation.previous();
+                  formNavigation.isReadOnly = true;
+                  TransactionForm.onNavigationPressed(
+                      formDataNotifier, context, ref, formImagesNotifier, formNavigation,
+                      targetTransactionData: formData);
+                },
+                icon: const GoPreviousIcon(),
+              ),
+              IconButton(
+                onPressed: () {
+                  formNavigation.isReadOnly = true;
+                  final formData = formNavigation.next();
+
+                  TransactionForm.onNavigationPressed(
+                      formDataNotifier, context, ref, formImagesNotifier, formNavigation,
+                      targetTransactionData: formData);
+                },
+                icon: const GoNextIcon(),
+              ),
+              IconButton(
+                onPressed: () {
+                  final formData = formNavigation.last();
+                  formNavigation.isReadOnly = true;
+                  TransactionForm.onNavigationPressed(
+                      formDataNotifier, context, ref, formImagesNotifier, formNavigation,
+                      targetTransactionData: formData);
+                },
+                icon: const GoLastIcon(),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }

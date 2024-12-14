@@ -32,7 +32,7 @@ class FormFrame extends StatelessWidget {
             Container(width: width, padding: const EdgeInsets.all(0), child: fields),
             Container(
               padding: const EdgeInsets.all(0),
-              width: 800,
+              width: 300,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: buttons,
