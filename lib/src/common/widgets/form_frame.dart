@@ -22,17 +22,21 @@ class FormFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        padding: const EdgeInsets.all(10),
-        width: width,
+        padding: const EdgeInsets.all(0),
+        width: 1000,
         // height: height,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            title ?? const SizedBox.shrink(),
-            fields,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: buttons,
+            title ?? const SizedBox(height: 100),
+            Container(width: width, padding: const EdgeInsets.all(0), child: fields),
+            Container(
+              padding: const EdgeInsets.all(0),
+              width: 800,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: buttons,
+              ),
             ),
           ],
         ),

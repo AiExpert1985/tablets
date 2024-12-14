@@ -37,12 +37,28 @@ class HomeReturnIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      const Icon(Icons.home, color: Colors.red),
+      const Icon(Icons.home, color: Colors.red, size: 30),
       HorizontalGap.s,
       Text(
         S.of(context).home_page,
-        style: const TextStyle(color: Colors.black, fontSize: 16),
+        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
       )
+    ]);
+  }
+}
+
+class ScreenBackIcon extends StatelessWidget {
+  const ScreenBackIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      Text(
+        S.of(context).back,
+        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+      ),
+      HorizontalGap.s,
+      const Icon(Icons.arrow_forward_ios_outlined, color: Colors.black, size: 30)
     ]);
   }
 }

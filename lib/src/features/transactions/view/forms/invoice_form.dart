@@ -18,6 +18,7 @@ import 'package:tablets/src/features/customers/repository/customer_db_cache_prov
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
+import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_utils_controller.dart';
 import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
@@ -78,9 +79,11 @@ class FirstRow extends ConsumerWidget {
     final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
     final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
     final customerScreenController = ref.read(customerScreenControllerProvider);
+    final formNavigator = ref.read(formNavigatorProvider);
     return Row(
       children: [
         DropDownWithSearchFormField(
+          isReadOnly: formNavigator.isReadOnly,
           label: isVendor ? S.of(context).vendor : S.of(context).customer,
           initialValue: formDataNotifier.getProperty(nameKey),
           dbCache: dbCache,
@@ -112,6 +115,7 @@ class FirstRow extends ConsumerWidget {
         if (!isVendor) HorizontalGap.l,
         if (!isVendor)
           DropDownWithSearchFormField(
+            isReadOnly: formNavigator.isReadOnly,
             label: S.of(context).transaction_salesman,
             initialValue: formDataNotifier.getProperty(salesmanKey),
             dbCache: salesmanDbCache,
@@ -122,6 +126,7 @@ class FirstRow extends ConsumerWidget {
           ),
         HorizontalGap.l,
         FormDatePickerField(
+          isReadOnly: formNavigator.isReadOnly,
           initialValue: formDataNotifier.getProperty(dateKey) is Timestamp
               ? formDataNotifier.getProperty(dateKey).toDate()
               : formDataNotifier.getProperty(dateKey),
@@ -144,9 +149,12 @@ class SecondRow extends ConsumerWidget {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final transactionUtils = ref.read(transactionUtilsControllerProvider);
+    final formNavigator = ref.read(formNavigatorProvider);
     return Row(
       children: [
         FormInputField(
+          isReadOnly: formNavigator.isReadOnly,
+          isDisabled: formNavigator.isReadOnly,
           dataType: constants.FieldDataType.num,
           name: numberKey,
           controller: textEditingNotifier.getController(numberKey),
@@ -158,6 +166,8 @@ class SecondRow extends ConsumerWidget {
         ),
         HorizontalGap.l,
         FormInputField(
+          isReadOnly: formNavigator.isReadOnly,
+          isDisabled: formNavigator.isReadOnly,
           initialValue: formDataNotifier.getProperty(discountKey),
           name: discountKey,
           dataType: constants.FieldDataType.num,
@@ -183,6 +193,7 @@ class SecondRow extends ConsumerWidget {
         ),
         HorizontalGap.l,
         DropDownListFormField(
+          isReadOnly: formNavigator.isReadOnly,
           initialValue: formDataNotifier.getProperty(currencyKey),
           itemList: [
             S.of(context).transaction_payment_Dinar,
@@ -196,6 +207,7 @@ class SecondRow extends ConsumerWidget {
         ),
         HorizontalGap.l,
         DropDownListFormField(
+          isReadOnly: formNavigator.isReadOnly,
           initialValue: formDataNotifier.getProperty(paymentTypeKey),
           itemList: [
             S.of(context).transaction_payment_cash,
@@ -217,10 +229,13 @@ class ForthRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final formNavigator = ref.read(formNavigatorProvider);
     // final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     return Row(
       children: [
         FormInputField(
+          isReadOnly: formNavigator.isReadOnly,
+          isDisabled: formNavigator.isReadOnly,
           isRequired: false,
           dataType: constants.FieldDataType.text,
           name: notesKey,
@@ -244,11 +259,13 @@ class FifthRow extends ConsumerWidget {
     final hideTransactionAmountAsText =
         settingsController.getProperty(hideTransactionAmountAsTextKey);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final formNavigator = ref.read(formNavigatorProvider);
     return Visibility(
       visible: !hideTransactionAmountAsText,
       child: Row(
         children: [
           FormInputField(
+            isReadOnly: formNavigator.isReadOnly,
             isRequired: false,
             dataType: constants.FieldDataType.text,
             name: totalAsTextKey,
@@ -275,6 +292,7 @@ class TotalsRow extends ConsumerWidget {
     final backgroundColorNotifier = ref.read(backgroundColorProvider.notifier);
     // final customerScreenData = ref.read(customerScreenDataProvider);
     final transactionUtils = ref.read(transactionUtilsControllerProvider);
+    final formNavigator = ref.read(formNavigatorProvider);
     return SizedBox(
         width: customerInvoiceFormWidth * 0.6,
         child: Row(
@@ -282,6 +300,7 @@ class TotalsRow extends ConsumerWidget {
             FormInputField(
               controller: textEditingNotifier.getController(totalAmountKey),
               isReadOnly: true,
+              isDisabled: formNavigator.isReadOnly,
               dataType: constants.FieldDataType.num,
               label: S.of(context).invoice_total_price,
               name: totalAmountKey,
@@ -308,6 +327,7 @@ class TotalsRow extends ConsumerWidget {
             FormInputField(
               controller: textEditingNotifier.getController(totalWeightKey),
               isReadOnly: true,
+              isDisabled: formNavigator.isReadOnly,
               dataType: constants.FieldDataType.num,
               label: S.of(context).invoice_total_weight,
               name: totalWeightKey,

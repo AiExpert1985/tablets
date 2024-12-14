@@ -12,6 +12,7 @@ import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
+import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
@@ -283,6 +284,8 @@ class FastAccessButton extends ConsumerWidget {
     final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+    final fromNavigator = ref.read(formNavigatorProvider);
+    fromNavigator.isReadOnly = false;
 
     return ElevatedButton(
       style: ElevatedButton.styleFrom(

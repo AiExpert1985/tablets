@@ -16,6 +16,7 @@ class FormInputField extends ConsumerWidget {
     this.isRequired = true,
     this.hideBorders = false,
     this.isReadOnly = false,
+    this.isDisabled = false,
     required this.dataType,
     this.controller,
     required this.name,
@@ -38,6 +39,7 @@ class FormInputField extends ConsumerWidget {
   // I mainly use controller to reflect changes caused by other fields
   // for example when an adjacent dropdown is select, this field is changed
   final TextEditingController? controller;
+  final bool isDisabled;
   final String name; // used by the widget, not used by me
 
   @override
@@ -58,10 +60,11 @@ class FormInputField extends ConsumerWidget {
               ]
             : null,
         readOnly: isReadOnly,
+        enabled: !isDisabled,
         controller: controller,
         // enabled: !isReadOnly,
         textAlign: TextAlign.center,
-        style: TextStyle(color: textColor, fontSize: fontSize, fontWeight: FontWeight.w500),
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         name: name,
         decoration: utils.formFieldDecoration(label: label, hideBorders: hideBorders),
         onChanged: _onChanged,

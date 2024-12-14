@@ -100,19 +100,16 @@ class TransactionForm extends ConsumerWidget {
     ref.watch(textFieldsControllerProvider);
     final height = transactionFormDimenssions[transactionType]['height'];
     final width = transactionFormDimenssions[transactionType]['width'];
-    tempPrint(formNavigation.isReadOnly);
 
     return Scaffold(
       appBar: buildArabicAppBar(context, () async {
-        await onReturn(context, ref, formImagesNotifier);
-        if (context.mounted) {
-          Navigator.pop(context);
-        }
+        onReturn(context, ref, formImagesNotifier);
+        Navigator.pop(context);
       }, () async {
-        await onReturn(context, ref, formImagesNotifier);
-        if (context.mounted) {
-          context.goNamed(AppRoute.home.name);
-        }
+        onReturn(context, ref, formImagesNotifier);
+        Navigator.pop(context);
+        context.goNamed(AppRoute.home.name);
+        tempPrint('navigated');
       }),
       body: FormFrame(
         title: buildFormTitle(translateDbTextToScreenText(context, transactionType)),
@@ -157,7 +154,7 @@ class TransactionForm extends ConsumerWidget {
         },
         icon: const GoPreviousIcon(),
       ),
-      const SizedBox(width: 250),
+      const SizedBox(width: 175),
       IconButton(
         onPressed: () {
           formNavigation.isReadOnly = false;
@@ -204,7 +201,7 @@ class TransactionForm extends ConsumerWidget {
         icon: formDataNotifier.getProperty(isPrintedKey) ? const PrintedIcon() : const PrintIcon(),
       ),
 
-      const SizedBox(width: 250),
+      const SizedBox(width: 175),
       IconButton(
         onPressed: () {
           formNavigation.isReadOnly = true;
@@ -295,21 +292,15 @@ class TransactionForm extends ConsumerWidget {
     }
   }
 
+  /// currenlty, we only save transaction on return
   static Future<void> onReturn(
       BuildContext context, WidgetRef ref, ImageSliderNotifier formImagesNotifier) async {
     formImagesNotifier.close();
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
-    if (context.mounted) {
-      // we update item on close, unless the dialog were closed due to delete button
-      // we need to check, if transaction is in dbCache it means dialog was not close
-      // due to delete button, i.e. item was updated
-      final transDbRef = formDataNotifier.data[dbRefKey];
-      if (dbCache.getItemByDbRef(transDbRef).isNotEmpty) {
-        if (context.mounted) {
-          saveTransaction(context, ref, formDataNotifier.data, true);
-        }
-      }
+    final transDbRef = formDataNotifier.data[dbRefKey];
+    if (dbCache.getItemByDbRef(transDbRef).isNotEmpty) {
+      saveTransaction(context, ref, formDataNotifier.data, true);
     }
   }
 

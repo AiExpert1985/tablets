@@ -77,6 +77,7 @@ List<Widget> _buildDataRows(
   BuildContext context,
   WidgetRef ref,
 ) {
+  final formNavigator = ref.read(formNavigatorProvider);
   if (!formDataNotifier.data.containsKey(itemsKey) || formDataNotifier.data[itemsKey] is! List) {
     return const [];
   }
@@ -95,11 +96,15 @@ List<Widget> _buildDataRows(
           children: [
             CodeFormInputField(
                 index, codeColumnWidth, itemsKey, itemCodeKey, transactionType, items.length,
+                isReadOnly: formNavigator.isReadOnly,
+                isDisabled: formNavigator.isReadOnly,
                 isFirst: true),
             _buildDropDownWithSearch(formDataNotifier, textEditingNotifier, index, nameColumnWidth,
-                productDbCache, productScreenController, context, items.length),
+                productDbCache, productScreenController, context, items.length,
+                isReadOnly: formNavigator.isReadOnly),
             TransactionFormInputField(
-                index, soldQuantityColumnWidth, itemsKey, itemSoldQuantityKey, transactionType),
+                index, soldQuantityColumnWidth, itemsKey, itemSoldQuantityKey, transactionType,
+                isReadOnly: formNavigator.isReadOnly, isDisabled: formNavigator.isReadOnly),
             if (!hideGifts)
               Container(
                 decoration: BoxDecoration(
@@ -110,27 +115,33 @@ List<Widget> _buildDataRows(
                   borderRadius: BorderRadius.circular(3.0), // Optional: Set border radius
                 ),
                 child: TransactionFormInputField(
-                    index, giftQuantityColumnWidth, itemsKey, itemGiftQuantityKey, transactionType),
+                    index, giftQuantityColumnWidth, itemsKey, itemGiftQuantityKey, transactionType,
+                    isReadOnly: formNavigator.isReadOnly, isDisabled: formNavigator.isReadOnly),
               ),
             if (!hidePrice)
               TransactionFormInputField(
-                  index, priceColumnWidth, itemsKey, itemSellingPriceKey, transactionType),
+                  index, priceColumnWidth, itemsKey, itemSellingPriceKey, transactionType,
+                  isReadOnly: formNavigator.isReadOnly, isDisabled: formNavigator.isReadOnly),
             if (!hidePrice)
               TransactionFormInputField(
                   index, soldTotalAmountColumnWidth, itemsKey, itemTotalAmountKey, transactionType,
                   // textEditingNotifier: textEditingNotifier,
                   isLast: false,
-                  isReadOnly: true),
+                  isReadOnly: true,
+                  isDisabled: formNavigator.isReadOnly),
             buildDataCell(
               soldQuantityColumnWidth,
               Text(
                 doubleToIntString(
                     formDataNotifier.getSubProperty(itemsKey, index, itemStockQuantityKey)),
-                style: const TextStyle(fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: formNavigator.isReadOnly ? Colors.grey : null),
               ),
             ),
             // don't add delete button to last row because it will be always empty
-            index < items.length - 1
+            index < items.length - 1 && !formNavigator.isReadOnly
                 ? _buildDeleteItemButton(
                     context,
                     ref,
@@ -145,23 +156,6 @@ List<Widget> _buildDataRows(
     );
   });
 }
-
-// Widget _buildAddItemButton(
-//     ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
-//   return IconButton(
-//     onPressed: () {
-//       formDataNotifier.updateSubProperties(itemsKey, emptyInvoiceItem);
-//       textEditingNotifier.updateSubControllers(itemsKey, {
-//         itemSellingPriceKey: 0,
-//         itemSoldQuantityKey: 0,
-//         itemGiftQuantityKey: 0,
-//         itemTotalAmountKey: 0,
-//         itemTotalWeightKey: 0
-//       });
-//     },
-//     icon: const Icon(Icons.add, color: Colors.green),
-//   );
-// }
 
 void addNewRow(ItemFormData formDataNotifier, TextControllerNotifier textEditingNotifier) {
   formDataNotifier.updateSubProperties(itemsKey, {
@@ -257,7 +251,7 @@ Widget _buildItemsTitles(BuildContext context, ItemFormData formDataNotifier,
     if (!hidePrice)
       Text(S.of(context).item_total_price,
           style: const TextStyle(color: Colors.white, fontSize: 12)),
-    Text(S.of(context).stock, style: const TextStyle(color: Colors.white, fontSize: 14)),
+    Text(S.of(context).stock, style: const TextStyle(color: Colors.white, fontSize: 16)),
     const SizedBox(),
   ];
 
@@ -322,10 +316,12 @@ Widget _buildDropDownWithSearch(
     DbCache productDbCache,
     ProductScreenController productScreenController,
     BuildContext context,
-    int numRows) {
+    int numRows,
+    {bool isReadOnly = false}) {
   return buildDataCell(
     width,
     DropDownWithSearchFormField(
+      isReadOnly: isReadOnly,
       initialValue: formDataNotifier.getSubProperty(itemsKey, index, itemNameKey),
       hideBorders: true,
       dbCache: productDbCache,
@@ -360,7 +356,11 @@ Widget _buildDropDownWithSearch(
 class TransactionFormInputField extends ConsumerWidget {
   const TransactionFormInputField(
       this.index, this.width, this.property, this.subProperty, this.transactionType,
-      {this.isLast = false, this.isReadOnly = false, this.isFirst = false, super.key});
+      {this.isLast = false,
+      this.isReadOnly = false,
+      this.isFirst = false,
+      this.isDisabled = false,
+      super.key});
 
   final int index;
   final double width;
@@ -370,6 +370,7 @@ class TransactionFormInputField extends ConsumerWidget {
   final bool isLast;
   final bool isFirst;
   final bool isReadOnly;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -383,6 +384,7 @@ class TransactionFormInputField extends ConsumerWidget {
         controller: textEditingNotifier.getSubController(property, index, subProperty),
         hideBorders: true,
         isRequired: false,
+        isDisabled: isDisabled,
         isReadOnly: isReadOnly,
         dataType: constants.FieldDataType.num,
         name: subProperty,
@@ -455,7 +457,11 @@ class TransactionFormInputField extends ConsumerWidget {
 class CodeFormInputField extends ConsumerWidget {
   const CodeFormInputField(
       this.index, this.width, this.property, this.subProperty, this.transactionType, this.numRows,
-      {this.isLast = false, this.isReadOnly = false, this.isFirst = false, super.key});
+      {this.isLast = false,
+      this.isReadOnly = false,
+      this.isFirst = false,
+      this.isDisabled = false,
+      super.key});
 
   final int index;
   final double width;
@@ -466,6 +472,7 @@ class CodeFormInputField extends ConsumerWidget {
   final bool isLast;
   final bool isFirst;
   final bool isReadOnly;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -480,6 +487,7 @@ class CodeFormInputField extends ConsumerWidget {
           controller: textEditingNotifier.getSubController(property, index, subProperty),
           hideBorders: true,
           isRequired: false,
+          isDisabled: isDisabled,
           isReadOnly: isReadOnly,
           dataType: constants.FieldDataType.num,
           name: subProperty,

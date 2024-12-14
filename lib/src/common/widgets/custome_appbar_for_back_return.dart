@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 
 PreferredSizeWidget buildArabicAppBar(
@@ -17,23 +15,7 @@ PreferredSizeWidget buildArabicAppBar(
     actions: [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: InkWell(
-          onTap: backOnTapFn,
-          child: Container(
-            padding: const EdgeInsets.all(14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  S.of(context).back,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                HorizontalGap.m,
-                const Icon(Icons.arrow_forward_ios_outlined),
-              ],
-            ),
-          ),
-        ),
+        child: IconButton(onPressed: backOnTapFn, icon: const ScreenBackIcon()),
       ),
     ],
   );
