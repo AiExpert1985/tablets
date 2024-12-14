@@ -16,7 +16,6 @@ import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
-import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';

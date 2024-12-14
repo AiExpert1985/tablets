@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
-import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/common/widgets/image_slider.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -33,8 +31,6 @@ class CustomerForm extends ConsumerWidget {
     final dbCache = ref.read(customerDbCacheProvider.notifier);
     ref.watch(imagePickerProvider);
     return FormFrame(
-      title: buildFormTitle(S.of(context).customer),
-      // formKey: formController.formKey,
       fields: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
