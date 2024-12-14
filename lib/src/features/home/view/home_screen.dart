@@ -73,7 +73,7 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
       _setGreeting(context, ref);
     }
     return Container(
-      padding: const EdgeInsets.all(35),
+      padding: const EdgeInsets.all(15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -86,8 +86,8 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
             ],
           ),
           Container(
-            padding: const EdgeInsets.all(20),
-            width: 600,
+            padding: const EdgeInsets.all(5),
+            width: 800,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -172,30 +172,47 @@ class CustomerFastAccessButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        FastAccessButton(
-          TransactionType.customerInvoice.name,
-          textColor: Colors.green[50],
-        ),
-        VerticalGap.l,
-        FastAccessButton(
-          TransactionType.customerReceipt.name,
-          textColor: Colors.red[50],
-        ),
-        VerticalGap.l,
-        FastAccessButton(
-          TransactionType.customerReturn.name,
-          textColor: Colors.grey[300],
-        ),
-        VerticalGap.l,
-        FastAccessButton(
-          TransactionType.gifts.name,
-          textColor: Colors.orange[50],
-        ),
-      ],
+    return FastAccessButtonsContainer(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FastAccessButton(
+            TransactionType.customerInvoice.name,
+            textColor: Colors.green[50],
+          ),
+          VerticalGap.l,
+          FastAccessButton(
+            TransactionType.customerReceipt.name,
+            textColor: Colors.red[50],
+          ),
+          VerticalGap.l,
+          FastAccessButton(
+            TransactionType.customerReturn.name,
+            textColor: Colors.grey[300],
+          ),
+          VerticalGap.l,
+          FastAccessButton(
+            TransactionType.gifts.name,
+            textColor: Colors.orange[50],
+          ),
+        ],
+      ),
     );
+  }
+}
+
+class FastAccessButtonsContainer extends StatelessWidget {
+  const FastAccessButtonsContainer({required this.child, super.key});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: const BorderRadius.all(Radius.circular(8))),
+        child: child);
   }
 }
 
@@ -204,24 +221,26 @@ class VendorFastAccessButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        FastAccessButton(
-          TransactionType.vendorInvoice.name,
-          textColor: Colors.green[50],
-        ),
-        VerticalGap.l,
-        FastAccessButton(
-          TransactionType.vendorReceipt.name,
-          textColor: Colors.red[50],
-        ),
-        VerticalGap.l,
-        FastAccessButton(
-          TransactionType.vendorReturn.name,
-          textColor: Colors.grey[300],
-        ),
-      ],
+    return FastAccessButtonsContainer(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FastAccessButton(
+            TransactionType.vendorInvoice.name,
+            textColor: Colors.green[50],
+          ),
+          VerticalGap.l,
+          FastAccessButton(
+            TransactionType.vendorReceipt.name,
+            textColor: Colors.red[50],
+          ),
+          VerticalGap.l,
+          FastAccessButton(
+            TransactionType.vendorReturn.name,
+            textColor: Colors.grey[300],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -231,19 +250,21 @@ class InternalFastAccessButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        FastAccessButton(
-          TransactionType.expenditures.name,
-          textColor: Colors.green[50],
-        ),
-        VerticalGap.l,
-        FastAccessButton(
-          TransactionType.damagedItems.name,
-          textColor: Colors.red[50],
-        ),
-      ],
+    return FastAccessButtonsContainer(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FastAccessButton(
+            TransactionType.expenditures.name,
+            textColor: Colors.green[50],
+          ),
+          VerticalGap.l,
+          FastAccessButton(
+            TransactionType.damagedItems.name,
+            textColor: Colors.red[50],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -286,7 +307,7 @@ class FastAccessButton extends ConsumerWidget {
       child: Container(
         height: 60,
         width: 70,
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+        padding: const EdgeInsets.all(0),
         child: Center(
             child: Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 15))),
       ),
