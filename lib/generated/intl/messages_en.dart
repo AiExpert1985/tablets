@@ -337,6 +337,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "success": MessageLookupByLibrary.simpleMessage("Success"),
         "sum_of_commissions":
             MessageLookupByLibrary.simpleMessage("Commissions_sum"),
+        "there_is_no_customer_receipt":
+            MessageLookupByLibrary.simpleMessage("no receipt"),
         "to": MessageLookupByLibrary.simpleMessage("To"),
         "to_date": MessageLookupByLibrary.simpleMessage("To date"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),

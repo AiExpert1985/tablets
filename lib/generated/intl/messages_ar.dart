@@ -321,6 +321,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
         "sum_of_commissions":
             MessageLookupByLibrary.simpleMessage("مجموع العمولات"),
+        "there_is_no_customer_receipt":
+            MessageLookupByLibrary.simpleMessage("لا يوجد"),
         "to": MessageLookupByLibrary.simpleMessage("الى"),
         "to_date": MessageLookupByLibrary.simpleMessage("الى تاريخ"),
         "total": MessageLookupByLibrary.simpleMessage("المجموع"),

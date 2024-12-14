@@ -18,6 +18,7 @@ import 'package:tablets/src/features/customers/repository/customer_db_cache_prov
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
+import 'package:tablets/src/features/transactions/controllers/customer_debt_info_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_utils_controller.dart';
@@ -80,6 +81,7 @@ class FirstRow extends ConsumerWidget {
     final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
     final customerScreenController = ref.read(customerScreenControllerProvider);
     final formNavigator = ref.read(formNavigatorProvider);
+    final customerDebtInfo = ref.read(customerDebtNotifierProvider.notifier);
     return Row(
       children: [
         DropDownWithSearchFormField(
@@ -110,6 +112,10 @@ class FirstRow extends ConsumerWidget {
             final invoiceColor =
                 inValidCustomer ? const Color.fromARGB(255, 245, 187, 184) : Colors.white;
             backgroundColorNotifier.state = invoiceColor;
+            // update customerDebtInfo so that it will be used to show preview of customer debt in form screen
+            if (!isVendor) {
+              customerDebtInfo.update(context, item);
+            }
           },
         ),
         if (!isVendor) HorizontalGap.l,

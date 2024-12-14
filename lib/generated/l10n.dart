@@ -2619,6 +2619,16 @@ class S {
       args: [],
     );
   }
+
+  /// `no receipt`
+  String get there_is_no_customer_receipt {
+    return Intl.message(
+      'no receipt',
+      name: 'there_is_no_customer_receipt',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

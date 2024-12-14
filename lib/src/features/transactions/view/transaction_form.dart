@@ -25,6 +25,7 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/transactions/controllers/customer_debt_info_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
@@ -131,7 +132,10 @@ class TransactionForm extends ConsumerWidget {
             width: width is double ? width : width.toDouble(),
             height: height is double ? height : height.toDouble(),
           ),
-          const CustomerDebtReview(),
+          // customer debt info only show for customer transactions
+          transactionType.contains('customer')
+              ? const CustomerDebtReview()
+              : const SizedBox(width: 300),
         ],
       ),
     );
@@ -274,6 +278,9 @@ class TransactionForm extends ConsumerWidget {
     if (dbCache.getItemByDbRef(transDbRef).isNotEmpty) {
       saveTransaction(context, ref, formDataNotifier.data, true);
     }
+    // clear customer debt info
+    final customerDebInfo = ref.read(customerDebtNotifierProvider.notifier);
+    customerDebInfo.reset();
   }
 
   /// when delete transaction, we stay in the form but navigate to previous transaction
@@ -380,17 +387,19 @@ class CustomerDebtReview extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final customerDebtInfo = ref.read(customerDebtNotifierProvider);
+    ref.watch(customerDebtNotifierProvider);
     return Container(
       width: 300,
       padding: const EdgeInsets.only(left: 20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ReviewRow(S.of(context).last_receipt_date, '1/1/2001'),
+          ReviewRow(S.of(context).last_receipt_date, customerDebtInfo.lastReceiptDate),
           VerticalGap.l,
-          ReviewRow(S.of(context).total_debt, '1000000'),
+          ReviewRow(S.of(context).total_debt, customerDebtInfo.totalDebt),
           VerticalGap.l,
-          ReviewRow(S.of(context).due_debt_amount, '500000', isWarning: true),
+          ReviewRow(S.of(context).due_debt_amount, customerDebtInfo.dueDebt, isWarning: true),
         ],
       ),
     );
@@ -421,7 +430,7 @@ class ReviewRow extends ConsumerWidget {
               ),
             )),
         Container(
-            width: 100,
+            width: 130,
             decoration: BoxDecoration(
                 color: Colors.white, border: Border.all(width: 0.5)), // Rounded corners,
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
