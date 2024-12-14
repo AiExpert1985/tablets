@@ -20,8 +20,6 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/custome_appbar_for_back_return.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
-import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
-import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
@@ -392,7 +390,6 @@ class CustomerDebtReview extends ConsumerWidget {
           ReviewRow(S.of(context).total_debt, '1000000'),
           VerticalGap.l,
           ReviewRow(S.of(context).due_debt_amount, '500000', isWarning: true),
-          const SizedBox(height: 70)
         ],
       ),
     );
@@ -452,10 +449,10 @@ class NavigationButtons extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const PrintedSearch(),
-          VerticalGap.l,
-          NavigationTypeSelection(formDataNotifier.getProperty(transactionTypeKey)),
-          VerticalGap.l,
+          // const PrintedSearch(),
+          // VerticalGap.l,
+          // NavigationTypeSelection(formDataNotifier.getProperty(transactionTypeKey)),
+          // VerticalGap.l,
           const NavigationSearch(),
           VerticalGap.l,
           Row(
@@ -515,13 +512,28 @@ class NavigationSearch extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final formNavigator = ref.read(formNavigatorProvider);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+    final formNavigation = ref.read(formNavigatorProvider);
     return SizedBox(
       width: 250,
-      child: FormBuilderTextField(
+      child: TextFormField(
         textAlign: TextAlign.center,
-        name: 'TransactionNumberSearch',
         decoration: formFieldDecoration(label: S.of(context).transaction_number),
-        onChanged: (value) {},
+        onFieldSubmitted: (value) {
+          try {
+            formNavigator.goTo(int.tryParse(value.trim()));
+            // TODO navigation to self  is added only to layout rebuild because formNavigation is not stateNotifier
+            // TODO later I might change formNavigation to StateNotifier and watch it in this widget
+            TransactionForm.onNavigationPressed(
+                formDataNotifier, context, ref, formImagesNotifier, formNavigation,
+                targetTransactionData:
+                    formNavigation.navigatorTransactions[formNavigation.currentIndex]);
+          } catch (e) {
+            return;
+          }
+        },
       ),
     );
   }

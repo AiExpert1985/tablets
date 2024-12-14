@@ -115,6 +115,15 @@ class FromNavigator {
       navigatorTransactions[currentIndex] = _formDataNotifier.data;
     }
   }
+
+  void goTo(int? transactionNumber) {
+    if (transactionNumber == null) return;
+    for (int i = 0; i < navigatorTransactions.length; i++) {
+      if (navigatorTransactions[i][numberKey] == transactionNumber) {
+        currentIndex = i;
+      }
+    }
+  }
 }
 
 /// the idea here is to create a copy of transactionDbCache for only similar type transaction
