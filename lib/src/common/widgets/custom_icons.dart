@@ -47,14 +47,14 @@ class HomeReturnIcon extends StatelessWidget {
   }
 }
 
-class ScreenBackIcon extends StatelessWidget {
-  const ScreenBackIcon({super.key});
+class TransactionBack extends StatelessWidget {
+  const TransactionBack({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Row(children: [
       Text(
-        S.of(context).back,
+        S.of(context).transactions,
         style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
       ),
       HorizontalGap.s,

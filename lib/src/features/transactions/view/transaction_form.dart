@@ -103,13 +103,14 @@ class TransactionForm extends ConsumerWidget {
 
     return Scaffold(
       appBar: buildArabicAppBar(context, () async {
+        // back to transactions screen
         onReturn(context, ref, formImagesNotifier);
         Navigator.pop(context);
+        context.goNamed(AppRoute.transactions.name);
       }, () async {
+        // back to home screen
         onReturn(context, ref, formImagesNotifier);
         Navigator.pop(context);
-        context.goNamed(AppRoute.home.name);
-        tempPrint('navigated');
       }),
       body: FormFrame(
         title: buildFormTitle(translateDbTextToScreenText(context, transactionType)),

@@ -31,6 +31,7 @@ class TransactionGroupSelection extends ConsumerWidget {
 
     return Scaffold(
       appBar: buildArabicAppBar(context, () {
+        // back to transactions
         Navigator.of(context).pop();
       }, () {
         context.goNamed(AppRoute.home.name);
@@ -134,6 +135,8 @@ class TransactionTypeSelection extends ConsumerWidget {
 
     return Scaffold(
       appBar: buildArabicAppBar(context, () {
+        // we pop twice to return to transaction
+        Navigator.of(context).pop();
         Navigator.of(context).pop();
       }, () {
         context.goNamed(AppRoute.home.name);
