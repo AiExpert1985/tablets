@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/providers/background_color.dart';
+import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
+import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -64,22 +72,41 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
     if (customizableGreeting == S.of(context).greeting) {
       _setGreeting(context, ref);
     }
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return Container(
+      padding: const EdgeInsets.all(35),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(
-            // margin: const EdgeInsets.all(10),
-            width: double.infinity,
-            height: 300, // here I used width intentionally
-            child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
+          const Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomerFastAccessButtons(),
+              VendorFastAccessButtons(),
+              InternalFastAccessButtons(),
+            ],
           ),
-          VerticalGap.xl,
-          Text(
-            customizableGreeting,
-            style: const TextStyle(fontSize: 24),
+          Container(
+            padding: const EdgeInsets.all(20),
+            width: 600,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  // margin: const EdgeInsets.all(10),
+                  width: double.infinity,
+                  height: 300, // here I used width intentionally
+                  child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
+                ),
+                VerticalGap.xl,
+                Text(
+                  customizableGreeting,
+                  style: const TextStyle(fontSize: 24),
+                ),
+                VerticalGap.xxl,
+              ],
+            ),
           ),
-          VerticalGap.xxl,
+          const SizedBox()
         ],
       ),
     );
@@ -135,6 +162,133 @@ class EmptyPage extends ConsumerWidget {
             style: const TextStyle(fontSize: 18),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class CustomerFastAccessButtons extends ConsumerWidget {
+  const CustomerFastAccessButtons({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FastAccessButton(
+          TransactionType.customerInvoice.name,
+          textColor: Colors.green[50],
+        ),
+        VerticalGap.l,
+        FastAccessButton(
+          TransactionType.customerReceipt.name,
+          textColor: Colors.red[50],
+        ),
+        VerticalGap.l,
+        FastAccessButton(
+          TransactionType.customerReturn.name,
+          textColor: Colors.grey[300],
+        ),
+        VerticalGap.l,
+        FastAccessButton(
+          TransactionType.gifts.name,
+          textColor: Colors.orange[50],
+        ),
+      ],
+    );
+  }
+}
+
+class VendorFastAccessButtons extends ConsumerWidget {
+  const VendorFastAccessButtons({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FastAccessButton(
+          TransactionType.vendorInvoice.name,
+          textColor: Colors.green[50],
+        ),
+        VerticalGap.l,
+        FastAccessButton(
+          TransactionType.vendorReceipt.name,
+          textColor: Colors.red[50],
+        ),
+        VerticalGap.l,
+        FastAccessButton(
+          TransactionType.vendorReturn.name,
+          textColor: Colors.grey[300],
+        ),
+      ],
+    );
+  }
+}
+
+class InternalFastAccessButtons extends ConsumerWidget {
+  const InternalFastAccessButtons({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FastAccessButton(
+          TransactionType.expenditures.name,
+          textColor: Colors.green[50],
+        ),
+        VerticalGap.l,
+        FastAccessButton(
+          TransactionType.damagedItems.name,
+          textColor: Colors.red[50],
+        ),
+      ],
+    );
+  }
+}
+
+class FastAccessButton extends ConsumerWidget {
+  const FastAccessButton(this.formType, {this.textColor, super.key});
+  final String formType;
+  final Color? textColor;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    String label = translateDbTextToScreenText(context, formType);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: textColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+      onPressed: () {
+        backgroundColorNofifier.state = normalColor!;
+        TransactionShowForm.showForm(
+          context,
+          ref,
+          imagePickerNotifier,
+          formDataNotifier,
+          settingsDataNotifier,
+          textEditingNotifier,
+          formType: formType,
+          transactionDbCache: transactionDbCache,
+        );
+      },
+      child: Container(
+        height: 60,
+        width: 70,
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+        child: Center(
+            child: Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 15))),
       ),
     );
   }
