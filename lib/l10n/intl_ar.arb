@@ -254,5 +254,6 @@
     "last_receipt_date": "اخر وصل تسديد",
     "total_debt": "الدين الكلي",
     "show_printed_only": "غير المطبوع",
-    "show_all": "عرض الجميع"
+    "show_all": "عرض الجميع",
+    "transaction_not_found": "لم يتم ايجاد التعامل المطلوب"
 }

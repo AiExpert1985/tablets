@@ -372,6 +372,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "transaction_item_total_price":
             MessageLookupByLibrary.simpleMessage("Total price"),
         "transaction_name": MessageLookupByLibrary.simpleMessage("Name"),
+        "transaction_not_found":
+            MessageLookupByLibrary.simpleMessage("Transaction not found"),
         "transaction_notes": MessageLookupByLibrary.simpleMessage("Notes"),
         "transaction_number": MessageLookupByLibrary.simpleMessage("Number"),
         "transaction_payment_Dinar":

@@ -2609,6 +2609,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Transaction not found`
+  String get transaction_not_found {
+    return Intl.message(
+      'Transaction not found',
+      name: 'transaction_not_found',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

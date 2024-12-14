@@ -114,6 +114,7 @@ class TransactionForm extends ConsumerWidget {
         // back to home screen
         onReturn(context, ref, formImagesNotifier);
         Navigator.pop(context);
+        context.goNamed(AppRoute.home.name);
       }),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -523,7 +524,7 @@ class NavigationSearch extends ConsumerWidget {
         decoration: formFieldDecoration(label: S.of(context).transaction_number),
         onFieldSubmitted: (value) {
           try {
-            formNavigator.goTo(int.tryParse(value.trim()));
+            formNavigator.goTo(context, int.tryParse(value.trim()));
             // TODO navigation to self  is added only to layout rebuild because formNavigation is not stateNotifier
             // TODO later I might change formNavigation to StateNotifier and watch it in this widget
             TransactionForm.onNavigationPressed(

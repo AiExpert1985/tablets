@@ -1,7 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
@@ -116,12 +119,17 @@ class FromNavigator {
     }
   }
 
-  void goTo(int? transactionNumber) {
+  void goTo(BuildContext context, int? transactionNumber) {
+    bool found = false;
     if (transactionNumber == null) return;
     for (int i = 0; i < navigatorTransactions.length; i++) {
       if (navigatorTransactions[i][numberKey] == transactionNumber) {
         currentIndex = i;
+        found = true;
       }
+    }
+    if (!found) {
+      failureUserMessage(context, S.of(context).transaction_not_found);
     }
   }
 }
