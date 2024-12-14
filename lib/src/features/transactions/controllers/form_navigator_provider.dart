@@ -19,6 +19,12 @@ class FromNavigator {
     this._formDataNotifier,
   );
 
+  void filterPrinted() {
+    navigatorTransactions = navigatorTransactions.where((formData) {
+      return formData[isPrintedKey] == false;
+    }).toList();
+  }
+
   /// during intitalization, we load all transactions of same type as the currently displayed on
   /// and set the index to the displayed transaction
   /// and make it read only (unless it is a new transaction)

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
@@ -294,18 +295,25 @@ class FastAccessButton extends ConsumerWidget {
           borderRadius: BorderRadius.circular(8.0),
         ),
       ),
-      onPressed: () {
+      onPressed: () async {
+        // make sure dbCaches and settings are initialized
+        await initializeAllDbCaches(context, ref);
+        if (context.mounted) {
+          initializeSettings(context, ref);
+        }
         backgroundColorNofifier.state = normalColor!;
-        TransactionShowForm.showForm(
-          context,
-          ref,
-          imagePickerNotifier,
-          formDataNotifier,
-          settingsDataNotifier,
-          textEditingNotifier,
-          formType: formType,
-          transactionDbCache: transactionDbCache,
-        );
+        if (context.mounted) {
+          TransactionShowForm.showForm(
+            context,
+            ref,
+            imagePickerNotifier,
+            formDataNotifier,
+            settingsDataNotifier,
+            textEditingNotifier,
+            formType: formType,
+            transactionDbCache: transactionDbCache,
+          );
+        }
       },
       child: Container(
         height: 60,

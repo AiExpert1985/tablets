@@ -173,6 +173,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_sold_quantity": MessageLookupByLibrary.simpleMessage("العدد"),
         "item_total_price": MessageLookupByLibrary.simpleMessage("السعر الكلي"),
         "last": MessageLookupByLibrary.simpleMessage("الاخير"),
+        "last_receipt_date":
+            MessageLookupByLibrary.simpleMessage("اخر وصل تسديد"),
         "later_debt": MessageLookupByLibrary.simpleMessage("الدين بعد"),
         "loading_data": MessageLookupByLibrary.simpleMessage("تحميل البيانات"),
         "login": MessageLookupByLibrary.simpleMessage("الدخول"),
@@ -307,8 +309,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_main_page_greeting":
             MessageLookupByLibrary.simpleMessage("تحية البرنامج"),
         "share": MessageLookupByLibrary.simpleMessage("ارسال"),
+        "show_all": MessageLookupByLibrary.simpleMessage("عرض الجميع"),
         "show_barcode_when_printing":
             MessageLookupByLibrary.simpleMessage("اخفاء الباركود عند الطباعة"),
+        "show_printed_only":
+            MessageLookupByLibrary.simpleMessage("غير المطبوع"),
         "signup": MessageLookupByLibrary.simpleMessage("انشاء حساب"),
         "slogan":
             MessageLookupByLibrary.simpleMessage("الواح  ...  حساباتك اسهل"),
@@ -319,6 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "to": MessageLookupByLibrary.simpleMessage("الى"),
         "to_date": MessageLookupByLibrary.simpleMessage("الى تاريخ"),
         "total": MessageLookupByLibrary.simpleMessage("المجموع"),
+        "total_debt": MessageLookupByLibrary.simpleMessage("الدين الكلي"),
         "transaction_amount":
             MessageLookupByLibrary.simpleMessage("مبلغ القائمة"),
         "transaction_currency": MessageLookupByLibrary.simpleMessage("العملة"),

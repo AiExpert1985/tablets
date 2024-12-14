@@ -182,6 +182,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sold Qtty."),
         "item_total_price": MessageLookupByLibrary.simpleMessage("Total"),
         "last": MessageLookupByLibrary.simpleMessage("Last"),
+        "last_receipt_date":
+            MessageLookupByLibrary.simpleMessage("Last receipt date"),
         "later_debt": MessageLookupByLibrary.simpleMessage("Later debt"),
         "loading_data": MessageLookupByLibrary.simpleMessage("Loading data"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
@@ -323,8 +325,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_main_page_greeting":
             MessageLookupByLibrary.simpleMessage("main Page Greeting Text"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
+        "show_all": MessageLookupByLibrary.simpleMessage("Show all"),
         "show_barcode_when_printing":
             MessageLookupByLibrary.simpleMessage("show Company Url Bar Code"),
+        "show_printed_only":
+            MessageLookupByLibrary.simpleMessage("Show printed only"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign up"),
         "slogan": MessageLookupByLibrary.simpleMessage(
             "Tablets, where accounting started"),
@@ -335,6 +340,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "to": MessageLookupByLibrary.simpleMessage("To"),
         "to_date": MessageLookupByLibrary.simpleMessage("To date"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
+        "total_debt":
+            MessageLookupByLibrary.simpleMessage("Customer total debt"),
         "transaction_amount": MessageLookupByLibrary.simpleMessage("Amount"),
         "transaction_currency":
             MessageLookupByLibrary.simpleMessage("Currency"),

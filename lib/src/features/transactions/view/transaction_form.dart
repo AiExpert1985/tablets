@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -7,6 +8,7 @@ import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/print_document.dart';
+import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
@@ -18,6 +20,8 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/custome_appbar_for_back_return.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
+import 'package:tablets/src/common/widgets/form_fields/drop_down.dart';
+import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/values/form_dimenssions.dart';
@@ -378,15 +382,17 @@ class CustomerDebtReview extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      padding: const EdgeInsets.only(left: 20, bottom: 40),
-      child: const Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+      width: 300,
+      padding: const EdgeInsets.only(left: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ReviewRow('تاريخ اخر وصل', '1/1/2001'),
+          ReviewRow(S.of(context).last_receipt_date, '1/1/2001'),
           VerticalGap.l,
-          ReviewRow('الدين الكلي', '1000000'),
+          ReviewRow(S.of(context).total_debt, '1000000'),
           VerticalGap.l,
-          ReviewRow('الدين المستحق', '500000', isWarning: true)
+          ReviewRow(S.of(context).due_debt_amount, '500000', isWarning: true),
+          const SizedBox(height: 70)
         ],
       ),
     );
@@ -417,7 +423,7 @@ class ReviewRow extends ConsumerWidget {
               ),
             )),
         Container(
-            width: 150,
+            width: 100,
             decoration: BoxDecoration(
                 color: Colors.white, border: Border.all(width: 0.5)), // Rounded corners,
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -441,10 +447,17 @@ class NavigationButtons extends ConsumerWidget {
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
     final formNavigation = ref.read(formNavigatorProvider);
     return Container(
-      padding: const EdgeInsets.only(right: 20, bottom: 40),
+      width: 300,
+      padding: const EdgeInsets.only(right: 20),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const PrintedSearch(),
+          VerticalGap.l,
+          NavigationTypeSelection(formDataNotifier.getProperty(transactionTypeKey)),
+          VerticalGap.l,
+          const NavigationSearch(),
+          VerticalGap.l,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -493,6 +506,72 @@ class NavigationButtons extends ConsumerWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class NavigationSearch extends ConsumerWidget {
+  const NavigationSearch({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SizedBox(
+      width: 250,
+      child: FormBuilderTextField(
+        textAlign: TextAlign.center,
+        name: 'TransactionNumberSearch',
+        decoration: formFieldDecoration(label: S.of(context).transaction_number),
+        onChanged: (value) {},
+      ),
+    );
+  }
+}
+
+class NavigationTypeSelection extends ConsumerWidget {
+  const NavigationTypeSelection(this.transactionType, {super.key});
+  final String transactionType;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final typesList = getTransactionTypeDropList(context);
+    return SizedBox(
+      width: 250,
+      child: FormBuilderDropdown(
+          initialValue: translateDbTextToScreenText(context, transactionType),
+          decoration: formFieldDecoration(label: S.of(context).transaction_type),
+          onChanged: (value) {},
+          name: 'transactionTypeSearch',
+          items: typesList
+              .sublist(0, typesList.length - 1)
+              .map((item) => DropdownMenuItem(
+                    alignment: AlignmentDirectional.center,
+                    value: item,
+                    child: Text(item),
+                  ))
+              .toList()),
+    );
+  }
+}
+
+class PrintedSearch extends ConsumerWidget {
+  const PrintedSearch({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SizedBox(
+      width: 250,
+      child: FormBuilderDropdown(
+          initialValue: S.of(context).show_all,
+          decoration: formFieldDecoration(label: S.of(context).transaction_type),
+          onChanged: (value) {},
+          name: 'printedSearch',
+          items: [S.of(context).show_printed_only, S.of(context).show_all]
+              .map((item) => DropdownMenuItem(
+                    alignment: AlignmentDirectional.center,
+                    value: item,
+                    child: Text(item),
+                  ))
+              .toList()),
     );
   }
 }

@@ -250,5 +250,9 @@
     "transaction_group_selection": "اختيار نوع التعامل",
     "transaction_type_selection": "اختيار القائمة",
     "back": "رجوع",
-    "new_item": "جديد"
+    "new_item": "جديد",
+    "last_receipt_date": "اخر وصل تسديد",
+    "total_debt": "الدين الكلي",
+    "show_printed_only": "غير المطبوع",
+    "show_all": "عرض الجميع"
 }

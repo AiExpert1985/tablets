@@ -2569,6 +2569,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Last receipt date`
+  String get last_receipt_date {
+    return Intl.message(
+      'Last receipt date',
+      name: 'last_receipt_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Customer total debt`
+  String get total_debt {
+    return Intl.message(
+      'Customer total debt',
+      name: 'total_debt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show printed only`
+  String get show_printed_only {
+    return Intl.message(
+      'Show printed only',
+      name: 'show_printed_only',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show all`
+  String get show_all {
+    return Intl.message(
+      'Show all',
+      name: 'show_all',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
