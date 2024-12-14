@@ -10,6 +10,7 @@ import 'package:tablets/src/common/functions/print_document.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
+// import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -90,18 +91,9 @@ class TransactionForm extends ConsumerWidget {
     final screenController = ref.read(transactionScreenControllerProvider);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     final formNavigation = ref.read(formNavigatorProvider);
-    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     formNavigation.initialize(transactionType, formDataNotifier.getProperty(dbRefKey));
-    tempPrint('Number of transactions = ${formNavigation.navigatorTransactions?.length}');
-    tempPrint('current navigator index = ${formNavigation.currentIndex}');
-    tempPrint('isReadOnly = ${formNavigation.isReadOnly}');
-
-    tempPrint('transaction number in form: ${formDataNotifier.getProperty(numberKey)}');
-
-    tempPrint(
-        'transaction number in textEditor ${textEditingNotifier.getController(numberKey).text}');
     // final transactionTypeTranslated = translateScreenTextToDbText(context, transactionType);
-    final backgroundColor = ref.watch(backgroundColorProvider);
+    // final backgroundColor = ref.watch(backgroundColorProvider);
     ref.watch(imagePickerProvider);
     ref.watch(transactionFormDataProvider);
     ref.watch(textFieldsControllerProvider);
@@ -121,8 +113,8 @@ class TransactionForm extends ConsumerWidget {
         }
       }),
       body: FormFrame(
-        backgroundColor: backgroundColor,
-        formKey: formController.formKey,
+        // backgroundColor: backgroundColor,
+        // formKey: formController.formKey,
         // formKey: GlobalKey<FormState>(),
         fields: _getFormWidget(context, transactionType),
         buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier,
@@ -147,7 +139,7 @@ class TransactionForm extends ConsumerWidget {
       IconButton(
         onPressed: () {
           final formData = formNavigation.first();
-          _onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
               targetTransactionData: formData);
         },
         icon: const GoFirstIcon(),
@@ -155,7 +147,7 @@ class TransactionForm extends ConsumerWidget {
       IconButton(
         onPressed: () {
           final formData = formNavigation.previous();
-          _onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
               targetTransactionData: formData);
         },
         icon: const GoPreviousIcon(),
@@ -180,7 +172,7 @@ class TransactionForm extends ConsumerWidget {
       ),
       IconButton(
         onPressed: () {
-          _onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
               isNewTransaction: true);
         },
         icon: const NewIemIcon(),
@@ -189,7 +181,7 @@ class TransactionForm extends ConsumerWidget {
       IconButton(
         onPressed: () {
           final formData = formNavigation.next();
-          _onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
               targetTransactionData: formData);
         },
         icon: const GoNextIcon(),
@@ -197,7 +189,7 @@ class TransactionForm extends ConsumerWidget {
       IconButton(
         onPressed: () {
           final formData = formNavigation.last();
-          _onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
               targetTransactionData: formData);
         },
         icon: const GoLastIcon(),
@@ -217,86 +209,74 @@ class TransactionForm extends ConsumerWidget {
     formDataNotifier.updateProperties({isPrintedKey: true});
   }
 
-  static void _onNavigationPressed(ItemFormData formDataNotifier, BuildContext context,
+  static void onNavigationPressed(ItemFormData formDataNotifier, BuildContext context,
       WidgetRef ref, ImageSliderNotifier formImagesNotifier,
       {Map<String, dynamic>? targetTransactionData,
       bool isNewTransaction = false,
       bool isDeleting = false}) {
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+
+    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+
+    final formType = formDataNotifier.getProperty(transactionTypeKey);
     // if we are navigating or creating new transaction, we save previous one, but if we are comming from
     // delete button inside the form, then we don't save
     if (!isDeleting) {
       // this step to save currently displayed transacton before moving to the navigated one
-      onReturn(context, ref, formImagesNotifier);
+      saveTransaction(context, ref, formDataNotifier.data, true);
     }
+    Navigator.of(context).pop();
     // now load the target transaction into the form, whether it is navigated or new transaction
-    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
-    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
     // note that navigatorFormData shouldn't be null if isNewTransaction is false
     if (isNewTransaction) {
-      TransactionShowForm.initializeFormData(context, formDataNotifier, settingsDataNotifier,
-          formDataNotifier.getProperty(transactionTypeKey),
-          transactionDbCache: transactionDbCache);
-      // save the new transaction
-      saveTransaction(context, ref, formDataNotifier.data, false);
+      final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+      backgroundColorNofifier.state = normalColor!;
+      TransactionShowForm.showForm(
+        context,
+        ref,
+        imagePickerNotifier,
+        formDataNotifier,
+        settingsDataNotifier,
+        textEditingNotifier,
+        formType: formType,
+        transactionDbCache: transactionDbCache,
+      );
     } else {
       if (targetTransactionData == null) {
         errorPrint('Navigating to a null transaction');
         return;
       }
-      final targetTransaction = transactionDbCache.getItemByDbRef(targetTransactionData[dbRefKey]);
-      TransactionShowForm.initializeFormData(context, formDataNotifier, settingsDataNotifier,
-          formDataNotifier.getProperty(transactionTypeKey),
-          transaction: Transaction.fromMap(targetTransaction));
+      final imageUrls = formImagesNotifier.saveChanges();
+      final itemData = {...targetTransactionData, 'imageUrls': imageUrls};
+      final transaction = Transaction.fromMap(itemData);
+      TransactionShowForm.showForm(
+        context,
+        ref,
+        imagePickerNotifier,
+        formDataNotifier,
+        settingsDataNotifier,
+        textEditingNotifier,
+        transaction: transaction,
+        formType: formType,
+      );
     }
-
-    // List items = navigatorFormData[itemsKey] ?? [];
-    // if (items[items.length - 1][itemNameKey] != '') {
-    //   Map<String, dynamic> newEmpyItem = {
-    //     itemCodeKey: null,
-    //     itemNameKey: '',
-    //     itemSellingPriceKey: 0,
-    //     itemWeightKey: 0,
-    //     itemSoldQuantityKey: 0,
-    //     itemGiftQuantityKey: 0,
-    //     itemTotalAmountKey: 0,
-    //     itemTotalWeightKey: 0,
-    //     itemStockQuantityKey: 0,
-    //     itemTotalProfitKey: 0,
-    //     itemSalesmanTotalCommissionKey: 0,
-    //   };
-    //   items.add(newEmpyItem);
-    // }
-    // final typeAdjustedItems = convertListofDyanmicToListofMaps(items);
-    // formDataNotifier.initialize(initialData: {...navigatorFormData, itemsKey: typeAdjustedItems});
-    // finally, load the new data into textEditors so that it is displayed int he form
-    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-    TransactionShowForm.initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
   }
 
   static Future<void> onReturn(
       BuildContext context, WidgetRef ref, ImageSliderNotifier formImagesNotifier) async {
     formImagesNotifier.close();
-    final formController = ref.read(transactionFormControllerProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final screenController = ref.read(transactionScreenControllerProvider);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     if (context.mounted) {
-      bool isDeleted = false;
-      // if no transaction name, automatically delete the transaction
-      if (formDataNotifier.data[nameKey] == '') {
-        isDeleted = await deleteTransaction(context, ref, formDataNotifier, formImagesNotifier,
-            formController, dbCache, screenController);
-      }
-      // if transaction was not deleted, we save its updates
-      if (!isDeleted) {
-        // we update item on close, unless the dialog were closed due to delete button
-        // we need to check, if transaction is in dbCache it means dialog was not close
-        // due to delete button, i.e. item was updated
-        final transDbRef = formDataNotifier.data[dbRefKey];
-        if (dbCache.getItemByDbRef(transDbRef).isNotEmpty) {
-          if (context.mounted) {
-            saveTransaction(context, ref, formDataNotifier.data, true);
-          }
+      // we update item on close, unless the dialog were closed due to delete button
+      // we need to check, if transaction is in dbCache it means dialog was not close
+      // due to delete button, i.e. item was updated
+      final transDbRef = formDataNotifier.data[dbRefKey];
+      if (dbCache.getItemByDbRef(transDbRef).isNotEmpty) {
+        if (context.mounted) {
+          saveTransaction(context, ref, formDataNotifier.data, true);
         }
       }
     }
@@ -336,7 +316,7 @@ class TransactionForm extends ConsumerWidget {
     // move point to previous transaction
     if (formNavigation != null && context.mounted) {
       final targetTransactionData = formNavigation.previous();
-      _onNavigationPressed(
+      onNavigationPressed(
         formDataNotifier,
         context,
         ref,

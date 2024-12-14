@@ -6,6 +6,7 @@ import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart' as constants;
 import 'package:tablets/src/common/values/constants.dart';
@@ -19,6 +20,7 @@ import 'package:tablets/src/features/products/repository/product_db_cache_provid
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_utils_controller.dart';
+import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
 const double codeColumnWidth = customerInvoiceFormWidth * 0.07;
 const double sequenceColumnWidth = customerInvoiceFormWidth * 0.055;
@@ -54,7 +56,7 @@ class ItemsList extends ConsumerWidget {
           children: [
             _buildItemsTitles(context, formDataNotifier, textEditingNotifier, hideGifts, hidePrice),
             ..._buildDataRows(formDataNotifier, textEditingNotifier, productRepository, hideGifts,
-                hidePrice, transactionType, productDbCache, productScreenController, context),
+                hidePrice, transactionType, productDbCache, productScreenController, context, ref),
           ],
         ),
       ),
@@ -72,6 +74,7 @@ List<Widget> _buildDataRows(
   DbCache productDbCache,
   ProductScreenController productScreenController,
   BuildContext context,
+  WidgetRef ref,
 ) {
   if (!formDataNotifier.data.containsKey(itemsKey) || formDataNotifier.data[itemsKey] is! List) {
     return const [];
@@ -128,6 +131,8 @@ List<Widget> _buildDataRows(
             // don't add delete button to last row because it will be always empty
             index < items.length - 1
                 ? _buildDeleteItemButton(
+                    context,
+                    ref,
                     formDataNotifier,
                     textEditingNotifier,
                     index,
@@ -184,6 +189,8 @@ void addNewRow(ItemFormData formDataNotifier, TextControllerNotifier textEditing
 // note that we don't allow deleting last row, the delete button is not activated for it
 // so, we don't need to check if the row is last row
 Widget _buildDeleteItemButton(
+  BuildContext context,
+  WidgetRef ref,
   ItemFormData formDataNotifier,
   TextControllerNotifier textEditingNotifier,
   int index,
@@ -197,8 +204,6 @@ Widget _buildDeleteItemButton(
           final items = formDataNotifier.getProperty(itemsKey) as List<Map<String, dynamic>>;
           final deletedItem = {...items[index]};
           formDataNotifier.removeSubProperties(itemsKey, index);
-          textEditingNotifier.removeSubControllers(itemsKey, index);
-
           // update all transaction totals due to item removal
 
           final subTotalAmount = _getTotal(formDataNotifier, itemsKey, itemTotalAmountKey);
@@ -223,8 +228,10 @@ Widget _buildDeleteItemButton(
             itemsTotalProfitKey: itemsTotalProfit,
             transactionTotalProfitKey: transactionTotalProfit,
           });
-          textEditingNotifier
-              .updateControllers({totalAmountKey: totalAmount, totalWeightKey: totalWeight});
+          final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+          // I am loading same transaction, but with one row removed
+          TransactionForm.onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+              targetTransactionData: formDataNotifier.data);
         },
         icon: const Icon(Icons.remove, color: Colors.red),
       ),

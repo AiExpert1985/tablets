@@ -29,7 +29,7 @@ class RegionForm extends ConsumerWidget {
     final dbCache = ref.read(regionDbCacheProvider.notifier);
     ref.watch(imagePickerProvider);
     return FormFrame(
-      formKey: formController.formKey,
+      // formKey: formController.formKey,
       fields: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -65,8 +65,8 @@ class RegionForm extends ConsumerWidget {
     DbCache dbCache,
     RegionScreenController screenController,
   ) {
-    if (!formController.validateData()) return;
-    formController.submitData();
+    // if (!formController.validateData()) return;
+    // formController.submitData();
     final formData = formDataNotifier.data;
     final imageUrls = formImagesNotifier.saveChanges();
     final itemData = {...formData, 'imageUrls': imageUrls};

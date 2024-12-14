@@ -5,7 +5,7 @@ class FormFrame extends StatelessWidget {
   const FormFrame(
       {super.key,
       this.backgroundColor,
-      required this.formKey,
+      // required this.formKey,
       required this.fields,
       required this.buttons,
       this.width = 800,
@@ -13,7 +13,7 @@ class FormFrame extends StatelessWidget {
   final Color? backgroundColor;
   final Widget fields;
   final List<Widget> buttons;
-  final GlobalKey<FormState> formKey;
+  // final GlobalKey<FormState> formKey;
   final double width;
   final double height;
 
@@ -27,7 +27,7 @@ class FormFrame extends StatelessWidget {
         child: Column(
           children: [
             Form(
-              key: formKey,
+              // key: formKey,
               child: fields,
             ),
             VerticalGap.xl,

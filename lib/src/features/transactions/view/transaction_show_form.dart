@@ -111,7 +111,6 @@ class TransactionShowForm {
   // for example total price it updated by the item prices
   static void initializeTextFieldControllers(
       TextControllerNotifier textEditingNotifier, ItemFormData formDataNotifier) {
-    tempPrint('initialize text editors');
     // before creating new controllers, I dispose previous ones,
     // I previously disposed them on form close, but I did cause error say there are
     // controllers called after being disposed, so I moved the dispose here
