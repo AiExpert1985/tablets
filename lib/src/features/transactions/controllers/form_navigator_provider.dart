@@ -9,10 +9,10 @@ import 'package:tablets/src/features/transactions/repository/transaction_db_cach
 class FromNavigator {
   final DbCache _dbCacheNotifier;
   final ItemFormData _formDataNotifier;
-  int? currentIndex;
-  bool? isReadOnly;
+  int currentIndex = 0;
+  bool isReadOnly = false;
   // navigatorTransactions represents all transactions of same type as the currently displayed one
-  List<Map<String, dynamic>>? navigatorTransactions;
+  List<Map<String, dynamic>> navigatorTransactions = [];
 
   FromNavigator(
     this._dbCacheNotifier,
@@ -29,18 +29,17 @@ class FromNavigator {
       navigatorTransactions = dbCacheData.where((formData) {
         return formData[transTypeKey] == transactionType;
       }).toList();
-      navigatorTransactions!.sort((a, b) => a[numberKey].compareTo(b[numberKey]));
+      navigatorTransactions.sort((a, b) => a[numberKey].compareTo(b[numberKey]));
       // // and add empty form to the end (new form)
       // navigatorTransactions!.add({});
       // then search for dbRef, if found means user is editing new form so we use its inde
       // if not found means user creating new form, means index should point to last empty form
-      currentIndex = navigatorTransactions!.length - 1;
-      for (int i = 0; i < navigatorTransactions!.length; i++) {
-        if (navigatorTransactions![i][dbRefKey] == dbRef) {
+      currentIndex = navigatorTransactions.length - 1;
+      for (int i = 0; i < navigatorTransactions.length; i++) {
+        if (navigatorTransactions[i][dbRefKey] == dbRef) {
           currentIndex = i;
         }
       }
-      isReadOnly = false;
     } catch (e) {
       String message = 'Error during initializing FormNavigator';
       debugLog(message);
@@ -49,7 +48,7 @@ class FromNavigator {
   }
 
   bool isValidRequest() {
-    if (currentIndex == null || navigatorTransactions == null) {
+    if (navigatorTransactions.isEmpty) {
       String message = 'FormNavigator was not initialized';
       debugLog(message);
       errorPrint(message);
@@ -60,30 +59,30 @@ class FromNavigator {
 
   Map<String, dynamic> next() {
     if (!isValidRequest()) return {};
-    if (currentIndex! < navigatorTransactions!.length - 1) {
+    if (currentIndex < navigatorTransactions.length - 1) {
       saveNewFormData();
-      currentIndex = currentIndex! + 1;
+      currentIndex = currentIndex + 1;
       isReadOnly = true;
     }
-    return navigatorTransactions![currentIndex!];
+    return navigatorTransactions[currentIndex];
   }
 
   Map<String, dynamic> previous() {
     if (!isValidRequest()) return {};
-    if (currentIndex! > 0) {
+    if (currentIndex > 0) {
       saveNewFormData();
-      currentIndex = currentIndex! - 1;
+      currentIndex = currentIndex - 1;
       isReadOnly = true;
     }
-    return navigatorTransactions![currentIndex!];
+    return navigatorTransactions[currentIndex];
   }
 
   Map<String, dynamic> last() {
     if (!isValidRequest()) return {};
     saveNewFormData();
-    currentIndex = navigatorTransactions!.length - 1;
+    currentIndex = navigatorTransactions.length - 1;
     isReadOnly = false;
-    return navigatorTransactions![currentIndex!];
+    return navigatorTransactions[currentIndex];
   }
 
   Map<String, dynamic> first() {
@@ -91,7 +90,7 @@ class FromNavigator {
     saveNewFormData();
     currentIndex = 0;
     isReadOnly = true;
-    return navigatorTransactions![currentIndex!];
+    return navigatorTransactions[currentIndex];
   }
 
   void allowEdit() {
@@ -99,15 +98,15 @@ class FromNavigator {
   }
 
   void reset() {
-    currentIndex = null;
-    isReadOnly = null;
-    navigatorTransactions = null;
+    currentIndex = 0;
+    isReadOnly = false;
+    navigatorTransactions = [];
   }
 
   void saveNewFormData() {
     if (!isValidRequest()) return;
-    if (currentIndex == navigatorTransactions!.length - 1) {
-      navigatorTransactions![currentIndex!] = _formDataNotifier.data;
+    if (currentIndex == navigatorTransactions.length - 1) {
+      navigatorTransactions[currentIndex] = _formDataNotifier.data;
     }
   }
 }

@@ -170,6 +170,25 @@ class NewIemIcon extends StatelessWidget {
   }
 }
 
+class EditIcon extends StatelessWidget {
+  const EditIcon({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(
+          Icons.edit_document,
+          color: Colors.orangeAccent,
+          size: 25,
+        ),
+        VerticalGap.s,
+        Text(S.of(context).edit),
+      ],
+    );
+  }
+}
+
 class PrintIcon extends StatelessWidget {
   const PrintIcon({super.key});
 

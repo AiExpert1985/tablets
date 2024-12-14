@@ -100,6 +100,7 @@ class TransactionForm extends ConsumerWidget {
     ref.watch(textFieldsControllerProvider);
     final height = transactionFormDimenssions[transactionType]['height'];
     final width = transactionFormDimenssions[transactionType]['width'];
+    tempPrint(formNavigation.isReadOnly);
 
     return Scaffold(
       appBar: buildArabicAppBar(context, () async {
@@ -141,7 +142,8 @@ class TransactionForm extends ConsumerWidget {
       IconButton(
         onPressed: () {
           final formData = formNavigation.first();
-          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+          formNavigation.isReadOnly = true;
+          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
               targetTransactionData: formData);
         },
         icon: const GoFirstIcon(),
@@ -149,7 +151,8 @@ class TransactionForm extends ConsumerWidget {
       IconButton(
         onPressed: () {
           final formData = formNavigation.previous();
-          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+          formNavigation.isReadOnly = true;
+          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
               targetTransactionData: formData);
         },
         icon: const GoPreviousIcon(),
@@ -157,33 +160,57 @@ class TransactionForm extends ConsumerWidget {
       const SizedBox(width: 250),
       IconButton(
         onPressed: () {
-          deleteTransaction(context, ref, formDataNotifier, formImagesNotifier, formController,
-              transactionDbCache, screenController,
-              formNavigation: formNavigation);
-        },
-        icon: const DeleteIcon(),
-      ),
-      IconButton(
-        onPressed: () {
-          // _onSavePressed(context, ref, formController, formDataNotifier, formImagesNotifier,
-          //     transactionDbCache, screenController,
-          //     keepDialog: true);
-          _onPrintPressed(context, ref, formDataNotifier);
-        },
-        icon: formDataNotifier.getProperty(isPrintedKey) ? const PrintedIcon() : const PrintIcon(),
-      ),
-      IconButton(
-        onPressed: () {
-          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+          formNavigation.isReadOnly = false;
+          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
               isNewTransaction: true);
         },
         icon: const NewIemIcon(),
       ),
+      if (formNavigation.isReadOnly)
+        IconButton(
+          onPressed: () {
+            formNavigation.isReadOnly = false;
+            // TODO navigation to self  is added only to layout rebuild because formNavigation is not stateNotifier
+            // TODO later I might change formNavigation to StateNotifier and watch it in this widget
+            final formData = formDataNotifier.data;
+            onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
+                targetTransactionData: formData);
+          },
+          icon: const EditIcon(),
+        ),
+      // only show delete button if we are in editing mode
+      if (!formNavigation.isReadOnly)
+        IconButton(
+          onPressed: () {
+            formNavigation.isReadOnly = true;
+            deleteTransaction(context, ref, formDataNotifier, formImagesNotifier, formController,
+                transactionDbCache, screenController,
+                formNavigation: formNavigation);
+          },
+          icon: const DeleteIcon(),
+        ),
+      IconButton(
+        onPressed: () {
+          _onPrintPressed(context, ref, formDataNotifier);
+          // if not printed due to empty name, don't continue
+          if (!formDataNotifier.getProperty(isPrintedKey)) return;
+          formNavigation.isReadOnly = true;
+          // TODO navigation to self  is added only to layout rebuild because formNavigation is not stateNotifier
+          // TODO later I might change formNavigation to StateNotifier and watch it in this widget
+          final formData = formDataNotifier.data;
+          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
+              targetTransactionData: formData);
+        },
+        icon: formDataNotifier.getProperty(isPrintedKey) ? const PrintedIcon() : const PrintIcon(),
+      ),
+
       const SizedBox(width: 250),
       IconButton(
         onPressed: () {
+          formNavigation.isReadOnly = true;
           final formData = formNavigation.next();
-          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+
+          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
               targetTransactionData: formData);
         },
         icon: const GoNextIcon(),
@@ -191,7 +218,8 @@ class TransactionForm extends ConsumerWidget {
       IconButton(
         onPressed: () {
           final formData = formNavigation.last();
-          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+          formNavigation.isReadOnly = true;
+          onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
               targetTransactionData: formData);
         },
         icon: const GoLastIcon(),
@@ -204,6 +232,7 @@ class TransactionForm extends ConsumerWidget {
       failureUserMessage(context, S.of(context).no_name_print_error);
       return;
     }
+
     // first we need to save changes done to the form, then print, because if we don't save,
     // then the debt of customer will not accurately calculated
     saveTransaction(context, ref, formDataNotifier.data, true);
@@ -212,7 +241,7 @@ class TransactionForm extends ConsumerWidget {
   }
 
   static void onNavigationPressed(ItemFormData formDataNotifier, BuildContext context,
-      WidgetRef ref, ImageSliderNotifier formImagesNotifier,
+      WidgetRef ref, ImageSliderNotifier formImagesNotifier, FromNavigator formNavigation,
       {Map<String, dynamic>? targetTransactionData,
       bool isNewTransaction = false,
       bool isDeleting = false}) {
@@ -323,6 +352,7 @@ class TransactionForm extends ConsumerWidget {
         context,
         ref,
         formImagesNotifier,
+        formNavigation,
         targetTransactionData: targetTransactionData,
         isDeleting: true,
       );

@@ -18,6 +18,7 @@ import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_utils_controller.dart';
 import 'package:tablets/src/features/transactions/view/transaction_form.dart';
@@ -229,8 +230,10 @@ Widget _buildDeleteItemButton(
             transactionTotalProfitKey: transactionTotalProfit,
           });
           final formImagesNotifier = ref.read(imagePickerProvider.notifier);
+          final formNavigation = ref.read(formNavigatorProvider);
           // I am loading same transaction, but with one row removed
-          TransactionForm.onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier,
+          TransactionForm.onNavigationPressed(
+              formDataNotifier, context, ref, formImagesNotifier, formNavigation,
               targetTransactionData: formDataNotifier.data);
         },
         icon: const Icon(Icons.remove, color: Colors.red),
