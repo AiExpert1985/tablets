@@ -7,11 +7,7 @@ class ApproveIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      const Icon(Icons.check, color: Colors.green),
-      VerticalGap.s,
-      Text(S.of(context).approve)
-    ]);
+    return Column(children: [const Icon(Icons.check, color: Colors.green), VerticalGap.s, Text(S.of(context).approve)]);
   }
 }
 
@@ -47,14 +43,14 @@ class HomeReturnIcon extends StatelessWidget {
   }
 }
 
-class TransactionBack extends StatelessWidget {
-  const TransactionBack({super.key});
+class NavigationBackButton extends StatelessWidget {
+  const NavigationBackButton({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Row(children: [
       Text(
-        S.of(context).transactions,
+        S.of(context).back,
         style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
       ),
       HorizontalGap.s,
@@ -68,11 +64,7 @@ class SaveIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      const Icon(Icons.check, color: Colors.green),
-      VerticalGap.s,
-      Text(S.of(context).save)
-    ]);
+    return Column(children: [const Icon(Icons.check, color: Colors.green), VerticalGap.s, Text(S.of(context).save)]);
   }
 }
 

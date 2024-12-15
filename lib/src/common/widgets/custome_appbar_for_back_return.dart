@@ -15,7 +15,7 @@ PreferredSizeWidget buildArabicAppBar(
     actions: [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: IconButton(onPressed: backOnTapFn, icon: const TransactionBack()),
+        child: IconButton(onPressed: backOnTapFn, icon: const NavigationBackButton()),
       ),
     ],
   );
