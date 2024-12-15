@@ -127,15 +127,13 @@ class TransactionForm extends ConsumerWidget {
             // formKey: formController.formKey,
             // formKey: GlobalKey<FormState>(),
             fields: _getFormWidget(context, transactionType),
-            buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier,
-                dbCache, screenController, formNavigation, ref),
+            buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier, dbCache,
+                screenController, formNavigation, ref),
             width: width is double ? width : width.toDouble(),
             height: height is double ? height : height.toDouble(),
           ),
           // customer debt info only show for customer transactions
-          transactionType.contains('customer')
-              ? const CustomerDebtReview()
-              : const SizedBox(width: 300),
+          transactionType.contains('customer') ? const CustomerDebtReview() : const SizedBox(width: 300),
         ],
       ),
     );
@@ -177,8 +175,8 @@ class TransactionForm extends ConsumerWidget {
         IconButton(
           onPressed: () {
             formNavigation.isReadOnly = true;
-            deleteTransaction(context, ref, formDataNotifier, formImagesNotifier, formController,
-                transactionDbCache, screenController,
+            deleteTransaction(context, ref, formDataNotifier, formImagesNotifier, formController, transactionDbCache,
+                screenController,
                 formNavigation: formNavigation);
           },
           icon: const DeleteIcon(),
@@ -213,11 +211,9 @@ class TransactionForm extends ConsumerWidget {
     formDataNotifier.updateProperties({isPrintedKey: true});
   }
 
-  static void onNavigationPressed(ItemFormData formDataNotifier, BuildContext context,
-      WidgetRef ref, ImageSliderNotifier formImagesNotifier, FromNavigator formNavigation,
-      {Map<String, dynamic>? targetTransactionData,
-      bool isNewTransaction = false,
-      bool isDeleting = false}) {
+  static void onNavigationPressed(ItemFormData formDataNotifier, BuildContext context, WidgetRef ref,
+      ImageSliderNotifier formImagesNotifier, FromNavigator formNavigation,
+      {Map<String, dynamic>? targetTransactionData, bool isNewTransaction = false, bool isDeleting = false}) {
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
@@ -269,8 +265,7 @@ class TransactionForm extends ConsumerWidget {
   }
 
   /// currenlty, we only save transaction on return
-  static Future<void> onReturn(
-      BuildContext context, WidgetRef ref, ImageSliderNotifier formImagesNotifier) async {
+  static Future<void> onReturn(BuildContext context, WidgetRef ref, ImageSliderNotifier formImagesNotifier) async {
     formImagesNotifier.close();
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
@@ -418,21 +413,18 @@ class ReviewRow extends ConsumerWidget {
       children: [
         Container(
             width: 150,
-            decoration: BoxDecoration(
-                color: isWarning ? Colors.red : Colors.blueGrey,
-                border: Border.all(width: 0.5)), // R
+            decoration:
+                BoxDecoration(color: isWarning ? Colors.red : Colors.blueGrey, border: Border.all(width: 0.5)), // R
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             child: Center(
               child: Text(
                 title,
-                style:
-                    const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
               ),
             )),
         Container(
             width: 130,
-            decoration: BoxDecoration(
-                color: Colors.white, border: Border.all(width: 0.5)), // Rounded corners,
+            decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 0.5)), // Rounded corners,
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             child: Center(
               child: Text(
@@ -536,10 +528,8 @@ class NavigationSearch extends ConsumerWidget {
             formNavigator.goTo(context, int.tryParse(value.trim()));
             // TODO navigation to self  is added only to layout rebuild because formNavigation is not stateNotifier
             // TODO later I might change formNavigation to StateNotifier and watch it in this widget
-            TransactionForm.onNavigationPressed(
-                formDataNotifier, context, ref, formImagesNotifier, formNavigation,
-                targetTransactionData:
-                    formNavigation.navigatorTransactions[formNavigation.currentIndex]);
+            TransactionForm.onNavigationPressed(formDataNotifier, context, ref, formImagesNotifier, formNavigation,
+                targetTransactionData: formNavigation.navigatorTransactions[formNavigation.currentIndex]);
           } catch (e) {
             return;
           }
