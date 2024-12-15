@@ -27,17 +27,18 @@ import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider.dart';
 
 class InvoiceForm extends ConsumerWidget {
-  const InvoiceForm(this.title, this.transactionType, {this.isVendor = false, this.hideGifts = true, super.key});
+  const InvoiceForm(this.title, this.transactionType,
+      {this.isVendor = false, this.hideGifts = true, super.key, this.backgroundColor});
 
   final String title;
   final bool hideGifts;
   final bool isVendor;
   final String transactionType;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(transactionFormDataProvider);
-    final backgroundColor = ref.read(backgroundColorProvider);
 
     return SingleChildScrollView(
       child: Container(

@@ -46,7 +46,7 @@ class TransactionForm extends ConsumerWidget {
   final String transactionType;
   // used to validate wether customer can buy new invoice (if he didn't exceed limits)
 
-  Widget _getFormWidget(BuildContext context, String transactionType) {
+  Widget _getFormWidget(BuildContext context, String transactionType, WidgetRef ref) {
     final titles = {
       TransactionType.customerInvoice.name: S.of(context).transaction_type_customer_invoice,
       TransactionType.vendorInvoice.name: S.of(context).transaction_type_vender_invoice,
@@ -59,7 +59,13 @@ class TransactionForm extends ConsumerWidget {
       TransactionType.damagedItems.name: S.of(context).transaction_type_damaged_items,
     };
     if (transactionType == TransactionType.customerInvoice.name) {
-      return InvoiceForm(titles[transactionType]!, transactionType, hideGifts: false);
+      final backgroundColor = ref.read(backgroundColorProvider);
+      return InvoiceForm(
+        titles[transactionType]!,
+        transactionType,
+        hideGifts: false,
+        backgroundColor: backgroundColor,
+      );
     }
     if (transactionType == TransactionType.vendorInvoice.name) {
       return InvoiceForm(titles[transactionType]!, transactionType, isVendor: true);
@@ -126,7 +132,7 @@ class TransactionForm extends ConsumerWidget {
             // backgroundColor: backgroundColor,
             // formKey: formController.formKey,
             // formKey: GlobalKey<FormState>(),
-            fields: _getFormWidget(context, transactionType),
+            fields: _getFormWidget(context, transactionType, ref),
             buttons: _actionButtons(context, formController, formDataNotifier, formImagesNotifier, dbCache,
                 screenController, formNavigation, ref),
             width: width is double ? width : width.toDouble(),
