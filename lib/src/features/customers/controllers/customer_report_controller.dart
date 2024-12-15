@@ -83,6 +83,7 @@ class CustomerReportController {
       S.of(context).transaction_number,
       S.of(context).transaction_date,
       S.of(context).transaction_amount,
+      S.of(context).balance,
     ];
   }
 

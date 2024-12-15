@@ -36,6 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "average_invoice_closing_duration":
             MessageLookupByLibrary.simpleMessage("معدل الاغلاق"),
         "back": MessageLookupByLibrary.simpleMessage("رجوع"),
+        "balance": MessageLookupByLibrary.simpleMessage("الرصيد"),
         "basic_salary": MessageLookupByLibrary.simpleMessage("الراتب الاسمي"),
         "cancel": MessageLookupByLibrary.simpleMessage("رجوع"),
         "categories": MessageLookupByLibrary.simpleMessage("الاصناف"),

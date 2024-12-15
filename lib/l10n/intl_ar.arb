@@ -256,5 +256,6 @@
     "show_printed_only": "غير المطبوع",
     "show_all": "عرض الجميع",
     "transaction_not_found": "لم يتم ايجاد التعامل المطلوب",
-    "there_is_no_customer_receipt": "لا يوجد"
+    "there_is_no_customer_receipt": "لا يوجد",
+    "balance": "الرصيد"
 }

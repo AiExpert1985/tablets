@@ -256,5 +256,6 @@
     "show_printed_only": "Show printed only",
     "show_all": "Show all",
     "transaction_not_found": "Transaction not found",
-    "there_is_no_customer_receipt": "no receipt"
+    "there_is_no_customer_receipt": "no receipt",
+    "balance": "Balance"
 }
