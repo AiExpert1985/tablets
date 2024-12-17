@@ -17,9 +17,9 @@ const lightBgColor = PdfColor(0.85, 0.85, 0.99);
 const bordersColor = PdfColors.grey;
 const labelsColor = PdfColors.red;
 
-Future<void> _printPDf(Document pdf) async {
+Future<void> _printPDf(Document pdf, int numCopies) async {
   try {
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < numCopies; i++) {
       await Printing.layoutPdf(
         onLayout: (PdfPageFormat format) async => await pdf.save(),
       );
@@ -32,11 +32,12 @@ Future<void> _printPDf(Document pdf) async {
 Future<void> printDocument(
     BuildContext context, WidgetRef ref, Map<String, dynamic> transactionData) async {
   try {
+    final numCopies = transactionData['transactionType'].contains('Receipt') ? 1 : 2;
     final image = await loadImage('assets/images/invoice_logo.PNG');
     final filePath = gePdfpath('test_file');
     if (context.mounted) {
       final pdf = await getPdfFile(context, ref, transactionData, image);
-      _printPDf(pdf);
+      _printPDf(pdf, numCopies);
       if (filePath == null) return;
 
       final file = File(filePath);

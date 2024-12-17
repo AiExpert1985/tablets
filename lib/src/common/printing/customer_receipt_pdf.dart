@@ -117,10 +117,9 @@ pw.Widget _receiptPage(
                   pw.SizedBox(height: 16),
                   _invoiceAmountColumn(
                       arabicFont, subtotalAmount, discount, debtBefore, debtAfter, currency),
-                  pw.SizedBox(height: 30),
-                  footerBar(arabicFont, 'الشركة غير مسؤولة عن انتهاء الصلاحية بعد استلام البضاعة',
-                      'وقت الطباعة     $printingDate   $printingTime '),
-                  pw.SizedBox(height: 10),
+                  pw.SizedBox(height: 26),
+                  footerBar(arabicFont, '', 'وقت الطباعة     $printingDate   $printingTime '),
+                  pw.SizedBox(height: 14),
                 ],
               ),
             )
@@ -173,7 +172,7 @@ pw.Widget _invoiceAmountColumn(Font arabicFont, String totalAmount, String disco
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
     children: [
-      _totalsItem(arabicFont, 'مبلغ القائمة', totalAmount, lightBgColor),
+      _totalsItem(arabicFont, 'المبلغ المسدد', totalAmount, lightBgColor),
       pw.SizedBox(height: 2),
       _totalsItem(arabicFont, 'الخصم', discount, lightBgColor),
       pw.SizedBox(height: 2),
