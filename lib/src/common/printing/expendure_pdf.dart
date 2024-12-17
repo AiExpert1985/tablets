@@ -9,29 +9,21 @@ import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
-import 'package:tablets/src/features/vendors/controllers/vendor_screen_controller.dart';
-import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider.dart';
 
-Future<Document> getVendorReceiptPdf(BuildContext context, WidgetRef ref,
+Future<Document> getExpenditurePdf(BuildContext context, WidgetRef ref,
     Map<String, dynamic> transactionData, pw.ImageProvider image) async {
   final pdf = pw.Document();
-  final vendorDbCache = ref.read(vendorDbCacheProvider.notifier);
-  final vendorData = vendorDbCache.getItemByDbRef(transactionData['nameDbRef']);
   final type = translateDbTextToScreenText(context, transactionData['transactionType']);
   final number = transactionData['number'].toString();
   final name = transactionData['name'];
   final date = formatDate(transactionData['date']);
   final subtotalAmount = doubleToStringWithComma(transactionData['subTotalAmount']);
   final totalAmount = doubleToStringWithComma(transactionData[transactionTotalAmountKey]);
-  final discount = doubleToStringWithComma(transactionData['discount']);
   final currency = translateDbTextToScreenText(context, transactionData['currency']);
   final now = DateTime.now();
   final printingDate = DateFormat.yMd('ar').format(now);
   final printingTime = DateFormat.jm('ar').format(now);
   final notes = transactionData['notes'];
-  final screenController = ref.read(vendorScreenControllerProvider);
-  final screenData = screenController.getItemScreenData(context, vendorData);
-  final debtAfter = doubleToStringWithComma(screenData['totalDebt']);
   final arabicFont =
       pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
 
@@ -49,8 +41,6 @@ Future<Document> getVendorReceiptPdf(BuildContext context, WidgetRef ref,
         date,
         subtotalAmount,
         totalAmount,
-        discount,
-        debtAfter,
         currency,
         notes,
         printingTime,
@@ -73,8 +63,6 @@ pw.Widget _receiptPage(
   String date,
   String subtotalAmount,
   String totalAmount,
-  String discount,
-  String debtAfter,
   String currency,
   String notes,
   String printingDate,
@@ -94,7 +82,7 @@ pw.Widget _receiptPage(
             pw.SizedBox(height: 15),
             pw.Center(child: arabicText(arabicFont, type, fontSize: 20)),
             pw.SizedBox(height: 15),
-            separateLabelContainer(arabicFont, customerName, 'أسم المجهز', 330),
+            separateLabelContainer(arabicFont, customerName, 'نوع الدفع', 330),
             pw.SizedBox(height: 10),
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.center,
@@ -105,8 +93,7 @@ pw.Widget _receiptPage(
               ],
             ),
             pw.SizedBox(height: 20),
-            _invoiceAmountColumn(
-                arabicFont, subtotalAmount, totalAmount, discount, debtAfter, currency),
+            _invoiceAmountColumn(arabicFont, subtotalAmount, totalAmount, currency),
             pw.SizedBox(height: 30),
             labedContainer(notes, 'الملاحظات', arabicFont, width: 400, height: 70),
             pw.Spacer(),
@@ -123,22 +110,14 @@ pw.Widget _receiptPage(
       ; // Center
 }
 
-pw.Widget _invoiceAmountColumn(Font arabicFont, String subTotalAmount, String totalAmount,
-    String discount, String debtAfter, String currency) {
+pw.Widget _invoiceAmountColumn(
+    Font arabicFont, String subTotalAmount, String totalAmount, String currency) {
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
     children: [
-      _totalsItem(arabicFont, 'المبلغ المدفوع', subTotalAmount, lightBgColor),
-      pw.SizedBox(height: 4),
-      _totalsItem(arabicFont, 'الخصم', discount, lightBgColor),
-      pw.SizedBox(height: 4),
-      _totalsItem(arabicFont, 'المبلغ الكلي', totalAmount, darkBgColor, textColor: PdfColors.white),
+      _totalsItem(arabicFont, 'المبلغ ', totalAmount, darkBgColor, textColor: PdfColors.white),
       pw.SizedBox(height: 10),
-      pw.Row(children: [
-        separateLabelContainer(arabicFont, currency, 'العملة', 80),
-        pw.Spacer(),
-        separateLabelContainer(arabicFont, debtAfter, 'الدين المتبقي', 140),
-      ]),
+      separateLabelContainer(arabicFont, currency, 'العملة', 80),
     ],
   );
 }

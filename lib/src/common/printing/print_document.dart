@@ -7,7 +7,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/file_system_path.dart';
 import 'package:tablets/src/common/printing/customer_invoice_pdf.dart';
-import 'package:tablets/src/common/printing/customer_receipt_pdf.dart';
+import 'package:tablets/src/common/printing/expendure_pdf.dart';
 import 'package:tablets/src/common/printing/vendor_receipt_pdf.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:printing/printing.dart';
@@ -45,8 +45,10 @@ Future<void> printDocument(
   try {
     final settings = ref.read(settingsFormDataProvider.notifier);
     final settingInvoiceCopies = settings.data['printedCustomerInvoices'];
-    final numCopies =
-        transactionData['transactionType'].contains('Receipt') ? 1 : settingInvoiceCopies;
+    final numCopies = transactionData['transactionType'].contains('Receipt') ||
+            transactionData['transactionType'].contains('expenditure')
+        ? 1
+        : settingInvoiceCopies;
     final isLandScape = transactionData['transactionType'].contains('Receipt') ? true : false;
     final image = await loadImage('assets/images/invoice_logo.PNG');
     final filePath = gePdfpath('test_file');
@@ -77,6 +79,8 @@ Future<Document> getPdfFile(BuildContext context, WidgetRef ref,
   } else if (transactionData['transactionType'] == TransactionType.customerReceipt.name) {
   } else if (transactionData['transactionType'] == TransactionType.vendorReceipt.name) {
     return getVendorReceiptPdf(context, ref, transactionData, image);
+  } else if (transactionData['transactionType'] == TransactionType.expenditures.name) {
+    return getExpenditurePdf(context, ref, transactionData, image);
   }
   return getEmptyPdf();
 }
