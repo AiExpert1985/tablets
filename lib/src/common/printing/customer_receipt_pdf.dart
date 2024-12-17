@@ -102,6 +102,7 @@ pw.Widget _receiptPage(
 }) {
   return pw.Row(children: [
     for (var i = 0; i < 2; i++) ...[
+      pw.SizedBox(width: 90),
       pw.Container(
         width: 300,
         height: 600,
@@ -132,7 +133,7 @@ pw.Widget _receiptPage(
             pw.SizedBox(height: 8),
           ],
         ),
-      )
+      ),
     ]
   ])
 
