@@ -6,10 +6,10 @@ import 'package:pdf/widgets.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/printing/print_document.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:flutter/services.dart';
+import 'package:tablets/src/features/vendors/controllers/vendor_screen_controller.dart';
 
 Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
     Map<String, dynamic> transactionData, pw.ImageProvider image) async {
@@ -37,11 +37,11 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
   final notes = transactionData['notes'];
   final totalNumOfItems = doubleToStringWithComma(_calculateTotalNumOfItems(items));
   final itemsWeigt = doubleToStringWithComma(transactionData['totalWeight']);
-  final customerScreenController = ref.read(customerScreenControllerProvider);
-  final customerScreenData = customerScreenController.getItemScreenData(context, customerData);
-  final debtAfter = doubleToStringWithComma(customerScreenData['totalDebt']);
+  final screenController = ref.read(vendorScreenControllerProvider);
+  final screenData = screenController.getItemScreenData(context, customerData);
+  final debtAfter = doubleToStringWithComma(screenData['totalDebt']);
   final debtBefore =
-      doubleToStringWithComma(customerScreenData['totalDebt'] - transactionData['totalAmount']);
+      doubleToStringWithComma(screenData['totalDebt'] - transactionData['totalAmount']);
   final arabicFont =
       pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
 

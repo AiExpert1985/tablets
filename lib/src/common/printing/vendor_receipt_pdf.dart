@@ -6,20 +6,21 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/printing/print_document.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
-import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
+import 'package:tablets/src/features/vendors/controllers/vendor_screen_controller.dart';
+import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider.dart';
 
-Future<Document> getCustomerReceiptPdf(BuildContext context, WidgetRef ref,
+Future<Document> getVendorReceiptPdf(BuildContext context, WidgetRef ref,
     Map<String, dynamic> transactionData, pw.ImageProvider image) async {
   final pdf = pw.Document();
-  final customerDbCache = ref.read(customerDbCacheProvider.notifier);
-  final customerData = customerDbCache.getItemByDbRef(transactionData['nameDbRef']);
+  final vendorDbCache = ref.read(vendorDbCacheProvider.notifier);
+  final vendorData = vendorDbCache.getItemByDbRef(transactionData['nameDbRef']);
   final type = translateDbTextToScreenText(context, transactionData['transactionType']);
   final number = transactionData['number'].toString();
-  final customerName = transactionData['name'];
+  final name = transactionData['name'];
   final date = formatDate(transactionData['date']);
   final subtotalAmount = doubleToStringWithComma(transactionData['subTotalAmount']);
   final totalAmount = doubleToStringWithComma(transactionData[transactionTotalAmountKey]);
@@ -29,9 +30,9 @@ Future<Document> getCustomerReceiptPdf(BuildContext context, WidgetRef ref,
   final printingDate = DateFormat.yMd('ar').format(now);
   final printingTime = DateFormat.jm('ar').format(now);
   final notes = transactionData['notes'];
-  final customerScreenController = ref.read(customerScreenControllerProvider);
-  final customerScreenData = customerScreenController.getItemScreenData(context, customerData);
-  final debtAfter = doubleToStringWithComma(customerScreenData['totalDebt']);
+  final screenController = ref.read(vendorScreenControllerProvider);
+  final screenData = screenController.getItemScreenData(context, vendorData);
+  final debtAfter = doubleToStringWithComma(screenData['totalDebt']);
   final arabicFont =
       pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
 
@@ -43,7 +44,7 @@ Future<Document> getCustomerReceiptPdf(BuildContext context, WidgetRef ref,
         context,
         arabicFont,
         image,
-        customerName,
+        name,
         type,
         number,
         date,
@@ -94,7 +95,7 @@ pw.Widget _receiptPage(
             pw.SizedBox(height: 15),
             pw.Center(child: arabicText(arabicFont, type, fontSize: 20)),
             pw.SizedBox(height: 15),
-            separateLabelContainer(arabicFont, customerName, 'أسم الزبون', 330),
+            separateLabelContainer(arabicFont, customerName, 'أسم المجهز', 330),
             pw.SizedBox(height: 10),
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.center,
@@ -128,7 +129,7 @@ pw.Widget _invoiceAmountColumn(Font arabicFont, String subTotalAmount, String to
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
     children: [
-      _totalsItem(arabicFont, 'المبلغ المستلم', subTotalAmount, lightBgColor),
+      _totalsItem(arabicFont, 'المبلغ المدفوع', subTotalAmount, lightBgColor),
       pw.SizedBox(height: 4),
       _totalsItem(arabicFont, 'الخصم', discount, lightBgColor),
       pw.SizedBox(height: 4),
