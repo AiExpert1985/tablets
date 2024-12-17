@@ -11,7 +11,7 @@ import 'package:tablets/src/features/customers/repository/customer_db_cache_prov
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:flutter/services.dart';
 
-Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
+Future<Document> getCustomerReturnPdf(BuildContext context, WidgetRef ref,
     Map<String, dynamic> transactionData, pw.ImageProvider image) async {
   final pdf = pw.Document();
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
@@ -37,11 +37,11 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
   final notes = transactionData['notes'];
   final totalNumOfItems = doubleToStringWithComma(_calculateTotalNumOfItems(items));
   final itemsWeigt = doubleToStringWithComma(transactionData['totalWeight']);
-  final customerScreenController = ref.read(customerScreenControllerProvider);
-  final customerScreenData = customerScreenController.getItemScreenData(context, customerData);
-  final debtAfter = doubleToStringWithComma(customerScreenData['totalDebt']);
+  final screenController = ref.read(customerScreenControllerProvider);
+  final screenData = screenController.getItemScreenData(context, customerData);
+  final debtAfter = doubleToStringWithComma(screenData['totalDebt']);
   final debtBefore =
-      doubleToStringWithComma(customerScreenData['totalDebt'] - transactionData['totalAmount']);
+      doubleToStringWithComma(screenData['totalDebt'] + transactionData['totalAmount']);
   final arabicFont =
       pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
 
@@ -508,14 +508,13 @@ pw.Widget _itemTitles(Font arabicFont) {
     children: [
       arabicText(arabicFont, 'المجموع', width: 70, isTitle: true, textColor: PdfColors.white),
       arabicText(arabicFont, 'السعر', width: 70, isTitle: true, textColor: PdfColors.white),
-      arabicText(arabicFont, 'الهدية', width: 70, isTitle: true, textColor: PdfColors.red),
       arabicText(arabicFont, 'العدد', width: 70, isTitle: true, textColor: PdfColors.white),
       arabicText(arabicFont, 'اسم المادة', width: 200, isTitle: true, textColor: PdfColors.white),
       arabicText(arabicFont, 'ت', width: 40, isTitle: true, textColor: PdfColors.white),
     ],
   );
   // return pw.Stack(children: [
-  return coloredContainer(childWidget, bgColor: darkBgColor, 554, height: 20);
+  return coloredContainer(childWidget, bgColor: PdfColors.red, 554, height: 20);
 }
 
 pw.Widget _buildItems(Font arabicFont, List<dynamic> items, {int startingSequence = 1}) {
@@ -529,7 +528,6 @@ pw.Widget _buildItems(Font arabicFont, List<dynamic> items, {int startingSequenc
       (startingSequence + i).toString(),
       item['name'],
       doubleToStringWithComma(item['soldQuantity']),
-      doubleToStringWithComma(item['giftQuantity']),
       doubleToStringWithComma(item['sellingPrice']),
       doubleToStringWithComma(item['itemTotalAmount']),
     ));
@@ -537,8 +535,8 @@ pw.Widget _buildItems(Font arabicFont, List<dynamic> items, {int startingSequenc
   return pw.Column(children: itemWidgets);
 }
 
-pw.Widget _itemsRow(Font arabicFont, String sequence, String name, String quantity, String gift,
-    String price, String total) {
+pw.Widget _itemsRow(
+    Font arabicFont, String sequence, String name, String quantity, String price, String total) {
   return pw.Container(
     height: 20,
     width: 554,
@@ -546,13 +544,11 @@ pw.Widget _itemsRow(Font arabicFont, String sequence, String name, String quanti
     child: pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
       children: [
-        arabicText(arabicFont, total, width: 70, isBordered: true, fontSize: 9),
-        arabicText(arabicFont, price, width: 70, isBordered: true, fontSize: 9),
-        arabicText(arabicFont, gift,
-            width: 70, isBordered: true, textColor: PdfColors.red, fontSize: 9),
-        arabicText(arabicFont, quantity, width: 70, isBordered: true, fontSize: 9),
-        arabicText(arabicFont, name, width: 200, isBordered: true, fontSize: 9),
-        arabicText(arabicFont, sequence, width: 40, isBordered: true, fontSize: 9),
+        arabicText(arabicFont, total, width: 90, isBordered: true, fontSize: 9),
+        arabicText(arabicFont, price, width: 90, isBordered: true, fontSize: 9),
+        arabicText(arabicFont, quantity, width: 90, isBordered: true, fontSize: 9),
+        arabicText(arabicFont, name, width: 220, isBordered: true, fontSize: 9),
+        arabicText(arabicFont, sequence, width: 60, isBordered: true, fontSize: 9),
       ],
     ),
   );
@@ -603,10 +599,10 @@ pw.Widget _invoiceAmountColumn(Font arabicFont, String totalAmount, String disco
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
     children: [
-      _totalsItem(arabicFont, 'مبلغ القائمة', totalAmount, darkBgColor, textColor: PdfColors.white),
-      _totalsItem(arabicFont, 'الخصم', discount, lightBgColor),
+      _totalsItem(arabicFont, 'مبلغ القائمة', totalAmount, PdfColors.red,
+          textColor: PdfColors.white),
       _totalsItem(arabicFont, 'الدين السابق', debtBefore, lightBgColor),
-      _totalsItem(arabicFont, 'الدين الحالي', debtAfter, darkBgColor, textColor: PdfColors.white),
+      _totalsItem(arabicFont, 'الدين الحالي', debtAfter, PdfColors.red, textColor: PdfColors.white),
       arabicText(arabicFont, currency),
     ],
   );
