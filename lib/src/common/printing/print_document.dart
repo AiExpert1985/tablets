@@ -11,6 +11,7 @@ import 'package:tablets/src/common/printing/customer_receipt_pdf.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:printing/printing.dart';
 import 'package:flutter/services.dart';
+import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 
 const darkBgColor = PdfColor(0.2, 0.2, 0.5);
 const lightBgColor = PdfColor(0.85, 0.85, 0.99);
@@ -18,7 +19,6 @@ const bordersColor = PdfColors.grey;
 const labelsColor = PdfColors.red;
 
 Future<void> _printPDf(Document pdf, int numCopies, bool isLandScape) async {
-  tempPrint(isLandScape);
   try {
     for (int i = 0; i < numCopies; i++) {
       await Printing.layoutPdf(
@@ -42,7 +42,10 @@ Future<void> printDocument(
   Map<String, dynamic> transactionData,
 ) async {
   try {
-    final numCopies = transactionData['transactionType'].contains('Receipt') ? 1 : 2;
+    final settings = ref.read(settingsFormDataProvider.notifier);
+    final settingInvoiceCopies = settings.data['printedCustomerInvoices'];
+    final numCopies =
+        transactionData['transactionType'].contains('Receipt') ? 1 : settingInvoiceCopies;
     final isLandScape = transactionData['transactionType'].contains('Receipt') ? true : false;
     final image = await loadImage('assets/images/invoice_logo.PNG');
     final filePath = gePdfpath('test_file');
@@ -177,4 +180,15 @@ pw.Widget labedContainer(String text, String label, Font arabicFont,
           textColor: PdfColors.red, fontSize: 7, bgColor: PdfColors.white),
     ),
   ]);
+}
+
+pw.Widget separateLabelContainer(Font arabicFont, String content, String label, double width) {
+  return pw.Row(
+    mainAxisAlignment: pw.MainAxisAlignment.center,
+    children: [
+      coloredContainer(arabicText(arabicFont, content), width),
+      pw.SizedBox(width: 10),
+      arabicText(arabicFont, label, textColor: PdfColors.red)
+    ],
+  );
 }

@@ -2510,6 +2510,16 @@ class S {
     );
   }
 
+  /// `Not printed`
+  String get not_printed {
+    return Intl.message(
+      'Not printed',
+      name: 'not_printed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `You must enter name`
   String get no_name_print_error {
     return Intl.message(

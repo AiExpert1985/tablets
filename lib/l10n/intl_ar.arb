@@ -245,6 +245,7 @@
     "first": "الاول",
     "last": "الاخير",
     "printed": "مطبوع",
+    "not_printed": "غير مطبوع",
     "no_name_print_error": "يجب ادخال الاسم",
     "code": "الرمز",
     "transaction_group_selection": "اختيار نوع التعامل",

@@ -206,6 +206,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No data available"),
         "no_name_print_error":
             MessageLookupByLibrary.simpleMessage("You must enter name"),
+        "not_printed": MessageLookupByLibrary.simpleMessage("Not printed"),
         "notes": MessageLookupByLibrary.simpleMessage("Notes"),
         "num_due_invoices":
             MessageLookupByLibrary.simpleMessage("Due invoices"),

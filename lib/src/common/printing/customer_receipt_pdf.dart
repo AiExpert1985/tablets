@@ -12,6 +12,7 @@ import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provi
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 
 Future<Document> getCustomerReceiptPdf(BuildContext context, WidgetRef ref,
     Map<String, dynamic> transactionData, pw.ImageProvider image) async {
@@ -30,6 +31,7 @@ Future<Document> getCustomerReceiptPdf(BuildContext context, WidgetRef ref,
   final paymentType = translateDbTextToScreenText(context, S.of(context).transaction_payment_cash);
   final date = formatDate(transactionData['date']);
   final subtotalAmount = doubleToStringWithComma(transactionData['subTotalAmount']);
+  final totalAmount = doubleToStringWithComma(transactionData[transactionTotalAmountKey]);
   final discount = doubleToStringWithComma(transactionData['discount']);
   final currency = translateDbTextToScreenText(context, transactionData['currency']);
   final now = DateTime.now();
@@ -62,6 +64,7 @@ Future<Document> getCustomerReceiptPdf(BuildContext context, WidgetRef ref,
         number,
         date,
         subtotalAmount,
+        totalAmount,
         discount,
         debtBefore,
         debtAfter,
@@ -91,6 +94,7 @@ pw.Widget _receiptPage(
   String number,
   String date,
   String subtotalAmount,
+  String totalAmount,
   String discount,
   String debtBefore,
   String debtAfter,
@@ -102,34 +106,34 @@ pw.Widget _receiptPage(
 }) {
   return pw.Row(children: [
     for (var i = 0; i < 2; i++) ...[
-      pw.SizedBox(width: 90),
+      pw.SizedBox(width: 15),
       pw.Container(
-        width: 300,
+        width: 400,
         height: 600,
         child: pw.Column(
           mainAxisAlignment: pw.MainAxisAlignment.start,
           children: [
             pw.Image(image),
-            pw.SizedBox(height: 12),
+            pw.SizedBox(height: 15),
             pw.Center(child: arabicText(arabicFont, type, fontSize: 20)),
-            pw.SizedBox(height: 4),
-            labedContainer(customerName, 'اسم الزبون', arabicFont, width: 165),
-            pw.SizedBox(height: 4),
+            pw.SizedBox(height: 15),
+            separateLabelContainer(arabicFont, customerName, 'أسم الزبون', 330),
+            pw.SizedBox(height: 10),
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.center,
               children: [
-                labedContainer(date, 'تاريخ القائمة', arabicFont, width: 80),
-                pw.SizedBox(width: 4),
-                labedContainer(number, 'رقم القائمة', arabicFont, width: 80)
+                separateLabelContainer(arabicFont, date, 'تاريخ الوصل', 130),
+                pw.SizedBox(width: 5),
+                separateLabelContainer(arabicFont, number, 'رقم الوصل', 130),
               ],
             ),
-            pw.SizedBox(height: 4),
-            labedContainer(notes, 'الملاحظات', arabicFont, width: 165),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 20),
             _invoiceAmountColumn(
-                arabicFont, subtotalAmount, discount, debtBefore, debtAfter, currency),
+                arabicFont, subtotalAmount, totalAmount, discount, debtBefore, debtAfter, currency),
+            pw.SizedBox(height: 30),
+            labedContainer(notes, 'الملاحظات', arabicFont, width: 400, height: 70),
             pw.Spacer(),
-            footerBar(arabicFont, '', 'وقت الطباعة     $printingDate   $printingTime '),
+            footerBar(arabicFont, 'وقت الطباعة', '$printingDate   $printingTime '),
             pw.SizedBox(height: 8),
           ],
         ),
@@ -142,20 +146,22 @@ pw.Widget _receiptPage(
       ; // Center
 }
 
-pw.Widget _invoiceAmountColumn(Font arabicFont, String totalAmount, String discount,
-    String debtBefore, String debtAfter, String currency) {
+pw.Widget _invoiceAmountColumn(Font arabicFont, String subTotalAmount, String totalAmount,
+    String discount, String debtBefore, String debtAfter, String currency) {
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
     children: [
-      _totalsItem(arabicFont, 'المبلغ المسدد', totalAmount, lightBgColor),
-      pw.SizedBox(height: 2),
+      _totalsItem(arabicFont, 'المبلغ المستلم', subTotalAmount, lightBgColor),
+      pw.SizedBox(height: 4),
       _totalsItem(arabicFont, 'الخصم', discount, lightBgColor),
-      pw.SizedBox(height: 2),
-      _totalsItem(arabicFont, 'الطلب السابق', debtBefore, lightBgColor),
-      pw.SizedBox(height: 2),
-      _totalsItem(arabicFont, 'المجموع الكلي', debtAfter, darkBgColor, textColor: PdfColors.white),
-      pw.SizedBox(height: 2),
-      arabicText(arabicFont, currency),
+      pw.SizedBox(height: 4),
+      _totalsItem(arabicFont, 'المبلغ الكلي', totalAmount, darkBgColor, textColor: PdfColors.white),
+      pw.SizedBox(height: 10),
+      pw.Row(children: [
+        separateLabelContainer(arabicFont, currency, 'العملة', 80),
+        pw.Spacer(),
+        separateLabelContainer(arabicFont, debtAfter, 'الدين المتبقي', 140),
+      ]),
     ],
   );
 }
