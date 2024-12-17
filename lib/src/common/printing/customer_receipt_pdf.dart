@@ -46,6 +46,7 @@ Future<Document> getCustomerReceiptPdf(BuildContext context, WidgetRef ref,
 
   pdf.addPage(pw.Page(
     margin: pw.EdgeInsets.zero,
+    orientation: PageOrientation.landscape,
     build: (pw.Context ctx) {
       return _receiptPage(
         context,
@@ -99,72 +100,45 @@ pw.Widget _receiptPage(
   String printingTime, {
   bool includeImage = true,
 }) {
-  return pw.Column(children: [
+  return pw.Row(children: [
     for (var i = 0; i < 2; i++) ...[
       pw.Container(
-          height: 415,
-          child: pw.Row(children: [
-            pw.Expanded(
-              child: pw.Column(
-                mainAxisAlignment: pw.MainAxisAlignment.start,
-                children: [
-                  pw.Image(image),
-                  _buildFirstRow(context, arabicFont, customerName, customerPhone, customerRegion,
-                      paymentType),
-                  pw.SizedBox(height: 8),
-                  _buildSecondRow(
-                      context, arabicFont, salesmanName, salesmanPhone, type, number, date),
-                  pw.SizedBox(height: 16),
-                  _invoiceAmountColumn(
-                      arabicFont, subtotalAmount, discount, debtBefore, debtAfter, currency),
-                  pw.SizedBox(height: 26),
-                  footerBar(arabicFont, '', 'وقت الطباعة     $printingDate   $printingTime '),
-                  pw.SizedBox(height: 14),
-                ],
-              ),
-            )
-          ]))
+        width: 300,
+        height: 600,
+        child: pw.Column(
+          mainAxisAlignment: pw.MainAxisAlignment.start,
+          children: [
+            pw.Image(image),
+            pw.SizedBox(height: 12),
+            pw.Center(child: arabicText(arabicFont, type, fontSize: 20)),
+            pw.SizedBox(height: 4),
+            labedContainer(customerName, 'اسم الزبون', arabicFont, width: 165),
+            pw.SizedBox(height: 4),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.center,
+              children: [
+                labedContainer(date, 'تاريخ القائمة', arabicFont, width: 80),
+                pw.SizedBox(width: 4),
+                labedContainer(number, 'رقم القائمة', arabicFont, width: 80)
+              ],
+            ),
+            pw.SizedBox(height: 4),
+            labedContainer(notes, 'الملاحظات', arabicFont, width: 165),
+            pw.SizedBox(height: 10),
+            _invoiceAmountColumn(
+                arabicFont, subtotalAmount, discount, debtBefore, debtAfter, currency),
+            pw.Spacer(),
+            footerBar(arabicFont, '', 'وقت الطباعة     $printingDate   $printingTime '),
+            pw.SizedBox(height: 8),
+          ],
+        ),
+      )
     ]
-  ]); // Center
-}
+  ])
 
-num calculateTotalNumOfItems(List<dynamic> items) {
-  num numItems = 0;
-  for (int i = 0; i < items.length; i++) {
-    numItems += items[i]['soldQuantity'].toInt() + items[i]['giftQuantity'].toInt();
-  }
-  return numItems;
-}
+      // ]
 
-pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String customerName,
-    String customerPhone, String customerRegion, String paymentType) {
-  return pw.Row(
-    mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
-    children: [
-      pw.SizedBox(width: 5), // margin
-      labedContainer(paymentType, 'الدفع', arabicFont, width: 80),
-      labedContainer(customerRegion, 'العنوان', arabicFont, width: 158),
-      labedContainer(customerPhone, 'رقم الزبون', arabicFont, width: 90),
-      labedContainer(customerName, 'اسم الزبون', arabicFont),
-      pw.SizedBox(width: 5), // margin
-    ],
-  );
-}
-
-pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String salesmanName,
-    String salesmanPhone, String type, String number, String date) {
-  return pw.Row(
-    mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
-    children: [
-      pw.SizedBox(width: 5), // margin
-      labedContainer(date, 'تاريخ القائمة', arabicFont, width: 80),
-      labedContainer(number, 'رقم القائمة', arabicFont, width: 60),
-      labedContainer(type, 'نوع القائمة', arabicFont, width: 80),
-      labedContainer(salesmanPhone, 'رقم المندوب', arabicFont, width: 90),
-      labedContainer(salesmanName, 'المندوب', arabicFont),
-      pw.SizedBox(width: 5), // margin
-    ],
-  );
+      ; // Center
 }
 
 pw.Widget _invoiceAmountColumn(Font arabicFont, String totalAmount, String discount,

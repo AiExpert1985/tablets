@@ -17,11 +17,18 @@ const lightBgColor = PdfColor(0.85, 0.85, 0.99);
 const bordersColor = PdfColors.grey;
 const labelsColor = PdfColors.red;
 
-Future<void> _printPDf(Document pdf, int numCopies) async {
+Future<void> _printPDf(Document pdf, int numCopies, bool isLandScape) async {
+  tempPrint(isLandScape);
   try {
     for (int i = 0; i < numCopies; i++) {
       await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => await pdf.save(),
+        onLayout: (PdfPageFormat format) async {
+          // Return the PDF document as bytes
+          return await pdf.save();
+        },
+        format: isLandScape
+            ? PdfPageFormat.a4.landscape
+            : PdfPageFormat.a4.portrait, // Specify A4 landscape format
       );
     }
   } catch (e) {
@@ -30,18 +37,22 @@ Future<void> _printPDf(Document pdf, int numCopies) async {
 }
 
 Future<void> printDocument(
-    BuildContext context, WidgetRef ref, Map<String, dynamic> transactionData) async {
+  BuildContext context,
+  WidgetRef ref,
+  Map<String, dynamic> transactionData,
+) async {
   try {
     final numCopies = transactionData['transactionType'].contains('Receipt') ? 1 : 2;
+    final isLandScape = transactionData['transactionType'].contains('Receipt') ? true : false;
     final image = await loadImage('assets/images/invoice_logo.PNG');
     final filePath = gePdfpath('test_file');
     if (context.mounted) {
       final pdf = await getPdfFile(context, ref, transactionData, image);
-      _printPDf(pdf, numCopies);
       if (filePath == null) return;
 
       final file = File(filePath);
       await file.writeAsBytes(await pdf.save());
+      _printPDf(pdf, numCopies, isLandScape);
     }
   } catch (e) {
     debugLog('Pdf creation failed - ($e)');
