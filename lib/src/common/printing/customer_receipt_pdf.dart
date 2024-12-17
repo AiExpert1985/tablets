@@ -1,1 +1,208 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:pdf/widgets.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/printing/print_document.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
+import 'package:flutter/services.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart';
 
+Future<Document> getCustomerReceiptPdf(BuildContext context, WidgetRef ref,
+    Map<String, dynamic> transactionData, pw.ImageProvider image) async {
+  final pdf = pw.Document();
+  final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+  final customerData = customerDbCache.getItemByDbRef(transactionData['nameDbRef']);
+  final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
+  final salesmanData = salesmanDbCache.getItemByDbRef(transactionData['salesmanDbRef']);
+  final type = translateDbTextToScreenText(context, transactionData['transactionType']);
+  final number = transactionData['number'].toString();
+  final customerName = transactionData['name'];
+  final customerPhone = customerData['phone'] ?? '';
+  final customerRegion = customerData['region'] ?? '';
+  final salesmanName = salesmanData['name'] ?? '';
+  final salesmanPhone = salesmanData['phone'] ?? '';
+  final paymentType = translateDbTextToScreenText(context, S.of(context).transaction_payment_cash);
+  final date = formatDate(transactionData['date']);
+  final subtotalAmount = doubleToStringWithComma(transactionData['subTotalAmount']);
+  final discount = doubleToStringWithComma(transactionData['discount']);
+  final currency = translateDbTextToScreenText(context, transactionData['currency']);
+  final now = DateTime.now();
+  final printingDate = DateFormat.yMd('ar').format(now);
+  final printingTime = DateFormat.jm('ar').format(now);
+  final notes = transactionData['notes'];
+  final customerScreenController = ref.read(customerScreenControllerProvider);
+  final customerScreenData = customerScreenController.getItemScreenData(context, customerData);
+  final debtAfter = doubleToStringWithComma(customerScreenData['totalDebt']);
+  final debtBefore =
+      doubleToStringWithComma(customerScreenData['totalDebt'] + transactionData['totalAmount']);
+  final arabicFont =
+      pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
+
+  pdf.addPage(pw.Page(
+    margin: pw.EdgeInsets.zero,
+    build: (pw.Context ctx) {
+      return _receiptPage(
+        context,
+        arabicFont,
+        image,
+        customerName,
+        customerPhone,
+        customerRegion,
+        paymentType,
+        salesmanName,
+        salesmanPhone,
+        type,
+        number,
+        date,
+        subtotalAmount,
+        discount,
+        debtBefore,
+        debtAfter,
+        currency,
+        notes,
+        printingTime,
+        printingDate,
+        includeImage: true,
+      );
+    },
+  ));
+
+  return pdf;
+}
+
+pw.Widget _receiptPage(
+  BuildContext context,
+  Font arabicFont,
+  dynamic image,
+  String customerName,
+  String customerPhone,
+  String customerRegion,
+  String paymentType,
+  String salesmanName,
+  String salesmanPhone,
+  String type,
+  String number,
+  String date,
+  String subtotalAmount,
+  String discount,
+  String debtBefore,
+  String debtAfter,
+  String currency,
+  String notes,
+  String printingDate,
+  String printingTime, {
+  bool includeImage = true,
+}) {
+  return pw.Column(children: [
+    for (var i = 0; i < 2; i++) ...[
+      pw.Container(
+          height: 415,
+          child: pw.Row(children: [
+            pw.Expanded(
+              child: pw.Column(
+                mainAxisAlignment: pw.MainAxisAlignment.start,
+                children: [
+                  pw.Image(image),
+                  _buildFirstRow(context, arabicFont, customerName, customerPhone, customerRegion,
+                      paymentType),
+                  pw.SizedBox(height: 8),
+                  _buildSecondRow(
+                      context, arabicFont, salesmanName, salesmanPhone, type, number, date),
+                  pw.SizedBox(height: 16),
+                  _invoiceAmountColumn(
+                      arabicFont, subtotalAmount, discount, debtBefore, debtAfter, currency),
+                  pw.SizedBox(height: 30),
+                  footerBar(arabicFont, 'الشركة غير مسؤولة عن انتهاء الصلاحية بعد استلام البضاعة',
+                      'وقت الطباعة     $printingDate   $printingTime '),
+                  pw.SizedBox(height: 10),
+                ],
+              ),
+            )
+          ]))
+    ]
+  ]); // Center
+}
+
+num calculateTotalNumOfItems(List<dynamic> items) {
+  num numItems = 0;
+  for (int i = 0; i < items.length; i++) {
+    numItems += items[i]['soldQuantity'].toInt() + items[i]['giftQuantity'].toInt();
+  }
+  return numItems;
+}
+
+pw.Widget _buildFirstRow(BuildContext context, Font arabicFont, String customerName,
+    String customerPhone, String customerRegion, String paymentType) {
+  return pw.Row(
+    mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+    children: [
+      pw.SizedBox(width: 5), // margin
+      labedContainer(paymentType, 'الدفع', arabicFont, width: 80),
+      labedContainer(customerRegion, 'العنوان', arabicFont, width: 158),
+      labedContainer(customerPhone, 'رقم الزبون', arabicFont, width: 90),
+      labedContainer(customerName, 'اسم الزبون', arabicFont),
+      pw.SizedBox(width: 5), // margin
+    ],
+  );
+}
+
+pw.Widget _buildSecondRow(BuildContext context, Font arabicFont, String salesmanName,
+    String salesmanPhone, String type, String number, String date) {
+  return pw.Row(
+    mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+    children: [
+      pw.SizedBox(width: 5), // margin
+      labedContainer(date, 'تاريخ القائمة', arabicFont, width: 80),
+      labedContainer(number, 'رقم القائمة', arabicFont, width: 60),
+      labedContainer(type, 'نوع القائمة', arabicFont, width: 80),
+      labedContainer(salesmanPhone, 'رقم المندوب', arabicFont, width: 90),
+      labedContainer(salesmanName, 'المندوب', arabicFont),
+      pw.SizedBox(width: 5), // margin
+    ],
+  );
+}
+
+pw.Widget _invoiceAmountColumn(Font arabicFont, String totalAmount, String discount,
+    String debtBefore, String debtAfter, String currency) {
+  return pw.Column(
+    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+    children: [
+      _totalsItem(arabicFont, 'مبلغ القائمة', totalAmount, lightBgColor),
+      pw.SizedBox(height: 2),
+      _totalsItem(arabicFont, 'الخصم', discount, lightBgColor),
+      pw.SizedBox(height: 2),
+      _totalsItem(arabicFont, 'الطلب السابق', debtBefore, lightBgColor),
+      pw.SizedBox(height: 2),
+      _totalsItem(arabicFont, 'المجموع الكلي', debtAfter, darkBgColor, textColor: PdfColors.white),
+      pw.SizedBox(height: 2),
+      arabicText(arabicFont, currency),
+    ],
+  );
+}
+
+pw.Widget _totalsItem(Font arabicFont, String text1, String text2, PdfColor bgColor,
+    {double width = 540, PdfColor textColor = PdfColors.black}) {
+  return pw.Container(
+    decoration: pw.BoxDecoration(
+      borderRadius: const pw.BorderRadius.all(Radius.circular(4)), // Rounded corners
+      border: pw.Border.all(color: PdfColors.grey), // Border color
+      color: bgColor,
+    ),
+    width: width,
+    padding: const pw.EdgeInsets.symmetric(horizontal: 10),
+    child: pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.center,
+      children: [
+        arabicText(arabicFont, text2, width: 60, textColor: textColor),
+        pw.Spacer(),
+        arabicText(arabicFont, text1, width: 88, textColor: textColor),
+      ],
+    ),
+  );
+}

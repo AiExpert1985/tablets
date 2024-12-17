@@ -35,7 +35,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
   final printingDate = DateFormat.yMd('ar').format(now);
   final printingTime = DateFormat.jm('ar').format(now);
   final notes = transactionData['notes'];
-  final totalNumOfItems = doubleToStringWithComma(calculateTotalNumOfItems(items));
+  final totalNumOfItems = doubleToStringWithComma(_calculateTotalNumOfItems(items));
   final itemsWeigt = doubleToStringWithComma(transactionData['totalWeight']);
   final customerScreenController = ref.read(customerScreenControllerProvider);
   final customerScreenData = customerScreenController.getItemScreenData(context, customerData);
@@ -49,7 +49,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
     pdf.addPage(pw.Page(
       margin: pw.EdgeInsets.zero,
       build: (pw.Context ctx) {
-        return invoicePage(
+        return _invoicePage(
           context,
           arabicFont,
           image,
@@ -84,7 +84,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
       pw.Page(
         margin: pw.EdgeInsets.zero,
         build: (pw.Context ctx) {
-          return invoicePage(
+          return _invoicePage(
             context,
             arabicFont,
             image,
@@ -120,7 +120,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
       pw.Page(
         margin: pw.EdgeInsets.zero,
         build: (pw.Context ctx) {
-          return invoicePage(
+          return _invoicePage(
             context,
             arabicFont,
             image,
@@ -156,7 +156,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
       pw.Page(
         margin: pw.EdgeInsets.zero,
         build: (pw.Context ctx) {
-          return invoicePage(
+          return _invoicePage(
             context,
             arabicFont,
             image,
@@ -192,7 +192,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
       pw.Page(
         margin: pw.EdgeInsets.zero,
         build: (pw.Context ctx) {
-          return invoicePage(
+          return _invoicePage(
             context,
             arabicFont,
             image,
@@ -228,7 +228,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
       pw.Page(
         margin: pw.EdgeInsets.zero,
         build: (pw.Context ctx) {
-          return invoicePage(
+          return _invoicePage(
             context,
             arabicFont,
             image,
@@ -264,7 +264,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
       pw.Page(
         margin: pw.EdgeInsets.zero,
         build: (pw.Context ctx) {
-          return invoicePage(
+          return _invoicePage(
             context,
             arabicFont,
             image,
@@ -300,7 +300,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
       pw.Page(
         margin: pw.EdgeInsets.zero,
         build: (pw.Context ctx) {
-          return invoicePage(
+          return _invoicePage(
             context,
             arabicFont,
             image,
@@ -336,7 +336,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
       pw.Page(
         margin: pw.EdgeInsets.zero,
         build: (pw.Context ctx) {
-          return invoicePage(
+          return _invoicePage(
             context,
             arabicFont,
             image,
@@ -371,7 +371,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
       pw.Page(
         margin: pw.EdgeInsets.zero,
         build: (pw.Context ctx) {
-          return invoicePage(
+          return _invoicePage(
             context,
             arabicFont,
             image,
@@ -407,7 +407,7 @@ Future<Document> getCustomerInvoicePdf(BuildContext context, WidgetRef ref,
   return pdf;
 }
 
-pw.Widget invoicePage(
+pw.Widget _invoicePage(
     BuildContext context,
     Font arabicFont,
     dynamic image,
@@ -463,7 +463,7 @@ pw.Widget invoicePage(
   ); // Center
 }
 
-num calculateTotalNumOfItems(List<dynamic> items) {
+num _calculateTotalNumOfItems(List<dynamic> items) {
   num numItems = 0;
   for (int i = 0; i < items.length; i++) {
     numItems += items[i]['soldQuantity'].toInt() + items[i]['giftQuantity'].toInt();
@@ -564,27 +564,13 @@ pw.Widget _totals(Font arabicFont, String totalAmount, String discount, String d
     width: 558, // Set a fixed width for the container
     height: 120,
     child: pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
-      invoiceAmountColumn(arabicFont, totalAmount, discount, debtBefore, debtAfter, currency),
-      weightColumn(arabicFont, notes, itemsNumber, itemsWeigt),
+      _invoiceAmountColumn(arabicFont, totalAmount, discount, debtBefore, debtAfter, currency),
+      _weightColumn(arabicFont, notes, itemsNumber, itemsWeigt),
     ]),
   );
 }
 
-pw.Widget invoiceAmountColumn(Font arabicFont, String totalAmount, String discount,
-    String debtBefore, String debtAfter, String currency) {
-  return pw.Column(
-    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-    children: [
-      totalsItem(arabicFont, 'مبلغ القائمة', totalAmount, lightBgColor),
-      totalsItem(arabicFont, 'الخصم', discount, lightBgColor),
-      totalsItem(arabicFont, 'الطلب السابق', debtBefore, lightBgColor),
-      totalsItem(arabicFont, 'المجموع الكلي', debtAfter, darkBgColor, textColor: PdfColors.white),
-      arabicText(arabicFont, currency),
-    ],
-  );
-}
-
-pw.Widget weightColumn(Font arabicFont, String notes, String itemsNumber, String itemsWeigt) {
+pw.Widget _weightColumn(Font arabicFont, String notes, String itemsNumber, String itemsWeigt) {
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.start,
     children: [
@@ -612,7 +598,21 @@ pw.Widget _signituresRow(Font arabicFont) {
   );
 }
 
-pw.Widget totalsItem(Font arabicFont, String text1, String text2, PdfColor bgColor,
+pw.Widget _invoiceAmountColumn(Font arabicFont, String totalAmount, String discount,
+    String debtBefore, String debtAfter, String currency) {
+  return pw.Column(
+    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+    children: [
+      _totalsItem(arabicFont, 'مبلغ القائمة', totalAmount, lightBgColor),
+      _totalsItem(arabicFont, 'الخصم', discount, lightBgColor),
+      _totalsItem(arabicFont, 'الطلب السابق', debtBefore, lightBgColor),
+      _totalsItem(arabicFont, 'المجموع الكلي', debtAfter, darkBgColor, textColor: PdfColors.white),
+      arabicText(arabicFont, currency),
+    ],
+  );
+}
+
+pw.Widget _totalsItem(Font arabicFont, String text1, String text2, PdfColor bgColor,
     {double width = 180, PdfColor textColor = PdfColors.black}) {
   return pw.Container(
     decoration: pw.BoxDecoration(

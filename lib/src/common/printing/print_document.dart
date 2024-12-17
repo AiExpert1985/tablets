@@ -7,6 +7,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/file_system_path.dart';
 import 'package:tablets/src/common/printing/customer_invoice_pdf.dart';
+import 'package:tablets/src/common/printing/customer_receipt_pdf.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:printing/printing.dart';
 import 'package:flutter/services.dart';
@@ -57,6 +58,8 @@ Future<Document> getPdfFile(BuildContext context, WidgetRef ref,
   // now we only print customer invoices
   if (transactionData['transactionType'] == TransactionType.customerInvoice.name) {
     return getCustomerInvoicePdf(context, ref, transactionData, image);
+  } else if (transactionData['transactionType'] == TransactionType.customerReceipt.name) {
+    return getCustomerReceiptPdf(context, ref, transactionData, image);
   }
   return getEmptyPdf();
 }
