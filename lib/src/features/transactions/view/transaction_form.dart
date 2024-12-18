@@ -277,11 +277,31 @@ class TransactionForm extends ConsumerWidget {
   /// currenlty, we only save transaction on return
   static Future<void> onReturn(
       BuildContext context, WidgetRef ref, ImageSliderNotifier formImagesNotifier) async {
-    formImagesNotifier.close();
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final formData = formDataNotifier.data;
+    final name = formData[nameKey];
+    // if form doesn't contain name, delete it
+    if (name.isEmpty) {
+      final formController = ref.read(transactionFormControllerProvider);
+      final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+      final screenController = ref.read(transactionScreenControllerProvider);
+      deleteTransaction(context, ref, formDataNotifier, formImagesNotifier, formController,
+          transactionDbCache, screenController,
+          dialogOn: false);
+      return;
+    }
+    // if invoice doesn't contain items, delete it
+    if (formData.containsKey(itemsKey) &&
+        formData[itemsKey] is List &&
+        formData[itemsKey].length == 1 &&
+        formData[itemsKey][0]['code'] == null &&
+        formData[itemsKey][0]['name'].isEmpty) {
+      failureUserMessage(context, S.of(context).no_item_were_added_to_invoice);
+    }
+    formImagesNotifier.close();
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     final transDbRef = formDataNotifier.data[dbRefKey];
-    if (dbCache.getItemByDbRef(transDbRef).isNotEmpty) {
+    if (dbCache.getItemByDbRef(transDbRef).isNotEmpty && context.mounted) {
       saveTransaction(context, ref, formDataNotifier.data, true);
     }
     // clear customer debt info
@@ -298,12 +318,15 @@ class TransactionForm extends ConsumerWidget {
       ItemFormController formController,
       DbCache transactionDbCache,
       TransactionScreenController screenController,
-      {FromNavigator? formNavigation}) async {
-    final confirmation = await showDeleteConfirmationDialog(
-        context: context,
-        message:
-            '${translateDbTextToScreenText(context, formDataNotifier.data[transTypeKey])}  ${formDataNotifier.data[numberKey]}');
-    if (confirmation == null) return false;
+      {bool dialogOn = true,
+      FromNavigator? formNavigation}) async {
+    if (dialogOn) {
+      final confirmation = await showDeleteConfirmationDialog(
+          context: context,
+          message:
+              '${translateDbTextToScreenText(context, formDataNotifier.data[transTypeKey])}  ${formDataNotifier.data[numberKey]}');
+      if (confirmation == null) return false;
+    }
 
     final formData = formDataNotifier.data;
 
