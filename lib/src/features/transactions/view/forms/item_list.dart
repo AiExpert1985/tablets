@@ -233,9 +233,11 @@ Widget _buildDeleteItemButton(
           final formImagesNotifier = ref.read(imagePickerProvider.notifier);
           final formNavigation = ref.read(formNavigatorProvider);
           // I am loading same transaction, but with one row removed
-          TransactionForm.onNavigationPressed(
-              formDataNotifier, context, ref, formImagesNotifier, formNavigation,
-              targetTransactionData: formDataNotifier.data);
+          if (context.mounted) {
+            TransactionForm.onNavigationPressed(
+                formDataNotifier, context, ref, formImagesNotifier, formNavigation,
+                targetTransactionData: formDataNotifier.data);
+          }
         },
         icon: const Icon(Icons.remove, color: Colors.red),
       ),
