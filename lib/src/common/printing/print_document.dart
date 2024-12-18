@@ -26,12 +26,8 @@ Future<void> _printPDf(Document pdf, int numCopies) async {
     for (int i = 0; i < numCopies; i++) {
       await Printing.layoutPdf(
         onLayout: (PdfPageFormat format) async {
-          // Return the PDF document as bytes
           return await pdf.save();
         },
-        // format: isLandScape
-        //     ? PdfPageFormat.a4.landscape
-        //     : PdfPageFormat.a4.portrait, // Specify A4 landscape format
       );
     }
   } catch (e) {
