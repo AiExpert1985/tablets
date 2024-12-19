@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
@@ -296,6 +297,7 @@ class FastAccessButton extends ConsumerWidget {
         ),
       ),
       onPressed: () async {
+        autoDatabaseBackup(context, ref);
         // make sure dbCaches and settings are initialized
         await initializeAllDbCaches(context, ref);
         if (context.mounted) {

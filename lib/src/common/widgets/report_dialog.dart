@@ -120,7 +120,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildListTitles(),
-            _buildDataList(),
+            _buildDataList(context),
             if (widget.sumIndex != null) _buildSumDisplay(),
             if (widget.isCount) _buildCountDisplay(),
           ],
@@ -268,7 +268,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     );
   }
 
-  Widget _buildDataList() {
+  Widget _buildDataList(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
       width: widget.width,
@@ -280,7 +280,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           final data = filteredList[index];
           Widget displayedWidget = widget.useOriginalTransaction
               ? InkWell(
-                  child: _buildDataRow(data),
+                  child: _buildDataRow(context, data),
                   onTap: () {
                     if (widget.useOriginalTransaction) {
                       // if useOriginalTransaction the, first item is alway the orginal transaction
@@ -288,14 +288,14 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
                     }
                   },
                 )
-              : _buildDataRow(data);
+              : _buildDataRow(context, data);
           return displayedWidget;
         },
       ),
     );
   }
 
-  Widget _buildDataRow(List<dynamic> data) {
+  Widget _buildDataRow(BuildContext context, List<dynamic> data) {
     // if useOriginalTransaction is true, it means first item is Transaction
     // we don't want to display it, we want to used it as a button that show
     // a read only transaction dialog
@@ -305,7 +305,9 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     // I want to highlight rows that represent a receipt with red text color
     bool isHilighted = false;
     for (var cell in data) {
-      if (cell is String && (cell.contains('Receipt') || cell.contains('وصل'))) {
+      if (cell is String &&
+          (cell.contains(S.of(context).transaction_type_customer_receipt) ||
+              cell.contains(S.of(context).transaction_type_customer_return))) {
         isHilighted = true;
         break;
       }

@@ -144,8 +144,9 @@ class DataRow extends ConsumerWidget {
         Transaction.fromMap({...transactionData, transactionTypeKey: translatedTransactionType});
     final date = transactionScreenData[transactionDateKey].toDate();
     final color = _getSequnceColor(transaction.transactionType);
-    bool isWarning = transactionScreenData[transactionTypeKey]
-        .contains(S.of(context).transaction_type_customer_receipt);
+    final transactionType = transactionScreenData[transactionTypeKey];
+    bool isWarning = transactionType.contains(S.of(context).transaction_type_customer_receipt) ||
+        transactionType.contains(S.of(context).transaction_type_customer_return);
     return Column(
       children: [
         Padding(
@@ -197,24 +198,38 @@ class DataRow extends ConsumerWidget {
   }
 
   Color _getSequnceColor(String transactionType) {
-    if (transactionType == TransactionType.customerInvoice.name ||
-        transactionType == TransactionType.customerReturn.name ||
-        transactionType == TransactionType.customerReceipt.name ||
-        transactionType == TransactionType.gifts.name) {
-      return const Color.fromARGB(255, 75, 63, 141); // use default color
+    if (transactionType == TransactionType.customerReturn.name ||
+        transactionType == TransactionType.customerReceipt.name) {
+      return Colors.red; // use default color
     }
     if (transactionType == TransactionType.vendorInvoice.name ||
         transactionType == TransactionType.vendorReceipt.name ||
         transactionType == TransactionType.vendorReturn.name) {
       return Colors.green;
     }
-    if (transactionType == TransactionType.expenditures.name ||
-        transactionType == TransactionType.damagedItems.name) {
-      return Colors.red;
-    }
-    return Colors.red;
+    return const Color.fromARGB(255, 75, 63, 141);
   }
 }
+
+//   Color _getSequnceColor(String transactionType) {
+//     if (transactionType == TransactionType.customerInvoice.name ||
+//         transactionType == TransactionType.customerReturn.name ||
+//         transactionType == TransactionType.customerReceipt.name ||
+//         transactionType == TransactionType.gifts.name) {
+//       return const Color.fromARGB(255, 75, 63, 141); // use default color
+//     }
+//     if (transactionType == TransactionType.vendorInvoice.name ||
+//         transactionType == TransactionType.vendorReceipt.name ||
+//         transactionType == TransactionType.vendorReturn.name) {
+//       return Colors.green;
+//     }
+//     if (transactionType == TransactionType.expenditures.name ||
+//         transactionType == TransactionType.damagedItems.name) {
+//       return Colors.red;
+//     }
+//     return Colors.red;
+//   }
+// }
 
 class TransactionsFloatingButtons extends ConsumerWidget {
   const TransactionsFloatingButtons({super.key});

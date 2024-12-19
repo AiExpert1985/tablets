@@ -72,7 +72,6 @@ class ReceiptForm extends ConsumerWidget {
       bool isVendor,
       FromNavigator formNavigator,
       WidgetRef ref) {
-    final customerDebtInfo = ref.read(customerDebtNotifierProvider.notifier);
     return Row(
       children: [
         DropDownWithSearchFormField(
@@ -88,10 +87,6 @@ class ReceiptForm extends ConsumerWidget {
               salesmanDbRefKey: item['salesmanDbRef']
             };
             formDataNotifier.updateProperties(properties);
-            // update customerDebtInfo so that it will be used to show preview of customer debt in form screen
-            if (!isVendor) {
-              customerDebtInfo.update(context, item);
-            }
           },
         ),
         if (!isVendor) HorizontalGap.l,
