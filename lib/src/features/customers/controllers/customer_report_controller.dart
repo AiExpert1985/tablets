@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/widgets/report_dialog.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 
 final customerReportControllerProvider = Provider<CustomerReportController>((ref) {
   return CustomerReportController();
@@ -11,7 +13,8 @@ final customerReportControllerProvider = Provider<CustomerReportController>((ref
 class CustomerReportController {
   CustomerReportController();
 
-  void showCustomerMatchingReport(BuildContext context, List<List<dynamic>> transactionList, String title) {
+  void showCustomerMatchingReport(
+      BuildContext context, List<List<dynamic>> transactionList, String title) {
     final selectionList = getTransactionTypeDropList(context);
     showReportDialog(context, _getCustomerMatchingReportTitles(context), transactionList,
         dateIndex: 3,
@@ -32,7 +35,10 @@ class CustomerReportController {
       title: title,
       sumIndex: 4,
       dropdownIndex: 2,
-      dropdownList: [S.of(context).transaction_type_gifts, S.of(context).transaction_type_customer_invoice],
+      dropdownList: [
+        S.of(context).transaction_type_gifts,
+        S.of(context).transaction_type_customer_invoice
+      ],
       dropdownLabel: S.of(context).transaction_type,
       useOriginalTransaction: true,
     );
@@ -124,5 +130,21 @@ class CustomerReportController {
       S.of(context).invoice_status_open,
       S.of(context).invoice_status_due,
     ];
+  }
+
+  void showAllCustomersDebt(BuildContext context, WidgetRef ref) {
+    final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
+    final screenData = screenDataNotifier.data;
+    List<List<dynamic>> debtList = [];
+    for (var customerScreenData in screenData) {
+      final name = customerScreenData[customerNameKey] as String;
+      final salesman = customerScreenData[customerSalesmanKey] as String;
+      final region = (customerScreenData[customerRegionKey] ?? '');
+      final totalDebt = customerScreenData[totalDebtKey] as double;
+      final dueDebt = customerScreenData[dueDebtKey] as double;
+      debtList.add([name, salesman, region, totalDebt, dueDebt]);
+    }
+    showReportDialog(context, _getInvoiceReportTitles(context), debtList,
+        title: S.of(context).salesmen_debt_report, sumIndex: 7, dateIndex: 2, dropdownIndex: 5);
   }
 }

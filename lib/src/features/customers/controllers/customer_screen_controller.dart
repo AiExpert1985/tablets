@@ -15,6 +15,7 @@ import 'package:tablets/src/features/customers/model/customer.dart';
 const customerDbRefKey = 'dbRef';
 const customerNameKey = 'name';
 const customerSalesmanKey = 'salesman';
+const customerRegionKey = 'region';
 const totalDebtKey = 'totalDebt';
 const totalDebtDetailsKey = 'totalDebtDetails';
 const openInvoicesKey = 'openInvoices';

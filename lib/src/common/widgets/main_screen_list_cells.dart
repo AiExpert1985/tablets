@@ -143,9 +143,9 @@ class MainScreenNumberedEditButton extends StatelessWidget {
     return InkWell(
         onTap: onTap,
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 8),
-          width: 33.0, // Width of the circle
-          height: 33.0, // Height of the circle
+          margin: const EdgeInsets.only(left: 4),
+          width: 32.0, // Width of the circle
+          height: 32.0, // Height of the circle
           decoration: BoxDecoration(
             color: color,
             shape: BoxShape.circle, // Makes the container circular

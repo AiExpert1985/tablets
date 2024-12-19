@@ -292,6 +292,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("بحث المندوبين"),
         "salesman_selection": MessageLookupByLibrary.simpleMessage("المندوب"),
         "salesmen": MessageLookupByLibrary.simpleMessage("المندوبين"),
+        "salesmen_debt_report":
+            MessageLookupByLibrary.simpleMessage("تقرير ديون المندوبين"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
         "save_changes": MessageLookupByLibrary.simpleMessage("حفظ التعديلات"),

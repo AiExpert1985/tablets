@@ -11,6 +11,7 @@ import 'package:tablets/src/common/providers/text_editing_controllers_provider.d
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/customers/controllers/customer_report_controller.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
@@ -109,7 +110,12 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
               ],
             ),
           ),
-          const SizedBox()
+          IconButton(
+              onPressed: () {
+                final reportController = ref.read(customerReportControllerProvider);
+                reportController.showAllCustomersDebt(context, ref);
+              },
+              icon: const Icon(Icons.access_alarm))
         ],
       ),
     );

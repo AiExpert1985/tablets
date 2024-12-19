@@ -2679,6 +2679,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Salesmen debt report`
+  String get salesmen_debt_report {
+    return Intl.message(
+      'Salesmen debt report',
+      name: 'salesmen_debt_report',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
