@@ -302,6 +302,15 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     final itemsToDisplay = widget.useOriginalTransaction
         ? data.sublist(1, data.length) // Exclude the last item
         : data;
+    // I want to highlight rows that represent a receipt with red text color
+    bool isHilighted = false;
+    for (var cell in data) {
+      if (cell is String && (cell.contains('Receipt') || cell.contains('وصل'))) {
+        isHilighted = true;
+        break;
+      }
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: itemsToDisplay.map((item) {
@@ -315,7 +324,8 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
                   ? item
                   : doubleToStringWithComma(item, isAbsoluteValue: widget.useAbsoluteNumbers),
               textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: isHilighted ? Colors.red : Colors.black)),
         );
       }).toList(),
     );

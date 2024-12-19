@@ -19,7 +19,7 @@ Future<Document> getCustomerReturnPdf(BuildContext context, WidgetRef ref,
   final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
   final salesmanData = salesmanDbCache.getItemByDbRef(transactionData['salesmanDbRef']);
   final type = translateDbTextToScreenText(context, transactionData['transactionType']);
-  final number = transactionData['number'].toString();
+  final number = transactionData['number'].round().toString();
   final customerName = transactionData['name'];
   final customerPhone = customerData['phone'] ?? '';
   final customerRegion = customerData['region'] ?? '';

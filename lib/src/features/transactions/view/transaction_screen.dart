@@ -144,6 +144,8 @@ class DataRow extends ConsumerWidget {
         Transaction.fromMap({...transactionData, transactionTypeKey: translatedTransactionType});
     final date = transactionScreenData[transactionDateKey].toDate();
     final color = _getSequnceColor(transaction.transactionType);
+    bool isWarning = transactionScreenData[transactionTypeKey]
+        .contains(S.of(context).transaction_type_customer_receipt);
     return Column(
       children: [
         Padding(
@@ -156,13 +158,17 @@ class DataRow extends ConsumerWidget {
                 () => _showEditTransactionForm(context, ref, transaction),
                 color: color,
               ),
-              MainScreenTextCell(transactionScreenData[transactionTypeKey]),
-              MainScreenTextCell(transactionScreenData[transactionNumberKey]),
-              MainScreenTextCell(date),
-              MainScreenTextCell(transactionScreenData[transactionNameKey]),
-              MainScreenTextCell(transactionScreenData[transactionSalesmanKey]),
-              MainScreenTextCell(transactionScreenData[transactionTotalAmountKey]),
-              MainScreenTextCell(transactionScreenData[transactionNotesKey]),
+              MainScreenTextCell(transactionScreenData[transactionTypeKey], isWarning: isWarning),
+              // we don't add thousand separators to transaction number, so I made it String here
+              MainScreenTextCell(transactionScreenData[transactionNumberKey].round().toString(),
+                  isWarning: isWarning),
+              MainScreenTextCell(date, isWarning: isWarning),
+              MainScreenTextCell(transactionScreenData[transactionNameKey], isWarning: isWarning),
+              MainScreenTextCell(transactionScreenData[transactionSalesmanKey],
+                  isWarning: isWarning),
+              MainScreenTextCell(transactionScreenData[transactionTotalAmountKey],
+                  isWarning: isWarning),
+              MainScreenTextCell(transactionScreenData[transactionNotesKey], isWarning: isWarning),
             ],
           ),
         ),
