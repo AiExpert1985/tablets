@@ -18,8 +18,8 @@ void showReportDialog(
   List<String>? dropdownList,
   String? dropdownLabel,
   int? sumIndex,
-  double width = 800,
-  double height = 650,
+  double width = 1200,
+  double height = 1000,
   // if useOriginalTransaction is ture, it means first item is the orginal transaction
   // it will not be displayed in the rows of data, but used to show the orginal transaction
   // as a read only dialog when the row is pressed.
