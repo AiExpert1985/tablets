@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -26,6 +27,12 @@ void showReportDialog(
   bool useOriginalTransaction = false,
   // if isCount, means we take count, not sum
   bool isCount = false,
+  int? dropdown2Index,
+  List<String>? dropdown2List,
+  String? dropdown2Label,
+  int? dropdown3Index,
+  List<String>? dropdown3List,
+  String? dropdown3Label,
 }) {
   showDialog(
     context: context,
@@ -35,18 +42,25 @@ void showReportDialog(
       final maxWidth = MediaQuery.of(context).size.width;
       final width = targetedWidth > maxWidth ? maxWidth : targetedWidth;
       return _DateFilterDialog(
-          title: title,
-          width: width,
-          height: height,
-          titleList: columnTitles,
-          dataList: dataList,
-          dateIndex: dateIndex,
-          dropdownIndex: dropdownIndex,
-          dropdownList: dropdownList,
-          dropdownLabel: dropdownLabel,
-          sumIndex: sumIndex,
-          useOriginalTransaction: useOriginalTransaction,
-          isCount: isCount);
+        title: title,
+        width: width,
+        height: height,
+        titleList: columnTitles,
+        dataList: dataList,
+        dateIndex: dateIndex,
+        dropdownIndex: dropdownIndex,
+        dropdownList: dropdownList,
+        dropdownLabel: dropdownLabel,
+        dropdown2Index: dropdown2Index,
+        dropdown2List: dropdown2List,
+        dropdown2Label: dropdown2Label,
+        dropdown3Index: dropdown3Index,
+        dropdown3List: dropdown3List,
+        dropdown3Label: dropdown3Label,
+        sumIndex: sumIndex,
+        useOriginalTransaction: useOriginalTransaction,
+        isCount: isCount,
+      );
     },
   );
 }
@@ -61,6 +75,12 @@ class _DateFilterDialog extends StatefulWidget {
   final int? dropdownIndex;
   final List<String>? dropdownList;
   final String? dropdownLabel;
+  final int? dropdown2Index;
+  final List<String>? dropdown2List;
+  final String? dropdown2Label;
+  final int? dropdown3Index;
+  final List<String>? dropdown3List;
+  final String? dropdown3Label;
   final int? sumIndex;
   final bool useOriginalTransaction;
   final bool isCount;
@@ -76,6 +96,12 @@ class _DateFilterDialog extends StatefulWidget {
     this.dropdownIndex,
     this.dropdownList,
     this.dropdownLabel,
+    this.dropdown2Index,
+    this.dropdown2List,
+    this.dropdown2Label,
+    this.dropdown3Index,
+    this.dropdown3List,
+    this.dropdown3Label,
     this.sumIndex,
     required this.useOriginalTransaction,
     required this.isCount,
@@ -91,6 +117,8 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   DateTime? startDate;
   DateTime? endDate;
   List<String> selectedDropdownValues = [];
+  List<String> selectedDropdown2Values = [];
+  List<String> selectedDropdown3Values = [];
   List<List<dynamic>> filteredList = [];
 
   @override
@@ -116,6 +144,13 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
             VerticalGap.l,
             if (widget.dropdownIndex != null && widget.dropdownList != null)
               _buildMultiSelectDropdown(),
+            VerticalGap.l,
+            if (widget.dropdown2Index != null && widget.dropdown2List != null)
+              _buildMultiSelectDropdown2(),
+            VerticalGap.l,
+            if (widget.dropdown3Index != null && widget.dropdown3List != null)
+              _buildMultiSelectDropdown3(),
+            VerticalGap.l,
           ],
         ),
       ),
@@ -155,15 +190,40 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       }).toList();
     }
     // filter the result of previous filter using first dropdown selection (if not null)
-    if (widget.dropdownIndex != null && widget.dropdownList != null) {
+    if (widget.dropdownIndex != null &&
+        widget.dropdownList != null &&
+        widget.dropdownList!.isNotEmpty) {
       newList = newList.where((list) {
-        String dropdownValue = list[widget.dropdownIndex!].toString();
-        return selectedDropdownValues.isEmpty || selectedDropdownValues.contains(dropdownValue);
+        String cellValue = list[widget.dropdownIndex!].toString();
+        bool test = selectedDropdownValues.isEmpty || selectedDropdownValues.contains(cellValue);
+        return test;
+      }).toList();
+    }
+    tempPrint(newList);
+    // filter the result of previous filter using first dropdown2 selection (if not null)
+    if (widget.dropdown2Index != null &&
+        widget.dropdown2List != null &&
+        widget.dropdown2List!.isNotEmpty) {
+      newList = newList.where((list) {
+        String cellValue = list[widget.dropdown2Index!].toString();
+        bool test = selectedDropdown2Values.isEmpty || selectedDropdown2Values.contains(cellValue);
+        return test;
+      }).toList();
+    }
+    tempPrint(newList);
+    // filter the result of previous filter using first dropdown3 selection (if not null)
+    if (widget.dropdown3Index != null &&
+        widget.dropdown3List != null &&
+        widget.dropdown3List!.isNotEmpty) {
+      filteredList = filteredList.where((list) {
+        String cellValue = list[widget.dropdown3Index!].toString();
+        bool test = selectedDropdown3Values.isEmpty || selectedDropdown3Values.contains(cellValue);
+        return test;
       }).toList();
     }
 
     setState(() {
-      filteredList = newList;
+      filteredList = [...newList];
     });
   }
 
@@ -225,6 +285,66 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         _filterData();
       },
       initialValue: selectedDropdownValues,
+      searchable: true,
+    );
+  }
+
+  Widget _buildMultiSelectDropdown2() {
+    return MultiSelectDialogField(
+      separateSelectedItems: false,
+      dialogHeight: widget.dropdown2List!.length * 60,
+      dialogWidth: 200,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey), // Border color
+        borderRadius: BorderRadius.circular(4.0), // Rounded corners
+      ),
+      confirmText: Text(S.of(context).select),
+      cancelText: Text(S.of(context).cancel),
+      items: widget.dropdown2List!
+          .map((String value) => MultiSelectItem<String>(value, value))
+          .toList(),
+      title: Text(widget.dropdown2Label ?? ''),
+      buttonText: Text(
+        widget.dropdown2Label ?? '',
+        style: const TextStyle(color: Colors.black26, fontSize: 15),
+      ),
+      onConfirm: (List<String> values) {
+        setState(() {
+          selectedDropdown2Values = values;
+        });
+        _filterData();
+      },
+      initialValue: selectedDropdown2Values,
+      searchable: true,
+    );
+  }
+
+  Widget _buildMultiSelectDropdown3() {
+    return MultiSelectDialogField(
+      separateSelectedItems: false,
+      dialogHeight: widget.dropdown3List!.length * 60,
+      dialogWidth: 200,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey), // Border color
+        borderRadius: BorderRadius.circular(4.0), // Rounded corners
+      ),
+      confirmText: Text(S.of(context).select),
+      cancelText: Text(S.of(context).cancel),
+      items: widget.dropdown3List!
+          .map((String value) => MultiSelectItem<String>(value, value))
+          .toList(),
+      title: Text(widget.dropdown3Label ?? ''),
+      buttonText: Text(
+        widget.dropdown3Label ?? '',
+        style: const TextStyle(color: Colors.black26, fontSize: 15),
+      ),
+      onConfirm: (List<String> values) {
+        setState(() {
+          selectedDropdown3Values = values;
+        });
+        _filterData();
+      },
+      initialValue: selectedDropdown3Values,
       searchable: true,
     );
   }
