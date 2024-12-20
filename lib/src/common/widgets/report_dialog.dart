@@ -3,7 +3,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -150,14 +149,18 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           children: [
             if (widget.title != null) _buildTitle(),
             VerticalGap.xl,
-            if (widget.dateIndex != null) _buildDateSelectionRow(),
-            VerticalGap.l,
-            if (widget.dropdownIndex != null) _buildMultiSelectDropdown(),
-            VerticalGap.l,
-            if (widget.dropdown2Index != null) _buildMultiSelectDropdown2(),
-            VerticalGap.l,
-            if (widget.dropdown3Index != null) _buildMultiSelectDropdown3(),
-            VerticalGap.l,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                if (widget.dateIndex != null) Expanded(child: _buildDateSelectionRow()),
+                HorizontalGap.xl,
+                if (widget.dropdownIndex != null) Expanded(child: _buildMultiSelectDropdown()),
+                HorizontalGap.xl,
+                if (widget.dropdown2Index != null) Expanded(child: _buildMultiSelectDropdown2()),
+                HorizontalGap.xl,
+                if (widget.dropdown3Index != null) Expanded(child: _buildMultiSelectDropdown3()),
+              ],
+            )
           ],
         ),
       ),
@@ -204,7 +207,6 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         return test;
       }).toList();
     }
-    tempPrint(newList);
     // filter the result of previous filter using first dropdown2 selection (if not null)
     if (widget.dropdown2Index != null) {
       newList = newList.where((list) {
@@ -213,7 +215,6 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
         return test;
       }).toList();
     }
-    tempPrint(newList);
     // filter the result of previous filter using first dropdown3 selection (if not null)
     if (widget.dropdown3Index != null) {
       filteredList = filteredList.where((list) {

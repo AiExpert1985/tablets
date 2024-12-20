@@ -328,7 +328,7 @@ class FastAccessFormButton extends ConsumerWidget {
   }
 }
 
-void initializeAppData(BuildContext context, WidgetRef ref) async {
+Future<void> initializeAppData(BuildContext context, WidgetRef ref) async {
   await autoDatabaseBackup(context, ref);
   if (context.mounted) {
     // make sure dbCaches and settings are initialized
@@ -353,9 +353,11 @@ class FastReports extends ConsumerWidget {
           children: [
             FastAccessReportsButton(
               'report',
-              () {
-                initializeAppData(context, ref);
-                reportController.showAllCustomersDebt(context, ref);
+              () async {
+                await initializeAppData(context, ref);
+                if (context.mounted) {
+                  reportController.showAllCustomersDebt(context, ref);
+                }
               },
             ),
           ],
