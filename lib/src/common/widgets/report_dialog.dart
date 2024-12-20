@@ -135,29 +135,32 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   }
 
   void _filterData() {
-    final newList = widget.dataList.where((list) {
-      // Filter by date
-      if (widget.dateIndex != null && list.length > widget.dateIndex!) {
-        DateTime date;
-        try {
-          date = DateTime.parse(list[widget.dateIndex!].toString());
-        } catch (e) {
-          return false;
+    List<List<dynamic>> newList = widget.dataList;
+    // first filter on data (if not null)
+    if (widget.dateIndex != null) {
+      newList = newList.where((list) {
+        if (list.length > widget.dateIndex!) {
+          DateTime date;
+          try {
+            date = DateTime.parse(list[widget.dateIndex!].toString());
+          } catch (e) {
+            return false;
+          }
+          bool dateInRange =
+              (startDate == null || date.isAfter(startDate!.subtract(const Duration(days: 1)))) &&
+                  (endDate == null || date.isBefore(endDate!.add(const Duration(days: 1))));
+          return dateInRange;
         }
-        bool dateInRange =
-            (startDate == null || date.isAfter(startDate!.subtract(const Duration(days: 1)))) &&
-                (endDate == null || date.isBefore(endDate!.add(const Duration(days: 1))));
-
-        // Filter by dropdown selection if applicable
-        if (widget.dropdownIndex != null && widget.dropdownList != null) {
-          String dropdownValue = list[widget.dropdownIndex!].toString();
-          return dateInRange &&
-              (selectedDropdownValues.isEmpty || selectedDropdownValues.contains(dropdownValue));
-        }
-        return dateInRange;
-      }
-      return false;
-    }).toList();
+        return false;
+      }).toList();
+    }
+    // filter the result of previous filter using first dropdown selection (if not null)
+    if (widget.dropdownIndex != null && widget.dropdownList != null) {
+      newList = newList.where((list) {
+        String dropdownValue = list[widget.dropdownIndex!].toString();
+        return selectedDropdownValues.isEmpty || selectedDropdownValues.contains(dropdownValue);
+      }).toList();
+    }
 
     setState(() {
       filteredList = newList;

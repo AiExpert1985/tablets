@@ -347,7 +347,7 @@ class FastReports extends ConsumerWidget {
     final reportController = ref.read(customerReportControllerProvider);
     return Container(
         padding: const EdgeInsets.all(10),
-        width: 20,
+        width: 200,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

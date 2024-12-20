@@ -132,19 +132,53 @@ class CustomerReportController {
     ];
   }
 
+  List<String> _getAllCustomersColumnTitles(BuildContext context) {
+    return [
+      S.of(context).customers,
+      S.of(context).salesmen,
+      S.of(context).regions,
+      S.of(context).due_debt_amount,
+      S.of(context).total_debt,
+    ];
+  }
+
   void showAllCustomersDebt(BuildContext context, WidgetRef ref) {
+    final screenDataController = ref.read(customerScreenControllerProvider);
+    screenDataController.setFeatureScreenData(context);
     final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
     final screenData = screenDataNotifier.data;
     List<List<dynamic>> debtList = [];
+    // below Lists will be used to generate set (unique values) to be used to filter report
+    List<String> namesList = [];
+    List<String> salesmenList = [];
+    List<String> regionsList = [];
     for (var customerScreenData in screenData) {
       final name = customerScreenData[customerNameKey] as String;
       final salesman = customerScreenData[customerSalesmanKey] as String;
       final region = (customerScreenData[customerRegionKey] ?? '');
       final totalDebt = customerScreenData[totalDebtKey] as double;
       final dueDebt = customerScreenData[dueDebtKey] as double;
-      debtList.add([name, salesman, region, totalDebt, dueDebt]);
+      // only show customers with debt > 0
+      if (totalDebt > 0) {
+        debtList.add([name, salesman, region, dueDebt, totalDebt]);
+        namesList.add(name);
+        salesmenList.add(salesman);
+        regionsList.add(region);
+      }
     }
-    showReportDialog(context, _getInvoiceReportTitles(context), debtList,
-        title: S.of(context).salesmen_debt_report, sumIndex: 7, dateIndex: 2, dropdownIndex: 5);
+    final salesmenDropdownList = salesmenList.toSet().toList();
+    final customersDropdownList = namesList.toSet().toList();
+    final regionsDropdownList = regionsList.toSet().toList();
+
+    showReportDialog(
+      context,
+      _getAllCustomersColumnTitles(context),
+      debtList,
+      title: S.of(context).salesmen_debt_report,
+      sumIndex: 4,
+      dropdownLabel: S.of(context).salesmen,
+      dropdownIndex: 0,
+      dropdownList: customersDropdownList,
+    );
   }
 }
