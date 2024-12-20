@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -18,8 +19,8 @@ void showReportDialog(
   List<String>? dropdownList,
   String? dropdownLabel,
   int? sumIndex,
-  double width = 1400,
-  double height = 1200,
+  double targetedWidth = 1600,
+  double targetedHeight = 1200,
   // if useOriginalTransaction is ture, it means first item is the orginal transaction
   // it will not be displayed in the rows of data, but used to show the orginal transaction
   // as a read only dialog when the row is pressed.
@@ -30,6 +31,14 @@ void showReportDialog(
   showDialog(
     context: context,
     builder: (context) {
+      final maxHeight = MediaQuery.of(context).size.height;
+      final height = targetedHeight > maxHeight ? maxHeight : targetedHeight;
+      final maxWidth = MediaQuery.of(context).size.width;
+      final width = targetedWidth > maxWidth ? maxWidth : targetedWidth;
+      tempPrint(maxHeight);
+      tempPrint(height);
+      tempPrint(maxWidth);
+      tempPrint(width);
       return _DateFilterDialog(
           title: title,
           width: width,

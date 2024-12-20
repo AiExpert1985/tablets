@@ -55,7 +55,7 @@ class SalesmanReportController {
       [S.of(context).customer, S.of(context).region_name],
       detailsList,
       title: salesmanName,
-      width: 400,
+      targetedWidth: 400,
     );
   }
 
