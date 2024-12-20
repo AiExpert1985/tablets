@@ -235,6 +235,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "previous_item_quantity_is_zero": MessageLookupByLibrary.simpleMessage(
             "Previous item has zero quantity"),
         "print": MessageLookupByLibrary.simpleMessage("Print"),
+        "print_status": MessageLookupByLibrary.simpleMessage("Print status"),
         "printed": MessageLookupByLibrary.simpleMessage("Printed"),
         "printing_transactions":
             MessageLookupByLibrary.simpleMessage("Printing transactions"),

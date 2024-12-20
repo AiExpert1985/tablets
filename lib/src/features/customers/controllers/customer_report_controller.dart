@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/report_dialog.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 
 final customerReportControllerProvider = Provider<CustomerReportController>((ref) {
   return CustomerReportController();
@@ -122,6 +127,7 @@ class CustomerReportController {
       S.of(context).regions,
       S.of(context).due_debt_amount,
       S.of(context).total_debt,
+      S.of(context).last_receipt_date
     ];
   }
 
@@ -130,6 +136,7 @@ class CustomerReportController {
     screenDataController.setFeatureScreenData(context);
     final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
     final screenData = screenDataNotifier.data;
+
     List<List<dynamic>> debtList = [];
     for (var customerScreenData in screenData) {
       final name = customerScreenData[customerNameKey] as String;
@@ -139,7 +146,8 @@ class CustomerReportController {
       final dueDebt = customerScreenData[dueDebtKey] as double;
       // only show customers with debt > 0
       if (totalDebt > 0) {
-        debtList.add([name, salesman, region, dueDebt, totalDebt]);
+        final lastReceiptDate = lastCustomerReceipt(context, ref, customerScreenData);
+        debtList.add([name, salesman, region, dueDebt, totalDebt, lastReceiptDate]);
       }
     }
 
@@ -156,5 +164,23 @@ class CustomerReportController {
       dropdown3Label: S.of(context).regions,
       dropdown3Index: 2,
     );
+  }
+
+  String lastCustomerReceipt(BuildContext context, WidgetRef ref, dynamic customerScreenData) {
+    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+    final allTransactions = transactionDbCache.data;
+    final receiptDates = [];
+    for (var transaction in allTransactions) {
+      if (transaction[nameDbRefKey] == customerScreenData['dbRef'] &&
+          transaction[transactionTypeKey] == TransactionType.customerReceipt.name) {
+        final date = transaction[dateKey];
+        receiptDates.add(date is DateTime ? date : date.toDate());
+      }
+    }
+    if (receiptDates.isNotEmpty) {
+      final newestDate = receiptDates.reduce((a, b) => a.isAfter(b) ? a : b);
+      return formatDate(newestDate);
+    }
+    return S.of(context).there_is_no_customer_receipt;
   }
 }

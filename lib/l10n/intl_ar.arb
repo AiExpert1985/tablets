@@ -262,5 +262,6 @@
     "no_item_were_added_to_invoice": "لم يتم اضافة اي مادة للقائمة",
     "previous_item_quantity_is_zero": "لم يتم ادخال العدد للمادة السابقة",
     "product_out_of_stock": "لا يوجد مخزون كافي من المادة",
-    "salesmen_debt_report": "تقرير ديون المندوبين"
+    "salesmen_debt_report": "ديون المندوبين",
+    "print_status": "حالة الطباعة"
 }

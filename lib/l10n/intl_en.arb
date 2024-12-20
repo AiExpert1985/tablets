@@ -262,5 +262,6 @@
     "no_item_were_added_to_invoice": "No item were added to invoice",
     "previous_item_quantity_is_zero": "Previous item has zero quantity",
     "product_out_of_stock": "Product is out of stock",
-    "salesmen_debt_report": "Salesmen debt report"
+    "salesmen_debt_report": "Salesmen debt report",
+    "print_status": "Print status"
 }

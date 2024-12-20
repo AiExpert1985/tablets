@@ -228,6 +228,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "previous_item_quantity_is_zero": MessageLookupByLibrary.simpleMessage(
             "لم يتم ادخال العدد للمادة السابقة"),
         "print": MessageLookupByLibrary.simpleMessage("طباعة"),
+        "print_status": MessageLookupByLibrary.simpleMessage("حالة الطباعة"),
         "printed": MessageLookupByLibrary.simpleMessage("مطبوع"),
         "printing_transactions":
             MessageLookupByLibrary.simpleMessage("طباعة التعاملات"),
@@ -293,7 +294,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "salesman_selection": MessageLookupByLibrary.simpleMessage("المندوب"),
         "salesmen": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "salesmen_debt_report":
-            MessageLookupByLibrary.simpleMessage("تقرير ديون المندوبين"),
+            MessageLookupByLibrary.simpleMessage("ديون المندوبين"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
         "save_changes": MessageLookupByLibrary.simpleMessage("حفظ التعديلات"),

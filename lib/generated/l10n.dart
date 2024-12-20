@@ -2689,6 +2689,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Print status`
+  String get print_status {
+    return Intl.message(
+      'Print status',
+      name: 'print_status',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

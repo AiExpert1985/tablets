@@ -352,7 +352,7 @@ class FastReports extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FastAccessReportsButton(
-              'report',
+              S.of(context).salesmen_debt_report,
               () async {
                 await initializeAppData(context, ref);
                 if (context.mounted) {
