@@ -393,9 +393,9 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
 
   Widget _buildDataList(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       width: widget.width,
-      height: widget.height * 0.3, // Set a fixed height for the list
+      height: widget.height * 0.5, // Set a fixed height for the list
       child: ListView.builder(
         itemCount: filteredList.length,
         // separatorBuilder: (context, index) => const Divider(thickness: 0.5, color: Colors.grey),
@@ -441,7 +441,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       children: itemsToDisplay.map((item) {
         if (item is DateTime) item = formatDate(item);
         return Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
           decoration: BoxDecoration(border: Border.all(width: 0.2)),
           width: widget.width / widget.titleList.length,
           child: Text(
@@ -450,7 +450,9 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
                   : doubleToStringWithComma(item, isAbsoluteValue: widget.useAbsoluteNumbers),
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontWeight: FontWeight.bold, color: isHilighted ? Colors.red : Colors.black)),
+                  fontWeight: FontWeight.bold,
+                  color: isHilighted ? Colors.red : Colors.black,
+                  fontSize: 16)),
         );
       }).toList(),
     );
