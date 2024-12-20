@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/widgets/report_dialog.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
@@ -15,12 +14,10 @@ class CustomerReportController {
 
   void showCustomerMatchingReport(
       BuildContext context, List<List<dynamic>> transactionList, String title) {
-    final selectionList = getTransactionTypeDropList(context);
     showReportDialog(context, _getCustomerMatchingReportTitles(context), transactionList,
         dateIndex: 3,
         title: title,
         dropdownIndex: 1,
-        dropdownList: selectionList,
         dropdownLabel: S.of(context).transaction_type,
         sumIndex: 4,
         useOriginalTransaction: true);
@@ -35,17 +32,12 @@ class CustomerReportController {
       title: title,
       sumIndex: 4,
       dropdownIndex: 2,
-      dropdownList: [
-        S.of(context).transaction_type_gifts,
-        S.of(context).transaction_type_customer_invoice
-      ],
       dropdownLabel: S.of(context).transaction_type,
       useOriginalTransaction: true,
     );
   }
 
   void showInvoicesReport(BuildContext context, List<List<dynamic>> invoices, String title) {
-    final selectionList = _getInvoiceStatusDropList(context);
     showReportDialog(
       context,
       _getInvoiceReportTitles(context),
@@ -54,7 +46,6 @@ class CustomerReportController {
       sumIndex: 7,
       dateIndex: 2,
       dropdownIndex: 5,
-      dropdownList: selectionList,
       dropdownLabel: S.of(context).invoice_status,
       useOriginalTransaction: true,
     );
@@ -124,14 +115,6 @@ class CustomerReportController {
     ];
   }
 
-  List<String> _getInvoiceStatusDropList(BuildContext context) {
-    return [
-      S.of(context).invoice_status_closed,
-      S.of(context).invoice_status_open,
-      S.of(context).invoice_status_due,
-    ];
-  }
-
   List<String> _getAllCustomersColumnTitles(BuildContext context) {
     return [
       S.of(context).customers,
@@ -148,10 +131,6 @@ class CustomerReportController {
     final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
     final screenData = screenDataNotifier.data;
     List<List<dynamic>> debtList = [];
-    // below Lists will be used to generate set (unique values) to be used to filter report
-    List<String> namesList = [];
-    List<String> salesmenList = [];
-    List<String> regionsList = [];
     for (var customerScreenData in screenData) {
       final name = customerScreenData[customerNameKey] as String;
       final salesman = customerScreenData[customerSalesmanKey] as String;
@@ -161,14 +140,8 @@ class CustomerReportController {
       // only show customers with debt > 0
       if (totalDebt > 0) {
         debtList.add([name, salesman, region, dueDebt, totalDebt]);
-        namesList.add(name);
-        salesmenList.add(salesman);
-        regionsList.add(region);
       }
     }
-    final salesmenDropdownList = salesmenList.toSet().toList();
-    final customersDropdownList = namesList.toSet().toList();
-    final regionsDropdownList = regionsList.toSet().toList();
 
     showReportDialog(
       context,
@@ -178,13 +151,10 @@ class CustomerReportController {
       sumIndex: 4,
       dropdownLabel: S.of(context).customers,
       dropdownIndex: 0,
-      dropdownList: customersDropdownList,
       dropdown2Label: S.of(context).salesmen,
       dropdown2Index: 1,
-      dropdown2List: salesmenDropdownList,
       dropdown3Label: S.of(context).regions,
       dropdown3Index: 2,
-      dropdown3List: regionsDropdownList,
     );
   }
 }

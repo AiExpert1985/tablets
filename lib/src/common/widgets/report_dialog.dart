@@ -16,7 +16,6 @@ void showReportDialog(
   String? title,
   int? dateIndex,
   int? dropdownIndex,
-  List<String>? dropdownList,
   String? dropdownLabel,
   int? sumIndex,
   double targetedWidth = 1600,
@@ -28,10 +27,8 @@ void showReportDialog(
   // if isCount, means we take count, not sum
   bool isCount = false,
   int? dropdown2Index,
-  List<String>? dropdown2List,
   String? dropdown2Label,
   int? dropdown3Index,
-  List<String>? dropdown3List,
   String? dropdown3Label,
 }) {
   showDialog(
@@ -49,13 +46,10 @@ void showReportDialog(
         dataList: dataList,
         dateIndex: dateIndex,
         dropdownIndex: dropdownIndex,
-        dropdownList: dropdownList,
         dropdownLabel: dropdownLabel,
         dropdown2Index: dropdown2Index,
-        dropdown2List: dropdown2List,
         dropdown2Label: dropdown2Label,
         dropdown3Index: dropdown3Index,
-        dropdown3List: dropdown3List,
         dropdown3Label: dropdown3Label,
         sumIndex: sumIndex,
         useOriginalTransaction: useOriginalTransaction,
@@ -73,13 +67,10 @@ class _DateFilterDialog extends StatefulWidget {
   final String? title;
   final int? dateIndex;
   final int? dropdownIndex;
-  final List<String>? dropdownList;
   final String? dropdownLabel;
   final int? dropdown2Index;
-  final List<String>? dropdown2List;
   final String? dropdown2Label;
   final int? dropdown3Index;
-  final List<String>? dropdown3List;
   final String? dropdown3Label;
   final int? sumIndex;
   final bool useOriginalTransaction;
@@ -94,13 +85,10 @@ class _DateFilterDialog extends StatefulWidget {
     this.title,
     this.dateIndex,
     this.dropdownIndex,
-    this.dropdownList,
     this.dropdownLabel,
     this.dropdown2Index,
-    this.dropdown2List,
     this.dropdown2Label,
     this.dropdown3Index,
-    this.dropdown3List,
     this.dropdown3Label,
     this.sumIndex,
     required this.useOriginalTransaction,
@@ -120,6 +108,9 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   List<String> selectedDropdown2Values = [];
   List<String> selectedDropdown3Values = [];
   List<List<dynamic>> filteredList = [];
+  List<String> dropdownValues = [];
+  List<String> dropdown2Values = [];
+  List<String> dropdown3Values = [];
 
   @override
   void initState() {
@@ -127,6 +118,25 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       sortListOfListsByDate(widget.dataList, widget.dateIndex!, isAscending: true);
     }
     super.initState();
+    if (widget.dropdownIndex != null) {
+      dropdownValues = widget.dataList
+          .map((item) => item[widget.dropdownIndex!].toString()) // Map to the value at index 1
+          .toSet() // Convert to a Set to ensure uniqueness
+          .toList(); // Convert back to a List<String>
+    }
+    if (widget.dropdown2Index != null) {
+      dropdown2Values = widget.dataList
+          .map((item) => item[widget.dropdown2Index!].toString()) // Map to the value at index 1
+          .toSet() // Convert to a Set to ensure uniqueness
+          .toList(); // Convert back to a List<String>
+    }
+    if (widget.dropdown3Index != null) {
+      dropdown3Values = widget.dataList
+          .map((item) => item[widget.dropdown3Index!].toString()) // Map to the value at index 1
+          .toSet() // Convert to a Set to ensure uniqueness
+          .toList(); // Convert back to a List<String>
+    }
+
     filteredList = List.from(widget.dataList);
   }
 
@@ -142,14 +152,11 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
             VerticalGap.xl,
             if (widget.dateIndex != null) _buildDateSelectionRow(),
             VerticalGap.l,
-            if (widget.dropdownIndex != null && widget.dropdownList != null)
-              _buildMultiSelectDropdown(),
+            if (widget.dropdownIndex != null) _buildMultiSelectDropdown(),
             VerticalGap.l,
-            if (widget.dropdown2Index != null && widget.dropdown2List != null)
-              _buildMultiSelectDropdown2(),
+            if (widget.dropdown2Index != null) _buildMultiSelectDropdown2(),
             VerticalGap.l,
-            if (widget.dropdown3Index != null && widget.dropdown3List != null)
-              _buildMultiSelectDropdown3(),
+            if (widget.dropdown3Index != null) _buildMultiSelectDropdown3(),
             VerticalGap.l,
           ],
         ),
@@ -190,9 +197,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       }).toList();
     }
     // filter the result of previous filter using first dropdown selection (if not null)
-    if (widget.dropdownIndex != null &&
-        widget.dropdownList != null &&
-        widget.dropdownList!.isNotEmpty) {
+    if (widget.dropdownIndex != null) {
       newList = newList.where((list) {
         String cellValue = list[widget.dropdownIndex!].toString();
         bool test = selectedDropdownValues.isEmpty || selectedDropdownValues.contains(cellValue);
@@ -201,9 +206,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     }
     tempPrint(newList);
     // filter the result of previous filter using first dropdown2 selection (if not null)
-    if (widget.dropdown2Index != null &&
-        widget.dropdown2List != null &&
-        widget.dropdown2List!.isNotEmpty) {
+    if (widget.dropdown2Index != null) {
       newList = newList.where((list) {
         String cellValue = list[widget.dropdown2Index!].toString();
         bool test = selectedDropdown2Values.isEmpty || selectedDropdown2Values.contains(cellValue);
@@ -212,9 +215,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     }
     tempPrint(newList);
     // filter the result of previous filter using first dropdown3 selection (if not null)
-    if (widget.dropdown3Index != null &&
-        widget.dropdown3List != null &&
-        widget.dropdown3List!.isNotEmpty) {
+    if (widget.dropdown3Index != null) {
       filteredList = filteredList.where((list) {
         String cellValue = list[widget.dropdown3Index!].toString();
         bool test = selectedDropdown3Values.isEmpty || selectedDropdown3Values.contains(cellValue);
@@ -262,7 +263,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   Widget _buildMultiSelectDropdown() {
     return MultiSelectDialogField(
       separateSelectedItems: false,
-      dialogHeight: widget.dropdownList!.length * 60,
+      dialogHeight: dropdownValues.length * 60,
       dialogWidth: 200,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey), // Border color
@@ -270,9 +271,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       ),
       confirmText: Text(S.of(context).select),
       cancelText: Text(S.of(context).cancel),
-      items: widget.dropdownList!
-          .map((String value) => MultiSelectItem<String>(value, value))
-          .toList(),
+      items: dropdownValues.map((String value) => MultiSelectItem<String>(value, value)).toList(),
       title: Text(widget.dropdownLabel ?? ''),
       buttonText: Text(
         widget.dropdownLabel ?? '',
@@ -292,7 +291,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   Widget _buildMultiSelectDropdown2() {
     return MultiSelectDialogField(
       separateSelectedItems: false,
-      dialogHeight: widget.dropdown2List!.length * 60,
+      dialogHeight: dropdown2Values.length * 60,
       dialogWidth: 200,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey), // Border color
@@ -300,9 +299,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       ),
       confirmText: Text(S.of(context).select),
       cancelText: Text(S.of(context).cancel),
-      items: widget.dropdown2List!
-          .map((String value) => MultiSelectItem<String>(value, value))
-          .toList(),
+      items: dropdown2Values.map((String value) => MultiSelectItem<String>(value, value)).toList(),
       title: Text(widget.dropdown2Label ?? ''),
       buttonText: Text(
         widget.dropdown2Label ?? '',
@@ -322,7 +319,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   Widget _buildMultiSelectDropdown3() {
     return MultiSelectDialogField(
       separateSelectedItems: false,
-      dialogHeight: widget.dropdown3List!.length * 60,
+      dialogHeight: dropdown3Values.length * 60,
       dialogWidth: 200,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey), // Border color
@@ -330,9 +327,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       ),
       confirmText: Text(S.of(context).select),
       cancelText: Text(S.of(context).cancel),
-      items: widget.dropdown3List!
-          .map((String value) => MultiSelectItem<String>(value, value))
-          .toList(),
+      items: dropdown3Values.map((String value) => MultiSelectItem<String>(value, value)).toList(),
       title: Text(widget.dropdown3Label ?? ''),
       buttonText: Text(
         widget.dropdown3Label ?? '',
