@@ -62,7 +62,7 @@ class MainDrawer extends ConsumerWidget {
 /// initialize all dbCaches and settings, and move on the the target page
 void processAndMoveToTargetPage(BuildContext context, WidgetRef ref,
     ScreenDataController screenController, String route, String pageTitle) async {
-  autoDatabaseBackup(context, ref);
+  await autoDatabaseBackup(context, ref);
   final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
   final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
   // page is loading only used to show a loading spinner (better user experience)
@@ -71,7 +71,9 @@ void processAndMoveToTargetPage(BuildContext context, WidgetRef ref,
   pageLoadingNotifier.state = true;
   // note that dbCaches are only used for mirroring the database, all the data used in the
   // app in the screenData, which is a processed version of dbCache
-  await initializeAllDbCaches(context, ref);
+  if (context.mounted) {
+    await initializeAllDbCaches(context, ref);
+  }
   // we inialize settings
   if (context.mounted) {
     initializeSettings(context, ref);
@@ -407,7 +409,7 @@ class BackupButton extends ConsumerWidget {
       height: 150,
       child: InkWell(
         onTap: () async {
-          backupDataBase(context, ref);
+          await backupDataBase(context, ref);
         },
         child: Card(
           elevation: 4,

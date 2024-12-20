@@ -81,13 +81,17 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomerFastAccessButtons(),
-              VendorFastAccessButtons(),
-              InternalFastAccessButtons(),
-            ],
+          Container(
+            padding: const EdgeInsets.all(10),
+            width: 200,
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomerFastAccessButtons(),
+                VendorFastAccessButtons(),
+                InternalFastAccessButtons(),
+              ],
+            ),
           ),
           Container(
             padding: const EdgeInsets.all(5),
@@ -110,12 +114,7 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
               ],
             ),
           ),
-          IconButton(
-              onPressed: () {
-                final reportController = ref.read(customerReportControllerProvider);
-                reportController.showAllCustomersDebt(context, ref);
-              },
-              icon: const Icon(Icons.access_alarm))
+          const FastReports()
         ],
       ),
     );
@@ -185,22 +184,22 @@ class CustomerFastAccessButtons extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FastAccessButton(
+          FastAccessFormButton(
             TransactionType.customerInvoice.name,
             textColor: Colors.green[50],
           ),
           VerticalGap.l,
-          FastAccessButton(
+          FastAccessFormButton(
             TransactionType.customerReceipt.name,
             textColor: Colors.red[50],
           ),
           VerticalGap.l,
-          FastAccessButton(
+          FastAccessFormButton(
             TransactionType.customerReturn.name,
             textColor: Colors.grey[300],
           ),
           VerticalGap.l,
-          FastAccessButton(
+          FastAccessFormButton(
             TransactionType.gifts.name,
             textColor: Colors.orange[50],
           ),
@@ -234,17 +233,17 @@ class VendorFastAccessButtons extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FastAccessButton(
+          FastAccessFormButton(
             TransactionType.vendorInvoice.name,
             textColor: Colors.green[50],
           ),
           VerticalGap.l,
-          FastAccessButton(
+          FastAccessFormButton(
             TransactionType.vendorReceipt.name,
             textColor: Colors.red[50],
           ),
           VerticalGap.l,
-          FastAccessButton(
+          FastAccessFormButton(
             TransactionType.vendorReturn.name,
             textColor: Colors.grey[300],
           ),
@@ -263,12 +262,12 @@ class InternalFastAccessButtons extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FastAccessButton(
+          FastAccessFormButton(
             TransactionType.expenditures.name,
             textColor: Colors.green[50],
           ),
           VerticalGap.l,
-          FastAccessButton(
+          FastAccessFormButton(
             TransactionType.damagedItems.name,
             textColor: Colors.red[50],
           ),
@@ -278,8 +277,8 @@ class InternalFastAccessButtons extends ConsumerWidget {
   }
 }
 
-class FastAccessButton extends ConsumerWidget {
-  const FastAccessButton(this.formType, {this.textColor, super.key});
+class FastAccessFormButton extends ConsumerWidget {
+  const FastAccessFormButton(this.formType, {this.textColor, super.key});
   final String formType;
   final Color? textColor;
 
@@ -303,12 +302,7 @@ class FastAccessButton extends ConsumerWidget {
         ),
       ),
       onPressed: () async {
-        autoDatabaseBackup(context, ref);
-        // make sure dbCaches and settings are initialized
-        await initializeAllDbCaches(context, ref);
-        if (context.mounted) {
-          initializeSettings(context, ref);
-        }
+        initializeAppData(context, ref);
         backgroundColorNofifier.state = normalColor!;
         if (context.mounted) {
           TransactionShowForm.showForm(
@@ -329,6 +323,75 @@ class FastAccessButton extends ConsumerWidget {
         padding: const EdgeInsets.all(0),
         child: Center(
             child: Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 15))),
+      ),
+    );
+  }
+}
+
+void initializeAppData(BuildContext context, WidgetRef ref) async {
+  await autoDatabaseBackup(context, ref);
+  if (context.mounted) {
+    // make sure dbCaches and settings are initialized
+    await initializeAllDbCaches(context, ref);
+  }
+  if (context.mounted) {
+    initializeSettings(context, ref);
+  }
+}
+
+class FastReports extends ConsumerWidget {
+  const FastReports({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final reportController = ref.read(customerReportControllerProvider);
+    return Container(
+        padding: const EdgeInsets.all(10),
+        width: 20,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FastAccessReportsButton(
+              'report',
+              () {
+                initializeAppData(context, ref);
+                reportController.showAllCustomersDebt(context, ref);
+              },
+            ),
+          ],
+        ));
+  }
+}
+
+class FastAccessReportsButton extends ConsumerWidget {
+  const FastAccessReportsButton(this.label, this.onPressFn,
+      {this.textColor, this.backgroundColor, super.key});
+  final String label;
+  final Color? textColor;
+  final Color? backgroundColor;
+  final void Function() onPressFn;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+      onPressed: onPressFn,
+      child: Container(
+        height: 60,
+        width: 70,
+        padding: const EdgeInsets.all(0),
+        child: Center(
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 15, color: textColor),
+          ),
+        ),
       ),
     );
   }

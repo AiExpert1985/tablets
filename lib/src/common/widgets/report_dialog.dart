@@ -3,7 +3,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -35,10 +34,6 @@ void showReportDialog(
       final height = targetedHeight > maxHeight ? maxHeight : targetedHeight;
       final maxWidth = MediaQuery.of(context).size.width;
       final width = targetedWidth > maxWidth ? maxWidth : targetedWidth;
-      tempPrint(maxHeight);
-      tempPrint(height);
-      tempPrint(maxWidth);
-      tempPrint(width);
       return _DateFilterDialog(
           title: title,
           width: width,
