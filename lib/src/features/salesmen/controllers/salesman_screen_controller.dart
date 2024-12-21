@@ -113,9 +113,12 @@ class SalesmanScreenController implements ScreenDataController {
   }
 
   List<List<dynamic>> _getCommissions(
-      Map<String, List<List<dynamic>>> processedTransactionsMap, String name) {
-    final transactions = processedTransactionsMap[name] ?? [[]];
-    return removeIndicesFromInnerLists(transactions, [4, 5]);
+    Map<String, List<List<dynamic>>> processedTransactionsMap,
+  ) {
+    final invoices = processedTransactionsMap['invoicesList'] ?? [[]];
+    final returns = processedTransactionsMap['returnsList'] ?? [[]];
+    final commissionedInvoices = [...invoices, ...returns];
+    return removeIndicesFromInnerLists(commissionedInvoices, [4, 5]);
   }
 
   @override
@@ -162,7 +165,7 @@ class SalesmanScreenController implements ScreenDataController {
     final returnsAmount = sumAtIndex(returns, 4);
     final profits = _getProfitableInvoices(processedTransactionsMap);
     final profitAmount = sumAtIndex(profits, 4);
-    final commissions = _getCommissions(processedTransactionsMap, 'invoicesList');
+    final commissions = _getCommissions(processedTransactionsMap);
     final commissionAmount = sumAtIndex(commissions, 4);
     Map<String, dynamic> newDataRow = {
       salesmanDbRefKey: salesman.dbRef,
@@ -256,7 +259,9 @@ class SalesmanScreenController implements ScreenDataController {
         receiptsList.add(processedTransaction);
       } else if (transactionType == TransactionType.customerReturn.name) {
         final profit = -1 * (processedTransaction[5] as double);
+        final commission = -1 * (processedTransaction[6] as double);
         processedTransaction[5] = profit;
+        processedTransaction[6] = commission;
         returnsList.add(processedTransaction);
       }
     }
@@ -321,7 +326,7 @@ class SalesmanScreenController implements ScreenDataController {
     return debtInfo;
   }
 
-  List<List<dynamic>> salesmanItemsSold(String salesmanDbRef) {
+  List<List<dynamic>> salesmanItemsSold(String salesmanDbRef, num salesmanCommission) {
     // separate salesman transactions
     final allTransactions = _transactionDbCache.data;
     List<Map<String, dynamic>> salesmanTransactions = [];
@@ -366,7 +371,6 @@ class SalesmanScreenController implements ScreenDataController {
         // tempPrint(4);
       }
     }
-    const commisssionInDinars = 70;
 
     // Convert the summary map to a List<List<dynamic>>
     List<List<dynamic>> result = [];
@@ -377,8 +381,8 @@ class SalesmanScreenController implements ScreenDataController {
         quantities[itemGiftQuantityKey],
         quantities['returnedQuantity'],
         quantities[itemSoldQuantityKey]! - quantities['returnedQuantity']!,
-        commisssionInDinars,
-        commisssionInDinars * (quantities[itemSoldQuantityKey]! - quantities['returnedQuantity']!)
+        salesmanCommission,
+        salesmanCommission * (quantities[itemSoldQuantityKey]! - quantities['returnedQuantity']!)
       ]);
     });
     return result;

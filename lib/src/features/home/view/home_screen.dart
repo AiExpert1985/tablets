@@ -370,9 +370,11 @@ class FastReports extends ConsumerWidget {
               () async {
                 await initializeAppData(context, ref);
                 if (context.mounted) {
-                  final soldItemsList = salesmanScreenController.salesmanItemsSold('sj_xbrnY');
-                  salesmanReportController.showSoldItemsReport(
-                      context, soldItemsList, 'name will be added');
+                  const salesmanCommission = 70;
+                  const reportTitle = 'name will be added';
+                  final soldItemsList =
+                      salesmanScreenController.salesmanItemsSold('sj_xbrnY', salesmanCommission);
+                  salesmanReportController.showSoldItemsReport(context, soldItemsList, reportTitle);
                 }
               },
             ),
