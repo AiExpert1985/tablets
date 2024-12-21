@@ -271,5 +271,6 @@
     "salesman_selling_report": "Salesman items sold",
     "for_the_duration": "for the period",
     "supervisor_salesmen_report": "Supervisor salesmen report",
-    "supervisor_customer_report": "Supervisor customer report"
+    "supervisor_customer_report": "Supervisor customer report",
+    "customer_matching": "Customer matching"
 }

@@ -141,7 +141,7 @@ class SalesmanScreenController implements ScreenDataController {
     final salesman = Salesman.fromMap(salesmanData);
     // create customer screen data for all customers to fetch from it invoices status
     // and customers debt
-    final customersInfo = _getCustomersInfo(salesmanCustomers, salesmanTransactions);
+    final customersInfo = getCustomersInfo(salesmanCustomers, salesmanTransactions);
     final customersBasicData = customersInfo['customersData'] as List<List<String>>;
     final customersDbRef = customersInfo['customersDbRef'] as List<String>;
     _customerScreenController.setFeatureScreenData(context);
@@ -272,7 +272,7 @@ class SalesmanScreenController implements ScreenDataController {
     };
   }
 
-  Map<String, dynamic> _getCustomersInfo(
+  Map<String, dynamic> getCustomersInfo(
       List<Customer> salesmanCustomers, List<Transaction> salesmanTransactions) {
     List<List<String>> customerData = [];
     List<String> customerDbRef = [];

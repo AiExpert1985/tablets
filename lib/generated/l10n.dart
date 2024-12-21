@@ -2779,6 +2779,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Customer matching`
+  String get customer_matching {
+    return Intl.message(
+      'Customer matching',
+      name: 'customer_matching',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -271,5 +271,6 @@
     "salesman_selling_report": "مبيعات المندوب حسب المادة",
     "for_the_duration": "للفترة",
     "supervisor_salesmen_report": "تقرير المندوبين",
-    "supervisor_customer_report": "تقرير الزبائن"
+    "supervisor_customer_report": "تقرير الزبائن",
+    "customer_matching": "كشف زبون"
 }

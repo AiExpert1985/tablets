@@ -58,6 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("خصومات و هدايا"),
         "customer_invoice_profit":
             MessageLookupByLibrary.simpleMessage("ارباح قوائم الزبون"),
+        "customer_matching": MessageLookupByLibrary.simpleMessage("كشف زبون"),
         "customer_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "customer_search": MessageLookupByLibrary.simpleMessage("بحث الزبائن"),
         "customers": MessageLookupByLibrary.simpleMessage("الزبائن"),

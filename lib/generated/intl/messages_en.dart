@@ -59,6 +59,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Customer gifts and discounts"),
         "customer_invoice_profit": MessageLookupByLibrary.simpleMessage(
             "Customer profit from invoices"),
+        "customer_matching":
+            MessageLookupByLibrary.simpleMessage("Customer matching"),
         "customer_name": MessageLookupByLibrary.simpleMessage("Name"),
         "customer_search":
             MessageLookupByLibrary.simpleMessage("Customers search"),

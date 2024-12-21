@@ -16,6 +16,9 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/customers/controllers/customer_report_controller.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
+import 'package:tablets/src/features/customers/model/customer.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_report_controller.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
@@ -24,6 +27,7 @@ import 'package:tablets/src/features/settings/repository/settings_repository_pro
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
+import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
 
@@ -369,6 +373,7 @@ class FastReports extends ConsumerWidget {
                   VerticalGap.xl,
                   buildSoldItemsButton(context, ref),
                   VerticalGap.xl,
+                  buildCustomerMatchingButton(context, ref),
                 ],
               ),
             ),
@@ -381,12 +386,81 @@ class FastReports extends ConsumerWidget {
               child: Column(
                 children: [
                   buildSoldItemsButton(context, ref, isSupervisor: true),
+                  VerticalGap.xl,
+                  buildSalesmanCustomersButton(context, ref)
                 ],
               ),
             )
           ],
         ));
   }
+}
+
+Widget buildCustomerMatchingButton(BuildContext context, WidgetRef ref,
+    {bool isSupervisor = false}) {
+  final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+  final customerScreenController = ref.read(customerScreenControllerProvider);
+  final customerReportController = ref.read(customerReportControllerProvider);
+  return FastAccessReportsButton(S.of(context).customer_matching, () async {
+    await initializeAppData(context, ref);
+    if (context.mounted) {
+      final nameAndDates =
+          await selectionDialog(context, ref, customerDbCache.data, S.of(context).customers);
+      final customerData = nameAndDates[0];
+      // salesman must be selected, otherwise we can't create report
+      if (customerData == null) {
+        return;
+      }
+      final customerTransactions =
+          customerScreenController.getCustomerTransactions(customerData['dbRef']);
+      if (context.mounted) {
+        final customerMatchingData =
+            customerScreenController.customerMatching(context, customerTransactions);
+        customerReportController.showCustomerMatchingReport(
+            context, customerMatchingData, customerData['name']);
+      }
+    }
+  });
+}
+
+Widget buildSalesmanCustomersButton(BuildContext context, WidgetRef ref) {
+  final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
+  final salesmanScreenController = ref.read(salesmanScreenControllerProvider);
+  final salesmanReportController = ref.read(salesmanReportControllerProvider);
+  final customersDbCache = ref.read(customerDbCacheProvider.notifier);
+  final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
+  return FastAccessReportsButton(
+    S.of(context).customers,
+    () async {
+      await initializeAppData(context, ref);
+      if (context.mounted) {
+        final nameAndDates =
+            await selectionDialog(context, ref, salesmanDbCache.data, S.of(context).salesmen);
+        final salesmanData = nameAndDates[0];
+        // salesman must be selected, otherwise we can't create report
+        if (salesmanData == null) {
+          return;
+        }
+        final salesmanCustomerMaps = customersDbCache.data.where((customer) {
+          return customer['salesmanDbRef'] == salesmanData['dbRef'];
+        }).toList();
+        final salesmanCustomers =
+            salesmanCustomerMaps.map((customerMap) => Customer.fromMap(customerMap)).toList();
+        final salesmanTransactionMaps = transactionsDbCache.data.where((transaction) {
+          return transaction['salesmanDbRef'] == salesmanData['dbRef'];
+        }).toList();
+        final salesmanTransactions = salesmanTransactionMaps
+            .map((transactionMap) => Transaction.fromMap(transactionMap))
+            .toList();
+        final customersInfo =
+            salesmanScreenController.getCustomersInfo(salesmanCustomers, salesmanTransactions);
+        final customersBasicData = customersInfo['customersData'] as List<List<String>>;
+        if (context.mounted) {
+          salesmanReportController.showCustomers(context, customersBasicData, salesmanData['name']);
+        }
+      }
+    },
+  );
 }
 
 Widget buildAllDebtButton(BuildContext context, WidgetRef ref) {
@@ -531,49 +605,50 @@ Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
                   closeButton: const SizedBox.shrink(),
                 ),
               VerticalGap.l,
-              Container(
-                width: 265,
-                padding: const EdgeInsets.all(2),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: FormBuilderDateTimePicker(
-                        textAlign: TextAlign.center,
-                        name: 'DateFrom',
-                        decoration: InputDecoration(
-                          labelStyle: const TextStyle(color: Colors.red, fontSize: 17),
-                          labelText: S.of(context).from_date,
-                          border: const OutlineInputBorder(),
+              if (fromDate != null)
+                Container(
+                  width: 265,
+                  padding: const EdgeInsets.all(2),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: FormBuilderDateTimePicker(
+                          textAlign: TextAlign.center,
+                          name: 'DateFrom',
+                          decoration: InputDecoration(
+                            labelStyle: const TextStyle(color: Colors.red, fontSize: 17),
+                            labelText: S.of(context).from_date,
+                            border: const OutlineInputBorder(),
+                          ),
+                          // initialValue: toDate ?? DateTime.now(),
+                          inputType: InputType.date,
+                          format: DateFormat('dd-MM-yyyy'),
+                          onChanged: (picked) {
+                            fromDate = picked;
+                          },
                         ),
-                        // initialValue: toDate ?? DateTime.now(),
-                        inputType: InputType.date,
-                        format: DateFormat('dd-MM-yyyy'),
-                        onChanged: (picked) {
-                          fromDate = picked;
-                        },
                       ),
-                    ),
-                    HorizontalGap.xl,
-                    Expanded(
-                      child: FormBuilderDateTimePicker(
-                        textAlign: TextAlign.center,
-                        name: 'DateFrom',
-                        decoration: InputDecoration(
-                          labelStyle: const TextStyle(color: Colors.red, fontSize: 17),
-                          labelText: S.of(context).to_date,
-                          border: const OutlineInputBorder(),
+                      HorizontalGap.xl,
+                      Expanded(
+                        child: FormBuilderDateTimePicker(
+                          textAlign: TextAlign.center,
+                          name: 'DateFrom',
+                          decoration: InputDecoration(
+                            labelStyle: const TextStyle(color: Colors.red, fontSize: 17),
+                            labelText: S.of(context).to_date,
+                            border: const OutlineInputBorder(),
+                          ),
+                          // initialValue: toDate ?? DateTime.now(),
+                          inputType: InputType.date,
+                          format: DateFormat('dd-MM-yyyy'),
+                          onChanged: (picked) {
+                            fromDate = picked;
+                          },
                         ),
-                        // initialValue: toDate ?? DateTime.now(),
-                        inputType: InputType.date,
-                        format: DateFormat('dd-MM-yyyy'),
-                        onChanged: (picked) {
-                          fromDate = picked;
-                        },
                       ),
-                    ),
-                  ],
-                ),
-              )
+                    ],
+                  ),
+                )
             ],
           ),
         ),
