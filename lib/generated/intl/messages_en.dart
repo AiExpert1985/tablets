@@ -107,6 +107,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "An error happend while importing images"),
         "failure": MessageLookupByLibrary.simpleMessage("Failure"),
         "first": MessageLookupByLibrary.simpleMessage("First"),
+        "for_the_duration":
+            MessageLookupByLibrary.simpleMessage("for the period"),
         "from": MessageLookupByLibrary.simpleMessage("From"),
         "from_date": MessageLookupByLibrary.simpleMessage("From date"),
         "go_home_page":
@@ -310,6 +312,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Salesmen search"),
         "salesman_selection":
             MessageLookupByLibrary.simpleMessage("Salesman selection"),
+        "salesman_selling_report":
+            MessageLookupByLibrary.simpleMessage("Salesman items sold"),
         "salesmen": MessageLookupByLibrary.simpleMessage("Salesmen"),
         "salesmen_debt_report":
             MessageLookupByLibrary.simpleMessage("Salesmen debt report"),
@@ -353,6 +357,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "success": MessageLookupByLibrary.simpleMessage("Success"),
         "sum_of_commissions":
             MessageLookupByLibrary.simpleMessage("Commissions_sum"),
+        "supervisor_customer_report":
+            MessageLookupByLibrary.simpleMessage("Supervisor customer report"),
+        "supervisor_salesmen_report":
+            MessageLookupByLibrary.simpleMessage("Supervisor salesmen report"),
         "there_is_no_customer_receipt":
             MessageLookupByLibrary.simpleMessage("no receipt"),
         "to": MessageLookupByLibrary.simpleMessage("To"),

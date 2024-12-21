@@ -339,7 +339,11 @@ class SalesmanScreenController implements ScreenDataController {
   }
 
   List<List<dynamic>> salesmanItemsSold(
-      String salesmanDbRef, num salesmanCommission, DateTime? startDate, DateTime? endDate) {
+    String salesmanDbRef,
+    num salesmanCommission,
+    DateTime? startDate,
+    DateTime? endDate,
+  ) {
     // separate salesman transactions
     List<Map<String, dynamic>> fliteredTransactions =
         filterTransactions(_transactionDbCache.data, startDate, endDate, salesmanDbRef);

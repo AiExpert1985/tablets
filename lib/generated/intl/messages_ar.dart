@@ -106,6 +106,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("حدث خطأ اثناء استيراد الصور"),
         "failure": MessageLookupByLibrary.simpleMessage("فشل"),
         "first": MessageLookupByLibrary.simpleMessage("الاول"),
+        "for_the_duration": MessageLookupByLibrary.simpleMessage("للفترة"),
         "from": MessageLookupByLibrary.simpleMessage("من"),
         "from_date": MessageLookupByLibrary.simpleMessage("من تاريخ"),
         "go_home_page":
@@ -294,6 +295,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "salesman_search":
             MessageLookupByLibrary.simpleMessage("بحث المندوبين"),
         "salesman_selection": MessageLookupByLibrary.simpleMessage("المندوب"),
+        "salesman_selling_report":
+            MessageLookupByLibrary.simpleMessage("مبيعات المندوب حسب المادة"),
         "salesmen": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "salesmen_debt_report":
             MessageLookupByLibrary.simpleMessage("ديون المندوبين"),
@@ -337,6 +340,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
         "sum_of_commissions":
             MessageLookupByLibrary.simpleMessage("مجموع العمولات"),
+        "supervisor_customer_report":
+            MessageLookupByLibrary.simpleMessage("تقرير الزبائن"),
+        "supervisor_salesmen_report":
+            MessageLookupByLibrary.simpleMessage("تقرير المندوبين"),
         "there_is_no_customer_receipt":
             MessageLookupByLibrary.simpleMessage("لا يوجد"),
         "to": MessageLookupByLibrary.simpleMessage("الى"),

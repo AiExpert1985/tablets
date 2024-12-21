@@ -267,5 +267,9 @@
     "net_amount": "الصافي",
     "sold": "المباع",
     "returned": "المرجع",
-    "salesmen_sellings": "مبيعات المندوبين"
+    "salesmen_sellings": "مبيعات المندوبين",
+    "salesman_selling_report": "مبيعات المندوب حسب المادة",
+    "for_the_duration": "للفترة",
+    "supervisor_salesmen_report": "تقرير المندوبين",
+    "supervisor_customer_report": "تقرير الزبائن"
 }

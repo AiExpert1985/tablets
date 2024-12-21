@@ -2739,6 +2739,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Salesman items sold`
+  String get salesman_selling_report {
+    return Intl.message(
+      'Salesman items sold',
+      name: 'salesman_selling_report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `for the period`
+  String get for_the_duration {
+    return Intl.message(
+      'for the period',
+      name: 'for_the_duration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supervisor salesmen report`
+  String get supervisor_salesmen_report {
+    return Intl.message(
+      'Supervisor salesmen report',
+      name: 'supervisor_salesmen_report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supervisor customer report`
+  String get supervisor_customer_report {
+    return Intl.message(
+      'Supervisor customer report',
+      name: 'supervisor_customer_report',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

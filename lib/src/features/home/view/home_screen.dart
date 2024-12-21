@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:search_choices/search_choices.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
@@ -12,6 +13,7 @@ import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/customers/controllers/customer_report_controller.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_report_controller.dart';
@@ -349,49 +351,92 @@ class FastReports extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customerReportController = ref.read(customerReportControllerProvider);
-    final salesmanReportController = ref.read(salesmanReportControllerProvider);
-    final salesmanScreenController = ref.read(salesmanScreenControllerProvider);
-    final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
     return Container(
         padding: const EdgeInsets.all(10),
         width: 200,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            FastAccessReportsButton(
-              S.of(context).salesmen_debt_report,
-              () async {
-                await initializeAppData(context, ref);
-                if (context.mounted) {
-                  customerReportController.showAllCustomersDebt(context, ref);
-                }
-              },
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey[300]!),
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+              ),
+              child: Column(
+                children: [
+                  buildAllDebtButton(context, ref),
+                  VerticalGap.xl,
+                  buildSoldItemsButton(context, ref),
+                  VerticalGap.xl,
+                ],
+              ),
             ),
-            VerticalGap.xl,
-            FastAccessReportsButton(
-              S.of(context).salesmen_sellings,
-              () async {
-                await initializeAppData(context, ref);
-                if (context.mounted) {
-                  final nameAndDates = await selectionDialog(context, ref, salesmanDbCache.data);
-                  final salesmanData = nameAndDates[0];
-                  final startDate = nameAndDates[1];
-                  final endDate = nameAndDates[2];
-                  const salesmanCommission = 70;
-                  const reportTitle = 'name will be added';
-                  final soldItemsList = salesmanScreenController.salesmanItemsSold(
-                      salesmanData['dbRef'], salesmanCommission, startDate, endDate);
-                  if (context.mounted) {
-                    salesmanReportController.showSoldItemsReport(
-                        context, soldItemsList, reportTitle);
-                  }
-                }
-              },
-            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey[300]!),
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+              ),
+              child: Column(
+                children: [
+                  buildSoldItemsButton(context, ref, isSupervisor: true),
+                ],
+              ),
+            )
           ],
         ));
   }
+}
+
+Widget buildAllDebtButton(BuildContext context, WidgetRef ref) {
+  final customerReportController = ref.read(customerReportControllerProvider);
+  return FastAccessReportsButton(
+    S.of(context).salesmen_debt_report,
+    () async {
+      await initializeAppData(context, ref);
+      if (context.mounted) {
+        customerReportController.showAllCustomersDebt(context, ref);
+      }
+    },
+  );
+}
+
+/// supervisor report differs in two things, (1) button name, (2) last two columns are empty in supervisor report
+Widget buildSoldItemsButton(BuildContext context, WidgetRef ref, {bool isSupervisor = false}) {
+  final salesmanReportController = ref.read(salesmanReportControllerProvider);
+  final salesmanScreenController = ref.read(salesmanScreenControllerProvider);
+  final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
+  return FastAccessReportsButton(
+    // name depends whether the report is for supervisor
+    isSupervisor ? S.of(context).supervisor_salesmen_report : S.of(context).salesmen_sellings,
+    () async {
+      await initializeAppData(context, ref);
+      if (context.mounted) {
+        final nameAndDates = await selectionDialog(
+            context, ref, salesmanDbCache.data, S.of(context).salesman_selection);
+        final salesmanData = nameAndDates[0];
+        // salesman must be selected, otherwise we can't create report
+        if (salesmanData == null) {
+          return;
+        }
+        // dates can be null, which means to take all the duration
+        final startDate = nameAndDates[1];
+        final endDate = nameAndDates[2];
+        const salesmanCommission = 70;
+        String reportTitle = '';
+        if (context.mounted) {
+          reportTitle =
+              '${S.of(context).salesman_selling_report} \n ${salesmanData['name']} \n ${S.of(context).for_the_duration} ${formatDate(startDate ?? DateTime.parse("2024-12-01T14:30:00"))} - ${formatDate(endDate ?? DateTime.now())}';
+        }
+        final soldItemsList = salesmanScreenController.salesmanItemsSold(
+            salesmanData['dbRef'], salesmanCommission, startDate, endDate);
+        if (context.mounted) {
+          salesmanReportController.showSoldItemsReport(context, soldItemsList, reportTitle, true);
+        }
+      }
+    },
+  );
 }
 
 class FastAccessReportsButton extends ConsumerWidget {
@@ -428,8 +473,10 @@ class FastAccessReportsButton extends ConsumerWidget {
   }
 }
 
-Future<List<dynamic>> selectionDialog(
-    BuildContext context, WidgetRef ref, List<Map<String, dynamic>>? selectionValues) async {
+/// returns selected value from drop down list (with search) and dates (from - to)
+/// it could return null dates (but not null selected values)
+Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
+    List<Map<String, dynamic>>? selectionValues, String? selectionLabel) async {
   DateTime? fromDate;
   DateTime? toDate;
   Map<String, dynamic>? selectedValue;
@@ -439,93 +486,106 @@ Future<List<dynamic>> selectionDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Select something'),
-        content: SingleChildScrollView(
+        // title: Text(selectionLabel ?? ''),
+        content: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          width: 300,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (selectionValues != null)
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey), // Border color
-                    borderRadius: BorderRadius.circular(4.0), // Rounded corners
+                SearchChoices.single(
+                  fieldDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4), // Rounded corners
+                      border: Border.all(color: Colors.grey)),
+                  items: selectionValues
+                      .map(
+                        (item) => DropdownMenuItem(
+                          value: item,
+                          child: Text(item['name']),
+                        ),
+                      )
+                      .toList(),
+                  value: selectedValue,
+                  hint: Text(
+                    selectionLabel ?? '',
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
                   ),
-                  child: SearchChoices.single(
-                    items: selectionValues
-                        .map(
-                          (item) => DropdownMenuItem(
-                            value: item,
-                            child: Text(item['name']),
-                          ),
-                        )
-                        .toList(),
-                    value: selectedValue,
-                    hint: "Select one",
-                    searchHint: "Select one",
-                    onChanged: (value) {
-                      selectedValue = value;
-                    },
-                    dialogBox: true,
-                    isExpanded: true,
+                  searchHint: Text(
+                    selectionLabel ?? '',
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
                   ),
+                  onChanged: (value) {
+                    selectedValue = value;
+                  },
+
+                  isExpanded: true,
+                  // padding is the only way I found to reduce the width of the search dialog
+                  dropDownDialogPadding: const EdgeInsets.symmetric(
+                    vertical: 120,
+                    horizontal: 700,
+                  ),
+                  closeButton: const SizedBox.shrink(),
                 ),
-              Row(
-                children: [
-                  const Text('From:'),
-                  TextButton(
-                    onPressed: () async {
-                      final DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: fromDate ?? DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2101),
-                      );
-                      if (picked != null) {
-                        fromDate = picked;
-                      }
-                    },
-                    child: Text(fromDate == null
-                        ? 'Select Date'
-                        : fromDate!.toLocal().toString().split(' ')[0]),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text('To:'),
-                  TextButton(
-                    onPressed: () async {
-                      final DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: toDate ?? DateTime.now(),
-                        firstDate: fromDate ?? DateTime(2000),
-                        lastDate: DateTime(2101),
-                      );
-                      if (picked != null) {
-                        toDate = picked;
-                      }
-                    },
-                    child: Text(toDate == null
-                        ? 'Select Date'
-                        : toDate!.toLocal().toString().split(' ')[0]),
-                  ),
-                ],
+              VerticalGap.l,
+              Container(
+                width: 265,
+                padding: const EdgeInsets.all(2),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: FormBuilderDateTimePicker(
+                        textAlign: TextAlign.center,
+                        name: 'DateFrom',
+                        decoration: InputDecoration(
+                          labelStyle: const TextStyle(color: Colors.red, fontSize: 17),
+                          labelText: S.of(context).from_date,
+                          border: const OutlineInputBorder(),
+                        ),
+                        // initialValue: toDate ?? DateTime.now(),
+                        inputType: InputType.date,
+                        format: DateFormat('dd-MM-yyyy'),
+                        onChanged: (picked) {
+                          fromDate = picked;
+                        },
+                      ),
+                    ),
+                    HorizontalGap.xl,
+                    Expanded(
+                      child: FormBuilderDateTimePicker(
+                        textAlign: TextAlign.center,
+                        name: 'DateFrom',
+                        decoration: InputDecoration(
+                          labelStyle: const TextStyle(color: Colors.red, fontSize: 17),
+                          labelText: S.of(context).to_date,
+                          border: const OutlineInputBorder(),
+                        ),
+                        // initialValue: toDate ?? DateTime.now(),
+                        inputType: InputType.date,
+                        format: DateFormat('dd-MM-yyyy'),
+                        onChanged: (picked) {
+                          fromDate = picked;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               )
             ],
           ),
         ),
         actions: <Widget>[
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('OK'),
-            onPressed: () {
-              if (selectedValue != null) {
-                Navigator.of(context).pop();
-              }
-            },
-          ),
+          Center(
+            child: IconButton(
+                onPressed: () {
+                  if (selectedValue != null) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                icon: const ApproveIcon()),
+          )
         ],
       );
     },

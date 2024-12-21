@@ -459,7 +459,11 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   }
 
   Widget _buildTitle() {
-    return Text(widget.title!, style: const TextStyle(fontSize: 20));
+    return Container(
+        padding: const EdgeInsets.all(2),
+        width: 300,
+        child:
+            Text(textAlign: TextAlign.center, widget.title!, style: const TextStyle(fontSize: 20)));
   }
 
   Widget _buildSumDisplay() {
