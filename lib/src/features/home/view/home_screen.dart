@@ -432,7 +432,8 @@ Widget buildSoldItemsButton(BuildContext context, WidgetRef ref, {bool isSupervi
         final soldItemsList = salesmanScreenController.salesmanItemsSold(
             salesmanData['dbRef'], salesmanCommission, startDate, endDate);
         if (context.mounted) {
-          salesmanReportController.showSoldItemsReport(context, soldItemsList, reportTitle, true);
+          salesmanReportController.showSoldItemsReport(
+              context, soldItemsList, reportTitle, isSupervisor);
         }
       }
     },
