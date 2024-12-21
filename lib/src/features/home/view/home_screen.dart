@@ -378,11 +378,10 @@ class FastReports extends ConsumerWidget {
                   final salesmanData = nameAndDates[0];
                   final startDate = nameAndDates[1];
                   final endDate = nameAndDates[2];
-                  tempPrint(salesmanData);
                   const salesmanCommission = 70;
                   const reportTitle = 'name will be added';
-                  final soldItemsList =
-                      salesmanScreenController.salesmanItemsSold('sj_xbrnY', salesmanCommission);
+                  final soldItemsList = salesmanScreenController.salesmanItemsSold(
+                      salesmanData['dbRef'], salesmanCommission, startDate, endDate);
                   if (context.mounted) {
                     salesmanReportController.showSoldItemsReport(
                         context, soldItemsList, reportTitle);
@@ -522,8 +521,8 @@ Future<List<dynamic>> selectionDialog(
           TextButton(
             child: const Text('OK'),
             onPressed: () {
-              if (fromDate != null && toDate != null) {
-                Navigator.of(context).pop([fromDate, toDate]);
+              if (selectedValue != null) {
+                Navigator.of(context).pop();
               }
             },
           ),

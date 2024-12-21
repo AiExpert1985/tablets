@@ -326,22 +326,28 @@ class SalesmanScreenController implements ScreenDataController {
     return debtInfo;
   }
 
-  List<List<dynamic>> salesmanItemsSold(String salesmanDbRef, num salesmanCommission) {
+  /// filter transactions base on salesman & date from / to
+  List<Map<String, dynamic>> filterTransactions(List<Map<String, dynamic>> allTransactions,
+      DateTime? startDate, DateTime? endDate, String salesmanDbRef) {
+    return allTransactions.where((transaction) {
+      DateTime transactionDate =
+          transaction['date'] is DateTime ? transaction['date'] : transaction['date'].toDate();
+      bool isAfterStartDate = startDate == null || transactionDate.isAfter(startDate);
+      bool isBeforeEndDate = endDate == null || transactionDate.isBefore(endDate);
+      return salesmanDbRef == transaction['salesmanDbRef'] && isAfterStartDate && isBeforeEndDate;
+    }).toList();
+  }
+
+  List<List<dynamic>> salesmanItemsSold(
+      String salesmanDbRef, num salesmanCommission, DateTime? startDate, DateTime? endDate) {
     // separate salesman transactions
-    final allTransactions = _transactionDbCache.data;
-    List<Map<String, dynamic>> salesmanTransactions = [];
-    for (var transaction in allTransactions) {
-      if (salesmanDbRef == transaction['salesmanDbRef']) {
-        salesmanTransactions.add(transaction);
-      }
-    }
-    // tempPrint(1);
-    // Create a summary map
+    List<Map<String, dynamic>> fliteredTransactions =
+        filterTransactions(_transactionDbCache.data, startDate, endDate, salesmanDbRef);
 
     Map<String, Map<String, num>> summary = {};
 
     // Process each transaction
-    for (var transaction in salesmanTransactions) {
+    for (var transaction in fliteredTransactions) {
       for (var item in transaction[itemsKey]) {
         String itemName = item[itemNameKey];
         num soldQuantity = 0;
