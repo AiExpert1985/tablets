@@ -272,5 +272,6 @@
     "for_the_duration": "for the period",
     "supervisor_salesmen_report": "Supervisor salesmen report",
     "supervisor_customer_report": "Supervisor customer report",
-    "customer_matching": "Customer matching"
+    "customer_matching": "Customer matching",
+    "saleman_customers": "Salesman customers"
 }

@@ -292,6 +292,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("مبلغ الارجاعات"),
         "returns_number": MessageLookupByLibrary.simpleMessage("عدد الارجاعات"),
         "salary": MessageLookupByLibrary.simpleMessage("المستحقات"),
+        "saleman_customers":
+            MessageLookupByLibrary.simpleMessage("زبائن المندوب"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "salesman_search":
             MessageLookupByLibrary.simpleMessage("بحث المندوبين"),

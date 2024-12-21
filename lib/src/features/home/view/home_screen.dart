@@ -430,7 +430,7 @@ Widget buildSalesmanCustomersButton(BuildContext context, WidgetRef ref) {
   final customersDbCache = ref.read(customerDbCacheProvider.notifier);
   final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
   return FastAccessReportsButton(
-    S.of(context).customers,
+    S.of(context).saleman_customers,
     () async {
       await initializeAppData(context, ref);
       if (context.mounted) {
@@ -483,7 +483,7 @@ Widget buildSoldItemsButton(BuildContext context, WidgetRef ref, {bool isSupervi
   final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
   return FastAccessReportsButton(
     // name depends whether the report is for supervisor
-    isSupervisor ? S.of(context).supervisor_salesmen_report : S.of(context).salesmen_sellings,
+    S.of(context).salesmen_sellings,
     () async {
       await initializeAppData(context, ref);
       if (context.mounted) {

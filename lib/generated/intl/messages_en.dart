@@ -309,6 +309,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "returns_number":
             MessageLookupByLibrary.simpleMessage("Returns number"),
         "salary": MessageLookupByLibrary.simpleMessage("Salary"),
+        "saleman_customers":
+            MessageLookupByLibrary.simpleMessage("Salesman customers"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("Name"),
         "salesman_search":
             MessageLookupByLibrary.simpleMessage("Salesmen search"),
