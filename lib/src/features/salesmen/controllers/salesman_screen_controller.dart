@@ -5,6 +5,7 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart' as cust;
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
@@ -13,6 +14,7 @@ import 'package:tablets/src/features/customers/repository/customer_db_cache_prov
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_data_notifier.dart';
 import 'package:tablets/src/features/salesmen/model/salesman.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 
@@ -317,5 +319,68 @@ class SalesmanScreenController implements ScreenDataController {
       openInvoicesDetailsKey: sortListOfListsByNumber(invoicesDetails, 1)
     };
     return debtInfo;
+  }
+
+  List<List<dynamic>> salesmanItemsSold(String salesmanDbRef) {
+    // separate salesman transactions
+    final allTransactions = _transactionDbCache.data;
+    List<Map<String, dynamic>> salesmanTransactions = [];
+    for (var transaction in allTransactions) {
+      if (salesmanDbRef == transaction['salesmanDbRef']) {
+        salesmanTransactions.add(transaction);
+      }
+    }
+    // tempPrint(1);
+    // Create a summary map
+
+    Map<String, Map<String, num>> summary = {};
+
+    // Process each transaction
+    for (var transaction in salesmanTransactions) {
+      for (var item in transaction[itemsKey]) {
+        String itemName = item[itemNameKey];
+        num soldQuantity = 0;
+        num giftQuantity = 0;
+        num returnedQuanity = 0;
+        if (transaction[transactionTypeKey] == TransactionType.customerInvoice.name) {
+          soldQuantity = item[itemSoldQuantityKey] ?? 0;
+          giftQuantity = item[itemGiftQuantityKey] ?? 0;
+        } else if (transaction[transactionTypeKey] == TransactionType.customerReturn.name) {
+          returnedQuanity = item[itemSoldQuantityKey] ?? 0;
+        }
+        // tempPrint(2);
+        if (!summary.containsKey(itemName)) {
+          summary[itemName] = {
+            itemSoldQuantityKey: 0,
+            itemGiftQuantityKey: 0,
+            'returnedQuantity': 0,
+          };
+        }
+        // tempPrint(3);
+        summary[itemName]![itemSoldQuantityKey] =
+            summary[itemName]![itemSoldQuantityKey]! + soldQuantity;
+        summary[itemName]![itemGiftQuantityKey] =
+            summary[itemName]![itemGiftQuantityKey]! + giftQuantity;
+        summary[itemName]!['returnedQuantity'] =
+            summary[itemName]!['returnedQuantity']! + returnedQuanity;
+        // tempPrint(4);
+      }
+    }
+    const commisssionInDinars = 70;
+
+    // Convert the summary map to a List<List<dynamic>>
+    List<List<dynamic>> result = [];
+    summary.forEach((itemName, quantities) {
+      result.add([
+        itemName,
+        quantities[itemSoldQuantityKey],
+        quantities[itemGiftQuantityKey],
+        quantities['returnedQuantity'],
+        quantities[itemSoldQuantityKey]! - quantities['returnedQuantity']!,
+        commisssionInDinars,
+        commisssionInDinars * (quantities[itemSoldQuantityKey]! - quantities['returnedQuantity']!)
+      ]);
+    });
+    return result;
   }
 }

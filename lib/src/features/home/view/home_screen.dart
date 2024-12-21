@@ -12,6 +12,8 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/customers/controllers/customer_report_controller.dart';
+import 'package:tablets/src/features/salesmen/controllers/salesman_report_controller.dart';
+import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
@@ -344,7 +346,9 @@ class FastReports extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final reportController = ref.read(customerReportControllerProvider);
+    final customerReportController = ref.read(customerReportControllerProvider);
+    final salesmanReportController = ref.read(salesmanReportControllerProvider);
+    final salesmanScreenController = ref.read(salesmanScreenControllerProvider);
     return Container(
         padding: const EdgeInsets.all(10),
         width: 200,
@@ -356,7 +360,19 @@ class FastReports extends ConsumerWidget {
               () async {
                 await initializeAppData(context, ref);
                 if (context.mounted) {
-                  reportController.showAllCustomersDebt(context, ref);
+                  customerReportController.showAllCustomersDebt(context, ref);
+                }
+              },
+            ),
+            VerticalGap.xl,
+            FastAccessReportsButton(
+              S.of(context).salesmen_sellings,
+              () async {
+                await initializeAppData(context, ref);
+                if (context.mounted) {
+                  final soldItemsList = salesmanScreenController.salesmanItemsSold('sj_xbrnY');
+                  salesmanReportController.showSoldItemsReport(
+                      context, soldItemsList, 'name will be added');
                 }
               },
             ),

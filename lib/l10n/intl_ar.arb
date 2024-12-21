@@ -263,5 +263,9 @@
     "previous_item_quantity_is_zero": "لم يتم ادخال العدد للمادة السابقة",
     "product_out_of_stock": "لا يوجد مخزون كافي من المادة",
     "salesmen_debt_report": "ديون المندوبين",
-    "print_status": "حالة الطباعة"
+    "print_status": "حالة الطباعة",
+    "net_amount": "الصافي",
+    "sold": "المباع",
+    "returned": "المرجع",
+    "salesmen_sellings": "مبيعات المندوبين"
 }

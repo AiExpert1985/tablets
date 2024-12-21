@@ -29,6 +29,16 @@ class SalesmanReportController {
     );
   }
 
+  void showSoldItemsReport(
+      BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {
+    showReportDialog(
+      context,
+      _getSoldItemsReportTitles(context),
+      detailsList,
+      title: salesmanName,
+    );
+  }
+
   void showTransactionReport(
     BuildContext context,
     List<List<dynamic>> transactionList,
@@ -75,6 +85,18 @@ class SalesmanReportController {
       S.of(context).customer,
       S.of(context).num_open_invoice,
       S.of(context).num_due_invoices,
+    ];
+  }
+
+  List<String> _getSoldItemsReportTitles(BuildContext context) {
+    return [
+      S.of(context).product_name,
+      S.of(context).item_sold_quantity,
+      S.of(context).item_gifts_quantity,
+      S.of(context).returns_number,
+      S.of(context).net_amount,
+      S.of(context).commission,
+      S.of(context).amount,
     ];
   }
 

@@ -2699,6 +2699,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Net amount`
+  String get net_amount {
+    return Intl.message(
+      'Net amount',
+      name: 'net_amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sold`
+  String get sold {
+    return Intl.message(
+      'Sold',
+      name: 'sold',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Returned`
+  String get returned {
+    return Intl.message(
+      'Returned',
+      name: 'returned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Salesmen sellings`
+  String get salesmen_sellings {
+    return Intl.message(
+      'Salesmen sellings',
+      name: 'salesmen_sellings',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

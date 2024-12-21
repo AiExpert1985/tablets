@@ -199,6 +199,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "monthly_profit_report":
             MessageLookupByLibrary.simpleMessage("Monthly profit report"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "net_amount": MessageLookupByLibrary.simpleMessage("Net amount"),
         "new_item": MessageLookupByLibrary.simpleMessage("New"),
         "next": MessageLookupByLibrary.simpleMessage("Next"),
         "no": MessageLookupByLibrary.simpleMessage("No"),
@@ -298,6 +299,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "remaining_amount":
             MessageLookupByLibrary.simpleMessage("Remaining amount"),
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
+        "returned": MessageLookupByLibrary.simpleMessage("Returned"),
         "returns_amount":
             MessageLookupByLibrary.simpleMessage("Returns amount"),
         "returns_number":
@@ -312,6 +314,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "salesmen_debt_report":
             MessageLookupByLibrary.simpleMessage("Salesmen debt report"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("Salesmen"),
+        "salesmen_sellings":
+            MessageLookupByLibrary.simpleMessage("Salesmen sellings"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "save_changes": MessageLookupByLibrary.simpleMessage("Save changes"),
         "save_data_backup":
@@ -344,6 +348,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "signup": MessageLookupByLibrary.simpleMessage("Sign up"),
         "slogan": MessageLookupByLibrary.simpleMessage(
             "Tablets, where accounting started"),
+        "sold": MessageLookupByLibrary.simpleMessage("Sold"),
         "stock": MessageLookupByLibrary.simpleMessage("Stock"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
         "sum_of_commissions":

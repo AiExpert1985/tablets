@@ -263,5 +263,9 @@
     "previous_item_quantity_is_zero": "Previous item has zero quantity",
     "product_out_of_stock": "Product is out of stock",
     "salesmen_debt_report": "Salesmen debt report",
-    "print_status": "Print status"
+    "print_status": "Print status",
+    "net_amount": "Net amount",
+    "sold": "Sold",
+    "returned": "Returned",
+    "salesmen_sellings": "Salesmen sellings"
 }
