@@ -153,11 +153,11 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 if (widget.dateIndex != null) Expanded(child: _buildDateSelectionRow()),
-                HorizontalGap.xl,
+                if (widget.dropdownIndex != null) HorizontalGap.xl,
                 if (widget.dropdownIndex != null) Expanded(child: _buildMultiSelectDropdown()),
-                HorizontalGap.xl,
+                if (widget.dropdown2Index != null) HorizontalGap.xl,
                 if (widget.dropdown2Index != null) Expanded(child: _buildMultiSelectDropdown2()),
-                HorizontalGap.xl,
+                if (widget.dropdown3Index != null) HorizontalGap.xl,
                 if (widget.dropdown3Index != null) Expanded(child: _buildMultiSelectDropdown3()),
               ],
             )
