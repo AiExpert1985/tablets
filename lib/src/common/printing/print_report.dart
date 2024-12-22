@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/printing/print_document.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +30,7 @@ Future<Document> getReportPdf(
   final printingTime = DateFormat.jm('ar').format(now);
   final arabicFont =
       pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
-  _setFieldsSizes(reportData);
+  _setFieldsSizes(reportData, listTitles);
   int numItemsInFirstPage = 20;
 
   pdf.addPage(pw.Page(
@@ -79,11 +80,13 @@ Future<Document> getReportPdf(
   return pdf;
 }
 
-void _setFieldsSizes(reportData) {
+void _setFieldsSizes(List<List<dynamic>> reportData, List<String> reportHeaders) {
+  // note that we need to reverse the list because pw package works in reversed order
+  // so we make sure the intended field takes the large size
   // first we need to clear previous values from other reports
   isWideField = [];
   // first we assume all cells are normal size
-  for (var _ in reportData[0]) {
+  for (var _ in reportHeaders) {
     isWideField.add(false);
   }
   for (List item in reportData) {
@@ -92,6 +95,15 @@ void _setFieldsSizes(reportData) {
       if (item[i] is String && item[i].length > 15) {
         isWideField[i] = true;
       }
+    }
+  }
+  // I don't want to increase the size of notes fields
+  // note that we need to reverse the list because pw package works in reversed order
+  // so we make sure the intended field takes the large size
+  final reversedTitles = reportHeaders.reversed.toList();
+  for (var i = 0; i < reversedTitles.length; i++) {
+    if (reversedTitles[i].contains('ملاحظات') || reversedTitles[i].contains('notes')) {
+      isWideField[i] = false;
     }
   }
 }
