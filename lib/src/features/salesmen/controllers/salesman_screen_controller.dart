@@ -142,7 +142,7 @@ class SalesmanScreenController implements ScreenDataController {
     // create customer screen data for all customers to fetch from it invoices status
     // and customers debt
     final customersInfo = getCustomersInfo(salesmanCustomers, salesmanTransactions);
-    final customersBasicData = customersInfo['customersData'] as List<List<String>>;
+    final customersBasicData = customersInfo['customersData'] as List<List<dynamic>>;
     final customersDbRef = customersInfo['customersDbRef'] as List<String>;
     _customerScreenController.setFeatureScreenData(context);
     final customersDebtInfo = _getCustomersDebtInfo(customersDbRef);
@@ -258,13 +258,14 @@ class SalesmanScreenController implements ScreenDataController {
       } else if (transactionType == TransactionType.customerReceipt.name) {
         receiptsList.add(processedTransaction);
       } else if (transactionType == TransactionType.customerReturn.name) {
-        final profit = -1 * (processedTransaction[5] as double);
-        final commission = -1 * (processedTransaction[6] as double);
+        final profit = -1 * ((processedTransaction[5] ?? 0.0) as double);
+        final commission = -1 * ((processedTransaction[6] ?? 0.0) as double);
         processedTransaction[5] = profit;
         processedTransaction[6] = commission;
         returnsList.add(processedTransaction);
       }
     }
+
     return {
       'invoicesList': invoicesList,
       'reciptsList': receiptsList,
