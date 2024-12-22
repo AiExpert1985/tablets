@@ -356,7 +356,7 @@ class FastReports extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(20),
         width: 200,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -378,7 +378,7 @@ class FastReports extends ConsumerWidget {
               ),
             ),
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey[300]!),
                 borderRadius: const BorderRadius.all(Radius.circular(8)),
