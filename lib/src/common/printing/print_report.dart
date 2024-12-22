@@ -59,12 +59,12 @@ Future<Document> getReportPdf(
 }
 
 void _setFieldsSizes(reportData) {
+  // first we need to clear previous values from other reports
   isWideField = [];
   // first we assume all cells are normal size
   for (var _ in reportData[0]) {
     isWideField.add(false);
   }
-  tempPrint(isWideField);
   for (List item in reportData) {
     item = item.reversed.toList();
     for (var i = 0; i < item.length; i++) {
@@ -225,7 +225,6 @@ pw.Widget _buildDataCell(Font arabicFont, dynamic value, int i) {
     cellText = value;
   }
   if (isWideField[i]) {
-    tempPrint(cellText);
     return pw.Container(
         width: 140,
         padding: const pw.EdgeInsets.all(1),
