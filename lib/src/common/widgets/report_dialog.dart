@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/printing/print_document.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -525,7 +526,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             PrintReportButton(reportData, reportTitle ?? '', listTitles, startDateString,
-                endDateString, widget.sumIndex, widget.isCount),
+                endDateString, widget.sumIndex, widget.isCount, widget.useOriginalTransaction),
             HorizontalGap.m,
             IconButton(
               icon: const ShareIcon(),
@@ -554,7 +555,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
 
 class PrintReportButton extends ConsumerWidget {
   const PrintReportButton(this.reportData, this.reportTitle, this.listTitles, this.startDate,
-      this.endDate, this.sumIndex, this.isCount,
+      this.endDate, this.sumIndex, this.isCount, this.useOriginalTransaction,
       {super.key});
 
   final List<List<dynamic>> reportData;
@@ -564,14 +565,22 @@ class PrintReportButton extends ConsumerWidget {
   final List<String> listTitles;
   final int? sumIndex;
   final bool isCount;
+  final bool useOriginalTransaction;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     String summaryTitle = isCount ? S.of(context).count : S.of(context).total;
-    num summaryValue = 0;
+
+    //if transaction is included, then we don't print it because it is only intended to show original transaction
+    List<List<dynamic>> printingData = [...reportData];
+    if (useOriginalTransaction) {
+      printingData = removeIndicesFromInnerLists(reportData, [0]);
+    }
+
     return IconButton(
       icon: const PrintIcon(),
       onPressed: () {
+        num summaryValue = 0;
         if (isCount) {
           summaryValue = reportData.length;
         } else if (sumIndex != null) {
@@ -581,7 +590,7 @@ class PrintReportButton extends ConsumerWidget {
             }
           }
         }
-        printReport(context, ref, reportData, reportTitle, listTitles, startDate, endDate,
+        printReport(context, ref, printingData, reportTitle, listTitles, startDate, endDate,
             summaryValue, summaryTitle);
       },
     );

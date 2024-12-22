@@ -406,8 +406,9 @@ Widget buildCustomerMatchingButton(BuildContext context, WidgetRef ref,
   return FastAccessReportsButton(S.of(context).customer_matching, () async {
     await initializeAppData(context, ref);
     if (context.mounted) {
-      final nameAndDates =
-          await selectionDialog(context, ref, customerDbCache.data, S.of(context).customers);
+      final nameAndDates = await selectionDialog(
+          context, ref, customerDbCache.data, S.of(context).customers,
+          includeDates: false);
       final customerData = nameAndDates[0];
       // salesman must be selected, otherwise we can't create report
       if (customerData == null) {
