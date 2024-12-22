@@ -9,7 +9,7 @@ import 'package:tablets/src/common/printing/print_document.dart';
 import 'package:flutter/services.dart';
 import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider.dart';
 
-Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
+Future<Document> getVendorReturnPdf(BuildContext context, WidgetRef ref,
     Map<String, dynamic> transactionData, pw.ImageProvider image) async {
   final pdf = pw.Document();
   final vendorDbCache = ref.read(vendorDbCacheProvider.notifier);
@@ -21,9 +21,7 @@ Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
   final items = transactionData['items'] as List;
   final paymentType = translateDbTextToScreenText(context, transactionData['paymentType']);
   final date = formatDate(transactionData['date']);
-  final subtotalAmount = doubleToStringWithComma(transactionData['subTotalAmount']);
   final totalAmount = doubleToStringWithComma(transactionData['totalAmount']);
-  final discount = doubleToStringWithComma(transactionData['discount']);
   final currency = translateDbTextToScreenText(context, transactionData['currency']);
   final now = DateTime.now();
   final printingDate = DateFormat.yMd('ar').format(now);
@@ -49,8 +47,6 @@ Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
           number,
           date,
           items,
-          subtotalAmount,
-          discount,
           currency,
           notes,
           totalNumOfItems,
@@ -80,8 +76,6 @@ Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
             number,
             date,
             items,
-            subtotalAmount,
-            discount,
             currency,
             notes,
             totalNumOfItems,
@@ -112,8 +106,6 @@ Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
             number,
             date,
             items,
-            subtotalAmount,
-            discount,
             currency,
             notes,
             totalNumOfItems,
@@ -144,8 +136,6 @@ Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
             number,
             date,
             items,
-            subtotalAmount,
-            discount,
             currency,
             notes,
             totalNumOfItems,
@@ -176,8 +166,6 @@ Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
             number,
             date,
             items,
-            subtotalAmount,
-            discount,
             currency,
             notes,
             totalNumOfItems,
@@ -208,8 +196,6 @@ Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
             number,
             date,
             items,
-            subtotalAmount,
-            discount,
             currency,
             notes,
             totalNumOfItems,
@@ -240,8 +226,6 @@ Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
             number,
             date,
             items,
-            subtotalAmount,
-            discount,
             currency,
             notes,
             totalNumOfItems,
@@ -272,8 +256,6 @@ Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
             number,
             date,
             items,
-            subtotalAmount,
-            discount,
             currency,
             notes,
             totalNumOfItems,
@@ -304,8 +286,6 @@ Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
             number,
             date,
             items,
-            subtotalAmount,
-            discount,
             currency,
             notes,
             totalNumOfItems,
@@ -335,8 +315,6 @@ Future<Document> getVendorInvoicePdf(BuildContext context, WidgetRef ref,
             number,
             date,
             items,
-            subtotalAmount,
-            discount,
             currency,
             notes,
             totalNumOfItems,
@@ -367,8 +345,6 @@ pw.Widget _invoicePage(
     String number,
     String date,
     List<dynamic> items,
-    String subtotalAmount,
-    String discount,
     String currency,
     String notes,
     String totalNumOfItems,
@@ -395,9 +371,7 @@ pw.Widget _invoicePage(
           arabicFont, items.sublist(startItem, items.length < endItem ? items.length : endItem),
           startingSequence: startSequence),
       pw.SizedBox(height: 8),
-      if (addTotals)
-        _totals(arabicFont, subtotalAmount, discount, currency, notes, totalNumOfItems, itemsWeigt,
-            totalAmount),
+      if (addTotals) _totals(arabicFont, currency, notes, totalNumOfItems, itemsWeigt, totalAmount),
       pw.Spacer(),
       _signituresRow(arabicFont),
       pw.SizedBox(height: 5),
@@ -483,13 +457,13 @@ pw.Widget _itemsRow(
   );
 }
 
-pw.Widget _totals(Font arabicFont, String subTotalAmount, String discount, String currency,
-    String notes, String itemsNumber, String itemsWeigt, String totalAmount) {
+pw.Widget _totals(Font arabicFont, String currency, String notes, String itemsNumber,
+    String itemsWeigt, String totalAmount) {
   return pw.Container(
     width: 558, // Set a fixed width for the container
     height: 120,
     child: pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
-      _invoiceAmountColumn(arabicFont, subTotalAmount, discount, currency, totalAmount),
+      _invoiceAmountColumn(arabicFont, currency, totalAmount),
       _weightColumn(arabicFont, notes, itemsNumber, itemsWeigt),
     ]),
   );
@@ -523,14 +497,10 @@ pw.Widget _signituresRow(Font arabicFont) {
   );
 }
 
-pw.Widget _invoiceAmountColumn(
-    Font arabicFont, String subtotalAmount, String discount, String currency, String totalAmount) {
+pw.Widget _invoiceAmountColumn(Font arabicFont, String currency, String totalAmount) {
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.center,
     children: [
-      _totalsItem(arabicFont, 'مبلغ القائمة', subtotalAmount, lightBgColor),
-      pw.SizedBox(height: 4),
-      _totalsItem(arabicFont, 'الخصم', discount, lightBgColor),
       pw.SizedBox(height: 4),
       _totalsItem(arabicFont, 'المبلغ الكلي', totalAmount, darkBgColor, textColor: PdfColors.white),
       pw.SizedBox(height: 3),
