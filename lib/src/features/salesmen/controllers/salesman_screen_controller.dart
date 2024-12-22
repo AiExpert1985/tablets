@@ -274,7 +274,7 @@ class SalesmanScreenController implements ScreenDataController {
 
   Map<String, dynamic> getCustomersInfo(
       List<Customer> salesmanCustomers, List<Transaction> salesmanTransactions) {
-    List<List<String>> customerData = [];
+    List<List<dynamic>> customerData = [];
     List<String> customerDbRef = [];
     for (var customer in salesmanCustomers) {
       int numInvoices = 0;
@@ -284,7 +284,7 @@ class SalesmanScreenController implements ScreenDataController {
           numInvoices++;
         }
       }
-      customerData.add([customer.name, customer.region, numInvoices.toString()]);
+      customerData.add([customer.name, customer.region, numInvoices]);
       customerDbRef.add(customer.dbRef);
     }
     return {

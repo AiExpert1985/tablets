@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
+import 'package:tablets/src/common/printing/print_document.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/show_transaction_dialog.dart';
@@ -175,7 +177,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           ],
         ),
       ),
-      actions: _buildButtons(),
+      actions: _buildButtons(filteredList, widget.title, widget.titleList, startDate, endDate),
     );
   }
 
@@ -512,19 +514,18 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     );
   }
 
-  List<Widget> _buildButtons() {
+  List<Widget> _buildButtons(List<List<dynamic>> reportData, String? reportTitle,
+      List<String> listTitles, DateTime? startDate, DateTime? endDate) {
+    final startDateString = startDate != null ? formatDate(startDate) : null;
+    final endDateString = endDate != null ? formatDate(endDate) : null;
     return <Widget>[
       Center(
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(
-              icon: const PrintIcon(),
-              onPressed: () {
-                // TODO: Implement print functionality
-              },
-            ),
+            PrintReportButton(reportData, reportTitle ?? '', listTitles, startDateString,
+                endDateString, widget.sumIndex, widget.isCount),
             HorizontalGap.m,
             IconButton(
               icon: const ShareIcon(),
@@ -548,5 +549,41 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
             borderRadius: BorderRadius.circular(8.0),
             border: Border.all(color: Colors.grey.shade300)),
         child: childWidget);
+  }
+}
+
+class PrintReportButton extends ConsumerWidget {
+  const PrintReportButton(this.reportData, this.reportTitle, this.listTitles, this.startDate,
+      this.endDate, this.sumIndex, this.isCount,
+      {super.key});
+
+  final List<List<dynamic>> reportData;
+  final String reportTitle;
+  final String? startDate;
+  final String? endDate;
+  final List<String> listTitles;
+  final int? sumIndex;
+  final bool isCount;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    String summaryTitle = isCount ? S.of(context).count : S.of(context).total;
+    num summaryValue = 0;
+    return IconButton(
+      icon: const PrintIcon(),
+      onPressed: () {
+        if (isCount) {
+          summaryValue = reportData.length;
+        } else if (sumIndex != null) {
+          for (var item in reportData) {
+            if (item[sumIndex!] is num || item[sumIndex!] is int || item[sumIndex!] is double) {
+              summaryValue += item[sumIndex!]?.toDouble() ?? 0;
+            }
+          }
+        }
+        printReport(context, ref, reportData, reportTitle, listTitles, startDate, endDate,
+            summaryValue, summaryTitle);
+      },
+    );
   }
 }
