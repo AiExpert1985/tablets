@@ -567,6 +567,7 @@ class PrintReportButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    String summaryTitle = isCount ? S.of(context).count : S.of(context).total;
     num summaryValue = 0;
     if (isCount) {
       summaryValue = reportData.length;
@@ -580,8 +581,8 @@ class PrintReportButton extends ConsumerWidget {
     return IconButton(
       icon: const PrintIcon(),
       onPressed: () {
-        printReport(
-            context, ref, reportData, reportTitle, listTitles, startDate, endDate, summaryValue);
+        printReport(context, ref, reportData, reportTitle, listTitles, startDate, endDate,
+            summaryValue, summaryTitle);
       },
     );
   }

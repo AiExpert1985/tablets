@@ -9,6 +9,8 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/printing/print_document.dart';
 import 'package:flutter/services.dart';
 
+double pageWidth = 580;
+
 Future<Document> getReportPdf(
   BuildContext context,
   WidgetRef ref,
@@ -18,14 +20,14 @@ Future<Document> getReportPdf(
   List<String> listTitles,
   String? startDate,
   String? endDate,
-  num summaryValue,
+  String summaryValue,
+  String summaryTitle,
 ) async {
   final pdf = pw.Document();
 
   final now = DateTime.now();
   final printingDate = DateFormat.yMd('ar').format(now);
   final printingTime = DateFormat.jm('ar').format(now);
-  final summaryValueString = doubleToStringWithComma(summaryValue);
 
   final arabicFont =
       pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
@@ -45,7 +47,8 @@ Future<Document> getReportPdf(
           endDate,
           printingDate,
           printingTime,
-          summaryValueString,
+          summaryValue,
+          summaryTitle,
           startItem: 0,
           includeImage: true,
         );
@@ -66,7 +69,8 @@ pw.Widget _reportPage(
   String? endDate,
   String printingDate,
   String printingTime,
-  String summaryValue, {
+  String summaryValue,
+  String summaryTitle, {
   int startItem = 0,
   bool includeImage = false,
 }) {
@@ -79,11 +83,28 @@ pw.Widget _reportPage(
       _buildListTitles(arabicFont, listTitles),
       pw.SizedBox(height: 10),
       _buildDataList(arabicFont, dataList),
+      pw.SizedBox(height: 10),
+      _buildSummary(arabicFont, summaryValue, summaryTitle),
       pw.Spacer(),
       footerBar(arabicFont, 'وقت الطباعة ', '$printingDate   $printingTime '),
       pw.SizedBox(height: 10),
     ],
   ); // Center
+}
+
+pw.Widget _buildSummary(Font arabicFont, String summaryValue, String summaryTitle) {
+  return coloredContainer(
+    pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+      children: [
+        arabicText(arabicFont, summaryValue),
+        arabicText(arabicFont, summaryTitle),
+      ],
+    ),
+    bgColor: lightBgColor,
+    pageWidth,
+    height: 20,
+  );
 }
 
 pw.Widget _buildReportHeader(
@@ -97,7 +118,7 @@ pw.Widget _buildReportHeader(
           children: [
             if (startDate != null || endDate != null)
               pw.Container(
-                padding: const pw.EdgeInsets.all(20),
+                padding: const pw.EdgeInsets.all(8),
                 child: pw.Column(
                   children: [
                     if (startDate != null)
@@ -121,7 +142,7 @@ pw.Widget _buildReportHeader(
               ),
             if (startDate != null || endDate != null) pw.Spacer(),
             pw.Container(
-              padding: const pw.EdgeInsets.all(10),
+              padding: const pw.EdgeInsets.all(8),
               child: arabicText(arabicFont, reportTitle),
             ),
           ],
@@ -146,7 +167,7 @@ pw.Widget _buildListTitles(Font arabicFont, List<dynamic> titlesList) {
   return coloredContainer(
     titlesContainer,
     bgColor: darkBgColor,
-    554,
+    pageWidth,
     height: 20,
   );
 }
@@ -166,6 +187,7 @@ pw.Widget _buildItem(Font arabicFont, List<dynamic> dataRow) {
     item.add(_buildDataCell(arabicFont, dataRow[i]));
   }
   return pw.Container(
+    padding: const pw.EdgeInsets.symmetric(horizontal: 8),
     child: pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
       children: item,
@@ -174,7 +196,10 @@ pw.Widget _buildItem(Font arabicFont, List<dynamic> dataRow) {
 }
 
 pw.Widget _buildDataCell(Font arabicFont, String text) {
-  return pw.Container(child: arabicText(arabicFont, text));
+  return pw.Expanded(
+      child: pw.Container(
+          padding: const pw.EdgeInsets.all(1),
+          child: arabicText(arabicFont, doubleToStringWithComma(text), isBordered: true)));
 }
 
 pw.Widget _buildHeaderCell(Font arabicFont, String text) {
