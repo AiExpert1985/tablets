@@ -10,6 +10,7 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/printing/customer_invoice_pdf.dart';
 import 'package:tablets/src/common/printing/customer_receipt_pdf.dart';
 import 'package:tablets/src/common/printing/customer_return.dart';
+import 'package:tablets/src/common/printing/damaged_items_pdf.dart';
 import 'package:tablets/src/common/printing/expendure_pdf.dart';
 import 'package:tablets/src/common/printing/print_report.dart';
 import 'package:tablets/src/common/printing/vendor_invoice_pdf.dart';
@@ -116,6 +117,8 @@ Future<Document> getPdfFile(BuildContext context, WidgetRef ref,
     return getVendorInvoicePdf(context, ref, transactionData, image);
   } else if (type == TransactionType.vendorReturn.name) {
     return getVendorReturnPdf(context, ref, transactionData, image);
+  } else if (type == TransactionType.damagedItems.name) {
+    return getDamagedItemsPdf(context, ref, transactionData, image);
   }
   return getEmptyPdf();
 }
