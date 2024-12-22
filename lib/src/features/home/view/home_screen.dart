@@ -436,8 +436,9 @@ Widget buildSalesmanCustomersButton(BuildContext context, WidgetRef ref) {
     () async {
       await initializeAppData(context, ref);
       if (context.mounted) {
-        final nameAndDates =
-            await selectionDialog(context, ref, salesmanDbCache.data, S.of(context).salesmen);
+        final nameAndDates = await selectionDialog(
+            context, ref, salesmanDbCache.data, S.of(context).salesmen,
+            includeDates: false);
         final salesmanData = nameAndDates[0];
         // salesman must be selected, otherwise we can't create report
         if (salesmanData == null) {
@@ -553,9 +554,10 @@ class FastAccessReportsButton extends ConsumerWidget {
 /// returns selected value from drop down list (with search) and dates (from - to)
 /// it could return null dates (but not null selected values)
 Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
-    List<Map<String, dynamic>>? selectionValues, String? selectionLabel) async {
-  DateTime? fromDate;
-  DateTime? toDate;
+    List<Map<String, dynamic>>? selectionValues, String? selectionLabel,
+    {bool includeDates = true}) async {
+  DateTime? startDate;
+  DateTime? endDate;
   Map<String, dynamic>? selectedValue;
 
   // Show the dialog
@@ -607,7 +609,7 @@ Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
                   closeButton: const SizedBox.shrink(),
                 ),
               VerticalGap.l,
-              if (fromDate != null)
+              if (includeDates)
                 Container(
                   width: 265,
                   padding: const EdgeInsets.all(2),
@@ -626,7 +628,7 @@ Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
                           inputType: InputType.date,
                           format: DateFormat('dd-MM-yyyy'),
                           onChanged: (picked) {
-                            fromDate = picked;
+                            startDate = picked;
                           },
                         ),
                       ),
@@ -644,7 +646,7 @@ Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
                           inputType: InputType.date,
                           format: DateFormat('dd-MM-yyyy'),
                           onChanged: (picked) {
-                            fromDate = picked;
+                            startDate = picked;
                           },
                         ),
                       ),
@@ -670,5 +672,5 @@ Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
   );
 
   // Return the selected dates
-  return [selectedValue, fromDate, toDate];
+  return [selectedValue, startDate, endDate];
 }

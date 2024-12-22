@@ -126,7 +126,7 @@ pw.Widget _buildSummary(Font arabicFont, String summaryValue, String summaryTitl
 pw.Widget _buildReportHeader(
     Font arabicFont, String reportTitle, String? startDate, String? endDate) {
   return pw.Container(
-    height: 50,
+    padding: const pw.EdgeInsets.symmetric(vertical: 5, horizontal: 10),
     child: pw.Column(
       children: [
         pw.Row(
@@ -140,27 +140,24 @@ pw.Widget _buildReportHeader(
                     if (startDate != null)
                       pw.Row(
                         children: [
-                          arabicText(arabicFont, 'من تاريخ'),
+                          arabicText(arabicFont, 'من تاريخ', fontSize: 14),
                           pw.SizedBox(width: 5),
-                          arabicText(arabicFont, startDate)
+                          arabicText(arabicFont, startDate, fontSize: 14)
                         ],
                       ),
                     if (endDate != null)
                       pw.Row(
                         children: [
-                          arabicText(arabicFont, 'الى تاريخ'),
+                          arabicText(arabicFont, 'الى تاريخ', fontSize: 14),
                           pw.SizedBox(width: 5),
-                          arabicText(arabicFont, endDate)
+                          arabicText(arabicFont, endDate, fontSize: 14)
                         ],
                       ),
                   ],
                 ),
               ),
-            if (startDate != null || endDate != null) pw.Spacer(),
-            pw.Container(
-              padding: const pw.EdgeInsets.all(8),
-              child: arabicText(arabicFont, reportTitle),
-            ),
+            if (startDate != null || endDate != null) pw.SizedBox(width: 400),
+            arabicText(arabicFont, reportTitle, fontSize: 18),
           ],
         ),
       ],
@@ -225,7 +222,7 @@ pw.Widget _buildDataCell(Font arabicFont, dynamic value, int i) {
   }
   if (isWideField[i]) {
     return pw.Container(
-        width: 140,
+        width: 160,
         padding: const pw.EdgeInsets.all(1),
         child: arabicText(arabicFont, cellText, isBordered: true));
   }
@@ -238,7 +235,7 @@ pw.Widget _buildDataCell(Font arabicFont, dynamic value, int i) {
 pw.Widget _buildHeaderCell(Font arabicFont, String text, int i) {
   if (isWideField[i]) {
     return pw.Container(
-      width: 140,
+      width: 160,
       padding: const pw.EdgeInsets.all(1),
       child: arabicText(arabicFont, text, isTitle: true, textColor: PdfColors.white),
     );

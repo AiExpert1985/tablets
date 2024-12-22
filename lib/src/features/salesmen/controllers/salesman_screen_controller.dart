@@ -363,7 +363,6 @@ class SalesmanScreenController implements ScreenDataController {
         } else if (transaction[transactionTypeKey] == TransactionType.customerReturn.name) {
           returnedQuanity = item[itemSoldQuantityKey] ?? 0;
         }
-        // tempPrint(2);
         if (!summary.containsKey(itemName)) {
           summary[itemName] = {
             itemSoldQuantityKey: 0,
@@ -371,14 +370,12 @@ class SalesmanScreenController implements ScreenDataController {
             'returnedQuantity': 0,
           };
         }
-        // tempPrint(3);
         summary[itemName]![itemSoldQuantityKey] =
             summary[itemName]![itemSoldQuantityKey]! + soldQuantity;
         summary[itemName]![itemGiftQuantityKey] =
             summary[itemName]![itemGiftQuantityKey]! + giftQuantity;
         summary[itemName]!['returnedQuantity'] =
             summary[itemName]!['returnedQuantity']! + returnedQuanity;
-        // tempPrint(4);
       }
     }
 
