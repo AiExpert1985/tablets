@@ -216,7 +216,7 @@ class TransactionForm extends ConsumerWidget {
     // also, as a policy, I want always to save before print, because I want to ensure always the transaction in
     // database matches the printed transaction.
     saveTransaction(context, ref, formDataNotifier.data, true);
-    printDocument(context, ref, formDataNotifier.data);
+    printForm(context, ref, formDataNotifier.data);
     formDataNotifier.updateProperties({isPrintedKey: true});
   }
 

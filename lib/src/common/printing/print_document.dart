@@ -10,6 +10,7 @@ import 'package:tablets/src/common/printing/customer_invoice_pdf.dart';
 import 'package:tablets/src/common/printing/customer_receipt_pdf.dart';
 import 'package:tablets/src/common/printing/customer_return.dart';
 import 'package:tablets/src/common/printing/expendure_pdf.dart';
+import 'package:tablets/src/common/printing/print_report.dart';
 import 'package:tablets/src/common/printing/vendor_receipt_pdf.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:printing/printing.dart';
@@ -35,7 +36,7 @@ Future<void> _printPDf(Document pdf, int numCopies) async {
   }
 }
 
-Future<void> printDocument(
+Future<void> printForm(
   BuildContext context,
   WidgetRef ref,
   Map<String, dynamic> transactionData,
@@ -56,6 +57,32 @@ Future<void> printDocument(
       final file = File(filePath);
       await file.writeAsBytes(await pdf.save());
       _printPDf(pdf, numCopies);
+    }
+  } catch (e) {
+    debugLog('Pdf creation failed - ($e)');
+  }
+}
+
+Future<void> printReport(
+  BuildContext context,
+  WidgetRef ref,
+  List<List<dynamic>> reportData,
+  String title,
+  List<String> listTitles,
+  String? startDate,
+  String? endDate,
+  num summaryValue,
+) async {
+  try {
+    final image = await loadImage('assets/images/invoice_logo.PNG');
+    final filePath = gePdfpath('test_file');
+    if (context.mounted) {
+      final pdf = await getReportPdf(
+          context, ref, reportData, image, title, listTitles, startDate, endDate, summaryValue);
+      if (filePath == null) return;
+      final file = File(filePath);
+      await file.writeAsBytes(await pdf.save());
+      _printPDf(pdf, 1);
     }
   } catch (e) {
     debugLog('Pdf creation failed - ($e)');
