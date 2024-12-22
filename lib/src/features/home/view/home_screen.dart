@@ -618,7 +618,7 @@ Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
                       Expanded(
                         child: FormBuilderDateTimePicker(
                           textAlign: TextAlign.center,
-                          name: 'DateFrom',
+                          name: 'startDate',
                           decoration: InputDecoration(
                             labelStyle: const TextStyle(color: Colors.red, fontSize: 17),
                             labelText: S.of(context).from_date,
@@ -636,7 +636,7 @@ Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
                       Expanded(
                         child: FormBuilderDateTimePicker(
                           textAlign: TextAlign.center,
-                          name: 'DateFrom',
+                          name: 'endDate',
                           decoration: InputDecoration(
                             labelStyle: const TextStyle(color: Colors.red, fontSize: 17),
                             labelText: S.of(context).to_date,
@@ -646,7 +646,7 @@ Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
                           inputType: InputType.date,
                           format: DateFormat('dd-MM-yyyy'),
                           onChanged: (picked) {
-                            startDate = picked;
+                            endDate = picked;
                           },
                         ),
                       ),
