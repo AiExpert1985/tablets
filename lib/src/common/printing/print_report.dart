@@ -30,7 +30,30 @@ Future<Document> getReportPdf(
   final arabicFont =
       pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
   _setFieldsSizes(reportData);
-  if (reportData.length <= 20) {
+  int numItemsInFirstPage = 20;
+
+  pdf.addPage(pw.Page(
+    margin: pw.EdgeInsets.zero,
+    build: (pw.Context ctx) {
+      return _reportPage(
+        context,
+        arabicFont,
+        image,
+        reportTitle,
+        listTitles,
+        reportData.sublist(
+            0, reportData.length < numItemsInFirstPage ? reportData.length : numItemsInFirstPage),
+        startDate,
+        endDate,
+        printingDate,
+        printingTime,
+        summaryValue,
+        summaryTitle,
+        includeSummary: reportData.length <= numItemsInFirstPage,
+      );
+    },
+  ));
+  if (reportData.length > numItemsInFirstPage) {
     pdf.addPage(pw.Page(
       margin: pw.EdgeInsets.zero,
       build: (pw.Context ctx) {
@@ -40,15 +63,15 @@ Future<Document> getReportPdf(
           image,
           reportTitle,
           listTitles,
-          reportData,
+          reportData.sublist(numItemsInFirstPage),
           startDate,
           endDate,
           printingDate,
           printingTime,
           summaryValue,
           summaryTitle,
-          startItem: 0,
-          includeImage: true,
+          includeImage: false,
+          includeTitle: false,
         );
       },
     ));
@@ -86,20 +109,22 @@ pw.Widget _reportPage(
   String printingTime,
   String summaryValue,
   String summaryTitle, {
-  int startItem = 0,
-  bool includeImage = false,
+  bool includeSummary = true,
+  bool includeImage = true,
+  bool includeTitle = true,
 }) {
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.start,
     children: [
       if (includeImage) pw.Image(image),
-      _buildReportHeader(arabicFont, reportTitle, startDate, endDate),
-      pw.SizedBox(height: 10),
+      pw.SizedBox(height: 5),
+      if (includeTitle) _buildReportHeader(arabicFont, reportTitle, startDate, endDate),
+      pw.SizedBox(height: 5),
       _buildListTitles(arabicFont, listTitles),
       pw.SizedBox(height: 10),
       _buildDataList(arabicFont, dataList),
       pw.SizedBox(height: 10),
-      _buildSummary(arabicFont, summaryValue, summaryTitle),
+      if (includeSummary) _buildSummary(arabicFont, summaryValue, summaryTitle),
       pw.Spacer(),
       footerBar(arabicFont, 'وقت الطباعة ', '$printingDate   $printingTime '),
       pw.SizedBox(height: 10),

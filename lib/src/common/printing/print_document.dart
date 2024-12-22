@@ -172,7 +172,7 @@ pw.Widget footerBar(
       pw.SizedBox(width: 14),
     ],
   );
-  return coloredContainer(childWidget, 555, height: 22, bgColor: darkBgColor);
+  return coloredContainer(childWidget, 580, height: 22, bgColor: darkBgColor);
 }
 
 pw.Widget coloredContainer(pw.Widget childWidget, double width,
