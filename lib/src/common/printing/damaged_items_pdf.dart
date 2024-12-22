@@ -407,17 +407,6 @@ pw.Widget _weightColumn(
   );
 }
 
-pw.Widget _signituresRow(Font arabicFont) {
-  return pw.Row(
-    mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
-    children: [
-      arabicText(arabicFont, 'المستلم'),
-      arabicText(arabicFont, 'السائق'),
-      arabicText(arabicFont, 'المجهز'),
-    ],
-  );
-}
-
 pw.Widget _invoiceAmountColumn(Font arabicFont, String currency, String totalAmount) {
   return pw.Column(
     mainAxisAlignment: pw.MainAxisAlignment.center,
