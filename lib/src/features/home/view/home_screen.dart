@@ -313,7 +313,7 @@ class FastAccessFormButton extends ConsumerWidget {
         ),
       ),
       onPressed: () async {
-        initializeAppData(context, ref);
+        await initializeAppData(context, ref);
         backgroundColorNofifier.state = normalColor!;
         if (context.mounted) {
           TransactionShowForm.showForm(

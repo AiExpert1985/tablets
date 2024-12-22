@@ -175,8 +175,8 @@ class TransactionShowForm {
         transactions.where((transaction) => transaction[transactionTypeKey] == type);
     if (filteredTransactions.isEmpty) return 1;
     // Step 2: Extract the transaction numbers and convert them to integers
-    final transactionNumbers =
-        filteredTransactions.map((transaction) => transaction[numberKey] as int?);
+    final transactionNumbers = filteredTransactions.map((transaction) =>
+        transaction[numberKey] is int ? transaction[numberKey] : transaction[numberKey].toInt());
     // Step 3: Find the maximum transaction number
     int maxNumber = transactionNumbers
             .reduce((a, b) => (a != null && b != null) ? (a > b ? a : b) : (a ?? b)) ??
