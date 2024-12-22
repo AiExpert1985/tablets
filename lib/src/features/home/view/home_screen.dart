@@ -39,6 +39,8 @@ class HomeScreen extends ConsumerWidget {
     // in home page, and move to another page
     // a load spinner will be shown in home until we move to target page
     ref.watch(pageIsLoadingNotifier);
+    // initialize app data at the beginning of the app
+    initializeAppData(context, ref);
     final pageIsLoading = ref.read(pageIsLoadingNotifier);
     final screenWidget = pageIsLoading ? const PageLoading() : const HomeScreenGreeting();
     return AppScreenFrame(screenWidget);
