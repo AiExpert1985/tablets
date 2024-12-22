@@ -10,6 +10,7 @@ import 'package:tablets/src/common/printing/print_document.dart';
 import 'package:flutter/services.dart';
 
 double pageWidth = 580;
+List<bool> isWideField = [];
 
 Future<Document> getReportPdf(
   BuildContext context,
@@ -24,13 +25,12 @@ Future<Document> getReportPdf(
   String summaryTitle,
 ) async {
   final pdf = pw.Document();
-
   final now = DateTime.now();
   final printingDate = DateFormat.yMd('ar').format(now);
   final printingTime = DateFormat.jm('ar').format(now);
-
   final arabicFont =
       pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
+  _setFieldsSizes(reportData);
 
   if (reportData.length <= 20) {
     pdf.addPage(pw.Page(
@@ -56,6 +56,23 @@ Future<Document> getReportPdf(
     ));
   }
   return pdf;
+}
+
+void _setFieldsSizes(reportData) {
+  isWideField = [];
+  // first we assume all cells are normal size
+  for (var _ in reportData[0]) {
+    isWideField.add(false);
+  }
+  tempPrint(isWideField);
+  for (List item in reportData) {
+    item = item.reversed.toList();
+    for (var i = 0; i < item.length; i++) {
+      if (item[i] is String && item[i].length > 15) {
+        isWideField[i] = true;
+      }
+    }
+  }
 }
 
 pw.Widget _reportPage(
@@ -156,7 +173,7 @@ pw.Widget _buildListTitles(Font arabicFont, List<dynamic> titlesList) {
   titlesList = titlesList.reversed.toList();
   List<pw.Widget> itemsList = [];
   for (int i = 0; i < titlesList.length; i++) {
-    itemsList.add(_buildHeaderCell(arabicFont, titlesList[i]));
+    itemsList.add(_buildHeaderCell(arabicFont, titlesList[i], i));
   }
   pw.Widget titlesContainer = pw.Container(
     child: pw.Row(
@@ -177,6 +194,7 @@ pw.Widget _buildDataList(Font arabicFont, List<List<dynamic>> dataList) {
   for (int i = 0; i < dataList.length; i++) {
     itemsList.add(_buildItem(arabicFont, dataList[i]));
   }
+
   return pw.Container(child: pw.Column(children: itemsList));
 }
 
@@ -184,7 +202,7 @@ pw.Widget _buildItem(Font arabicFont, List<dynamic> dataRow) {
   List<pw.Widget> item = [];
   dataRow = dataRow.reversed.toList();
   for (int i = 0; i < dataRow.length; i++) {
-    item.add(_buildDataCell(arabicFont, dataRow[i]));
+    item.add(_buildDataCell(arabicFont, dataRow[i], i));
   }
   return pw.Container(
     padding: const pw.EdgeInsets.symmetric(horizontal: 8),
@@ -195,14 +213,42 @@ pw.Widget _buildItem(Font arabicFont, List<dynamic> dataRow) {
   );
 }
 
-pw.Widget _buildDataCell(Font arabicFont, String text) {
+pw.Widget _buildDataCell(Font arabicFont, dynamic value, int i) {
+  String cellText = '';
+  if (value is DateTime) {
+    cellText = formatDate(value);
+  } else if (value is num || value is double || value is int) {
+    cellText = doubleToStringWithComma(value);
+  } else if (value is String && value.trim().isEmpty) {
+    cellText = '-';
+  } else {
+    cellText = value;
+  }
+  if (isWideField[i]) {
+    tempPrint(cellText);
+    return pw.Container(
+        width: 140,
+        padding: const pw.EdgeInsets.all(1),
+        child: arabicText(arabicFont, cellText, isBordered: true));
+  }
   return pw.Expanded(
       child: pw.Container(
           padding: const pw.EdgeInsets.all(1),
-          child: arabicText(arabicFont, doubleToStringWithComma(text), isBordered: true)));
+          child: arabicText(arabicFont, cellText, isBordered: true)));
 }
 
-pw.Widget _buildHeaderCell(Font arabicFont, String text) {
-  return pw.Container(
-      child: arabicText(arabicFont, text, isTitle: true, textColor: PdfColors.white));
+pw.Widget _buildHeaderCell(Font arabicFont, String text, int i) {
+  if (isWideField[i]) {
+    return pw.Container(
+      width: 140,
+      padding: const pw.EdgeInsets.all(1),
+      child: arabicText(arabicFont, text, isTitle: true, textColor: PdfColors.white),
+    );
+  }
+  return pw.Expanded(
+    child: pw.Container(
+      padding: const pw.EdgeInsets.all(1),
+      child: arabicText(arabicFont, text, isTitle: true, textColor: PdfColors.white),
+    ),
+  );
 }

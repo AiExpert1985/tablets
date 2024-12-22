@@ -64,14 +64,14 @@ class SalesmanReportController {
 
   void showCustomers(BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {
     showReportDialog(
-      context,
-      [S.of(context).customer, S.of(context).region_name, S.of(context).invoices_number],
-      detailsList,
-      title: salesmanName,
-      targetedWidth: 800,
-      dropdownLabel: S.of(context).regions,
-      dropdownIndex: 1,
-    );
+        context,
+        [S.of(context).customer, S.of(context).region_name, S.of(context).invoices_number],
+        detailsList,
+        title: salesmanName,
+        targetedWidth: 800,
+        dropdownLabel: S.of(context).regions,
+        dropdownIndex: 1,
+        sumIndex: 2);
   }
 
   List<String> _getTransactionsReportTitles(BuildContext context, {bool isProfit = false}) {

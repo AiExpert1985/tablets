@@ -454,7 +454,7 @@ Widget buildSalesmanCustomersButton(BuildContext context, WidgetRef ref) {
             .toList();
         final customersInfo =
             salesmanScreenController.getCustomersInfo(salesmanCustomers, salesmanTransactions);
-        final customersBasicData = customersInfo['customersData'] as List<List<String>>;
+        final customersBasicData = customersInfo['customersData'] as List<List<dynamic>>;
         if (context.mounted) {
           salesmanReportController.showCustomers(context, customersBasicData, salesmanData['name']);
         }

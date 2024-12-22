@@ -569,18 +569,18 @@ class PrintReportButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     String summaryTitle = isCount ? S.of(context).count : S.of(context).total;
     num summaryValue = 0;
-    if (isCount) {
-      summaryValue = reportData.length;
-    } else if (sumIndex != null) {
-      for (var item in reportData) {
-        if (item.length > sumIndex!) {
-          summaryValue += item[sumIndex!]?.toDouble() ?? 0;
-        }
-      }
-    }
     return IconButton(
       icon: const PrintIcon(),
       onPressed: () {
+        if (isCount) {
+          summaryValue = reportData.length;
+        } else if (sumIndex != null) {
+          for (var item in reportData) {
+            if (item[sumIndex!] is num || item[sumIndex!] is int || item[sumIndex!] is double) {
+              summaryValue += item[sumIndex!]?.toDouble() ?? 0;
+            }
+          }
+        }
         printReport(context, ref, reportData, reportTitle, listTitles, startDate, endDate,
             summaryValue, summaryTitle);
       },
