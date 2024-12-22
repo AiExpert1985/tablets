@@ -199,12 +199,12 @@ class CustomerFastAccessButtons extends ConsumerWidget {
         children: [
           FastAccessFormButton(
             TransactionType.customerInvoice.name,
-            textColor: Colors.green[50],
+            textColor: Colors.green[100],
           ),
           VerticalGap.l,
           FastAccessFormButton(
             TransactionType.customerReceipt.name,
-            textColor: Colors.red[50],
+            textColor: Colors.red[100],
           ),
           VerticalGap.l,
           FastAccessFormButton(
@@ -214,7 +214,7 @@ class CustomerFastAccessButtons extends ConsumerWidget {
           VerticalGap.l,
           FastAccessFormButton(
             TransactionType.gifts.name,
-            textColor: Colors.orange[50],
+            textColor: Colors.orange[100],
           ),
         ],
       ),
@@ -248,12 +248,12 @@ class VendorFastAccessButtons extends ConsumerWidget {
         children: [
           FastAccessFormButton(
             TransactionType.vendorInvoice.name,
-            textColor: Colors.green[50],
+            textColor: Colors.green[100],
           ),
           VerticalGap.l,
           FastAccessFormButton(
             TransactionType.vendorReceipt.name,
-            textColor: Colors.red[50],
+            textColor: Colors.red[100],
           ),
           VerticalGap.l,
           FastAccessFormButton(
@@ -277,12 +277,12 @@ class InternalFastAccessButtons extends ConsumerWidget {
         children: [
           FastAccessFormButton(
             TransactionType.expenditures.name,
-            textColor: Colors.green[50],
+            textColor: Colors.green[100],
           ),
           VerticalGap.l,
           FastAccessFormButton(
             TransactionType.damagedItems.name,
-            textColor: Colors.red[50],
+            textColor: Colors.red[100],
           ),
         ],
       ),
@@ -403,27 +403,31 @@ Widget buildCustomerMatchingButton(BuildContext context, WidgetRef ref,
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
   final customerScreenController = ref.read(customerScreenControllerProvider);
   final customerReportController = ref.read(customerReportControllerProvider);
-  return FastAccessReportsButton(S.of(context).customer_matching, () async {
-    await initializeAppData(context, ref);
-    if (context.mounted) {
-      final nameAndDates = await selectionDialog(
-          context, ref, customerDbCache.data, S.of(context).customers,
-          includeDates: false);
-      final customerData = nameAndDates[0];
-      // salesman must be selected, otherwise we can't create report
-      if (customerData == null) {
-        return;
-      }
-      final customerTransactions =
-          customerScreenController.getCustomerTransactions(customerData['dbRef']);
+  return FastAccessReportsButton(
+    backgroundColor: Colors.grey[300],
+    S.of(context).customer_matching,
+    () async {
+      await initializeAppData(context, ref);
       if (context.mounted) {
-        final customerMatchingData =
-            customerScreenController.customerMatching(context, customerTransactions);
-        customerReportController.showCustomerMatchingReport(
-            context, customerMatchingData, customerData['name']);
+        final nameAndDates = await selectionDialog(
+            context, ref, customerDbCache.data, S.of(context).customers,
+            includeDates: false);
+        final customerData = nameAndDates[0];
+        // salesman must be selected, otherwise we can't create report
+        if (customerData == null) {
+          return;
+        }
+        final customerTransactions =
+            customerScreenController.getCustomerTransactions(customerData['dbRef']);
+        if (context.mounted) {
+          final customerMatchingData =
+              customerScreenController.customerMatching(context, customerTransactions);
+          customerReportController.showCustomerMatchingReport(
+              context, customerMatchingData, customerData['name']);
+        }
       }
-    }
-  });
+    },
+  );
 }
 
 Widget buildSalesmanCustomersButton(BuildContext context, WidgetRef ref) {
@@ -433,6 +437,7 @@ Widget buildSalesmanCustomersButton(BuildContext context, WidgetRef ref) {
   final customersDbCache = ref.read(customerDbCacheProvider.notifier);
   final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
   return FastAccessReportsButton(
+    backgroundColor: Colors.orange[100],
     S.of(context).saleman_customers,
     () async {
       await initializeAppData(context, ref);
@@ -470,6 +475,7 @@ Widget buildSalesmanCustomersButton(BuildContext context, WidgetRef ref) {
 Widget buildAllDebtButton(BuildContext context, WidgetRef ref) {
   final customerReportController = ref.read(customerReportControllerProvider);
   return FastAccessReportsButton(
+    backgroundColor: Colors.orange[100],
     S.of(context).salesmen_debt_report,
     () async {
       await initializeAppData(context, ref);
@@ -488,6 +494,7 @@ Widget buildSoldItemsButton(BuildContext context, WidgetRef ref, {bool isSupervi
   return FastAccessReportsButton(
     // name depends whether the report is for supervisor
     S.of(context).salesmen_sellings,
+    backgroundColor: Colors.green[100],
     () async {
       await initializeAppData(context, ref);
       if (context.mounted) {
