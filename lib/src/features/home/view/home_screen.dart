@@ -404,7 +404,7 @@ Widget buildCustomerMatchingButton(BuildContext context, WidgetRef ref,
   final customerScreenController = ref.read(customerScreenControllerProvider);
   final customerReportController = ref.read(customerReportControllerProvider);
   return FastAccessReportsButton(
-    backgroundColor: Colors.grey[300],
+    backgroundColor: Colors.red[100],
     S.of(context).customer_matching,
     () async {
       await initializeAppData(context, ref);
