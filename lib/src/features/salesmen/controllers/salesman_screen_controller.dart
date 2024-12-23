@@ -280,13 +280,18 @@ class SalesmanScreenController implements ScreenDataController {
     List<String> customerDbRef = [];
     for (var customer in salesmanCustomers) {
       int numInvoices = 0;
+      num numItems = 0;
       for (var trans in salesmanTransactions) {
         if (trans.transactionType == TransactionType.customerInvoice.name &&
             trans.nameDbRef == customer.dbRef) {
           numInvoices++;
+          final items = trans.items ?? [];
+          for (var i = 0; i < items.length; i++) {
+            numItems += items[i][itemSoldQuantityKey];
+          }
         }
       }
-      customerData.add([customer.name, customer.region, customer.phone, numInvoices]);
+      customerData.add([customer.name, customer.region, customer.phone, numInvoices, numItems]);
       customerDbRef.add(customer.dbRef);
     }
     return {

@@ -74,7 +74,8 @@ class SalesmanReportController {
           S.of(context).customer,
           S.of(context).region_name,
           S.of(context).phone,
-          S.of(context).invoices_number
+          S.of(context).invoices_number,
+          S.of(context).item_sold_quantity
         ],
         detailsList,
         title: salesmanName,
