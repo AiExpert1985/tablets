@@ -35,7 +35,6 @@ Future<Document> getReportPdf(
       pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
   _setFieldsSizes(reportData, listTitles);
 
-  int currentIndex = 0;
   pdf.addPage(pw.Page(
     margin: pw.EdgeInsets.zero,
     build: (pw.Context ctx) {
@@ -55,48 +54,48 @@ Future<Document> getReportPdf(
         printingTime,
         summaryValue,
         summaryTitle,
-        currentIndex,
+        0,
         includeSummary: reportData.length <= numItemsInFirstPage,
       );
     },
   ));
-  if (reportData.length > numItemsInFirstPage) {
-    currentIndex += numItemsInFirstPage;
-    // now dynamically add pages, each page has 35 items, only last one include summary
-    while (reportData.length > currentIndex) {
-      tempPrint(currentIndex);
-      pdf.addPage(pw.Page(
-        margin: pw.EdgeInsets.zero,
-        build: (pw.Context ctx) {
-          return _reportPage(
-            context,
-            arabicFont,
-            image,
-            reportTitle,
-            listTitles,
-            reportData
-                .sublist(
-                  20,
-                  reportData.length < (currentIndex + numItemsInSecondPage)
-                      ? reportData.length
-                      : (currentIndex + numItemsInSecondPage),
-                )
-                .toList(),
-            startDate,
-            endDate,
-            printingDate,
-            printingTime,
-            summaryValue,
-            summaryTitle,
-            currentIndex,
-            includeImage: false,
-            includeTitle: false,
-            includeSummary: reportData.length < (currentIndex + numItemsInSecondPage),
-          );
-        },
-      ));
-      currentIndex += numItemsInSecondPage;
+  // keep adding pages (until more than thousand items are add, which I don't think they will exceed!)
+  for (var i = 0; i < 30; i++) {
+    if (reportData.length < (numItemsInFirstPage + (i * numItemsInSecondPage))) {
+      // if data length is less than previous max items, it means we are done, so break
+      break;
     }
+
+    pdf.addPage(pw.Page(
+      margin: pw.EdgeInsets.zero,
+      build: (pw.Context ctx) {
+        return _reportPage(
+          context,
+          arabicFont,
+          image,
+          reportTitle,
+          listTitles,
+          reportData
+              .sublist(
+                (numItemsInFirstPage + (i * numItemsInSecondPage)),
+                reportData.length < (numItemsInFirstPage + ((i + 1) * numItemsInSecondPage))
+                    ? reportData.length
+                    : (numItemsInFirstPage + ((i + 1) * numItemsInSecondPage)),
+              )
+              .toList(),
+          startDate,
+          endDate,
+          printingDate,
+          printingTime,
+          summaryValue,
+          summaryTitle,
+          (numItemsInFirstPage + (i * numItemsInSecondPage)),
+          includeImage: false,
+          includeTitle: false,
+          includeSummary: reportData.length < (numItemsInFirstPage + (i * numItemsInSecondPage)),
+        );
+      },
+    ));
   }
   return pdf;
 }
