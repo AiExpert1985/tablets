@@ -339,8 +339,12 @@ class SalesmanScreenController implements ScreenDataController {
     return allTransactions.where((transaction) {
       DateTime transactionDate =
           transaction['date'] is DateTime ? transaction['date'] : transaction['date'].toDate();
-      bool isAfterStartDate = startDate == null || transactionDate.isAfter(startDate);
-      bool isBeforeEndDate = endDate == null || transactionDate.isBefore(endDate);
+      // I need to subtract one day for start date to make the searched date included
+      bool isAfterStartDate =
+          startDate == null || transactionDate.isAfter(startDate.subtract(const Duration(days: 1)));
+      // I need to add one day to the end date to make the searched date included
+      bool isBeforeEndDate =
+          endDate == null || transactionDate.isBefore(endDate.add(const Duration(days: 1)));
       return salesmanDbRef == transaction['salesmanDbRef'] && isAfterStartDate && isBeforeEndDate;
     }).toList();
   }

@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/printing/print_document.dart';
 import 'package:flutter/services.dart';
@@ -35,6 +34,7 @@ Future<Document> getReportPdf(
       pw.Font.ttf(await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf"));
   _setFieldsSizes(reportData, listTitles);
 
+// add first page manually
   pdf.addPage(pw.Page(
     margin: pw.EdgeInsets.zero,
     build: (pw.Context ctx) {
@@ -59,7 +59,7 @@ Future<Document> getReportPdf(
       );
     },
   ));
-  // keep adding pages (until more than thousand items are add, which I don't think they will exceed!)
+  // then keep adding pages (until more than thousand items are add, which I don't think they will exceed!)
   for (var i = 0; i < 30; i++) {
     if (reportData.length < (numItemsInFirstPage + (i * numItemsInSecondPage))) {
       // if data length is less than previous max items, it means we are done, so break
