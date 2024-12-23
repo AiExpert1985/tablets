@@ -529,6 +529,10 @@ Widget buildSoldItemsButton(BuildContext context, WidgetRef ref, {bool isSupervi
                 !dbItem['isHiddenInSpecialReports'];
           }).toList();
         }
+        soldItemsList.sort((a, b) {
+          // Compare the strings at the specified index
+          return a[0].compareTo(b[0]);
+        });
         if (context.mounted) {
           salesmanReportController.showSoldItemsReport(
               context, soldItemsList, reportTitle, isSupervisor);
