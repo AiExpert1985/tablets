@@ -95,7 +95,7 @@ Future<Document> getReportPdf(
           );
         },
       ));
-      // currentIndex += numItemsInSecondPage;
+      currentIndex += numItemsInSecondPage;
     }
   }
   return pdf;
