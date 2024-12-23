@@ -429,7 +429,9 @@ class CustomerDebtReview extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final customerDebtInfo = ref.read(customerDebtNotifierProvider);
     ref.watch(customerDebtNotifierProvider);
-    bool showDebtInfo = transactionType == TransactionType.customerInvoice.name;
+    // show debt review for customer invoices & receipts
+    bool showDebtInfo = transactionType == TransactionType.customerInvoice.name ||
+        transactionType == TransactionType.customerReceipt.name;
     return Container(
       width: 300,
       padding: const EdgeInsets.only(left: 20),
