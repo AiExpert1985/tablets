@@ -511,14 +511,13 @@ Widget buildSoldItemsButton(BuildContext context, WidgetRef ref, {bool isSupervi
         // dates can be null, which means to take all the duration
         final startDate = nameAndDates[1];
         final endDate = nameAndDates[2];
-        const salesmanCommission = 70;
         String reportTitle = '';
         if (context.mounted) {
           reportTitle =
               '${S.of(context).salesman_selling_report} \n ${salesmanData['name']} \n ${S.of(context).for_the_duration} ${formatDate(startDate ?? DateTime.parse("2024-12-01T14:30:00"))} - ${formatDate(endDate ?? DateTime.now())}';
         }
         List<List<dynamic>> soldItemsList = salesmanScreenController.salesmanItemsSold(
-            salesmanData['dbRef'], salesmanCommission, startDate, endDate);
+            salesmanData['dbRef'], startDate, endDate, ref);
 
         if (isSupervisor) {
           // filter items not to show for the supervisor
