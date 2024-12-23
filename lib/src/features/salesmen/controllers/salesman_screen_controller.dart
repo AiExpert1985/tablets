@@ -285,7 +285,7 @@ class SalesmanScreenController implements ScreenDataController {
           numInvoices++;
         }
       }
-      customerData.add([customer.name, customer.region, numInvoices]);
+      customerData.add([customer.name, customer.region, customer.phone, numInvoices]);
       customerDbRef.add(customer.dbRef);
     }
     return {
