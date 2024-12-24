@@ -313,6 +313,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "salary": MessageLookupByLibrary.simpleMessage("Salary"),
         "saleman_customers":
             MessageLookupByLibrary.simpleMessage("Salesman customers"),
+        "salesman": MessageLookupByLibrary.simpleMessage("Salesman"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("Name"),
         "salesman_search":
             MessageLookupByLibrary.simpleMessage("Salesmen search"),

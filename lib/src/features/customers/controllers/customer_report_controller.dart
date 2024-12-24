@@ -165,11 +165,11 @@ class CustomerReportController {
       debtList,
       title: S.of(context).salesmen_debt_report,
       sumIndex: 4,
-      dropdownLabel: S.of(context).customers,
+      dropdownLabel: S.of(context).customer,
       dropdownIndex: 0,
-      dropdown2Label: S.of(context).salesmen,
+      dropdown2Label: S.of(context).salesman,
       dropdown2Index: 1,
-      dropdown3Label: S.of(context).regions,
+      dropdown3Label: S.of(context).region,
       dropdown3Index: 2,
     );
   }

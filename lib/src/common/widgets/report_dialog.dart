@@ -105,13 +105,13 @@ class _DateFilterDialog extends StatefulWidget {
 class __DateFilterDialogState extends State<_DateFilterDialog> {
   DateTime? startDate;
   DateTime? endDate;
-  List<String> selectedDropdownValues = [];
-  List<String> selectedDropdown2Values = [];
-  List<String> selectedDropdown3Values = [];
+  List<String> selectedDropdownValues = []; // items selected by user
+  List<String> selectedDropdown2Values = []; // items selected by user
+  List<String> selectedDropdown3Values = []; // items selected by user
   List<List<dynamic>> filteredList = [];
-  List<String> dropdownValues = [];
-  List<String> dropdown2Values = [];
-  List<String> dropdown3Values = [];
+  List<String> dropdownValues = []; // items to be shown in the dropdown list (to select from)
+  List<String> dropdown2Values = []; // items to be shown in the dropdown list (to select from)
+  List<String> dropdown3Values = []; // items to be shown in the dropdown list (to select from)
 
   @override
   void initState() {
@@ -524,8 +524,24 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            PrintReportButton(reportData, reportTitle ?? '', listTitles, startDateString,
-                endDateString, widget.sumIndex, widget.isCount, widget.useOriginalTransaction),
+            PrintReportButton(
+                reportData,
+                reportTitle ?? '',
+                listTitles,
+                startDateString,
+                endDateString,
+                widget.sumIndex,
+                widget.isCount,
+                widget.useOriginalTransaction,
+                selectedDropdownValues.isEmpty
+                    ? []
+                    : [...selectedDropdownValues, '${widget.dropdownLabel}:'],
+                selectedDropdown2Values.isEmpty
+                    ? []
+                    : [...selectedDropdown2Values, '${widget.dropdown2Label}:'],
+                selectedDropdown3Values.isEmpty
+                    ? []
+                    : [...selectedDropdown3Values, '${widget.dropdown3Label}:']),
             HorizontalGap.m,
             IconButton(
               icon: const ShareIcon(),
@@ -553,8 +569,18 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
 }
 
 class PrintReportButton extends ConsumerWidget {
-  const PrintReportButton(this.reportData, this.reportTitle, this.listTitles, this.startDate,
-      this.endDate, this.sumIndex, this.isCount, this.useOriginalTransaction,
+  const PrintReportButton(
+      this.reportData,
+      this.reportTitle,
+      this.listTitles,
+      this.startDate,
+      this.endDate,
+      this.sumIndex,
+      this.isCount,
+      this.useOriginalTransaction,
+      this.filter1SelectedValues,
+      this.filter2SelectedValues,
+      this.filter3SelectedValues,
       {super.key});
 
   final List<List<dynamic>> reportData;
@@ -565,6 +591,9 @@ class PrintReportButton extends ConsumerWidget {
   final int? sumIndex;
   final bool isCount;
   final bool useOriginalTransaction;
+  final List<String> filter1SelectedValues;
+  final List<String> filter2SelectedValues;
+  final List<String> filter3SelectedValues;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -589,8 +618,19 @@ class PrintReportButton extends ConsumerWidget {
             }
           }
         }
-        printReport(context, ref, printingData, reportTitle, listTitles, startDate, endDate,
-            summaryValue, summaryTitle);
+        printReport(
+            context,
+            ref,
+            printingData,
+            reportTitle,
+            listTitles,
+            startDate,
+            endDate,
+            summaryValue,
+            summaryTitle,
+            filter1SelectedValues,
+            filter2SelectedValues,
+            filter3SelectedValues);
       },
     );
   }

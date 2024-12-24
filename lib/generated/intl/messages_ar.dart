@@ -296,6 +296,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "salary": MessageLookupByLibrary.simpleMessage("المستحقات"),
         "saleman_customers":
             MessageLookupByLibrary.simpleMessage("زبائن المندوب"),
+        "salesman": MessageLookupByLibrary.simpleMessage("المندوب"),
         "salesman_name": MessageLookupByLibrary.simpleMessage("الأسم"),
         "salesman_search":
             MessageLookupByLibrary.simpleMessage("بحث المندوبين"),
@@ -304,7 +305,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("مبيعات المندوب حسب المادة"),
         "salesmen": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "salesmen_debt_report":
-            MessageLookupByLibrary.simpleMessage("ديون المندوبين"),
+            MessageLookupByLibrary.simpleMessage("تقرير الديون"),
         "salesmen_movement": MessageLookupByLibrary.simpleMessage("المندوبين"),
         "salesmen_sellings":
             MessageLookupByLibrary.simpleMessage("مبيعات المندوبين"),

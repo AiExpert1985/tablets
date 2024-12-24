@@ -13,6 +13,7 @@ List<bool> isWideField = [];
 const minStringLengthForLargeField = 20;
 const numItemsInFirstPage = 20;
 const numItemsInSecondPage = 30;
+const double headerFontSize = 14;
 
 Future<Document> getReportPdf(
   BuildContext context,
@@ -25,6 +26,9 @@ Future<Document> getReportPdf(
   String? endDate,
   String summaryValue,
   String summaryTitle,
+  List<String> filter1Values, // value selected in filter 1
+  List<String> filter2Values, // value selected in filter 2
+  List<String> filter3Values, // value selected in filter 3
 ) async {
   final pdf = pw.Document();
   final now = DateTime.now();
@@ -55,6 +59,9 @@ Future<Document> getReportPdf(
         summaryValue,
         summaryTitle,
         0,
+        filter1Values,
+        filter2Values,
+        filter3Values,
         includeSummary: reportData.length <= numItemsInFirstPage,
       );
     },
@@ -90,6 +97,9 @@ Future<Document> getReportPdf(
           summaryValue,
           summaryTitle,
           (numItemsInFirstPage + (i * numItemsInSecondPage)),
+          filter1Values,
+          filter2Values,
+          filter3Values,
           includeImage: false,
           includeTitle: false,
           includeSummary:
@@ -142,7 +152,10 @@ pw.Widget _reportPage(
   String printingTime,
   String summaryValue,
   String summaryTitle,
-  int index, {
+  int index,
+  List<String> filter1Values,
+  List<String> filter2Values,
+  List<String> filter3Values, {
   bool includeSummary = true,
   bool includeImage = true,
   bool includeTitle = true,
@@ -152,7 +165,9 @@ pw.Widget _reportPage(
     children: [
       if (includeImage) pw.Image(image),
       pw.SizedBox(height: 5),
-      if (includeTitle) _buildReportHeader(arabicFont, reportTitle, startDate, endDate),
+      if (includeTitle)
+        _buildReportHeader(arabicFont, reportTitle, startDate, endDate, filter1Values,
+            filter2Values, filter3Values),
       pw.SizedBox(height: 5),
       _buildListTitles(arabicFont, listTitles),
       pw.SizedBox(height: 10),
@@ -182,44 +197,63 @@ pw.Widget _buildSummary(Font arabicFont, String summaryValue, String summaryTitl
 }
 
 pw.Widget _buildReportHeader(
-    Font arabicFont, String reportTitle, String? startDate, String? endDate) {
+  Font arabicFont,
+  String reportTitle,
+  String? startDate,
+  String? endDate,
+  List<String> filter1Values,
+  List<String> filter2Values,
+  List<String> filter3Values,
+) {
   return pw.Container(
     padding: const pw.EdgeInsets.symmetric(vertical: 5, horizontal: 10),
     child: pw.Column(
+      mainAxisAlignment: pw.MainAxisAlignment.center,
       children: [
-        pw.Row(
-          mainAxisAlignment: pw.MainAxisAlignment.center,
-          children: [
-            if (startDate != null || endDate != null)
-              pw.Container(
-                padding: const pw.EdgeInsets.all(8),
-                child: pw.Column(
-                  children: [
-                    if (startDate != null)
-                      pw.Row(
-                        children: [
-                          arabicText(arabicFont, startDate, fontSize: 14),
-                          pw.SizedBox(width: 5),
-                          arabicText(arabicFont, 'من تاريخ', fontSize: 14),
-                        ],
-                      ),
-                    if (endDate != null)
-                      pw.Row(
-                        children: [
-                          arabicText(arabicFont, endDate, fontSize: 14),
-                          pw.SizedBox(width: 5),
-                          arabicText(arabicFont, 'الى تاريخ', fontSize: 14),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-            if (startDate != null || endDate != null) pw.Spacer(),
-            arabicText(arabicFont, reportTitle, fontSize: 18),
-          ],
-        ),
+        arabicText(arabicFont, reportTitle, fontSize: headerFontSize),
+        if (filter1Values.isNotEmpty)
+          _buildFilteredValueRow(arabicFont, filter1Values, fontSize: headerFontSize),
+        if (filter2Values.isNotEmpty)
+          _buildFilteredValueRow(arabicFont, filter2Values, fontSize: headerFontSize),
+        if (filter3Values.isNotEmpty)
+          _buildFilteredValueRow(arabicFont, filter3Values, fontSize: headerFontSize),
+        if (startDate != null || endDate != null)
+          pw.Container(
+            padding: const pw.EdgeInsets.all(8),
+            child: pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.center,
+              children: [
+                if (endDate != null)
+                  pw.Row(
+                    children: [
+                      arabicText(arabicFont, endDate, fontSize: headerFontSize),
+                      pw.SizedBox(width: 5),
+                      arabicText(arabicFont, 'الى ', fontSize: headerFontSize),
+                    ],
+                  ),
+                pw.SizedBox(width: 10),
+                if (startDate != null)
+                  pw.Row(
+                    children: [
+                      arabicText(arabicFont, startDate, fontSize: headerFontSize),
+                      pw.SizedBox(width: 5),
+                      arabicText(arabicFont, 'من ', fontSize: headerFontSize),
+                    ],
+                  ),
+              ],
+            ),
+          ),
       ],
     ),
+  );
+}
+
+pw.Widget _buildFilteredValueRow(Font arabicFont, List<String> values, {double fontSize = 14}) {
+  return pw.Row(
+    mainAxisAlignment: pw.MainAxisAlignment.center,
+    children: values.map((text) {
+      return arabicText(arabicFont, text, fontSize: fontSize);
+    }).toList(),
   );
 }
 

@@ -68,21 +68,38 @@ Future<void> printForm(
 }
 
 Future<void> printReport(
-    BuildContext context,
-    WidgetRef ref,
-    List<List<dynamic>> reportData,
-    String title,
-    List<String> listTitles,
-    String? startDate,
-    String? endDate,
-    num summaryValue,
-    String summaryTitle) async {
+  BuildContext context,
+  WidgetRef ref,
+  List<List<dynamic>> reportData,
+  String title, // report tiltle
+  List<String> listTitles,
+  String? startDate,
+  String? endDate,
+  num summaryValue,
+  String summaryTitle,
+  List<String> filter1Values, // value selected in filter 1
+  List<String> filter2Values, // value selected in filter 2
+  List<String> filter3Values, // value selected in filter 3
+) async {
   try {
     final image = await loadImage('assets/images/invoice_logo.PNG');
     final filePath = gePdfpath('test_file');
     if (context.mounted) {
-      final pdf = await getReportPdf(context, ref, reportData, image, title, listTitles, startDate,
-          endDate, doubleToStringWithComma(summaryValue), summaryTitle);
+      final pdf = await getReportPdf(
+        context,
+        ref,
+        reportData,
+        image,
+        title,
+        listTitles,
+        startDate,
+        endDate,
+        doubleToStringWithComma(summaryValue),
+        summaryTitle,
+        filter1Values,
+        filter2Values,
+        filter3Values,
+      );
       if (filePath == null) return;
       final file = File(filePath);
       await file.writeAsBytes(await pdf.save());
