@@ -402,7 +402,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           final data = filteredList[index];
           Widget displayedWidget = widget.useOriginalTransaction
               ? InkWell(
-                  child: _buildDataRow(context, data),
+                  child: _buildDataRow(context, data, index),
                   onTap: () {
                     if (widget.useOriginalTransaction) {
                       // if useOriginalTransaction the, first item is alway the orginal transaction
@@ -410,14 +410,14 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
                     }
                   },
                 )
-              : _buildDataRow(context, data);
+              : _buildDataRow(context, data, index);
           return displayedWidget;
         },
       ),
     );
   }
 
-  Widget _buildDataRow(BuildContext context, List<dynamic> data) {
+  Widget _buildDataRow(BuildContext context, List<dynamic> data, int index) {
     // if useOriginalTransaction is true, it means first item is Transaction
     // we don't want to display it, we want to used it as a button that show
     // a read only transaction dialog
@@ -437,23 +437,37 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: itemsToDisplay.map((item) {
-        if (item is DateTime) item = formatDate(item);
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
+      children: [
+        Container(
           decoration: BoxDecoration(border: Border.all(width: 0.2)),
-          width: widget.width / widget.titleList.length,
-          child: Text(
-              item is String
-                  ? item
-                  : doubleToStringWithComma(item, isAbsoluteValue: widget.useAbsoluteNumbers),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+          child: Text(index.toString(),
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: isHilighted ? Colors.red : Colors.black,
                   fontSize: 16)),
-        );
-      }).toList(),
+        ),
+        ...itemsToDisplay.map((item) {
+          if (item is DateTime) item = formatDate(item);
+          return Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
+              decoration: BoxDecoration(border: Border.all(width: 0.2)),
+              // width: widget.width / widget.titleList.length,
+              child: Text(
+                  item is String
+                      ? item
+                      : doubleToStringWithComma(item, isAbsoluteValue: widget.useAbsoluteNumbers),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: isHilighted ? Colors.red : Colors.black,
+                      fontSize: 16)),
+            ),
+          );
+        })
+      ],
     );
   }
 
