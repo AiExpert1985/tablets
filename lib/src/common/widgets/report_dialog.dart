@@ -11,6 +11,37 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/show_transaction_dialog.dart';
 
+List<bool> isWideField = [];
+const minStringLengthForLargeField = 25;
+const double wideFieldWidth = 210;
+
+void _setFieldsSizes(List<List<dynamic>> reportData, List<String> reportHeaders) {
+  // note that we need to reverse the list because pw package works in reversed order
+  // so we make sure the intended field takes the large size
+  // first we need to clear previous values from other reports
+  isWideField = [];
+  // first we assume all cells are normal size
+  for (var _ in reportHeaders) {
+    isWideField.add(false);
+  }
+  for (List item in reportData) {
+    item = item.reversed.toList();
+    for (var i = 0; i < item.length; i++) {
+      if (item[i] is String && item[i].length > minStringLengthForLargeField) {
+        isWideField[i] = true;
+      }
+    }
+  }
+  // I don't want to increase the size of notes fields
+  // note that we need to reverse the list because pw package works in reversed order
+  // so we make sure the intended field takes the large size
+  for (var i = 0; i < reportHeaders.length; i++) {
+    if (reportHeaders[i].contains('ملاحظات') || reportHeaders[i].contains('notes')) {
+      isWideField[i] = false;
+    }
+  }
+}
+
 void showReportDialog(
   BuildContext context,
   List<String> columnTitles,
@@ -139,7 +170,10 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
 
   @override
   Widget build(BuildContext context) {
+    // calculate the totals for each required colomn
     final summaryList = getSummaryList();
+    // give approperiate width for the fields
+    _setFieldsSizes(widget.dataList, widget.titleList);
     return AlertDialog(
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -435,39 +469,62 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       }
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
+    final itemWidgetList = [];
+    for (var i = 0; i < itemsToDisplay.length; i++) {
+      dynamic item = itemsToDisplay[i];
+      late Widget itemWidget;
+      if (item is DateTime) item = formatDate(item);
+      if (isWideField[i]) {
+        itemWidget = Container(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
           decoration: BoxDecoration(border: Border.all(width: 0.2)),
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-          child: Text(index.toString(),
+          width: wideFieldWidth,
+          child: Text(
+              item is String
+                  ? item
+                  : doubleToStringWithComma(item, isAbsoluteValue: widget.useAbsoluteNumbers),
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: isHilighted ? Colors.red : Colors.black,
                   fontSize: 16)),
-        ),
-        ...itemsToDisplay.map((item) {
-          if (item is DateTime) item = formatDate(item);
-          return Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
-              decoration: BoxDecoration(border: Border.all(width: 0.2)),
-              // width: widget.width / widget.titleList.length,
-              child: Text(
-                  item is String
-                      ? item
-                      : doubleToStringWithComma(item, isAbsoluteValue: widget.useAbsoluteNumbers),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isHilighted ? Colors.red : Colors.black,
-                      fontSize: 16)),
-            ),
-          );
-        })
-      ],
+        );
+      } else {
+        itemWidget = Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
+            decoration: BoxDecoration(border: Border.all(width: 0.2)),
+            // width: widget.width / widget.titleList.length,
+            child: Text(
+                item is String
+                    ? item
+                    : doubleToStringWithComma(item, isAbsoluteValue: widget.useAbsoluteNumbers),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: isHilighted ? Colors.red : Colors.black,
+                    fontSize: 16)),
+          ),
+        );
+      }
+      itemWidgetList.add(itemWidget);
+    }
+
+    // sequence should be separated from data, because I want its width to be fixed and small
+    Widget sequence = Container(
+      decoration: BoxDecoration(border: Border.all(width: 0.2)),
+      width: 45,
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
+      child: Text(index.toString(),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: isHilighted ? Colors.red : Colors.black,
+              fontSize: 16)),
+    );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [sequence, ...itemWidgetList],
     );
   }
 
