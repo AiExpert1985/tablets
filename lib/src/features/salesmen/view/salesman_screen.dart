@@ -263,7 +263,7 @@ class DataRow extends ConsumerWidget {
             MainScreenClickableCell(
               profit,
               () => reportController.showTransactionReport(context, profitTransactions, name,
-                  isProfit: true),
+                  sumIndex: 4, isProfit: true),
             ),
         ],
       ),

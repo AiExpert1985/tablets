@@ -27,12 +27,8 @@ class SalesmanReportController {
 
   void showInvoicesReport(
       BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {
-    showReportDialog(
-      context,
-      _getOpenInvoicesReportTitles(context),
-      detailsList,
-      title: salesmanName,
-    );
+    showReportDialog(context, _getOpenInvoicesReportTitles(context), detailsList,
+        title: salesmanName, summaryIndexes: [1, 2]);
   }
 
   void showSoldItemsReport(
@@ -43,7 +39,7 @@ class SalesmanReportController {
         _getSoldItemsReportTitles(context),
         detailsList,
         title: title,
-        summaryIndexes: [6],
+        summaryIndexes: [4, 6],
       );
     } else {
       showReportDialog(
@@ -89,7 +85,7 @@ class SalesmanReportController {
         targetedWidth: 800,
         dropdownLabel: S.of(context).regions,
         dropdownIndex: 1,
-        summaryIndexes: [3]);
+        summaryIndexes: [3, 4]);
   }
 
   List<String> _getTransactionsReportTitles(BuildContext context, {bool isProfit = false}) {

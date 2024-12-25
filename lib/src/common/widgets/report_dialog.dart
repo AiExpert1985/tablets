@@ -466,12 +466,14 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   }
 
   List<String> getSummaryList() {
+    // in case no items in the list, return empty list
+    if (filteredList.isEmpty) return [];
     List<String> summaryList = List.generate(filteredList[0].length, (_) => '');
     // if not index provided form sum, we will return the count
     if (widget.summaryIndexes.isEmpty) {
       summaryList[0] = S.of(context).count;
       final itemsCount = filteredList.length.toString();
-      summaryList[widget.summaryIndexes.length - 1] = doubleToStringWithComma(itemsCount);
+      summaryList[filteredList[0].length - 1] = doubleToStringWithComma(itemsCount);
     } else {
       summaryList[0] = S.of(context).total;
       for (var index in widget.summaryIndexes) {
@@ -485,7 +487,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
             errorPrint('index provided is not suitable for the data list');
             break;
           }
-          sum += dataRow[index] as num;
+          sum += (dataRow[index] ?? 0) as num;
         }
         summaryList[index] = doubleToStringWithComma(sum);
       }
