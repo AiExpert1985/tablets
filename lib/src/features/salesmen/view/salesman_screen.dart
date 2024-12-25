@@ -237,7 +237,7 @@ class DataRow extends ConsumerWidget {
           ),
           MainScreenClickableCell(
             numReceipts,
-            () => reportController.showTransactionReport(context, receipts, name, isCount: true),
+            () => reportController.showTransactionReport(context, receipts, name),
           ),
           MainScreenClickableCell(
             receiptAmount,
@@ -245,7 +245,7 @@ class DataRow extends ConsumerWidget {
           ),
           MainScreenClickableCell(
             numInvoices,
-            () => reportController.showTransactionReport(context, invoices, name, isCount: true),
+            () => reportController.showTransactionReport(context, invoices, name),
           ),
           MainScreenClickableCell(
             invoicesAmount,
@@ -253,7 +253,7 @@ class DataRow extends ConsumerWidget {
           ),
           MainScreenClickableCell(
             numReturns,
-            () => reportController.showTransactionReport(context, returns, name, isCount: true),
+            () => reportController.showTransactionReport(context, returns, name),
           ),
           MainScreenClickableCell(
             returnsAmount,

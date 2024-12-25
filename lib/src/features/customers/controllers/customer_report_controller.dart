@@ -25,7 +25,7 @@ class CustomerReportController {
         title: title,
         dropdownIndex: 1,
         dropdownLabel: S.of(context).transaction_type,
-        sumIndex: 4,
+        summaryIndexes: [4],
         useOriginalTransaction: true);
   }
 
@@ -36,7 +36,7 @@ class CustomerReportController {
       giftsList,
       dateIndex: 3,
       title: title,
-      sumIndex: 4,
+      summaryIndexes: [4],
       dropdownIndex: 2,
       dropdownLabel: S.of(context).transaction_type,
       useOriginalTransaction: true,
@@ -49,7 +49,7 @@ class CustomerReportController {
       _getInvoiceReportTitles(context),
       invoices,
       title: title,
-      sumIndex: 7,
+      summaryIndexes: [7],
       dateIndex: 2,
       dropdownIndex: 5,
       dropdownLabel: S.of(context).invoice_status,
@@ -63,7 +63,7 @@ class CustomerReportController {
       _getInvoiceReportTitles(context),
       invoices,
       title: title,
-      sumIndex: 8,
+      summaryIndexes: [8],
       useOriginalTransaction: true,
     );
   }
@@ -74,7 +74,7 @@ class CustomerReportController {
       _getProfitReportTitles(context),
       invoices,
       title: title,
-      sumIndex: 5,
+      summaryIndexes: [5],
       useOriginalTransaction: true,
       dateIndex: 2,
     );
@@ -164,7 +164,7 @@ class CustomerReportController {
       _getAllCustomersColumnTitles(context),
       debtList,
       title: S.of(context).salesmen_debt_report,
-      sumIndex: 4,
+      summaryIndexes: [3, 4],
       dropdownLabel: S.of(context).customer,
       dropdownIndex: 0,
       dropdown2Label: S.of(context).salesman,

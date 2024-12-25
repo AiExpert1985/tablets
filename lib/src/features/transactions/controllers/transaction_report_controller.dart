@@ -144,7 +144,7 @@ class TransactionReportController {
           processedTransactions,
           title: title,
           dateIndex: 2,
-          sumIndex: 6,
+          summaryIndexes: [6],
           dropdownLabel: S.of(context).transaction_type,
           dropdownIndex: 1,
           useOriginalTransaction: true,

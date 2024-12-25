@@ -19,7 +19,7 @@ class SalesmanReportController {
       _getDebtReportTitles(context),
       filteredList,
       title: salesmanName,
-      sumIndex: 1,
+      summaryIndexes: [1],
       dropdownLabel: S.of(context).customer,
       dropdownIndex: 0,
     );
@@ -38,12 +38,21 @@ class SalesmanReportController {
   void showSoldItemsReport(
       BuildContext context, List<List<dynamic>> detailsList, String title, bool isSupervisor) {
     if (!isSupervisor) {
-      showReportDialog(context, _getSoldItemsReportTitles(context), detailsList,
-          title: title, sumIndex: 6);
+      showReportDialog(
+        context,
+        _getSoldItemsReportTitles(context),
+        detailsList,
+        title: title,
+        summaryIndexes: [6],
+      );
     } else {
-      showReportDialog(context, _getSoldItemsReportTitles(context).sublist(0, 5),
-          trimLastXIndicesFromInnerLists(detailsList, 2),
-          title: title, sumIndex: 4);
+      showReportDialog(
+        context,
+        _getSoldItemsReportTitles(context).sublist(0, 5),
+        trimLastXIndicesFromInnerLists(detailsList, 2),
+        title: title,
+        summaryIndexes: [4],
+      );
     }
   }
 
@@ -53,7 +62,6 @@ class SalesmanReportController {
     String salesmanName, {
     int? sumIndex,
     bool isProfit = false,
-    bool isCount = false,
   }) {
     showReportDialog(
       context,
@@ -62,8 +70,7 @@ class SalesmanReportController {
       dateIndex: 2,
       title: salesmanName,
       useOriginalTransaction: true,
-      sumIndex: sumIndex,
-      isCount: isCount,
+      summaryIndexes: sumIndex == null ? [] : [sumIndex],
     );
   }
 
@@ -82,7 +89,7 @@ class SalesmanReportController {
         targetedWidth: 800,
         dropdownLabel: S.of(context).regions,
         dropdownIndex: 1,
-        sumIndex: 3);
+        summaryIndexes: [3]);
   }
 
   List<String> _getTransactionsReportTitles(BuildContext context, {bool isProfit = false}) {

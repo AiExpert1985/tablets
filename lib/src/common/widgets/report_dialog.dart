@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/printing/print_document.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -18,15 +19,13 @@ void showReportDialog(
   int? dateIndex,
   int? dropdownIndex,
   String? dropdownLabel,
-  int? sumIndex,
+  List<int> summaryIndexes = const [],
   double targetedWidth = 1600,
   double targetedHeight = 1200,
   // if useOriginalTransaction is ture, it means first item is the orginal transaction
   // it will not be displayed in the rows of data, but used to show the orginal transaction
   // as a read only dialog when the row is pressed.
   bool useOriginalTransaction = false,
-  // if isCount, means we take count, not sum
-  bool isCount = false,
   int? dropdown2Index,
   String? dropdown2Label,
   int? dropdown3Index,
@@ -52,9 +51,8 @@ void showReportDialog(
         dropdown2Label: dropdown2Label,
         dropdown3Index: dropdown3Index,
         dropdown3Label: dropdown3Label,
-        sumIndex: sumIndex,
+        summaryIndexes: summaryIndexes,
         useOriginalTransaction: useOriginalTransaction,
-        isCount: isCount,
       );
     },
   );
@@ -73,9 +71,8 @@ class _DateFilterDialog extends StatefulWidget {
   final String? dropdown2Label;
   final int? dropdown3Index;
   final String? dropdown3Label;
-  final int? sumIndex;
+  final List<int> summaryIndexes;
   final bool useOriginalTransaction;
-  final bool isCount;
   final bool useAbsoluteNumbers;
 
   const _DateFilterDialog({
@@ -91,9 +88,8 @@ class _DateFilterDialog extends StatefulWidget {
     this.dropdown2Label,
     this.dropdown3Index,
     this.dropdown3Label,
-    this.sumIndex,
+    required this.summaryIndexes,
     required this.useOriginalTransaction,
-    required this.isCount,
     // ignore: unused_element
     this.useAbsoluteNumbers = false,
   });
@@ -143,6 +139,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final summaryList = getSummaryList();
     return AlertDialog(
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -172,12 +169,12 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
           children: [
             _buildListTitles(),
             _buildDataList(context),
-            if (widget.sumIndex != null) _buildSumDisplay(),
-            if (widget.isCount) _buildCountDisplay(),
+            _buildSummary(summaryList),
           ],
         ),
       ),
-      actions: _buildButtons(filteredList, widget.title, widget.titleList, startDate, endDate),
+      actions: _buildButtons(
+          filteredList, widget.title, widget.titleList, startDate, endDate, summaryList),
     );
   }
 
@@ -468,54 +465,51 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
             Text(textAlign: TextAlign.center, widget.title!, style: const TextStyle(fontSize: 20)));
   }
 
-  Widget _buildSumDisplay() {
-    double sum = 0;
-    for (var item in filteredList) {
-      if (item.length > widget.sumIndex!) {
-        sum += item[widget.sumIndex!]?.toDouble() ?? 0;
+  List<String> getSummaryList() {
+    List<String> summaryList = List.generate(filteredList[0].length, (_) => '');
+    // if not index provided form sum, we will return the count
+    if (widget.summaryIndexes.isEmpty) {
+      summaryList[0] = S.of(context).count;
+      final itemsCount = filteredList.length.toString();
+      summaryList[widget.summaryIndexes.length - 1] = doubleToStringWithComma(itemsCount);
+    } else {
+      summaryList[0] = S.of(context).total;
+      for (var index in widget.summaryIndexes) {
+        num sum = 0;
+        for (var dataRow in filteredList) {
+          if (index < 0 ||
+              index >= dataRow.length &&
+                  (dataRow[index] is int ||
+                      filteredList[index] is double ||
+                      filteredList[index] is num)) {
+            errorPrint('index provided is not suitable for the data list');
+            break;
+          }
+          sum += dataRow[index] as num;
+        }
+        summaryList[index] = doubleToStringWithComma(sum);
       }
     }
-    return _buildRowContrainer(
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 70.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(S.of(context).total,
-                style: const TextStyle(
-                    fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)),
-            Text(doubleToStringWithComma(sum),
-                style:
-                    const TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold))
-          ],
-        ),
-      ),
-    );
+    return summaryList;
   }
 
-  Widget _buildCountDisplay() {
-    int count = filteredList.length;
-
+  Widget _buildSummary(List<String> summaryList) {
     return _buildRowContrainer(
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 70.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(S.of(context).count,
+      Row(
+        children: summaryList.map((cellValue) {
+          return Expanded(
+            child: Text(cellValue,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                     color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
-            Text(doubleToStringWithComma(count.toDouble()),
-                style:
-                    const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18))
-          ],
-        ),
+          );
+        }).toList(),
       ),
     );
   }
 
   List<Widget> _buildButtons(List<List<dynamic>> reportData, String? reportTitle,
-      List<String> listTitles, DateTime? startDate, DateTime? endDate) {
+      List<String> listTitles, DateTime? startDate, DateTime? endDate, List<String> summaryList) {
     final startDateString = startDate != null ? formatDate(startDate) : null;
     final endDateString = endDate != null ? formatDate(endDate) : null;
     return <Widget>[
@@ -530,8 +524,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
                 listTitles,
                 startDateString,
                 endDateString,
-                widget.sumIndex,
-                widget.isCount,
+                summaryList,
                 widget.useOriginalTransaction,
                 selectedDropdownValues.isEmpty
                     ? []
@@ -575,8 +568,7 @@ class PrintReportButton extends ConsumerWidget {
       this.listTitles,
       this.startDate,
       this.endDate,
-      this.sumIndex,
-      this.isCount,
+      this.summaryList,
       this.useOriginalTransaction,
       this.filter1SelectedValues,
       this.filter2SelectedValues,
@@ -588,8 +580,7 @@ class PrintReportButton extends ConsumerWidget {
   final String? startDate;
   final String? endDate;
   final List<String> listTitles;
-  final int? sumIndex;
-  final bool isCount;
+  final List<String> summaryList;
   final bool useOriginalTransaction;
   final List<String> filter1SelectedValues;
   final List<String> filter2SelectedValues;
@@ -597,8 +588,6 @@ class PrintReportButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String summaryTitle = isCount ? S.of(context).count : S.of(context).total;
-
     //if transaction is included, then we don't print it because it is only intended to show original transaction
     List<List<dynamic>> printingData = [...reportData];
     if (useOriginalTransaction) {
@@ -608,29 +597,8 @@ class PrintReportButton extends ConsumerWidget {
     return IconButton(
       icon: const PrintIcon(),
       onPressed: () {
-        num summaryValue = 0;
-        if (isCount) {
-          summaryValue = reportData.length;
-        } else if (sumIndex != null) {
-          for (var item in reportData) {
-            if (item[sumIndex!] is num || item[sumIndex!] is int || item[sumIndex!] is double) {
-              summaryValue += item[sumIndex!]?.toDouble() ?? 0;
-            }
-          }
-        }
-        printReport(
-            context,
-            ref,
-            printingData,
-            reportTitle,
-            listTitles,
-            startDate,
-            endDate,
-            summaryValue,
-            summaryTitle,
-            filter1SelectedValues,
-            filter2SelectedValues,
-            filter3SelectedValues);
+        printReport(context, ref, printingData, reportTitle, listTitles, startDate, endDate,
+            summaryList, filter1SelectedValues, filter2SelectedValues, filter3SelectedValues);
       },
     );
   }

@@ -6,7 +6,6 @@ import 'package:pdf/widgets.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/file_system_path.dart';
-import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/printing/customer_invoice_pdf.dart';
 import 'package:tablets/src/common/printing/customer_receipt_pdf.dart';
 import 'package:tablets/src/common/printing/customer_return.dart';
@@ -75,8 +74,7 @@ Future<void> printReport(
   List<String> listTitles,
   String? startDate,
   String? endDate,
-  num summaryValue,
-  String summaryTitle,
+  List<String> summaryList,
   List<String> filter1Values, // value selected in filter 1
   List<String> filter2Values, // value selected in filter 2
   List<String> filter3Values, // value selected in filter 3
@@ -94,8 +92,7 @@ Future<void> printReport(
         listTitles,
         startDate,
         endDate,
-        doubleToStringWithComma(summaryValue),
-        summaryTitle,
+        summaryList,
         filter1Values,
         filter2Values,
         filter3Values,

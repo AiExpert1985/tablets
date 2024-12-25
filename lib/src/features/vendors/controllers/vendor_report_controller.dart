@@ -17,7 +17,7 @@ class VendorReportController {
         title: title,
         dropdownIndex: 1,
         dropdownLabel: S.of(context).transaction_type,
-        sumIndex: 4,
+        summaryIndexes: [4],
         useOriginalTransaction: true);
   }
 

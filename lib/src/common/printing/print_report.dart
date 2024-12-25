@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/printing/print_document.dart';
@@ -14,8 +13,9 @@ const minStringLengthForLargeField = 20;
 const numItemsInFirstPage = 20;
 const numItemsInSecondPage = 30;
 const double headerFontSize = 14;
+const double wideFieldWidth = 185;
 
-Future<Document> getReportPdf(
+Future<pw.Document> getReportPdf(
   BuildContext context,
   WidgetRef ref,
   List<List<dynamic>> reportData,
@@ -24,8 +24,7 @@ Future<Document> getReportPdf(
   List<String> listTitles,
   String? startDate,
   String? endDate,
-  String summaryValue,
-  String summaryTitle,
+  List<String> summaryList,
   List<String> filter1Values, // value selected in filter 1
   List<String> filter2Values, // value selected in filter 2
   List<String> filter3Values, // value selected in filter 3
@@ -56,8 +55,7 @@ Future<Document> getReportPdf(
         endDate,
         printingDate,
         printingTime,
-        summaryValue,
-        summaryTitle,
+        summaryList,
         0,
         filter1Values,
         filter2Values,
@@ -94,8 +92,7 @@ Future<Document> getReportPdf(
           endDate,
           printingDate,
           printingTime,
-          summaryValue,
-          summaryTitle,
+          summaryList,
           (numItemsInFirstPage + (i * numItemsInSecondPage)),
           filter1Values,
           filter2Values,
@@ -141,7 +138,7 @@ void _setFieldsSizes(List<List<dynamic>> reportData, List<String> reportHeaders)
 
 pw.Widget _reportPage(
   BuildContext context,
-  Font arabicFont,
+  pw.Font arabicFont,
   dynamic image,
   String reportTitle,
   List<String> listTitles,
@@ -150,8 +147,7 @@ pw.Widget _reportPage(
   String? endDate,
   String printingDate,
   String printingTime,
-  String summaryValue,
-  String summaryTitle,
+  List<String> summaryList,
   int index,
   List<String> filter1Values,
   List<String> filter2Values,
@@ -173,7 +169,7 @@ pw.Widget _reportPage(
       pw.SizedBox(height: 10),
       _buildDataList(arabicFont, dataList, index),
       pw.SizedBox(height: 10),
-      if (includeSummary) _buildSummary(arabicFont, summaryValue, summaryTitle),
+      if (includeSummary) _buildSummary(arabicFont, summaryList),
       pw.Spacer(),
       footerBar(arabicFont, 'وقت الطباعة ', '$printingDate   $printingTime '),
       pw.SizedBox(height: 10),
@@ -181,15 +177,23 @@ pw.Widget _reportPage(
   ); // Center
 }
 
-pw.Widget _buildSummary(Font arabicFont, String summaryValue, String summaryTitle) {
+pw.Widget _buildSummary(pw.Font arabicFont, List<String> summaryList) {
+  // pw.Row in arabic needs to reverse data
+  final printedSummaryList = summaryList.reversed.toList();
+  List<pw.Widget> summaryWidgets = [];
+  for (var i = 0; i < printedSummaryList.length; i++) {
+    if (isWideField[i]) {
+      summaryWidgets.add(pw.Container(
+          width: wideFieldWidth, child: arabicText(arabicFont, printedSummaryList[i])));
+    } else {
+      summaryWidgets.add(
+          pw.Expanded(child: pw.Container(child: arabicText(arabicFont, printedSummaryList[i]))));
+    }
+  }
+  // place holder for sequence, since we work in reverse order, we put it at last to appear at beginning
+  summaryWidgets.add(pw.Container(width: 25));
   return coloredContainer(
-    pw.Row(
-      mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
-      children: [
-        arabicText(arabicFont, summaryValue),
-        arabicText(arabicFont, summaryTitle),
-      ],
-    ),
+    pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: summaryWidgets),
     bgColor: lightBgColor,
     pageWidth,
     height: 20,
@@ -197,7 +201,7 @@ pw.Widget _buildSummary(Font arabicFont, String summaryValue, String summaryTitl
 }
 
 pw.Widget _buildReportHeader(
-  Font arabicFont,
+  pw.Font arabicFont,
   String reportTitle,
   String? startDate,
   String? endDate,
@@ -248,7 +252,7 @@ pw.Widget _buildReportHeader(
   );
 }
 
-pw.Widget _buildFilteredValueRow(Font arabicFont, List<String> values, {double fontSize = 14}) {
+pw.Widget _buildFilteredValueRow(pw.Font arabicFont, List<String> values, {double fontSize = 14}) {
   return pw.Row(
     mainAxisAlignment: pw.MainAxisAlignment.center,
     children: values.map((text) {
@@ -257,7 +261,7 @@ pw.Widget _buildFilteredValueRow(Font arabicFont, List<String> values, {double f
   );
 }
 
-pw.Widget _buildListTitles(Font arabicFont, List<dynamic> titlesList) {
+pw.Widget _buildListTitles(pw.Font arabicFont, List<dynamic> titlesList) {
   titlesList = titlesList.reversed.toList();
   List<pw.Widget> itemsList = [];
   for (int i = 0; i < titlesList.length; i++) {
@@ -281,7 +285,7 @@ pw.Widget _buildListTitles(Font arabicFont, List<dynamic> titlesList) {
   );
 }
 
-pw.Widget _buildDataList(Font arabicFont, List<List<dynamic>> dataList, int index) {
+pw.Widget _buildDataList(pw.Font arabicFont, List<List<dynamic>> dataList, int index) {
   List<pw.Widget> itemsList = [];
   for (int i = 0; i < dataList.length; i++) {
     int sequence = index + i + 1;
@@ -290,7 +294,7 @@ pw.Widget _buildDataList(Font arabicFont, List<List<dynamic>> dataList, int inde
   return pw.Container(child: pw.Column(children: itemsList));
 }
 
-pw.Widget _buildItem(Font arabicFont, List<dynamic> dataRow, int sequence) {
+pw.Widget _buildItem(pw.Font arabicFont, List<dynamic> dataRow, int sequence) {
   List<pw.Widget> item = [];
   dataRow = dataRow.reversed.toList();
   for (int i = 0; i < dataRow.length; i++) {
@@ -309,7 +313,7 @@ pw.Widget _buildItem(Font arabicFont, List<dynamic> dataRow, int sequence) {
   );
 }
 
-pw.Widget _buildDataCell(Font arabicFont, dynamic value, int i) {
+pw.Widget _buildDataCell(pw.Font arabicFont, dynamic value, int i) {
   String cellText = '';
   if (value is DateTime) {
     cellText = formatDate(value);
@@ -324,7 +328,7 @@ pw.Widget _buildDataCell(Font arabicFont, dynamic value, int i) {
   }
   if (isWideField[i]) {
     return pw.Container(
-        width: 185,
+        width: wideFieldWidth,
         padding: const pw.EdgeInsets.all(1),
         child: arabicText(arabicFont, cellText, isBordered: true));
   }
@@ -334,10 +338,10 @@ pw.Widget _buildDataCell(Font arabicFont, dynamic value, int i) {
           child: arabicText(arabicFont, cellText, isBordered: true)));
 }
 
-pw.Widget _buildHeaderCell(Font arabicFont, String text, int i) {
+pw.Widget _buildHeaderCell(pw.Font arabicFont, String text, int i) {
   if (isWideField[i]) {
     return pw.Container(
-      width: 185,
+      width: wideFieldWidth,
       padding: const pw.EdgeInsets.all(1),
       child: arabicText(arabicFont, text, isTitle: true, textColor: PdfColors.white),
     );
