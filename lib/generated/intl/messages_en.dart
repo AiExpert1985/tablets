@@ -227,6 +227,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("printed Customer Receipts "),
         "number": MessageLookupByLibrary.simpleMessage("Number"),
         "open_invoices": MessageLookupByLibrary.simpleMessage("Open invoices"),
+        "package_number":
+            MessageLookupByLibrary.simpleMessage("Packages number"),
         "page_not_found":
             MessageLookupByLibrary.simpleMessage("Page is not found"),
         "paid_amount": MessageLookupByLibrary.simpleMessage("Payed amount"),

@@ -20,7 +20,7 @@ class SalesmanReportController {
       filteredList,
       title: salesmanName,
       // this index is after removing first column of transaction (i.e it is accually [2])
-      summaryIndexes: [1],
+      summaryIndexes: [1, 2],
       dropdownLabel: S.of(context).customer,
       dropdownIndex: 0,
     );
@@ -88,7 +88,7 @@ class SalesmanReportController {
           S.of(context).region_name,
           S.of(context).phone,
           S.of(context).invoices_number,
-          S.of(context).item_sold_quantity
+          S.of(context).package_number
         ],
         detailsList,
         title: salesmanName,

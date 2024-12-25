@@ -530,7 +530,7 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       decoration: BoxDecoration(border: Border.all(width: 0.2)),
       width: 45,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
-      child: Text(index.toString(),
+      child: Text((index + 1).toString(),
           textAlign: TextAlign.center,
           style: TextStyle(
               fontWeight: FontWeight.bold,

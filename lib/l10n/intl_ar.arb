@@ -275,5 +275,6 @@
     "customer_matching": "كشف زبون",
     "saleman_customers": "زبائن المندوب",
     "hide_from_special_reports": "اخفاء في التقارير الخاصة",
-    "salesman": "المندوب"
+    "salesman": "المندوب",
+    "package_number": "عدد الكراتين"
 }

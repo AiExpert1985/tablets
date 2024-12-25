@@ -217,6 +217,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "number": MessageLookupByLibrary.simpleMessage("رقم"),
         "open_invoices":
             MessageLookupByLibrary.simpleMessage("القوائم المفتوحة"),
+        "package_number": MessageLookupByLibrary.simpleMessage("عدد الكراتين"),
         "page_not_found": MessageLookupByLibrary.simpleMessage(
             "لم يتم العثور على الصفحة المطلوبة"),
         "paid_amount":
