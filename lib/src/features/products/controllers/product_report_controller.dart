@@ -20,7 +20,7 @@ class ProductReportController {
         dropdownLabel: S.of(context).transaction_type,
         dateIndex: 3,
         title: title,
-        summaryIndexes: [4],
+        summaryIndexes: [3],
         useOriginalTransaction: true);
   }
 
@@ -34,7 +34,7 @@ class ProductReportController {
         dropdownLabel: S.of(context).transaction_type,
         dateIndex: 3,
         title: title,
-        summaryIndexes: [4],
+        summaryIndexes: [3],
         useOriginalTransaction: true);
   }
 

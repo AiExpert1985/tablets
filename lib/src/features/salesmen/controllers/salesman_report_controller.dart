@@ -19,6 +19,7 @@ class SalesmanReportController {
       _getDebtReportTitles(context),
       filteredList,
       title: salesmanName,
+      // this index is after removing first column of transaction (i.e it is accually [2])
       summaryIndexes: [1],
       dropdownLabel: S.of(context).customer,
       dropdownIndex: 0,
@@ -27,8 +28,14 @@ class SalesmanReportController {
 
   void showInvoicesReport(
       BuildContext context, List<List<dynamic>> detailsList, String salesmanName) {
-    showReportDialog(context, _getOpenInvoicesReportTitles(context), detailsList,
-        title: salesmanName, summaryIndexes: [1, 2]);
+    showReportDialog(
+      context,
+      _getOpenInvoicesReportTitles(context),
+      detailsList,
+      title: salesmanName,
+      // this index is after removing first column of transaction (i.e it is accually [2, 3])
+      summaryIndexes: [1, 2],
+    );
   }
 
   void showSoldItemsReport(
@@ -39,6 +46,7 @@ class SalesmanReportController {
         _getSoldItemsReportTitles(context),
         detailsList,
         title: title,
+        // this index is after removing first column of transaction (i.e it is accually [5, 7])
         summaryIndexes: [4, 6],
       );
     } else {
@@ -47,6 +55,7 @@ class SalesmanReportController {
         _getSoldItemsReportTitles(context).sublist(0, 5),
         trimLastXIndicesFromInnerLists(detailsList, 2),
         title: title,
+        // this index is after removing first column of transaction (i.e it is accually 5)
         summaryIndexes: [4],
       );
     }
@@ -66,6 +75,7 @@ class SalesmanReportController {
       dateIndex: 2,
       title: salesmanName,
       useOriginalTransaction: true,
+      // this index is after removing first column of transaction (i.e it is accually sumIndex + 1)
       summaryIndexes: sumIndex == null ? [] : [sumIndex],
     );
   }
@@ -82,9 +92,9 @@ class SalesmanReportController {
         ],
         detailsList,
         title: salesmanName,
-        targetedWidth: 800,
         dropdownLabel: S.of(context).regions,
         dropdownIndex: 1,
+        // this index is after removing first column of transaction (i.e it is accually [4, 5])
         summaryIndexes: [3, 4]);
   }
 

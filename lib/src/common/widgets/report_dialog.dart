@@ -12,35 +12,8 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/show_transaction_dialog.dart';
 
 List<bool> isWideField = [];
-const minStringLengthForLargeField = 25;
-const double wideFieldWidth = 210;
-
-void _setFieldsSizes(List<List<dynamic>> reportData, List<String> reportHeaders) {
-  // note that we need to reverse the list because pw package works in reversed order
-  // so we make sure the intended field takes the large size
-  // first we need to clear previous values from other reports
-  isWideField = [];
-  // first we assume all cells are normal size
-  for (var _ in reportHeaders) {
-    isWideField.add(false);
-  }
-  for (List item in reportData) {
-    item = item.reversed.toList();
-    for (var i = 0; i < item.length; i++) {
-      if (item[i] is String && item[i].length > minStringLengthForLargeField) {
-        isWideField[i] = true;
-      }
-    }
-  }
-  // I don't want to increase the size of notes fields
-  // note that we need to reverse the list because pw package works in reversed order
-  // so we make sure the intended field takes the large size
-  for (var i = 0; i < reportHeaders.length; i++) {
-    if (reportHeaders[i].contains('ملاحظات') || reportHeaders[i].contains('notes')) {
-      isWideField[i] = false;
-    }
-  }
-}
+const minStringLengthForLargeField = 20;
+const double wideFieldWidth = 300;
 
 void showReportDialog(
   BuildContext context,
@@ -51,7 +24,7 @@ void showReportDialog(
   int? dropdownIndex,
   String? dropdownLabel,
   List<int> summaryIndexes = const [],
-  double targetedWidth = 1600,
+  double targetedWidth = 1400,
   double targetedHeight = 1200,
   // if useOriginalTransaction is ture, it means first item is the orginal transaction
   // it will not be displayed in the rows of data, but used to show the orginal transaction
@@ -66,9 +39,9 @@ void showReportDialog(
     context: context,
     builder: (context) {
       final maxHeight = MediaQuery.of(context).size.height;
-      final height = targetedHeight > maxHeight ? maxHeight : targetedHeight;
+      final height = targetedHeight > maxHeight ? maxHeight : targetedHeight - 10;
       final maxWidth = MediaQuery.of(context).size.width;
-      final width = targetedWidth > maxWidth ? maxWidth : targetedWidth;
+      final width = targetedWidth > maxWidth ? maxWidth : targetedWidth - 10;
       return _DateFilterDialog(
         title: title,
         width: width,
@@ -140,6 +113,35 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   List<String> dropdown2Values = []; // items to be shown in the dropdown list (to select from)
   List<String> dropdown3Values = []; // items to be shown in the dropdown list (to select from)
 
+// this function detects which fields needs more width, the remaining width will be evenly distributed among
+// all other fields (except sequence which has fixed width)
+  void _setFieldsSizes() {
+    List<List<dynamic>> dataListCopy = [...widget.dataList];
+    if (widget.useOriginalTransaction) {
+      dataListCopy = removeIndicesFromInnerLists(dataListCopy, [0]);
+    }
+    // first we need to clear previous values from other reports
+    isWideField = [];
+    // first we assume all cells are normal size
+    for (var _ in dataListCopy[0]) {
+      isWideField.add(false);
+    }
+
+    for (List item in dataListCopy) {
+      for (var i = 0; i < item.length; i++) {
+        if (item[i] is String && item[i].length > minStringLengthForLargeField) {
+          isWideField[i] = true;
+        }
+      }
+    }
+    // I don't want to increase the size of notes fields
+    for (var i = 0; i < widget.titleList.length; i++) {
+      if (widget.titleList[i].contains('ملاحظات') || widget.titleList[i].contains('notes')) {
+        isWideField[i] = false;
+      }
+    }
+  }
+
   @override
   void initState() {
     if (widget.dateIndex != null) {
@@ -166,14 +168,14 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
     }
 
     filteredList = List.from(widget.dataList);
+    // give approperiate width for the fields
+    _setFieldsSizes();
   }
 
   @override
   Widget build(BuildContext context) {
     // calculate the totals for each required colomn
     final summaryList = getSummaryList();
-    // give approperiate width for the fields
-    _setFieldsSizes(widget.dataList, widget.titleList);
     return AlertDialog(
       title: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -408,19 +410,33 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   }
 
   Widget _buildListTitles() {
+    List<Widget> listTitleWidgets = [];
+    // place holder for sequence
+    listTitleWidgets.add(const SizedBox(width: 40, child: Text('')));
+    for (var i = 0; i < widget.titleList.length; i++) {
+      late Widget summaryWidget;
+      final item = widget.titleList[i];
+      if (isWideField[i]) {
+        summaryWidget = SizedBox(
+          width: wideFieldWidth,
+          child: Text(item,
+              style:
+                  const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+              textAlign: TextAlign.center),
+        );
+      } else {
+        summaryWidget = Expanded(
+          child: Text(item,
+              style:
+                  const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+              textAlign: TextAlign.center),
+        );
+      }
+      listTitleWidgets.add(summaryWidget);
+    }
+
     return _buildRowContrainer(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: widget.titleList.map((item) {
-          return SizedBox(
-            width: widget.width / widget.titleList.length,
-            child: Text(item,
-                style:
-                    const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-                textAlign: TextAlign.center),
-          );
-        }).toList(),
-      ),
+      Row(children: listTitleWidgets),
     );
   }
 
@@ -476,8 +492,8 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       if (item is DateTime) item = formatDate(item);
       if (isWideField[i]) {
         itemWidget = Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
           decoration: BoxDecoration(border: Border.all(width: 0.2)),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
           width: wideFieldWidth,
           child: Text(
               item is String
@@ -492,9 +508,8 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
       } else {
         itemWidget = Expanded(
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
             decoration: BoxDecoration(border: Border.all(width: 0.2)),
-            // width: widget.width / widget.titleList.length,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
             child: Text(
                 item is String
                     ? item
@@ -522,9 +537,12 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
               color: isHilighted ? Colors.red : Colors.black,
               fontSize: 16)),
     );
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [sequence, ...itemWidgetList],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [sequence, ...itemWidgetList],
+      ),
     );
   }
 
@@ -539,22 +557,25 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   List<String> getSummaryList() {
     // in case no items in the list, return empty list
     if (filteredList.isEmpty) return [];
-    List<String> summaryList = List.generate(filteredList[0].length, (_) => '');
+    // we make sure to remove the transaction object if exists
+    List<List<dynamic>> filteredListCopy = [...filteredList];
+    if (widget.useOriginalTransaction) {
+      filteredListCopy = removeIndicesFromInnerLists(filteredListCopy, [0]);
+    }
+    List<String> summaryList = List.generate(filteredListCopy[0].length, (_) => '');
     // if not index provided form sum, we will return the count
     if (widget.summaryIndexes.isEmpty) {
       summaryList[0] = S.of(context).count;
-      final itemsCount = filteredList.length.toString();
-      summaryList[filteredList[0].length - 1] = doubleToStringWithComma(itemsCount);
+      final itemsCount = filteredListCopy.length.toString();
+      summaryList[filteredListCopy[0].length - 1] = doubleToStringWithComma(itemsCount);
     } else {
       summaryList[0] = S.of(context).total;
       for (var index in widget.summaryIndexes) {
         num sum = 0;
-        for (var dataRow in filteredList) {
+        for (var dataRow in filteredListCopy) {
           if (index < 0 ||
-              index >= dataRow.length &&
-                  (dataRow[index] is int ||
-                      filteredList[index] is double ||
-                      filteredList[index] is num)) {
+              index >= dataRow.length ||
+              (dataRow[index] is! int && dataRow[index] is! double && dataRow[index] is! num)) {
             errorPrint('index provided is not suitable for the data list');
             break;
           }
@@ -567,17 +588,31 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   }
 
   Widget _buildSummary(List<String> summaryList) {
+    List<Widget> summaryWidgets = [];
+    // place holder for sequence
+    summaryWidgets.add(const SizedBox(width: 40, child: Text('')));
+    for (var i = 0; i < summaryList.length; i++) {
+      late Widget summaryWidget;
+      if (isWideField[i]) {
+        summaryWidget = SizedBox(
+          width: wideFieldWidth,
+          child: Text(summaryList[i],
+              textAlign: TextAlign.center,
+              style:
+                  const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
+        );
+      } else {
+        summaryWidget = Expanded(
+          child: Text(summaryList[i],
+              textAlign: TextAlign.center,
+              style:
+                  const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
+        );
+      }
+      summaryWidgets.add(summaryWidget);
+    }
     return _buildRowContrainer(
-      Row(
-        children: summaryList.map((cellValue) {
-          return Expanded(
-            child: Text(cellValue,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
-          );
-        }).toList(),
-      ),
+      Row(children: summaryWidgets),
     );
   }
 
@@ -624,8 +659,8 @@ class __DateFilterDialogState extends State<_DateFilterDialog> {
   Widget _buildRowContrainer(Widget childWidget) {
     return Container(
         height: 50,
-        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+        margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
         decoration: BoxDecoration(
             color: const Color.fromARGB(255, 227, 240, 247),
             borderRadius: BorderRadius.circular(8.0),
