@@ -33,7 +33,8 @@ class DeletedTransactionSearchForm extends ConsumerWidget {
 
   List<Widget> _buildBodyWidgets(ScreenDataFilters filterController, BuildContext context) {
     return [
-      TextSearchField(filterController, 'typeContains', 'type', S.of(context).transaction_type),
+      TextSearchField(
+          filterController, 'typeContains', 'transactionType', S.of(context).transaction_type),
       VerticalGap.l,
       TextSearchField(filterController, 'nameContains', 'name', S.of(context).transaction_name),
       VerticalGap.l,
@@ -41,10 +42,10 @@ class DeletedTransactionSearchForm extends ConsumerWidget {
           filterController, 'salesmanContains', 'salesman', S.of(context).transaction_salesman),
       VerticalGap.l,
       NumberMatchSearchField(
-          filterController, 'numberEquals', 'name', S.of(context).transaction_number),
+          filterController, 'numberEquals', 'number', S.of(context).transaction_number),
       VerticalGap.l,
       NumberRangeSearchField(filterController, 'amountMoreThanOrEqual', 'amountLessThanOrEqual',
-          'transactionTotalAmount', S.of(context).transaction_amount),
+          'totalAmount', S.of(context).transaction_amount),
       VerticalGap.l,
       TextSearchField(filterController, 'notesContains', 'notes', S.of(context).transaction_notes),
       VerticalGap.xl,

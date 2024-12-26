@@ -6,12 +6,11 @@ import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/widgets/show_transaction_dialog.dart';
+import 'package:tablets/src/features/deleted_transactions/controllers/deleted_transaction_drawer_provider.dart';
 import 'package:tablets/src/features/deleted_transactions/controllers/deleted_transaction_screen_data_notifier.dart';
 import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_drawer_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_screen_data_notifier.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/features/home/view/home_screen.dart';
@@ -44,7 +43,7 @@ class DeletedTransactionsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(transactionScreenDataNotifier);
+    ref.watch(deletedTransactionScreenDataNotifier);
     ref.watch(pageIsLoadingNotifier);
     final dbCache = ref.read(deletedTransactionDbCacheProvider.notifier);
     final dbData = dbCache.data;
@@ -198,7 +197,7 @@ class DeletedTransactionsFloatingButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final drawerController = ref.watch(transactionDrawerControllerProvider);
+    final drawerController = ref.watch(deletedTransactionDrawerControllerProvider);
     const iconsColor = Color.fromARGB(255, 126, 106, 211);
     return SpeedDial(
       direction: SpeedDialDirection.up,
