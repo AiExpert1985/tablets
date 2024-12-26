@@ -204,6 +204,7 @@ class TransactionShowForm {
     // Step 1: Filter the list for the given transaction type
     final filteredTransactions =
         dbCacheData.where((transaction) => transaction[transactionTypeKey] == type);
+    if (filteredTransactions.isEmpty) return 0;
     // Step 2: Extract the transaction numbers and convert them to integers
     final transactionNumbers = filteredTransactions.map((transaction) =>
         transaction[numberKey] is int ? transaction[numberKey] : transaction[numberKey].toInt());
