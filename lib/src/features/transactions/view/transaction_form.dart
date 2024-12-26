@@ -374,7 +374,7 @@ class TransactionForm extends ConsumerWidget {
   }
 
   static void addToDeletedTransactionsDb(WidgetRef ref, Map<String, dynamic> itemData) {
-    // add deleted transaction to deleted transaction database
+    itemData = removeEmptyRows(itemData);
     final deletionItemData = {...itemData, 'deleteDateTime': DateTime.now()};
     final deletedTransaction = DeletedTransaction.fromMap(deletionItemData);
     final deletedTransactionRepository = ref.read(deletedTransactionRepositoryProvider);
