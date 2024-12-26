@@ -348,7 +348,11 @@ class TransactionForm extends ConsumerWidget {
     final transaction = Transaction.fromMap(itemData);
     if (context.mounted) {
       formController.deleteItemFromDb(context, transaction, keepDialogOpen: true);
-      addToDeletedTransactionsDb(ref, itemData);
+      if (dialogOn && itemData['name'].isNotEmpty) {
+        // if dialog is on, it means this is real transaction deletion (i.e. user pressed delete button)
+        // not automatic delete for empty transaction (when no name entered and we leave the form)
+        addToDeletedTransactionsDb(ref, itemData);
+      }
     }
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     const operationType = DbCacheOperationTypes.delete;
