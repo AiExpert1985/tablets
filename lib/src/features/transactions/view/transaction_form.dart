@@ -336,7 +336,8 @@ class TransactionForm extends ConsumerWidget {
     if (dialogOn) {
       final confirmation = await showDeleteConfirmationDialog(
           context: context,
-          message:
+          messagePart1: S.of(context).alert_before_delete,
+          messagePart2:
               '${translateDbTextToScreenText(context, formDataNotifier.data[transTypeKey])}  ${formDataNotifier.data[numberKey]}');
       if (confirmation == null) return false;
     }

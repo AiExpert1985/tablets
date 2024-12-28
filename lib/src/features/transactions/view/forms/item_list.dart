@@ -200,7 +200,9 @@ Widget _buildDeleteItemButton(
         onPressed: () async {
           // show confirmation dialog before deleting
           final confirmation = await showDeleteConfirmationDialog(
-              context: context, message: formDataNotifier.data[itemsKey][index][itemNameKey]);
+              context: context,
+              messagePart1: S.of(context).alert_before_delete,
+              messagePart2: formDataNotifier.data[itemsKey][index][itemNameKey]);
           if (confirmation == null) return;
 
           final items = formDataNotifier.getProperty(itemsKey) as List<Map<String, dynamic>>;
