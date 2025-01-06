@@ -223,7 +223,7 @@ Widget _buildDeleteItemButton(
           double itemsTotalProfit = formDataNotifier.getProperty(itemsTotalProfitKey);
           final itemProfit = deletedItem[itemTotalProfitKey];
           itemsTotalProfit -= itemProfit;
-          final transactionTotalProfit = itemsTotalProfit - discount - totalSalesmanCommission;
+          final transactionTotalProfit = itemsTotalProfit - discount;
           formDataNotifier.updateProperties({
             subTotalAmountKey: subTotalAmount,
             totalAmountKey: totalAmount,
