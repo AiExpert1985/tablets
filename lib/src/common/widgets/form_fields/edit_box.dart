@@ -23,6 +23,7 @@ class FormInputField extends ConsumerWidget {
     super.key,
     this.textColor = Colors.black87,
     this.fontSize = 14,
+    this.isOnSubmit = false, // if true, onChange will be executed only when user press enter
   });
 
   final double fontSize;
@@ -41,6 +42,7 @@ class FormInputField extends ConsumerWidget {
   final TextEditingController? controller;
   final bool isDisabled;
   final String name; // used by the widget, not used by me
+  final bool isOnSubmit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -69,6 +71,7 @@ class FormInputField extends ConsumerWidget {
         decoration: utils.formFieldDecoration(label: label, hideBorders: hideBorders),
         onChanged: _onChanged,
         validator: isRequired ? _validator(context) : null,
+        onSubmitted: _onChanged,
       ),
     );
   }
