@@ -69,9 +69,9 @@ class FormInputField extends ConsumerWidget {
         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         name: name,
         decoration: utils.formFieldDecoration(label: label, hideBorders: hideBorders),
-        onChanged: _onChanged,
+        onChanged: isOnSubmit ? null : _onChanged, // works only when isOnSubmit = false
+        onSubmitted: isOnSubmit ? _onChanged : null, // works only when isOnSubmit = true
         validator: isRequired ? _validator(context) : null,
-        onSubmitted: _onChanged,
       ),
     );
   }
