@@ -38,8 +38,6 @@ class PendingTransactionScreenController implements ScreenDataController {
       mapData[transactionTypeKey] =
           translateDbTextToScreenText(context, mapData[transactionTypeKey]);
     }
-    // I want the initial display of screen data to be ordered on time to recent to oldest
-    sortMapsByProperty(dbCacheDataCopy, 'deleteDateTime');
     _screenDataNotifier.set(dbCacheDataCopy);
   }
 

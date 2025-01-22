@@ -115,8 +115,7 @@ class ListHeaders extends ConsumerWidget {
             screenDataNotifier, 'totalAmount', S.of(context).transaction_amount),
         MainScreenHeaderCell(S.of(context).print_status),
         SortableMainScreenHeaderCell(screenDataNotifier, 'notes', S.of(context).notes),
-        SortableMainScreenHeaderCell(
-            screenDataNotifier, 'deleteDateTime', S.of(context).deletion_time),
+        const MainScreenPlaceholder()
       ],
     );
   }
@@ -167,11 +166,7 @@ class DataRow extends ConsumerWidget {
                   isWarning: isWarning),
               MainScreenTextCell(printStatus, isWarning: isWarning),
               MainScreenTextCell(transactionScreenData[transactionNotesKey], isWarning: isWarning),
-              MainScreenTextCell(
-                transactionScreenData['deleteDateTime'].toDate(),
-                isWarning: isWarning,
-                showTime: true,
-              ),
+              IconButton(onPressed: () {}, icon: const Icon(Icons.abc))
             ],
           ),
         ),

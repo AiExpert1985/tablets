@@ -11,6 +11,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/categories/controllers/category_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/deleted_transactions/controllers/deleted_transaction_screen_controller.dart';
+import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_screen_controller.dart';
 import 'package:tablets/src/features/pending_transactions/repository/pending_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/pending_transactions/repository/pending_transaction_repository_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
@@ -140,23 +141,15 @@ class PendingsButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    final pendingScreenController = ref.read(pendingTransactionScreenControllerProvider);
+
+    final route = AppRoute.pendingTransactions.name;
+    final pageTitle = S.of(context).pending_transactions;
     return MainDrawerButton(
       'pending_transactions',
       S.of(context).pending_transactions,
-      () async {
-        if (context.mounted) {
-          pageTitleNotifier.state = S.of(context).pending_transactions;
-        }
-        if (context.mounted) {
-          context.goNamed(AppRoute.pendingTransactions.name);
-        }
-        // we don't keep copy of dbCache
-        final productDbCache = ref.read(pendingTransactionDbCacheProvider.notifier);
-        final productData =
-            await ref.read(pendingTransactionRepositoryProvider).fetchItemListAsMaps();
-        productDbCache.set(productData);
-      },
+      () async =>
+          processAndMoveToPendingsPage(context, ref, pendingScreenController, route, pageTitle),
     );
   }
 }
@@ -431,5 +424,41 @@ class BackupButton extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+/// initialize all dbCaches and settings, and move on the the target page
+void processAndMoveToPendingsPage(BuildContext context, WidgetRef ref,
+    ScreenDataController screenController, String route, String pageTitle) async {
+  await autoDatabaseBackup(context, ref);
+  final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+  final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
+  // page is loading only used to show a loading spinner (better user experience)
+  // before loading initializing dbCaches and settings we show loading spinner &
+  // when done it is cleared using below pageLoadingNotifier.state = false;
+  pageLoadingNotifier.state = true;
+  // note that dbCaches are only used for mirroring the database, all the data used in the
+  // app in the screenData, which is a processed version of dbCache
+  final productDbCache = ref.read(pendingTransactionDbCacheProvider.notifier);
+  final productData = await ref.read(pendingTransactionRepositoryProvider).fetchItemListAsMaps();
+  productDbCache.set(productData);
+  // we inialize settings
+  if (context.mounted) {
+    initializeSettings(context, ref);
+  }
+  // load dbCache data into screenData, which will be used later for show data in the
+  // page main screen, and also for search
+  if (context.mounted) {
+    screenController.setFeatureScreenData(context);
+  }
+  if (context.mounted) {
+    pageTitleNotifier.state = pageTitle;
+  }
+  // after loading and processing data, we turn off the loading spinner
+  pageLoadingNotifier.state = false;
+  // close side drawer and move to the target page
+  if (context.mounted) {
+    Navigator.of(context).pop();
+    context.goNamed(route);
   }
 }
