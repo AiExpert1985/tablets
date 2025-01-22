@@ -11,6 +11,8 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/features/categories/controllers/category_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/deleted_transactions/controllers/deleted_transaction_screen_controller.dart';
+import 'package:tablets/src/features/pending_transactions/repository/pending_transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/pending_transactions/repository/pending_transaction_repository_provider.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/features/regions/controllers/region_screen_controller.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
@@ -142,13 +144,18 @@ class PendingsButton extends ConsumerWidget {
     return MainDrawerButton(
       'pending_transactions',
       S.of(context).pending_transactions,
-      () {
+      () async {
         if (context.mounted) {
           pageTitleNotifier.state = S.of(context).pending_transactions;
         }
         if (context.mounted) {
           context.goNamed(AppRoute.pendingTransactions.name);
         }
+        // we don't keep copy of dbCache
+        final productDbCache = ref.read(pendingTransactionDbCacheProvider.notifier);
+        final productData =
+            await ref.read(pendingTransactionRepositoryProvider).fetchItemListAsMaps();
+        productDbCache.set(productData);
       },
     );
   }
