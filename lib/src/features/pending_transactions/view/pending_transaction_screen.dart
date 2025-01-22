@@ -1,12 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
+import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/widgets/show_transaction_dialog.dart';
+import 'package:tablets/src/features/deleted_transactions/model/deleted_transactions.dart';
+import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_repository_provider.dart';
 
 import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_drawer_provider.dart';
 import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_screen_data_notifier.dart';
@@ -215,4 +221,58 @@ class PendingTransactionsFloatingButtons extends ConsumerWidget {
       ],
     );
   }
+}
+
+Future<bool> deleteTransaction(
+  BuildContext context,
+  WidgetRef ref,
+) async {
+  final confirmation = await showDeleteConfirmationDialog(
+      context: context,
+      messagePart1: S.of(context).alert_before_delete,
+      messagePart2:
+          '${translateDbTextToScreenText(context, formDataNotifier.data[transTypeKey])}  ${formDataNotifier.data[numberKey]}');
+  if (confirmation == null) return false;
+
+  final formData = formDataNotifier.data;
+
+  final imageUrls = formImagesNotifier.saveChanges();
+  final itemData = {...formData, 'imageUrls': imageUrls};
+  final transaction = Transaction.fromMap(itemData);
+  if (context.mounted) {
+    formController.deleteItemFromDb(context, transaction, keepDialogOpen: true);
+    if (dialogOn && itemData['name'].isNotEmpty) {
+      // if dialog is on, it means this is real transaction deletion (i.e. user pressed delete button)
+      // not automatic delete for empty transaction (when no name entered and we leave the form)
+      addToDeletedTransactionsDb(ref, itemData);
+    }
+  }
+  // redo screenData calculations
+  if (context.mounted) {
+    screenController.setFeatureScreenData(context);
+  }
+  return true;
+}
+
+void addToDeletedTransactionsDb(WidgetRef ref, Map<String, dynamic> itemData) {
+  final deletionItemData = {...itemData, 'deleteDateTime': DateTime.now()};
+  final deletedTransaction = DeletedTransaction.fromMap(deletionItemData);
+  final deletedTransactionRepository = ref.read(deletedTransactionRepositoryProvider);
+  deletedTransactionRepository.addItem(deletedTransaction);
+  final deletedTransactionsDbCache = ref.read(deletedTransactionDbCacheProvider.notifier);
+  // update the bdCache (database mirror) so that we don't need to fetch data from db
+  if (deletionItemData[transactionDateKey] is DateTime) {
+    // in our form the data type usually is DateTime, but the date type in dbCache should be
+    // Timestamp, as to mirror the datatype of firebase
+    deletionItemData[transactionDateKey] =
+        firebase.Timestamp.fromDate(deletionItemData[transactionDateKey]);
+  }
+  // update the bdCache (database mirror) so that we don't need to fetch data from db
+  if (deletionItemData['deleteDateTime'] is DateTime) {
+    // in our form the data type usually is DateTime, but the date type in dbCache should be
+    // Timestamp, as to mirror the datatype of firebase
+    deletionItemData['deleteDateTime'] =
+        firebase.Timestamp.fromDate(deletionItemData['deleteDateTime']);
+  }
+  deletedTransactionsDbCache.update(deletionItemData, DbCacheOperationTypes.add);
 }
