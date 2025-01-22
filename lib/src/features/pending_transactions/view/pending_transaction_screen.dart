@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
+import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/widgets/show_transaction_dialog.dart';
@@ -115,7 +116,8 @@ class ListHeaders extends ConsumerWidget {
             screenDataNotifier, 'totalAmount', S.of(context).transaction_amount),
         MainScreenHeaderCell(S.of(context).print_status),
         SortableMainScreenHeaderCell(screenDataNotifier, 'notes', S.of(context).notes),
-        const MainScreenPlaceholder()
+        const MainScreenPlaceholder(width: 40, isExpanded: false),
+        const MainScreenPlaceholder(width: 40, isExpanded: false),
       ],
     );
   }
@@ -166,7 +168,8 @@ class DataRow extends ConsumerWidget {
                   isWarning: isWarning),
               MainScreenTextCell(printStatus, isWarning: isWarning),
               MainScreenTextCell(transactionScreenData[transactionNotesKey], isWarning: isWarning),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.abc))
+              IconButton(onPressed: () {}, icon: const SaveIcon()),
+              IconButton(onPressed: () {}, icon: const DeleteIcon())
             ],
           ),
         ),
