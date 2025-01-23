@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -139,6 +140,7 @@ class DataRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(pendingTransactionScreenDataNotifier);
     final dbRef = transactionScreenData['dbRef'];
     final dbCache = ref.read(pendingTransactionDbCacheProvider.notifier);
     final transactionData = dbCache.getItemByDbRef(dbRef);
@@ -231,14 +233,14 @@ class PendingTransactionsFloatingButtons extends ConsumerWidget {
   }
 }
 
-Future<bool> deleteTransaction(BuildContext context, WidgetRef ref, Transaction transaction) async {
+void deleteTransaction(BuildContext context, WidgetRef ref, Transaction transaction) async {
   final Map<String, dynamic> formData = transaction.toMap();
   final confirmation = await showDeleteConfirmationDialog(
       context: context,
       messagePart1: S.of(context).alert_before_delete,
       messagePart2:
           '${translateDbTextToScreenText(context, formData[transTypeKey])}  ${formData[numberKey]}');
-  if (confirmation == null) return false;
+  if (confirmation == null) return;
   final formImagesNotifier = ref.read(imagePickerProvider.notifier);
   final imageUrls = formImagesNotifier.saveChanges();
   final formController = ref.read(pendingTransactionFormControllerProvider);
@@ -252,7 +254,9 @@ Future<bool> deleteTransaction(BuildContext context, WidgetRef ref, Transaction 
   if (context.mounted) {
     screenController.setFeatureScreenData(context);
   }
-  return true;
+  if (context.mounted) {
+    successUserMessage(context, 'تم حذف التعامل');
+  }
 }
 
 void addToDeletedTransactionsDb(WidgetRef ref, Map<String, dynamic> itemData) {
