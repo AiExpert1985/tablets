@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +7,7 @@ import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
+import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -22,12 +25,17 @@ import 'package:tablets/src/features/pending_transactions/controllers/pending_tr
 import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_screen_data_notifier.dart';
 import 'package:tablets/src/features/pending_transactions/repository/pending_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
+import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
 
 class PendingTransactions extends ConsumerWidget {
   const PendingTransactions({super.key});
@@ -179,10 +187,14 @@ class DataRow extends ConsumerWidget {
                   isWarning: isWarning),
               MainScreenTextCell(printStatus, isWarning: isWarning),
               MainScreenTextCell(transactionScreenData[transactionNotesKey], isWarning: isWarning),
-              IconButton(onPressed: () {}, icon: const SaveIcon()),
+              IconButton(
+                  onPressed: () {
+                    showEditTransactionForm(context, ref, transaction);
+                  },
+                  icon: const SaveIcon()),
               IconButton(
                 onPressed: () {
-                  deleteTransaction(context, ref, transaction);
+                  deletePendingTransaction(context, ref, transaction);
                 },
                 icon: const DeleteIcon(),
               )
@@ -233,7 +245,8 @@ class PendingTransactionsFloatingButtons extends ConsumerWidget {
   }
 }
 
-void deleteTransaction(BuildContext context, WidgetRef ref, Transaction transaction) async {
+void deletePendingTransaction(BuildContext context, WidgetRef ref, Transaction transaction,
+    {addToDeletedTransaction = true}) async {
   final Map<String, dynamic> formData = transaction.toMap();
   final confirmation = await showDeleteConfirmationDialog(
       context: context,
@@ -248,7 +261,11 @@ void deleteTransaction(BuildContext context, WidgetRef ref, Transaction transact
   final dbCache = ref.read(pendingTransactionDbCacheProvider.notifier);
   if (context.mounted) {
     formController.deleteItemFromDb(context, transaction, keepDialogOpen: true);
-    addToDeletedTransactionsDb(ref, itemData);
+    // when when process pending transaction, we will delete it any way, but when action is delete,
+    // we need to add it to deleted transaction database
+    if (addToDeletedTransaction) {
+      addToDeletedTransactionsDb(ref, itemData);
+    }
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     const operationType = DbCacheOperationTypes.delete;
     dbCache.update(itemData, operationType);
@@ -280,4 +297,97 @@ void addToDeletedTransactionsDb(WidgetRef ref, Map<String, dynamic> itemData) {
         firebase.Timestamp.fromDate(deletionItemData['deleteDateTime']);
   }
   deletedTransactionsDbCache.update(deletionItemData, DbCacheOperationTypes.add);
+}
+
+void showEditTransactionForm(BuildContext context, WidgetRef ref, Transaction transaction) {
+  final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+  final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+  final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+  final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+  final formNavigator = ref.read(formNavigatorProvider);
+  // first we udpate the transaction number if transaction is a customer invoice
+  // for receipts, the number is given by the salesman in the mobile app
+  if (transaction.transactionType == TransactionType.customerInvoice.name) {
+    final invoiceNumber = getNextCustomerInvoiceNumber(context, ref);
+    transaction.number = invoiceNumber;
+  }
+  // save transaction to transaction database
+  saveTransaction(context, ref, transaction);
+  // after saving, we delete it from pending transactions
+  deletePendingTransaction(context, ref, transaction, addToDeletedTransaction: false);
+  // finally, we open it form edit (it opens unEditable, if user want he press the edit button)
+  formNavigator.isReadOnly = true;
+  TransactionShowForm.showForm(
+    context,
+    ref,
+    imagePickerNotifier,
+    formDataNotifier,
+    settingsDataNotifier,
+    textEditingNotifier,
+    transaction: transaction,
+    formType: transaction.transactionType,
+  );
+}
+
+void saveTransaction(
+  BuildContext context,
+  WidgetRef ref,
+  Transaction transaction,
+) {
+  final formController = ref.read(transactionFormControllerProvider);
+  final screenController = ref.read(transactionScreenControllerProvider);
+  final dbCache = ref.read(transactionDbCacheProvider.notifier);
+  formController.saveItemToDb(context, transaction, false, keepDialogOpen: true);
+  const operationType = DbCacheOperationTypes.add;
+  dbCache.update(transaction.toMap(), operationType);
+  // redo screenData calculations
+  if (context.mounted) {
+    screenController.setFeatureScreenData(context);
+  }
+}
+
+// here I am giving the next number after the maximumn number previously given in both transactions & deleted
+// transactions
+int getNextCustomerInvoiceNumber(BuildContext context, WidgetRef ref) {
+  final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+  final transactions = transactionDbCache.data;
+  int maxDeletedNumber = getHighestDeletedCustomerInvoiceNumber(ref) ?? 0;
+  int maxTransactionNumber = getHighestCustomerInvoiceNumber(context, transactions) ?? 0;
+  return max(maxDeletedNumber, maxTransactionNumber) + 1;
+}
+
+// for every different transaction, we calculate the next number which is the last reached +1
+int? getHighestCustomerInvoiceNumber(
+  BuildContext context,
+  List<Map<String, dynamic>> transactions,
+) {
+  // Step 1: Filter the list for the given transaction type
+  final filteredTransactions = transactions.where(
+      (transaction) => transaction[transactionTypeKey] == TransactionType.customerInvoice.name);
+  if (filteredTransactions.isEmpty) return 0;
+  // Step 2: Extract the transaction numbers and convert them to integers
+  final transactionNumbers = filteredTransactions.map((transaction) =>
+      transaction[numberKey] is int ? transaction[numberKey] : transaction[numberKey].toInt());
+  // Step 3: Find the maximum transaction number
+  int maxNumber =
+      transactionNumbers.reduce((a, b) => (a != null && b != null) ? (a > b ? a : b) : (a ?? b)) ??
+          0;
+  return maxNumber;
+}
+
+int? getHighestDeletedCustomerInvoiceNumber(WidgetRef ref) {
+  final dbCache = ref.read(deletedTransactionDbCacheProvider.notifier);
+  final dbCacheData = dbCache.data;
+  // Step 1: Filter the list for the given transaction type
+  final filteredTransactions = dbCacheData.where(
+      (transaction) => transaction[transactionTypeKey] == TransactionType.customerInvoice.name);
+  if (filteredTransactions.isEmpty) return 0;
+  // Step 2: Extract the transaction numbers and convert them to integers
+  final transactionNumbers = filteredTransactions.map((transaction) =>
+      transaction[numberKey] is int ? transaction[numberKey] : transaction[numberKey].toInt());
+  // Step 3: Find the maximum transaction number
+  int maxNumber =
+      transactionNumbers.reduce((a, b) => (a != null && b != null) ? (a > b ? a : b) : (a ?? b)) ??
+          0;
+  return maxNumber;
 }
