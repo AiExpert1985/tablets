@@ -7,14 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_screen_data_notifier.dart';
 import 'package:tablets/src/features/pending_transactions/repository/pending_transaction_db_cache_provider.dart';
 
-const String transactionTypeKey = 'transactionType';
-const String transactionDateKey = 'date';
-const String transactionNameKey = 'name';
-const String transactionSalesmanKey = 'salesman';
-const String transactionNumberKey = 'number';
-const String transactionTotalAmountKey = 'totalAmount';
-const String transactionNotesKey = 'notes';
-
 final pendingTransactionScreenControllerProvider =
     Provider<PendingTransactionScreenController>((ref) {
   final screenDataNotifier = ref.read(pendingTransactionScreenDataNotifier.notifier);
@@ -35,8 +27,7 @@ class PendingTransactionScreenController implements ScreenDataController {
     final dbCacheDataCopy = deepCopyDbCache(_dbCache.data);
     _screenDataNotifier.initialize({});
     for (var mapData in dbCacheDataCopy) {
-      mapData[transactionTypeKey] =
-          translateDbTextToScreenText(context, mapData[transactionTypeKey]);
+      mapData['transactionType'] = translateDbTextToScreenText(context, mapData['transactionType']);
     }
     _screenDataNotifier.set(dbCacheDataCopy);
   }

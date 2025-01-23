@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
@@ -15,6 +16,8 @@ import 'package:tablets/src/features/deleted_transactions/repository/deleted_tra
 import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_repository_provider.dart';
 
 import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_drawer_provider.dart';
+import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_form_controller.dart';
+import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_screen_controller.dart';
 import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_screen_data_notifier.dart';
 import 'package:tablets/src/features/pending_transactions/repository/pending_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
@@ -175,7 +178,12 @@ class DataRow extends ConsumerWidget {
               MainScreenTextCell(printStatus, isWarning: isWarning),
               MainScreenTextCell(transactionScreenData[transactionNotesKey], isWarning: isWarning),
               IconButton(onPressed: () {}, icon: const SaveIcon()),
-              IconButton(onPressed: () {}, icon: const DeleteIcon())
+              IconButton(
+                onPressed: () {
+                  deleteTransaction(context, ref, transaction);
+                },
+                icon: const DeleteIcon(),
+              )
             ],
           ),
         ),
@@ -223,29 +231,22 @@ class PendingTransactionsFloatingButtons extends ConsumerWidget {
   }
 }
 
-Future<bool> deleteTransaction(
-  BuildContext context,
-  WidgetRef ref,
-) async {
+Future<bool> deleteTransaction(BuildContext context, WidgetRef ref, Transaction transaction) async {
+  final Map<String, dynamic> formData = transaction.toMap();
   final confirmation = await showDeleteConfirmationDialog(
       context: context,
       messagePart1: S.of(context).alert_before_delete,
       messagePart2:
-          '${translateDbTextToScreenText(context, formDataNotifier.data[transTypeKey])}  ${formDataNotifier.data[numberKey]}');
+          '${translateDbTextToScreenText(context, formData[transTypeKey])}  ${formData[numberKey]}');
   if (confirmation == null) return false;
-
-  final formData = formDataNotifier.data;
-
+  final formImagesNotifier = ref.read(imagePickerProvider.notifier);
   final imageUrls = formImagesNotifier.saveChanges();
+  final formController = ref.read(pendingTransactionFormControllerProvider);
   final itemData = {...formData, 'imageUrls': imageUrls};
-  final transaction = Transaction.fromMap(itemData);
+  final screenController = ref.read(pendingTransactionScreenControllerProvider);
   if (context.mounted) {
     formController.deleteItemFromDb(context, transaction, keepDialogOpen: true);
-    if (dialogOn && itemData['name'].isNotEmpty) {
-      // if dialog is on, it means this is real transaction deletion (i.e. user pressed delete button)
-      // not automatic delete for empty transaction (when no name entered and we leave the form)
-      addToDeletedTransactionsDb(ref, itemData);
-    }
+    addToDeletedTransactionsDb(ref, itemData);
   }
   // redo screenData calculations
   if (context.mounted) {
