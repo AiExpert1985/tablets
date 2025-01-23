@@ -245,16 +245,16 @@ void deleteTransaction(BuildContext context, WidgetRef ref, Transaction transact
   final imageUrls = formImagesNotifier.saveChanges();
   final formController = ref.read(pendingTransactionFormControllerProvider);
   final itemData = {...formData, 'imageUrls': imageUrls};
-  final screenController = ref.read(pendingTransactionScreenControllerProvider);
+  final dbCache = ref.read(pendingTransactionDbCacheProvider.notifier);
   if (context.mounted) {
     formController.deleteItemFromDb(context, transaction, keepDialogOpen: true);
     addToDeletedTransactionsDb(ref, itemData);
-  }
-  // redo screenData calculations
-  if (context.mounted) {
+    // update the bdCache (database mirror) so that we don't need to fetch data from db
+    const operationType = DbCacheOperationTypes.delete;
+    dbCache.update(itemData, operationType);
+    // redo screenData calculations
+    final screenController = ref.read(pendingTransactionScreenControllerProvider);
     screenController.setFeatureScreenData(context);
-  }
-  if (context.mounted) {
     successUserMessage(context, 'تم حذف التعامل');
   }
 }
