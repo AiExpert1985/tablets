@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
@@ -248,18 +249,23 @@ class PendingTransactionsFloatingButtons extends ConsumerWidget {
 void deletePendingTransaction(BuildContext context, WidgetRef ref, Transaction transaction,
     {addToDeletedTransaction = true}) async {
   final Map<String, dynamic> formData = transaction.toMap();
-  final confirmation = await showDeleteConfirmationDialog(
-      context: context,
-      messagePart1: S.of(context).alert_before_delete,
-      messagePart2:
-          '${translateDbTextToScreenText(context, formData[transTypeKey])}  ${formData[numberKey]}');
-  if (confirmation == null) return;
+  // only show dialog when user press delete button, in case addToDeletedTransaction = false, it means the item
+  // is deleted after being saved to Transactions.
+  if (addToDeletedTransaction) {
+    final confirmation = await showDeleteConfirmationDialog(
+        context: context,
+        messagePart1: S.of(context).alert_before_delete,
+        messagePart2:
+            '${translateDbTextToScreenText(context, formData[transTypeKey])}  ${formData[numberKey]}');
+    if (confirmation == null) return;
+  }
   final formImagesNotifier = ref.read(imagePickerProvider.notifier);
   final imageUrls = formImagesNotifier.saveChanges();
   final formController = ref.read(pendingTransactionFormControllerProvider);
   final itemData = {...formData, 'imageUrls': imageUrls};
   final dbCache = ref.read(pendingTransactionDbCacheProvider.notifier);
   if (context.mounted) {
+    tempPrint('inside delete');
     formController.deleteItemFromDb(context, transaction, keepDialogOpen: true);
     // when when process pending transaction, we will delete it any way, but when action is delete,
     // we need to add it to deleted transaction database
@@ -272,7 +278,9 @@ void deletePendingTransaction(BuildContext context, WidgetRef ref, Transaction t
     // redo screenData calculations
     final screenController = ref.read(pendingTransactionScreenControllerProvider);
     screenController.setFeatureScreenData(context);
-    successUserMessage(context, 'تم حذف التعامل');
+    if (addToDeletedTransaction) {
+      successUserMessage(context, 'تم حذف التعامل');
+    }
   }
 }
 
@@ -305,7 +313,9 @@ void showEditTransactionForm(BuildContext context, WidgetRef ref, Transaction tr
   final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
   final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
   final formNavigator = ref.read(formNavigatorProvider);
-  // first we udpate the transaction number if transaction is a customer invoice
+  // first of all, we delete the transaction (before changing its number)
+  deletePendingTransaction(context, ref, transaction, addToDeletedTransaction: false);
+  // then we udpate the transaction number if transaction is a customer invoice
   // for receipts, the number is given by the salesman in the mobile app
   if (transaction.transactionType == TransactionType.customerInvoice.name) {
     final invoiceNumber = getNextCustomerInvoiceNumber(context, ref);
@@ -313,8 +323,6 @@ void showEditTransactionForm(BuildContext context, WidgetRef ref, Transaction tr
   }
   // save transaction to transaction database
   saveTransaction(context, ref, transaction);
-  // after saving, we delete it from pending transactions
-  deletePendingTransaction(context, ref, transaction, addToDeletedTransaction: false);
   // finally, we open it form edit (it opens unEditable, if user want he press the edit button)
   formNavigator.isReadOnly = true;
   TransactionShowForm.showForm(
