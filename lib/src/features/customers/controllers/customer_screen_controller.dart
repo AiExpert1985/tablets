@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
@@ -331,14 +330,10 @@ class CustomerScreenController implements ScreenDataController {
         ]);
       } else if (transactionMap['transactionType'] == TransactionType.customerInvoice.name) {
         final transaction = Transaction.fromMap(transactionMap);
-        tempPrint(transaction.name);
-        tempPrint(transaction.transactionType);
-        tempPrint(transaction.date);
         final items = transaction.items;
         final discount = transaction.discount ?? 0;
         double giftItemsAmount = 0;
         for (var item in items ?? []) {
-          tempPrint(item);
           giftItemsAmount += item['giftQuantity'] * item['buyingPrice'];
         }
         if (giftItemsAmount > 0 || discount > 0) {

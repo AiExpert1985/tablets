@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
@@ -265,7 +264,6 @@ void deletePendingTransaction(BuildContext context, WidgetRef ref, Transaction t
   final itemData = {...formData, 'imageUrls': imageUrls};
   final dbCache = ref.read(pendingTransactionDbCacheProvider.notifier);
   if (context.mounted) {
-    tempPrint('inside delete');
     formController.deleteItemFromDb(context, transaction, keepDialogOpen: true);
     // when when process pending transaction, we will delete it any way, but when action is delete,
     // we need to add it to deleted transaction database
