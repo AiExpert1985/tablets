@@ -123,6 +123,7 @@ class HomeButton extends ConsumerWidget {
         failureUserMessage(context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
         return;
       }
+      pageLoadingNotifier.state = true;
       await initializeAllDbCaches(context, ref);
       pageTitleNotifier.state = '';
       if (context.mounted) {
@@ -134,7 +135,7 @@ class HomeButton extends ConsumerWidget {
       // uploadDefaultSettings(ref);
       // importCustomerExcel(ref);
       // importProductExcel(ref);
-      pageLoadingNotifier.state = true;
+      pageLoadingNotifier.state = false;
     });
   }
 }
