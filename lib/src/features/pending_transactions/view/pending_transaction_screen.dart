@@ -12,6 +12,7 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
+import 'package:tablets/src/common/widgets/empty_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/widgets/page_loading.dart';

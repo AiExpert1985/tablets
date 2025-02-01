@@ -15,6 +15,7 @@ import 'package:tablets/src/common/providers/text_editing_controllers_provider.d
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
+import 'package:tablets/src/common/widgets/home_greetings.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/common/widgets/page_loading.dart';
 import 'package:tablets/src/features/customers/controllers/customer_report_controller.dart';
@@ -27,7 +28,6 @@ import 'package:tablets/src/features/salesmen/controllers/salesman_screen_contro
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/repository/settings_db_cache_provider.dart';
-import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
@@ -42,12 +42,6 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-/// I use this widget for two reasons
-/// for home screen when app starts
-/// for cases when refreshing page, since we need user to press a button in the side bar
-/// to load data from DB to dbCache, so after a refresh we display this widget, which forces
-/// user to go the sidebar and press a button to continue working
-
 class HomeScreenGreeting extends ConsumerStatefulWidget {
   const HomeScreenGreeting({super.key});
 
@@ -56,8 +50,6 @@ class HomeScreenGreeting extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
-  String customizableGreeting = '';
-
   @override
   void initState() {
     super.initState();
@@ -67,7 +59,7 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsDbCacheProvider);
-    final settingDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    ref.watch(settingsFormDataProvider);
     final settingsDbCache = ref.read(settingsDbCacheProvider.notifier);
     // since settings is the last doecument loaded from db, if it is being not empty means it finish loading
     Widget screenWidget = (settingsDbCache.data.isEmpty)
@@ -87,58 +79,11 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(5),
-                width: 800,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      // margin: const EdgeInsets.all(10),
-                      width: double.infinity,
-                      height: 300, // here I used width intentionally
-                      child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
-                    ),
-                    VerticalGap.xl,
-                    Text(
-                      settingDataNotifier.getProperty(mainPageGreetingTextKey) ??
-                          S.of(context).greeting,
-                      style: const TextStyle(fontSize: 24),
-                    ),
-                    VerticalGap.xxl,
-                  ],
-                ),
-              ),
+              const HomeGreeting(),
               const FastReports()
             ],
           );
     return Container(padding: const EdgeInsets.all(15), child: screenWidget);
-  }
-}
-
-class EmptyPage extends ConsumerWidget {
-  const EmptyPage({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            // margin: const EdgeInsets.all(10),
-            width: double.infinity,
-            height: 300, // here I used width intentionally
-            child: Image.asset('assets/images/empty.png', fit: BoxFit.scaleDown),
-          ),
-          VerticalGap.xl,
-          Text(
-            S.of(context).no_data_available,
-            style: const TextStyle(fontSize: 18),
-          ),
-        ],
-      ),
-    );
   }
 }
 
