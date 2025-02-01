@@ -281,6 +281,7 @@ class FastAccessFormButton extends ConsumerWidget {
           return;
         }
         pageLoadingNotifier.state = true;
+        await initializeAppData(context, ref);
         backgroundColorNofifier.state = normalColor!;
         if (context.mounted) {
           TransactionShowForm.showForm(
@@ -304,6 +305,17 @@ class FastAccessFormButton extends ConsumerWidget {
             child: Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 15))),
       ),
     );
+  }
+}
+
+Future<void> initializeAppData(BuildContext context, WidgetRef ref) async {
+  await autoDatabaseBackup(context, ref);
+  if (context.mounted) {
+    // make sure dbCaches and settings are initialized
+    await initializeAllDbCaches(context, ref);
+  }
+  if (context.mounted) {
+    initializeSettings(context, ref);
   }
 }
 
@@ -362,26 +374,29 @@ Widget buildCustomerMatchingButton(BuildContext context, WidgetRef ref,
     backgroundColor: Colors.red[100],
     S.of(context).customer_matching,
     () async {
-      final nameAndDates = await selectionDialog(
-          context, ref, customerDbCache.data, S.of(context).customers,
-          includeDates: false);
-      final customerData = nameAndDates[0];
-      // salesman must be selected, otherwise we can't create report
-      if (customerData == null) {
-        return;
-      }
-      final customerTransactions =
-          customerScreenController.getCustomerTransactions(customerData['dbRef']);
-      final customer = Customer.fromMap(customerData);
-      if (customer.initialCredit > 0) {
-        final intialDebtTransaction = _createInitialDebtTransaction(customer);
-        customerTransactions.add(intialDebtTransaction);
-      }
+      await initializeAppData(context, ref);
       if (context.mounted) {
-        final customerMatchingData =
-            customerScreenController.customerMatching(context, customerTransactions);
-        customerReportController.showCustomerMatchingReport(
-            context, customerMatchingData, customerData['name']);
+        final nameAndDates = await selectionDialog(
+            context, ref, customerDbCache.data, S.of(context).customers,
+            includeDates: false);
+        final customerData = nameAndDates[0];
+        // salesman must be selected, otherwise we can't create report
+        if (customerData == null) {
+          return;
+        }
+        final customerTransactions =
+            customerScreenController.getCustomerTransactions(customerData['dbRef']);
+        final customer = Customer.fromMap(customerData);
+        if (customer.initialCredit > 0) {
+          final intialDebtTransaction = _createInitialDebtTransaction(customer);
+          customerTransactions.add(intialDebtTransaction);
+        }
+        if (context.mounted) {
+          final customerMatchingData =
+              customerScreenController.customerMatching(context, customerTransactions);
+          customerReportController.showCustomerMatchingReport(
+              context, customerMatchingData, customerData['name']);
+        }
       }
     },
   );
@@ -414,41 +429,44 @@ Widget buildSalesmanCustomersButton(BuildContext context, WidgetRef ref) {
     backgroundColor: Colors.orange[100],
     S.of(context).saleman_customers,
     () async {
-      final nameAndDates = await selectionDialog(
-          context, ref, salesmanDbCache.data, S.of(context).salesmen,
-          includeDates: true);
-      final salesmanData = nameAndDates[0];
-      // dates can be null, which means to take all the duration
-      final startDate = nameAndDates[1];
-      final endDate = nameAndDates[2];
-      // salesman must be selected, otherwise we can't create report
-      if (salesmanData == null) {
-        return;
-      }
-      final salesmanCustomerMaps = customersDbCache.data.where((customer) {
-        return customer['salesmanDbRef'] == salesmanData['dbRef'];
-      }).toList();
-      final salesmanCustomers =
-          salesmanCustomerMaps.map((customerMap) => Customer.fromMap(customerMap)).toList();
-      final salesmanTransactionMaps = transactionsDbCache.data.where((transaction) {
-        DateTime transactionDate =
-            transaction['date'] is DateTime ? transaction['date'] : transaction['date'].toDate();
-        // I need to subtract one day for start date to make the searched date included
-        bool isAfterStartDate = startDate == null || !transactionDate.isBefore(startDate);
-        // I need to add one day to the end date to make the searched date included
-        bool isBeforeEndDate = endDate == null || !transactionDate.isAfter(endDate);
-        return transaction['salesmanDbRef'] == salesmanData['dbRef'] &&
-            isAfterStartDate &&
-            isBeforeEndDate;
-      }).toList();
-      final salesmanTransactions = salesmanTransactionMaps
-          .map((transactionMap) => Transaction.fromMap(transactionMap))
-          .toList();
-      final customersInfo =
-          salesmanScreenController.getCustomersInfo(salesmanCustomers, salesmanTransactions);
-      final customersBasicData = customersInfo['customersData'] as List<List<dynamic>>;
+      await initializeAppData(context, ref);
       if (context.mounted) {
-        salesmanReportController.showCustomers(context, customersBasicData, salesmanData['name']);
+        final nameAndDates = await selectionDialog(
+            context, ref, salesmanDbCache.data, S.of(context).salesmen,
+            includeDates: true);
+        final salesmanData = nameAndDates[0];
+        // dates can be null, which means to take all the duration
+        final startDate = nameAndDates[1];
+        final endDate = nameAndDates[2];
+        // salesman must be selected, otherwise we can't create report
+        if (salesmanData == null) {
+          return;
+        }
+        final salesmanCustomerMaps = customersDbCache.data.where((customer) {
+          return customer['salesmanDbRef'] == salesmanData['dbRef'];
+        }).toList();
+        final salesmanCustomers =
+            salesmanCustomerMaps.map((customerMap) => Customer.fromMap(customerMap)).toList();
+        final salesmanTransactionMaps = transactionsDbCache.data.where((transaction) {
+          DateTime transactionDate =
+              transaction['date'] is DateTime ? transaction['date'] : transaction['date'].toDate();
+          // I need to subtract one day for start date to make the searched date included
+          bool isAfterStartDate = startDate == null || !transactionDate.isBefore(startDate);
+          // I need to add one day to the end date to make the searched date included
+          bool isBeforeEndDate = endDate == null || !transactionDate.isAfter(endDate);
+          return transaction['salesmanDbRef'] == salesmanData['dbRef'] &&
+              isAfterStartDate &&
+              isBeforeEndDate;
+        }).toList();
+        final salesmanTransactions = salesmanTransactionMaps
+            .map((transactionMap) => Transaction.fromMap(transactionMap))
+            .toList();
+        final customersInfo =
+            salesmanScreenController.getCustomersInfo(salesmanCustomers, salesmanTransactions);
+        final customersBasicData = customersInfo['customersData'] as List<List<dynamic>>;
+        if (context.mounted) {
+          salesmanReportController.showCustomers(context, customersBasicData, salesmanData['name']);
+        }
       }
     },
   );
@@ -459,8 +477,11 @@ Widget buildAllDebtButton(BuildContext context, WidgetRef ref) {
   return FastAccessReportsButton(
     backgroundColor: Colors.orange[100],
     S.of(context).salesmen_debt_report,
-    () {
-      customerReportController.showAllCustomersDebt(context, ref);
+    () async {
+      await initializeAppData(context, ref);
+      if (context.mounted) {
+        customerReportController.showAllCustomersDebt(context, ref);
+      }
     },
   );
 }
@@ -477,39 +498,43 @@ Widget buildSoldItemsButton(BuildContext context, WidgetRef ref, {bool isSupervi
     S.of(context).salesmen_sellings,
     backgroundColor: Colors.green[100],
     () async {
-      final nameAndDates = await selectionDialog(
-          context, ref, salesmanDbCache.data, S.of(context).salesman_selection);
-      final salesmanData = nameAndDates[0];
-      // salesman must be selected, otherwise we can't create report
-      if (salesmanData == null) {
-        return;
-      }
-      // dates can be null, which means to take all the duration
-      final startDate = nameAndDates[1];
-      final endDate = nameAndDates[2];
-      String reportTitle = '';
+      await initializeAppData(context, ref);
       if (context.mounted) {
-        reportTitle =
-            '${S.of(context).salesman_selling_report} \n ${salesmanData['name']} \n ${S.of(context).for_the_duration} ${formatDate(startDate ?? DateTime.parse("2024-12-01T14:30:00"))} - ${formatDate(endDate ?? DateTime.now())}';
-      }
-      List<List<dynamic>> soldItemsList = salesmanScreenController.salesmanItemsSold(
-          salesmanData['dbRef'], startDate, endDate, ref);
+        final nameAndDates = await selectionDialog(
+            context, ref, salesmanDbCache.data, S.of(context).salesman_selection);
+        final salesmanData = nameAndDates[0];
+        // salesman must be selected, otherwise we can't create report
+        if (salesmanData == null) {
+          return;
+        }
+        // dates can be null, which means to take all the duration
+        final startDate = nameAndDates[1];
+        final endDate = nameAndDates[2];
+        String reportTitle = '';
+        if (context.mounted) {
+          reportTitle =
+              '${S.of(context).salesman_selling_report} \n ${salesmanData['name']} \n ${S.of(context).for_the_duration} ${formatDate(startDate ?? DateTime.parse("2024-12-01T14:30:00"))} - ${formatDate(endDate ?? DateTime.now())}';
+        }
+        List<List<dynamic>> soldItemsList = salesmanScreenController.salesmanItemsSold(
+            salesmanData['dbRef'], startDate, endDate, ref);
 
-      if (isSupervisor) {
-        // filter items not to show for the supervisor
-        soldItemsList = soldItemsList.where((item) {
-          final dbItem = productDbCache.getItemByProperty('name', item[0]);
-          // only keep products that are not hidden from special reports
-          return dbItem['isHiddenInSpecialReports'] == null || !dbItem['isHiddenInSpecialReports'];
-        }).toList();
-      }
-      // sort by product name
-      soldItemsList.sort((a, b) {
-        return a[0].compareTo(b[0]);
-      });
-      if (context.mounted) {
-        salesmanReportController.showSoldItemsReport(
-            context, soldItemsList, reportTitle, isSupervisor);
+        if (isSupervisor) {
+          // filter items not to show for the supervisor
+          soldItemsList = soldItemsList.where((item) {
+            final dbItem = productDbCache.getItemByProperty('name', item[0]);
+            // only keep products that are not hidden from special reports
+            return dbItem['isHiddenInSpecialReports'] == null ||
+                !dbItem['isHiddenInSpecialReports'];
+          }).toList();
+        }
+        // sort by product name
+        soldItemsList.sort((a, b) {
+          return a[0].compareTo(b[0]);
+        });
+        if (context.mounted) {
+          salesmanReportController.showSoldItemsReport(
+              context, soldItemsList, reportTitle, isSupervisor);
+        }
       }
     },
   );
