@@ -410,8 +410,11 @@ Widget buildSalesmanCustomersButton(BuildContext context, WidgetRef ref) {
         final customersInfo =
             salesmanScreenController.getCustomersInfo(salesmanCustomers, salesmanTransactions);
         final customersBasicData = customersInfo['customersData'] as List<List<dynamic>>;
+        final startDateAsString = startDate == null ? '' : 'من ${formatDate(startDate)}';
+        final endDataeAsString = endDate == null ? '' : 'الى ${formatDate(endDate)}';
+        final reportTitle = '${salesmanData['name']} \n $startDateAsString $endDataeAsString';
         if (context.mounted) {
-          salesmanReportController.showCustomers(context, customersBasicData, salesmanData['name']);
+          salesmanReportController.showCustomers(context, customersBasicData, reportTitle);
         }
       }
     },
