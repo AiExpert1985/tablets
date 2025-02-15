@@ -12,6 +12,7 @@ import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
+import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -54,6 +55,7 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
   void initState() {
     super.initState();
     initializeAllDbCaches(context, ref);
+    loadUserInfo(ref); // mainly user for Jihan supervisor at current time
   }
 
   @override
@@ -61,24 +63,27 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
     ref.watch(settingsDbCacheProvider);
     ref.watch(settingsFormDataProvider);
     final settingsDbCache = ref.read(settingsDbCacheProvider.notifier);
+    final user = ref.watch(userInfoProvider);
     // since settings is the last doecument loaded from db, if it is being not empty means it finish loading
     Widget screenWidget = (settingsDbCache.data.isEmpty)
         ? const PageLoading()
         : Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                width: 200,
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomerFastAccessButtons(),
-                    VendorFastAccessButtons(),
-                    InternalFastAccessButtons(),
-                  ],
-                ),
-              ),
+              user.privilage != 'guest'
+                  ? Container(
+                      padding: const EdgeInsets.all(10),
+                      width: 200,
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomerFastAccessButtons(),
+                          VendorFastAccessButtons(),
+                          InternalFastAccessButtons(),
+                        ],
+                      ),
+                    )
+                  : Container(),
               const HomeGreeting(),
               const FastReports()
             ],
@@ -269,28 +274,31 @@ class FastReports extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userInfoProvider);
     return Container(
         padding: const EdgeInsets.all(20),
         width: 200,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-              ),
-              child: Column(
-                children: [
-                  buildAllDebtButton(context, ref),
-                  VerticalGap.xl,
-                  buildSoldItemsButton(context, ref),
-                  VerticalGap.xl,
-                  buildCustomerMatchingButton(context, ref),
-                ],
-              ),
-            ),
+            user.privilage != 'guest'
+                ? Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey[300]!),
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    ),
+                    child: Column(
+                      children: [
+                        buildAllDebtButton(context, ref),
+                        VerticalGap.xl,
+                        buildSoldItemsButton(context, ref),
+                        VerticalGap.xl,
+                        buildCustomerMatchingButton(context, ref),
+                      ],
+                    ),
+                  )
+                : Container(),
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
