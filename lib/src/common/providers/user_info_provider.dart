@@ -1,46 +1,43 @@
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/features/authentication/model/user_account.dart';
 import 'package:tablets/src/features/authentication/repository/accounts_repository.dart';
 
-class UserInfoNotifier extends StateNotifier<UserInfo> {
+class UserInfoNotifier extends StateNotifier<UserAccount> {
   UserInfoNotifier()
-      : super(UserInfo(
-            null, null, null, null)); // Initialize with null or a default SalesmanInfo instance
+      : super(UserAccount(
+            '', '', null, null)); // Initialize with null or a default SalesmanInfo instance
 
   void setDbRef(String value) {
-    state = UserInfo(state.name, value, state.email, state.privilage);
+    state = UserAccount(state.name, value, state.email, state.privilage);
   }
 
   void setName(String value) {
-    state = UserInfo(value, state.dbRef, state.email, state.privilage);
+    state = UserAccount(value, state.dbRef, state.email, state.privilage);
   }
 
   void setEmail(String value) {
-    state = UserInfo(state.name, state.dbRef, value, state.privilage);
+    state = UserAccount(state.name, state.dbRef, value, state.privilage);
   }
 
   void setPrivilage(String value) {
-    state = UserInfo(state.name, state.dbRef, state.email, value);
+    state = UserAccount(state.name, state.dbRef, state.email, value);
   }
 
-  UserInfo get salesmanInfo => state;
+  void setAccess(bool value) {
+    state = UserAccount(state.name, state.dbRef, state.email, state.privilage, isBlocked: value);
+  }
 
-  UserInfo get data => state;
+  UserAccount get salesmanInfo => state;
+
+  UserAccount get data => state;
 }
 
 // Create a provider for the SalesmanInfoNotifier
-final userInfoProvider = StateNotifierProvider<UserInfoNotifier, UserInfo>((ref) {
+final userInfoProvider = StateNotifierProvider<UserInfoNotifier, UserAccount>((ref) {
   return UserInfoNotifier();
 });
-
-class UserInfo {
-  UserInfo(this.name, this.dbRef, this.email, this.privilage);
-
-  String? name;
-  String? dbRef;
-  String? email;
-  String? privilage;
-}
 
 Future<void> loadUserInfo(WidgetRef ref) async {
   final accountsRepository = ref.read(accountsRepositoryProvider);
@@ -57,5 +54,7 @@ Future<void> loadUserInfo(WidgetRef ref) async {
     salesmanInfoNotifier.setEmail(email);
     final privilage = matchingAccounts.first['privilage'];
     salesmanInfoNotifier.setPrivilage(privilage);
+    bool isBlocked = matchingAccounts.first['isBlocked'] ?? false;
+    salesmanInfoNotifier.setAccess(isBlocked);
   }
 }

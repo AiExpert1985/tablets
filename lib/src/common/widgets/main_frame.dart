@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -20,9 +19,6 @@ class AppScreenFrame extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pageTitle = ref.watch(pageTitleProvider);
     final user = ref.watch(userInfoProvider); // used to prevent Jihan supervisor from accessing
-    tempPrint(user.privilage);
-    tempPrint(user.name);
-    tempPrint(user.email);
     ref.watch(settingsDbCacheProvider);
     // I used settingDbCache to check if settings is loaded, as and indicator of finishing database loading
     // because it is the last document loaded from database, if loaded, then I show the side drawer button

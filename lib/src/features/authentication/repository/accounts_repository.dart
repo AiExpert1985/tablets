@@ -3,7 +3,7 @@ import 'package:tablets/src/common/classes/db_repository.dart';
 
 final accountsRepositoryProvider = Provider<DbRepository>((ref) => DbRepository('accounts'));
 
-// final transactionStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
-//   final transactionRepository = ref.watch(transactionRepositoryProvider);
-//   return transactionRepository.watchItemListAsMaps();
-// });
+final accountsStreamProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
+  final accountsRepo = ref.watch(accountsRepositoryProvider);
+  return accountsRepo.watchItemListAsMaps();
+});

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +20,8 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/home_greetings.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/common/widgets/page_loading.dart';
+import 'package:tablets/src/features/authentication/model/user_account.dart';
+import 'package:tablets/src/features/authentication/repository/accounts_repository.dart';
 import 'package:tablets/src/features/customers/controllers/customer_report_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
@@ -54,8 +57,8 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
   @override
   void initState() {
     super.initState();
-    initializeAllDbCaches(context, ref);
     loadUserInfo(ref); // mainly user for Jihan supervisor at current time
+    initializeAllDbCaches(context, ref);
   }
 
   @override
@@ -63,14 +66,17 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
     ref.watch(settingsDbCacheProvider);
     ref.watch(settingsFormDataProvider);
     final settingsDbCache = ref.read(settingsDbCacheProvider.notifier);
-    final user = ref.watch(userInfoProvider);
+    final userEmail = FirebaseAuth.instance.currentUser!.email;
+    final userInfo = ref.watch(userInfoProvider);
     // since settings is the last doecument loaded from db, if it is being not empty means it finish loading
-    Widget screenWidget = (settingsDbCache.data.isEmpty)
+    Widget screenWidget = (settingsDbCache.data.isEmpty ||
+            (userEmail == 'jihansupervisor@gmail.com' && userInfo.dbRef.isEmpty) || //more protect
+            (userInfo.isBlocked))
         ? const PageLoading()
         : Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              user.privilage != 'guest'
+              userInfo.privilage != 'guest'
                   ? Container(
                       padding: const EdgeInsets.all(10),
                       width: 200,
@@ -306,10 +312,13 @@ class FastReports extends ConsumerWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(8)),
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   buildSoldItemsButton(context, ref, isSupervisor: true),
                   VerticalGap.xl,
-                  buildSalesmanCustomersButton(context, ref)
+                  buildSalesmanCustomersButton(context, ref),
+                  VerticalGap.xl,
+                  const HideProductCheckBox(),
                 ],
               ),
             )
@@ -653,4 +662,48 @@ Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
 
   // Return the selected dates
   return [selectedValue, startDate, endDate];
+}
+
+// below is done by AI
+class HideProductCheckBox extends ConsumerWidget {
+  const HideProductCheckBox({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final supervisorAsyncValue = ref.watch(accountsStreamProvider);
+
+    return Container(
+      padding: const EdgeInsets.all(0),
+      child: supervisorAsyncValue.when(
+        data: (supervisors) {
+          // Filter to find the first supervisor with the specified email
+          final supervisor = supervisors.firstWhere(
+            (supervisor) => supervisor['email'] == 'jihansupervisor@gmail.com',
+            orElse: () => {}, // Provide a default value if not found
+          );
+
+          // Check if the supervisor was found
+          final isBlocked = supervisor.isNotEmpty ? supervisor['isBlocked'] ?? false : false;
+
+          return Checkbox(
+            value: isBlocked,
+            onChanged: (value) {
+              // Update the user info and notify the state
+              ref.read(accountsRepositoryProvider).updateItem(
+                    UserAccount(
+                      supervisor['name'],
+                      supervisor['dbRef'],
+                      supervisor['email'],
+                      supervisor['privilage'],
+                      isBlocked: value!,
+                    ),
+                  );
+            },
+          );
+        },
+        loading: () => const CircularProgressIndicator(), // Show loading indicator
+        error: (error, stack) => Text('Error: $error'), // Handle errors
+      ),
+    );
+  }
 }
