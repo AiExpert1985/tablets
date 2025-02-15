@@ -318,7 +318,7 @@ class FastReports extends ConsumerWidget {
                   VerticalGap.xl,
                   buildSalesmanCustomersButton(context, ref),
                   VerticalGap.xl,
-                  const HideProductCheckBox(),
+                  if (user.privilage != 'guest') const HideProductCheckBox(),
                 ],
               ),
             )
