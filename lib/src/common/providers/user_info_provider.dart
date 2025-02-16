@@ -12,7 +12,7 @@ class UserInfoNotifier extends StateNotifier<UserAccount?> {
   }
 
   bool hasPermission(List<String> allowedPrivilages) {
-    if (state == null) {
+    if (state == null || !state!.hasAccess) {
       return false;
     }
     return allowedPrivilages.contains(state!.privilage) ||

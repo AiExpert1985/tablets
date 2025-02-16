@@ -278,53 +278,57 @@ class FastReports extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-        padding: const EdgeInsets.all(20),
-        width: 200,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            RistrictedAccessWidget(
-              allowedPrivilages: const [],
-              child: Container(
-                padding: const EdgeInsets.all(10),
+    ref.watch(userInfoProvider);
+    return RistrictedAccessWidget(
+      allowedPrivilages: [UserPrivilage.guest.name],
+      child: Container(
+          padding: const EdgeInsets.all(20),
+          width: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              RistrictedAccessWidget(
+                allowedPrivilages: const [],
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey[300]!),
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  ),
+                  child: Column(
+                    children: [
+                      buildAllDebtButton(context, ref),
+                      VerticalGap.xl,
+                      buildSoldItemsButton(context, ref),
+                      VerticalGap.xl,
+                      buildCustomerMatchingButton(context, ref),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey[300]!),
                   borderRadius: const BorderRadius.all(Radius.circular(8)),
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    buildAllDebtButton(context, ref),
+                    buildSoldItemsButton(context, ref, isSupervisor: true),
                     VerticalGap.xl,
-                    buildSoldItemsButton(context, ref),
+                    buildSalesmanCustomersButton(context, ref),
                     VerticalGap.xl,
-                    buildCustomerMatchingButton(context, ref),
+                    const RistrictedAccessWidget(
+                      allowedPrivilages: [],
+                      child: HideProductCheckBox(),
+                    ),
                   ],
                 ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  buildSoldItemsButton(context, ref, isSupervisor: true),
-                  VerticalGap.xl,
-                  buildSalesmanCustomersButton(context, ref),
-                  VerticalGap.xl,
-                  const RistrictedAccessWidget(
-                    allowedPrivilages: [],
-                    child: HideProductCheckBox(),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ));
+              )
+            ],
+          )),
+    );
   }
 }
 
@@ -671,6 +675,7 @@ class HideProductCheckBox extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(userInfoProvider);
     final supervisorAsyncValue = ref.watch(accountsStreamProvider);
 
     return Container(
