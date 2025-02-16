@@ -18,6 +18,10 @@ class UserInfoNotifier extends StateNotifier<UserAccount?> {
     return allowedPrivilages.contains(state!.privilage) ||
         state!.privilage == UserPrivilage.admin.name;
   }
+
+  void reset() {
+    state = null;
+  }
 }
 
 // Create a provider for the SalesmanInfoNotifier

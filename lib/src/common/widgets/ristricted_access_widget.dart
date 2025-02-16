@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 
 class RistrictedAccessWidget extends ConsumerWidget {
@@ -14,7 +15,8 @@ class RistrictedAccessWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (ref.read(userInfoProvider.notifier).hasPermission(allowedPrivilages)) {
+    tempPrint(ref.read(userInfoProvider)?.privilage);
+    if (!ref.read(userInfoProvider.notifier).hasPermission(allowedPrivilages)) {
       return Container();
     }
 

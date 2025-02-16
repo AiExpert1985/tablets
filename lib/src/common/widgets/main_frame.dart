@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
+import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/main_drawer.dart';
@@ -58,6 +59,7 @@ class AppScreenFrame extends ConsumerWidget {
                             messagePart1: "",
                             messagePart2: S.of(context).alert_before_signout);
                         if (confiramtion != null) {
+                          ref.read(userInfoProvider.notifier).reset();
                           FirebaseAuth.instance.signOut();
                         }
                       }, //signout(ref),

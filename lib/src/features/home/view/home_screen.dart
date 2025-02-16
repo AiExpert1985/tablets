@@ -65,6 +65,7 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
   Widget build(BuildContext context) {
     ref.watch(settingsDbCacheProvider);
     ref.watch(settingsFormDataProvider);
+    ref.watch(userInfoProvider); // to update UI when user info finally loaded
     final settingsDbCache = ref.read(settingsDbCacheProvider.notifier);
     // since settings is the last doecument loaded from db, if it is being not empty means it finish loading
     Widget screenWidget = (settingsDbCache.data.isEmpty)
