@@ -58,7 +58,8 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
   @override
   void initState() {
     super.initState();
-    loadUserInfo(ref); // mainly user for Jihan supervisor at current time
+    // mainly user for Jihan supervisor at current time
+    ref.read(userInfoProvider.notifier).loadUserInfo(ref);
     initializeAllDbCaches(context, ref);
   }
 
@@ -264,6 +265,8 @@ class FastAccessFormButton extends ConsumerWidget {
 }
 
 Future<void> initializeAppData(BuildContext context, WidgetRef ref) async {
+  // update user info, so if the user is blocked by admin, while he uses the app he will be blocked
+  ref.read(userInfoProvider.notifier).loadUserInfo(ref);
   await autoDatabaseBackup(context, ref);
   if (context.mounted) {
     // make sure dbCaches and settings are initialized
@@ -599,7 +602,7 @@ Future<List<dynamic>> selectionDialog(BuildContext context, WidgetRef ref,
                   // padding is the only way I found to reduce the width of the search dialog
                   dropDownDialogPadding: const EdgeInsets.symmetric(
                     vertical: 120,
-                    horizontal: 700,
+                    horizontal: 600,
                   ),
                   closeButton: const SizedBox.shrink(),
                 ),
