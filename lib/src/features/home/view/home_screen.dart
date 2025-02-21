@@ -207,6 +207,8 @@ class FastAccessFormButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // update user info, so if the user is blocked by admin, while he uses the app he will be blocked
+    ref.read(userInfoProvider.notifier).loadUserInfo(ref);
     String label = translateDbTextToScreenText(context, formType);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
@@ -338,6 +340,8 @@ class FastReports extends ConsumerWidget {
 
 Widget buildCustomerMatchingButton(BuildContext context, WidgetRef ref,
     {bool isSupervisor = false}) {
+  // update user info, so if the user is blocked by admin, while he uses the app he will be blocked
+  ref.read(userInfoProvider.notifier).loadUserInfo(ref);
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
   final customerScreenController = ref.read(customerScreenControllerProvider);
   final customerReportController = ref.read(customerReportControllerProvider);
@@ -391,6 +395,8 @@ Map<String, dynamic> _createInitialDebtTransaction(Customer customer) {
 }
 
 Widget buildSalesmanCustomersButton(BuildContext context, WidgetRef ref) {
+  // update user info, so if the user is blocked by admin, while he uses the app he will be blocked
+  ref.read(userInfoProvider.notifier).loadUserInfo(ref);
   final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
   final salesmanScreenController = ref.read(salesmanScreenControllerProvider);
   final salesmanReportController = ref.read(salesmanReportControllerProvider);
@@ -448,6 +454,8 @@ Widget buildSalesmanCustomersButton(BuildContext context, WidgetRef ref) {
 }
 
 Widget buildAllDebtButton(BuildContext context, WidgetRef ref) {
+  // update user info, so if the user is blocked by admin, while he uses the app he will be blocked
+  ref.read(userInfoProvider.notifier).loadUserInfo(ref);
   final customerReportController = ref.read(customerReportControllerProvider);
   return FastAccessReportsButton(
     backgroundColor: Colors.orange[100],
@@ -463,6 +471,8 @@ Widget buildAllDebtButton(BuildContext context, WidgetRef ref) {
 
 /// supervisor report differs in two things, (1) button name, (2) last two columns are empty in supervisor report
 Widget buildSoldItemsButton(BuildContext context, WidgetRef ref, {bool isSupervisor = false}) {
+  // update user info, so if the user is blocked by admin, while he uses the app he will be blocked
+  ref.read(userInfoProvider.notifier).loadUserInfo(ref);
   final salesmanReportController = ref.read(salesmanReportControllerProvider);
   final salesmanScreenController = ref.read(salesmanScreenControllerProvider);
   final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);

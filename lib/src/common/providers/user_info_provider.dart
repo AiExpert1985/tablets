@@ -27,6 +27,10 @@ class UserInfoNotifier extends StateNotifier<UserAccount?> {
     final accountsRepository = ref.read(accountsRepositoryProvider);
     final email = FirebaseAuth.instance.currentUser!.email;
     final accounts = await accountsRepository.fetchItemListAsMaps();
+<<<<<<< HEAD
+=======
+    final salesmanInfoNotifier = ref.read(userInfoProvider.notifier);
+>>>>>>> 15619e8a87859ccdd4a322cdd310bea486c63585
     var matchingAccounts = accounts.where((account) => account['email'] == email);
     if (matchingAccounts.isNotEmpty) {
       final dbRef = matchingAccounts.first['dbRef'];
@@ -35,7 +39,11 @@ class UserInfoNotifier extends StateNotifier<UserAccount?> {
       final privilage = matchingAccounts.first['privilage'];
       final hasAccess = matchingAccounts.first['hasAccess'];
       final userInfo = UserAccount(name, dbRef, email, privilage, hasAccess);
+<<<<<<< HEAD
       setUserAccount(userInfo);
+=======
+      salesmanInfoNotifier.setUserAccount(userInfo);
+>>>>>>> 15619e8a87859ccdd4a322cdd310bea486c63585
     }
   }
 }
