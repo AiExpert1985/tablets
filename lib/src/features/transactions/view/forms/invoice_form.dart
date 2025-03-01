@@ -250,6 +250,7 @@ class ForthRow extends ConsumerWidget {
           // controller: textEditingNotifier.getController(notesKey),
           label: S.of(context).transaction_notes,
           initialValue: formDataNotifier.getProperty(notesKey),
+          allowEmptyString: true,
           onChangedFn: (value) {
             formDataNotifier.updateProperties({notesKey: value});
           },

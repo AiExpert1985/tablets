@@ -143,6 +143,7 @@ class StatementForm extends ConsumerWidget {
           isRequired: false,
           dataType: constants.FieldDataType.text,
           name: notesKey,
+          allowEmptyString: true,
           label: S.of(context).transaction_notes,
           initialValue: formDataNotifier.getProperty(notesKey),
           onChangedFn: (value) {
