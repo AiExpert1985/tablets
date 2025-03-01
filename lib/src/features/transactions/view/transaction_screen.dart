@@ -1,19 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/classes/screen_quick_filter.dart';
+import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/empty_screen.dart';
+import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/widgets/page_loading.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_drawer_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_quick_filter_controller.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_data_notifier.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
@@ -35,6 +40,7 @@ class TransactionsScreen extends ConsumerWidget {
     ref.watch(transactionScreenDataNotifier);
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final settingsData = settingsDataNotifier.data;
+    ref.watch(transactionQuickFiltersProvider);
     // if settings data is empty it means user has refresh the web page &
     // didn't reach the page through pressing the page button
     // in this case he didn't load required dbCaches so, I should hide buttons because
@@ -67,6 +73,7 @@ class TransactionsList extends ConsumerWidget {
             padding: EdgeInsets.all(16),
             child: Column(
               children: [
+                TransactionsFilters(),
                 ListHeaders(),
                 Divider(),
                 ListData(),
@@ -263,5 +270,64 @@ class TransactionsFloatingButtons extends ConsumerWidget {
         ),
       ],
     );
+  }
+}
+
+class TransactionsFilters extends ConsumerWidget {
+  const TransactionsFilters({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: const EdgeInsets.all(5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const MainScreenPlaceholder(width: 20, isExpanded: false),
+          _buildCustomerQuickFilter(context, ref),
+          _buildTypeQuickFilter(context, ref),
+          const Text('filter'),
+          const Text('filter'),
+          const Text('filter'),
+          const Text('filter'),
+          const Text('filter'),
+          const Text('filter'),
+          const Text('filter'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCustomerQuickFilter(BuildContext context, WidgetRef ref) {
+    final dbCache = ref.read(customerDbCacheProvider.notifier);
+    const propertyName = 'name';
+    return DropDownWithSearchFormField(
+        initialValue:
+            ref.read(transactionQuickFiltersProvider.notifier).getFilterValue(propertyName),
+        onChangedFn: (customer) {
+          QuickFilter filter = QuickFilter(propertyName, QuickFilterType.equals, customer['name']);
+          ref.read(transactionQuickFiltersProvider.notifier).updateFilters(filter);
+          ref.read(transactionQuickFiltersProvider.notifier).applyListFilter(context);
+        },
+        itemsList: dbCache.data);
+  }
+
+  Widget _buildTypeQuickFilter(BuildContext context, WidgetRef ref) {
+    final typesList = getTransactionTypeDropList(context)
+        .map((type) => {
+              'name': type,
+              'imageUrls': [defaultImageUrl]
+            })
+        .toList();
+    const propertyName = 'transactionType';
+    return DropDownWithSearchFormField(
+        initialValue:
+            ref.read(transactionQuickFiltersProvider.notifier).getFilterValue(propertyName),
+        onChangedFn: (type) {
+          QuickFilter filter = QuickFilter(propertyName, QuickFilterType.equals, type['name']);
+          ref.read(transactionQuickFiltersProvider.notifier).updateFilters(filter);
+          ref.read(transactionQuickFiltersProvider.notifier).applyListFilter(context);
+        },
+        itemsList: typesList);
   }
 }

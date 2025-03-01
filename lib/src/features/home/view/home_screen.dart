@@ -7,7 +7,6 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/check_transaction_total.dart';
 import 'package:tablets/src/common/functions/database_backup.dart';
 import 'package:tablets/src/common/functions/db_cache_inialization.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
@@ -700,7 +699,6 @@ class HideProductCheckBox extends ConsumerWidget {
           return Checkbox(
             value: hassAccess,
             onChanged: (value) {
-              tempPrint(value);
               // Update the user info and notify the state
               ref.read(accountsRepositoryProvider).updateItem(
                     UserAccount(
