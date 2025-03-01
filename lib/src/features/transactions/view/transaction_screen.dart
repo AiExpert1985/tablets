@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:tablets/src/common/classes/screen_quick_filter.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
@@ -9,11 +11,13 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/empty_screen.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
+import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/widgets/page_loading.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_drawer_provider.dart';
@@ -74,6 +78,7 @@ class TransactionsList extends ConsumerWidget {
             child: Column(
               children: [
                 TransactionsFilters(),
+                VerticalGap.l,
                 ListHeaders(),
                 Divider(),
                 ListData(),
@@ -273,36 +278,84 @@ class TransactionsFloatingButtons extends ConsumerWidget {
   }
 }
 
-class TransactionsFilters extends ConsumerWidget {
+class TransactionsFilters extends ConsumerStatefulWidget {
   const TransactionsFilters({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TransactionsFilters> createState() => _TransactionsFiltersState();
+}
+
+class _TransactionsFiltersState extends ConsumerState<TransactionsFilters> {
+  late TextEditingController _dateController;
+  late TextEditingController _numberController;
+  late TextEditingController _notesController;
+  late TextEditingController _amountController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _dateController = TextEditingController();
+    _numberController = TextEditingController();
+    _notesController = TextEditingController();
+    _amountController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    _numberController.dispose();
+    _notesController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Watch the provider to rebuild when the state changes
+
     ref.watch(transactionQuickFiltersProvider);
+
     return Container(
       padding: const EdgeInsets.all(5),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          IconButton(
-              onPressed: () => ref.read(transactionQuickFiltersProvider.notifier).reset(context),
-              icon: const Icon(
-                Icons.cancel,
-                color: Colors.red,
-              )),
+          _buildClearButton(context, ref),
+          HorizontalGap.l,
           _buildTypeQuickFilter(context, ref),
-          HorizontalGap.xl,
+          HorizontalGap.xxl,
+          _buildNumberQuickFilter(context, ref),
+          HorizontalGap.xxl,
+          _buildDateQuickFilter(context, ref),
+          HorizontalGap.xxl,
           _buildCustomerQuickFilter(context, ref),
-          const Text('filter'),
-          const Text('filter'),
-          const Text('filter'),
-          const Text('filter'),
-          const Text('filter'),
-          const Text('filter'),
-          const Text('filter'),
+          HorizontalGap.xxl,
+          _buildSalesmanQuickFilter(context, ref),
+          HorizontalGap.xxl,
+          _buildAmountQuickFilter(context, ref),
+          HorizontalGap.xxl,
+          _buildPrintStatusQuickFilter(context, ref),
+          HorizontalGap.xxl,
+          _buildNotesQuickFilter(context, ref),
         ],
       ),
     );
+  }
+
+  Widget _buildClearButton(BuildContext context, WidgetRef ref) {
+    return IconButton(
+        onPressed: () {
+          ref.read(transactionQuickFiltersProvider.notifier).reset(context);
+          _dateController.text = '';
+          _numberController.text = '';
+          _notesController.text = '';
+          _amountController.text = '';
+        },
+        icon: const Icon(
+          Icons.cancel_outlined,
+          color: Colors.red,
+        ));
   }
 
   Widget _buildCustomerQuickFilter(BuildContext context, WidgetRef ref) {
@@ -313,6 +366,20 @@ class TransactionsFilters extends ConsumerWidget {
             ref.read(transactionQuickFiltersProvider.notifier).getFilterValue(propertyName),
         onChangedFn: (customer) {
           QuickFilter filter = QuickFilter(propertyName, QuickFilterType.equals, customer['name']);
+          ref.read(transactionQuickFiltersProvider.notifier).updateFilters(filter);
+          ref.read(transactionQuickFiltersProvider.notifier).applyListFilter(context);
+        },
+        itemsList: dbCache.data);
+  }
+
+  Widget _buildSalesmanQuickFilter(BuildContext context, WidgetRef ref) {
+    final dbCache = ref.read(salesmanDbCacheProvider.notifier);
+    const propertyName = 'salesman';
+    return DropDownWithSearchFormField(
+        initialValue:
+            ref.read(transactionQuickFiltersProvider.notifier).getFilterValue(propertyName),
+        onChangedFn: (salesman) {
+          QuickFilter filter = QuickFilter(propertyName, QuickFilterType.equals, salesman['name']);
           ref.read(transactionQuickFiltersProvider.notifier).updateFilters(filter);
           ref.read(transactionQuickFiltersProvider.notifier).applyListFilter(context);
         },
@@ -331,12 +398,7 @@ class TransactionsFilters extends ConsumerWidget {
       translateDbTextToScreenText(context, TransactionType.expenditures.name),
       translateDbTextToScreenText(context, TransactionType.damagedItems.name),
     ];
-    final typesListMap = typesList
-        .map((type) => {
-              'name': type,
-              'imageUrls': [defaultImageUrl]
-            })
-        .toList();
+    final typesListMap = typesList.map((type) => {'name': type}).toList();
     const propertyName = 'transactionType';
     return DropDownWithSearchFormField(
         initialValue:
@@ -347,5 +409,91 @@ class TransactionsFilters extends ConsumerWidget {
           ref.read(transactionQuickFiltersProvider.notifier).applyListFilter(context);
         },
         itemsList: typesListMap);
+  }
+
+  Widget _buildPrintStatusQuickFilter(BuildContext context, WidgetRef ref) {
+    final printStatus = [S.of(context).printed, S.of(context).not_printed];
+    final printStatusMap = printStatus.map((type) => {'name': type}).toList();
+    const propertyName = 'isPrinted';
+    return DropDownWithSearchFormField(
+        initialValue:
+            ref.read(transactionQuickFiltersProvider.notifier).getFilterValue(propertyName),
+        onChangedFn: (type) {
+          final boolValue = type['name'] == S.of(context).printed ? true : false;
+          QuickFilter filter = QuickFilter(propertyName, QuickFilterType.equals, boolValue);
+          ref.read(transactionQuickFiltersProvider.notifier).updateFilters(filter);
+          ref.read(transactionQuickFiltersProvider.notifier).applyListFilter(context);
+        },
+        itemsList: printStatusMap);
+  }
+
+  Widget _buildNumberQuickFilter(BuildContext context, WidgetRef ref) {
+    const propertyName = 'number';
+    return FormInputField(
+      initialValue: ref.read(transactionQuickFiltersProvider.notifier).getFilterValue(propertyName),
+      onChangedFn: (transactionNumber) {
+        QuickFilter filter = QuickFilter(propertyName, QuickFilterType.equals, transactionNumber);
+        ref.read(transactionQuickFiltersProvider.notifier).updateFilters(filter);
+        ref.read(transactionQuickFiltersProvider.notifier).applyListFilter(context);
+      },
+      controller: _numberController,
+      isOnSubmit: true,
+      dataType: FieldDataType.num,
+      name: 'number',
+    );
+  }
+
+  Widget _buildAmountQuickFilter(BuildContext context, WidgetRef ref) {
+    const propertyName = 'totalAmount';
+    return FormInputField(
+      initialValue: ref.read(transactionQuickFiltersProvider.notifier).getFilterValue(propertyName),
+      onChangedFn: (amount) {
+        QuickFilter filter = QuickFilter(propertyName, QuickFilterType.equals, amount);
+        ref.read(transactionQuickFiltersProvider.notifier).updateFilters(filter);
+        ref.read(transactionQuickFiltersProvider.notifier).applyListFilter(context);
+      },
+      controller: _amountController,
+      isOnSubmit: true,
+      dataType: FieldDataType.num,
+      name: 'totalAmount',
+    );
+  }
+
+  Widget _buildNotesQuickFilter(BuildContext context, WidgetRef ref) {
+    const propertyName = 'notes';
+    return FormInputField(
+      initialValue: ref.read(transactionQuickFiltersProvider.notifier).getFilterValue(propertyName),
+      onChangedFn: (notes) {
+        QuickFilter filter = QuickFilter(propertyName, QuickFilterType.contains, notes);
+        ref.read(transactionQuickFiltersProvider.notifier).updateFilters(filter);
+        ref.read(transactionQuickFiltersProvider.notifier).applyListFilter(context);
+      },
+      controller: _notesController,
+      isOnSubmit: true,
+      dataType: FieldDataType.text,
+      name: 'notes',
+    );
+  }
+
+  Widget _buildDateQuickFilter(BuildContext context, WidgetRef ref) {
+    const propertyName = 'date';
+    return Expanded(
+      child: FormBuilderDateTimePicker(
+        textAlign: TextAlign.center,
+        name: 'startDate',
+        decoration: formFieldDecoration(),
+        controller: _dateController,
+        inputType: InputType.date,
+        format: DateFormat('dd-MM-yyyy'),
+        onChanged: (date) {
+          if (date != null) {
+            QuickFilter filter = QuickFilter(propertyName, QuickFilterType.dateSameDay, date);
+            ref.read(transactionQuickFiltersProvider.notifier).updateFilters(filter);
+            ref.read(transactionQuickFiltersProvider.notifier).applyListFilter(context);
+            // _dateController.text = DateFormat('dd-MM-yyyy').format(date);
+          }
+        },
+      ),
+    );
   }
 }

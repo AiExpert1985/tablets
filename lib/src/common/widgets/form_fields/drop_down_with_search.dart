@@ -111,12 +111,14 @@ Widget popUpItem(
         selected: isSelected,
         title: Text(item['name']),
         // subtitle: Text(item.code.toString()),
-        leading: CircleAvatar(
-          // radius: 70,
-          backgroundColor: Colors.white,
-          foregroundImage:
-              CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
-        ),
+        leading: item['imageUrls'] != null
+            ? CircleAvatar(
+                // radius: 70,
+                backgroundColor: Colors.white,
+                foregroundImage:
+                    CachedNetworkImageProvider(item['imageUrls'][item['imageUrls'].length - 1]),
+              )
+            : null,
       ),
     ),
   );

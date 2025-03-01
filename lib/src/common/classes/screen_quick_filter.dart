@@ -62,35 +62,37 @@ class ScreenDataQuickFilters extends StateNotifier<List<QuickFilter>> {
     List<Map<String, dynamic>> listValue = _screenDataNotifier.data as List<Map<String, dynamic>>;
     for (var filter in state) {
       String property = filter.property;
-      QuickFilterType criteria = filter.type;
+      QuickFilterType type = filter.type;
       dynamic value = filter.value;
 
       if (value == null || value.toString().trim().isEmpty) {
         continue;
-      } else if (criteria == QuickFilterType.contains) {
+      } else if (type == QuickFilterType.contains) {
         listValue = listValue.where((item) => (item[property] ?? '').contains(value)).toList();
-      } else if (criteria == QuickFilterType.equals) {
+      } else if (type == QuickFilterType.equals) {
         listValue = listValue.where((item) => item[property] == value).toList();
-      } else if (criteria == QuickFilterType.lessThanOrEqual) {
+      } else if (type == QuickFilterType.lessThanOrEqual) {
         listValue = listValue.where((item) => item[property] <= value).toList();
-      } else if (criteria == QuickFilterType.lessThan) {
+      } else if (type == QuickFilterType.lessThan) {
         listValue = listValue.where((item) => item[property] < value).toList();
-      } else if (criteria == QuickFilterType.moreThanOrEqual) {
+      } else if (type == QuickFilterType.moreThanOrEqual) {
         listValue = listValue.where((item) => item[property] >= value).toList();
-      } else if (criteria == QuickFilterType.moreThan) {
+      } else if (type == QuickFilterType.moreThan) {
         listValue = listValue.where((item) => item[property] > value).toList();
-      } else if (criteria == QuickFilterType.dateAfter) {
+      } else if (type == QuickFilterType.dateAfter) {
         listValue = listValue
             .where((item) =>
                 item[property].toDate().isAfter(value) ||
                 item[property].toDate().isAtSameMomentAs(value))
             .toList();
-      } else if (criteria == QuickFilterType.dateBefore) {
+      } else if (type == QuickFilterType.dateBefore) {
         listValue = listValue
             .where((item) =>
                 item[property].toDate().isBefore(value) ||
                 item[property].toDate().isAtSameMomentAs(value))
             .toList();
+      } else if (type == QuickFilterType.dateSameDay) {
+        listValue = listValue.where((item) => isSameDay(item[property].toDate(), value)).toList();
       } else {
         errorPrint('unknown filter criteria');
       }
