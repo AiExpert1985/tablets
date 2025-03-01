@@ -80,7 +80,9 @@ class TransactionsList extends ConsumerWidget {
                 TransactionsFilters(),
                 VerticalGap.l,
                 ListHeaders(),
+                VerticalGap.m,
                 Divider(),
+                VerticalGap.s,
                 ListData(),
               ],
             ),
@@ -314,14 +316,14 @@ class _TransactionsFiltersState extends ConsumerState<TransactionsFilters> {
   Widget build(BuildContext context) {
     // Watch the provider to rebuild when the state changes
 
-    ref.watch(transactionQuickFiltersProvider);
+    final quickFilters = ref.watch(transactionQuickFiltersProvider);
 
     return Container(
       padding: const EdgeInsets.all(5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildClearButton(context, ref),
+          quickFilters.isNotEmpty ? _buildClearButton(context, ref) : const SizedBox(width: 40),
           HorizontalGap.l,
           _buildTypeQuickFilter(context, ref),
           HorizontalGap.xxl,
