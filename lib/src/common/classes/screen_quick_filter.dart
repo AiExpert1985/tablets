@@ -119,7 +119,8 @@ class ScreenDataQuickFilters extends StateNotifier<List<QuickFilter>> {
   }
 
   // Reset all filters
-  void reset() {
+  void reset(BuildContext context) {
     state = [];
+    _screenController.setFeatureScreenData(context);
   }
 }

@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/screen_quick_filter.dart';
-import 'package:tablets/src/common/functions/transaction_type_drowdop_list.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/features_keys.dart';
+import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/empty_screen.dart';
 import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
@@ -278,14 +278,21 @@ class TransactionsFilters extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(transactionQuickFiltersProvider);
     return Container(
       padding: const EdgeInsets.all(5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const MainScreenPlaceholder(width: 20, isExpanded: false),
-          _buildCustomerQuickFilter(context, ref),
+          IconButton(
+              onPressed: () => ref.read(transactionQuickFiltersProvider.notifier).reset(context),
+              icon: const Icon(
+                Icons.cancel,
+                color: Colors.red,
+              )),
           _buildTypeQuickFilter(context, ref),
+          HorizontalGap.xl,
+          _buildCustomerQuickFilter(context, ref),
           const Text('filter'),
           const Text('filter'),
           const Text('filter'),
@@ -313,7 +320,18 @@ class TransactionsFilters extends ConsumerWidget {
   }
 
   Widget _buildTypeQuickFilter(BuildContext context, WidgetRef ref) {
-    final typesList = getTransactionTypeDropList(context)
+    final typesList = [
+      translateDbTextToScreenText(context, TransactionType.customerInvoice.name),
+      translateDbTextToScreenText(context, TransactionType.customerReceipt.name),
+      translateDbTextToScreenText(context, TransactionType.customerReturn.name),
+      translateDbTextToScreenText(context, TransactionType.gifts.name),
+      translateDbTextToScreenText(context, TransactionType.vendorInvoice.name),
+      translateDbTextToScreenText(context, TransactionType.vendorReceipt.name),
+      translateDbTextToScreenText(context, TransactionType.vendorReturn.name),
+      translateDbTextToScreenText(context, TransactionType.expenditures.name),
+      translateDbTextToScreenText(context, TransactionType.damagedItems.name),
+    ];
+    final typesListMap = typesList
         .map((type) => {
               'name': type,
               'imageUrls': [defaultImageUrl]
@@ -328,6 +346,6 @@ class TransactionsFilters extends ConsumerWidget {
           ref.read(transactionQuickFiltersProvider.notifier).updateFilters(filter);
           ref.read(transactionQuickFiltersProvider.notifier).applyListFilter(context);
         },
-        itemsList: typesList);
+        itemsList: typesListMap);
   }
 }
