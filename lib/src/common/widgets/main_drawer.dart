@@ -52,6 +52,8 @@ class MainDrawer extends ConsumerWidget {
                   VerticalGap.m,
                   ProductsButton(),
                   VerticalGap.m,
+                  TasksButton(),
+                  VerticalGap.m,
                   SettingsButton(),
                   Spacer(),
                   PendingsButton(),
@@ -292,6 +294,61 @@ class ProductsButton extends ConsumerWidget {
     final pageTitle = S.of(context).products;
     return MainDrawerButton('products', S.of(context).products, () async {
       processAndMoveToTargetPage(context, ref, productScreenController, route, pageTitle);
+    });
+  }
+}
+
+class TasksButton extends ConsumerWidget {
+  const TasksButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final route = AppRoute.tasks.name;
+    const pageTitle = 'زيارات المندوبين';
+    return MainDrawerButton('tasks', 'زيارات المندوبين', () async {
+      // update user info, so if the user is blocked by admin, while he uses the app he will be blocked
+      ref.read(userInfoProvider.notifier).loadUserInfo(ref);
+      final userInfo = ref.read(userInfoProvider);
+      if (userInfo == null ||
+          !userInfo.hasAccess ||
+          userInfo.privilage != UserPrivilage.admin.name) {
+        // only admin (who has access) can make backup
+        return;
+      }
+      final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
+      // page is loading used to show a loading spinner (better user experience)
+      // before loading initializing dbCaches and settings we show loading spinner &
+      // when done it is cleared using below pageLoadingNotifier.state = false;
+      if (pageLoadingNotifier.state) {
+        // if pageLoadingNotifier.date = true, then it means another page is loading or data is initializing
+        // so, we return and not proceed
+        // this is done to fix the bug of pressing buttons multiple times at the very start of the app
+        // when the app is loading databases into dBCaches
+        failureUserMessage(context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
+        return;
+      }
+      final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+      await autoDatabaseBackup(context, ref);
+      pageLoadingNotifier.state = true;
+      // note that dbCaches are only used for mirroring the database, all the data used in the
+      // app in the screenData, which is a processed version of dbCache
+      if (context.mounted) {
+        await initializeAllDbCaches(context, ref);
+      }
+      // we inialize settings
+      if (context.mounted) {
+        initializeSettings(context, ref);
+      }
+      if (context.mounted) {
+        pageTitleNotifier.state = pageTitle;
+      }
+      // after loading and processing data, we turn off the loading spinner
+      pageLoadingNotifier.state = false;
+      // close side drawer and move to the target page
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        context.goNamed(route);
+      }
     });
   }
 }
