@@ -65,6 +65,11 @@ class SalesPoints extends ConsumerWidget {
                 ),
               ),
               ...value.map((item) {
+                final color = !item['isVisited']
+                    ? Colors.red
+                    : item['hasTransaction']
+                        ? Colors.green
+                        : Colors.amber;
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -72,9 +77,9 @@ class SalesPoints extends ConsumerWidget {
                     Container(
                         width: 120,
                         padding: const EdgeInsets.symmetric(vertical: 20),
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          color: Colors.amber,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(Radius.circular(8)),
+                          color: color,
                         ),
                         child: Text(
                           item['customerName'],
