@@ -55,6 +55,14 @@ class SalesPoints extends ConsumerWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              IconButton(
+                icon: const Icon(
+                  Icons.add,
+                  color: Colors.green,
+                ),
+                onPressed: () {},
+              ),
+              HorizontalGap.l,
               Container(
                 width: 150,
                 padding: const EdgeInsets.all(5),
@@ -88,7 +96,6 @@ class SalesPoints extends ConsumerWidget {
                   ],
                 );
               }),
-              const Divider(), // Divider between groups
             ],
           ),
         ),
