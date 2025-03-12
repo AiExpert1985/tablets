@@ -106,20 +106,6 @@ class SalesPoints extends ConsumerWidget {
       children: widgetList,
     );
   }
-
-  // Map<String, List<SalesPoint>> getSalesmenPathes(List<Map<String, dynamic>> salesPoints) {
-  //   // Step 1: Create a map with unique names as keys and empty lists as values
-  //   Map<String, List<SalesPoint>> salesmanPathes = {
-  //     for (var name in salesPoints.map((map) => map['name'] as String).toSet()) name: []
-  //   };
-
-  //   // Step 2: Populate the map with data from the list of Sales points
-  //   for (var map in salesPoints) {
-  //     String name = map['name'] as String;
-  //     salesmanPathes[name]?.add(SalesPoint.fromMap(map));
-  //   }
-  //   return salesmanPathes;
-  // }
 }
 
 class TasksFloatingButtons extends ConsumerWidget {
