@@ -116,6 +116,14 @@ class DbRepository {
         .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
+  // watch collection that is filtered by on one criterial, example watch specific date
+  Stream<List<Map<String, dynamic>>> watchItemListAsFilteredMaps(String key, dynamic value) {
+    final ref = _firestore.collection(_collectionName).where(key, isEqualTo: value);
+    return ref
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+  }
+
   // /// below function was not tested
   // Stream<List<BaseItem>> watchItemListAsItems() {
   //   final query = _firestore.collection(_collectionName);
