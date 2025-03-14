@@ -6,6 +6,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/empty_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 
 class TasksScreen extends ConsumerStatefulWidget {
   const TasksScreen({super.key});
@@ -69,10 +70,27 @@ class SalesPoints extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Create a map with unique names as keys and empty lists as values
-    Map<String, List<Map<String, dynamic>>> groupedMap = {
-      for (var name in salesPoints.map((map) => map['salesmanName'] as String).toSet()) name: []
-    };
+    // create list of unique salesman names found in firebase for that date
+    Set<String> uniqueSalesmanNames = {};
+    for (var salesPoint in salesPoints) {
+      String salesmanName = salesPoint['salesmanName'] as String;
+      uniqueSalesmanNames.add(salesmanName);
+    }
+    // then add the salesmen not found in that day
+    final salesmenDbCache = ref.read(salesmanDbCacheProvider.notifier).data;
+    final allSalemenNames = salesmenDbCache.map((salesman) => salesman['name']).toList();
+    for (var salesmanName in allSalemenNames) {
+      uniqueSalesmanNames.add(salesmanName);
+    }
+
+    Map<String, List<Map<String, dynamic>>> groupedMap = {};
+    for (var name in uniqueSalesmanNames) {
+      groupedMap[name] = []; // Initialize each key with an empty list
+    }
+    for (var salesPoint in salesPoints) {
+      String salesmanName = salesPoint['salesmanName'] as String;
+      groupedMap[salesmanName]?.add(salesPoint);
+    }
 
     // Populate the map with data from the list of maps
     for (var map in salesPoints) {
