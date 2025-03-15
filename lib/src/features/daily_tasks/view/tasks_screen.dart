@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
@@ -118,7 +119,7 @@ class SalesPoints extends ConsumerWidget {
                   ),
                   onPressed: () {
                     //TODO logic for adding new task, either by choosing multiple customers or regions
-                    _showMultiSelectDialog(context);
+                    _showMultiSelectDialog(context, key);
                   },
                 ),
                 HorizontalGap.l,
@@ -194,7 +195,7 @@ class SalesPoints extends ConsumerWidget {
     );
   }
 
-  void _showMultiSelectDialog(BuildContext context) async {
+  void _showMultiSelectDialog(BuildContext context, String salesmanName) async {
     List<String> dropdownValues = List.generate(20, (index) => 'Item $index'); // Sample data
 
     final List<String>? selectedValues = await showDialog<List<String>>(
@@ -208,17 +209,22 @@ class SalesPoints extends ConsumerWidget {
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min, // Use min size to avoid unnecessary height
-
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(16.0),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 40, left: 25.0, right: 25.0),
                     child: Text(
-                      'اختيار الزبائن',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      salesmanName,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
-
                   MultiSelectDialogField(
+                    confirmText: Text(S.of(context).select),
+                    cancelText: Text(S.of(context).cancel),
+                    title: const Text('اختيار الزبائن'),
+                    buttonText: const Text(
+                      'اختيار الزبائن',
+                      style: TextStyle(color: Colors.black26, fontSize: 15),
+                    ),
                     items: dropdownValues
                         .map((String value) => MultiSelectItem<String>(value, value))
                         .toList(),
@@ -247,25 +253,4 @@ class SalesPoints extends ConsumerWidget {
       tempPrint('Selected values: $selectedValues');
     }
   }
-
-  // void _showSelectionDialog(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       final dropdownValues = ['a', 'b', 'c'];
-  //       return AlertDialog(
-  //         title: const Text('Dialog Title'),
-  //         content: _buildMultiSelectDropdown(context, dropdownValues),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //             child: const Text('Close'),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 }
