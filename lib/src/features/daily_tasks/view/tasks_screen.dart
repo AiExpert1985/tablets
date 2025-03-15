@@ -8,8 +8,10 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/daily_tasks/model/point.dart';
 import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
+import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 
 class TasksScreen extends ConsumerStatefulWidget {
@@ -104,7 +106,7 @@ class SalesPoints extends ConsumerWidget {
 
     // Convert the map to a list of widgets
     List<Widget> widgetList = [];
-    groupedMap.forEach((key, value) {
+    groupedMap.forEach((salesmanName, value) {
       widgetList.add(
         Column(
           children: [
@@ -119,7 +121,8 @@ class SalesPoints extends ConsumerWidget {
                   ),
                   onPressed: () async {
                     //TODO logic for adding new task, either by choosing multiple customers or regions
-                    final selectedCustomers = await _showMultiSelectDialog(context, key);
+                    final selectedCustomers =
+                        await _showMultiSelectDialog(context, ref, salesmanName);
                     tempPrint(selectedCustomers);
                   },
                 ),
@@ -128,7 +131,7 @@ class SalesPoints extends ConsumerWidget {
                   width: 150,
                   padding: const EdgeInsets.all(5),
                   child: Text(
-                    key, // The name as title
+                    salesmanName, // The name as title
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
@@ -196,12 +199,14 @@ class SalesPoints extends ConsumerWidget {
     );
   }
 
-  Future<List<String>?> _showMultiSelectDialog(BuildContext context, String salesmanName) async {
-    List<String> dropdownValues1 =
-        List.generate(20, (index) => 'Item $index'); // Sample data for first dropdown
+  Future<List<String>?> _showMultiSelectDialog(
+      BuildContext context, WidgetRef ref, String salesmanName) async {
+    final customerDbCache = ref.read(customerDbCacheProvider.notifier).data;
+    List<String> customerNames =
+        customerDbCache.map((customer) => customer['name'] as String).toList();
 
-    List<String> dropdownValues2 =
-        List.generate(20, (index) => 'Option $index'); // Sample data for second dropdown
+    final regionDbCache = ref.read(regionDbCacheProvider.notifier).data;
+    List<String> regionNames = regionDbCache.map((region) => region['name'] as String).toList();
 
     final selectedValues = showDialog<List<String>?>(
       context: context,
@@ -228,14 +233,14 @@ class SalesPoints extends ConsumerWidget {
                   // First MultiSelectDialogField
 
                   MultiSelectDialogField(
-                    confirmText: const Text('Select'),
-                    cancelText: const Text('Cancel'),
-                    title: const Text('اختيار الزبائن 1'),
+                    confirmText: Text(S.of(context).select),
+                    cancelText: Text(S.of(context).cancel),
+                    title: const Text('اختيار الزبائن'),
                     buttonText: const Text(
-                      'اختيار الزبائن 1',
+                      'اختيار الزبائن',
                       style: TextStyle(color: Colors.black26, fontSize: 15),
                     ),
-                    items: dropdownValues1
+                    items: customerNames
                         .map((String value) => MultiSelectItem<String>(value, value))
                         .toList(),
                     onConfirm: (List<String> values) {
@@ -253,14 +258,14 @@ class SalesPoints extends ConsumerWidget {
                   // Second MultiSelectDialogField
 
                   MultiSelectDialogField(
-                    confirmText: const Text('Select'),
-                    cancelText: const Text('Cancel'),
-                    title: const Text('اختيار الزبائن 2'),
+                    confirmText: Text(S.of(context).select),
+                    cancelText: Text(S.of(context).cancel),
+                    title: const Text('اختيار المناطق'),
                     buttonText: const Text(
-                      'اختيار الزبائن 2',
+                      'اختيار المناطق',
                       style: TextStyle(color: Colors.black26, fontSize: 15),
                     ),
-                    items: dropdownValues2
+                    items: regionNames
                         .map((String value) => MultiSelectItem<String>(value, value))
                         .toList(),
                     onConfirm: (List<String> values) {},
