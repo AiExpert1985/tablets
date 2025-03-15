@@ -117,9 +117,10 @@ class SalesPoints extends ConsumerWidget {
                     Icons.add,
                     color: Colors.green,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     //TODO logic for adding new task, either by choosing multiple customers or regions
-                    _showMultiSelectDialog(context, key);
+                    final selectedCustomers = await _showMultiSelectDialog(context, key);
+                    tempPrint(selectedCustomers);
                   },
                 ),
                 HorizontalGap.l,
@@ -195,12 +196,17 @@ class SalesPoints extends ConsumerWidget {
     );
   }
 
-  void _showMultiSelectDialog(BuildContext context, String salesmanName) async {
-    List<String> dropdownValues = List.generate(20, (index) => 'Item $index'); // Sample data
+  Future<List<String>?> _showMultiSelectDialog(BuildContext context, String salesmanName) async {
+    List<String> dropdownValues1 =
+        List.generate(20, (index) => 'Item $index'); // Sample data for first dropdown
 
-    final List<String>? selectedValues = await showDialog<List<String>>(
+    List<String> dropdownValues2 =
+        List.generate(20, (index) => 'Option $index'); // Sample data for second dropdown
+
+    final selectedValues = showDialog<List<String>?>(
       context: context,
       builder: (BuildContext context) {
+        List<String> customers = []; // to store customers selection from both dropdowns
         return Dialog(
           child: Container(
             padding: const EdgeInsets.all(20),
@@ -209,6 +215,7 @@ class SalesPoints extends ConsumerWidget {
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min, // Use min size to avoid unnecessary height
+
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(top: 10, bottom: 40, left: 25.0, right: 25.0),
@@ -217,19 +224,22 @@ class SalesPoints extends ConsumerWidget {
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
+
+                  // First MultiSelectDialogField
+
                   MultiSelectDialogField(
-                    confirmText: Text(S.of(context).select),
-                    cancelText: Text(S.of(context).cancel),
-                    title: const Text('اختيار الزبائن'),
+                    confirmText: const Text('Select'),
+                    cancelText: const Text('Cancel'),
+                    title: const Text('اختيار الزبائن 1'),
                     buttonText: const Text(
-                      'اختيار الزبائن',
+                      'اختيار الزبائن 1',
                       style: TextStyle(color: Colors.black26, fontSize: 15),
                     ),
-                    items: dropdownValues
+                    items: dropdownValues1
                         .map((String value) => MultiSelectItem<String>(value, value))
                         .toList(),
                     onConfirm: (List<String> values) {
-                      Navigator.of(context).pop(values); // Return selected values
+                      customers.addAll(values); // add selected customers
                     },
                     searchable: true,
                     decoration: BoxDecoration(
@@ -239,6 +249,38 @@ class SalesPoints extends ConsumerWidget {
                   ),
 
                   const SizedBox(height: 16), // Add some spacing
+
+                  // Second MultiSelectDialogField
+
+                  MultiSelectDialogField(
+                    confirmText: const Text('Select'),
+                    cancelText: const Text('Cancel'),
+                    title: const Text('اختيار الزبائن 2'),
+                    buttonText: const Text(
+                      'اختيار الزبائن 2',
+                      style: TextStyle(color: Colors.black26, fontSize: 15),
+                    ),
+                    items: dropdownValues2
+                        .map((String value) => MultiSelectItem<String>(value, value))
+                        .toList(),
+                    onConfirm: (List<String> values) {},
+                    searchable: true,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16), // Add some spacing
+
+                  // Confirm button to return selected values
+
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(customers); // Return both selected values
+                    },
+                    child: const Text('اضافة الزبائن'),
+                  ),
                 ],
               ),
             ),
@@ -247,10 +289,6 @@ class SalesPoints extends ConsumerWidget {
       },
     );
 
-    // Handle the selected values
-
-    if (selectedValues != null) {
-      tempPrint('Selected values: $selectedValues');
-    }
+    return selectedValues; // Return the selected values to the calling function
   }
 }
