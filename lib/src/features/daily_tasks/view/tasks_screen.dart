@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/values/gaps.dart';
-import 'package:tablets/src/common/widgets/empty_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/daily_tasks/model/point.dart';
 import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
@@ -116,6 +118,7 @@ class SalesPoints extends ConsumerWidget {
                   ),
                   onPressed: () {
                     //TODO logic for adding new task, either by choosing multiple customers or regions
+                    _showMultiSelectDialog(context);
                   },
                 ),
                 HorizontalGap.l,
@@ -190,4 +193,79 @@ class SalesPoints extends ConsumerWidget {
       children: widgetList,
     );
   }
+
+  void _showMultiSelectDialog(BuildContext context) async {
+    List<String> dropdownValues = List.generate(20, (index) => 'Item $index'); // Sample data
+
+    final List<String>? selectedValues = await showDialog<List<String>>(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            width: 400,
+            height: 400,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min, // Use min size to avoid unnecessary height
+
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      'اختيار الزبائن',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+
+                  MultiSelectDialogField(
+                    items: dropdownValues
+                        .map((String value) => MultiSelectItem<String>(value, value))
+                        .toList(),
+                    onConfirm: (List<String> values) {
+                      Navigator.of(context).pop(values); // Return selected values
+                    },
+                    searchable: true,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16), // Add some spacing
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+
+    // Handle the selected values
+
+    if (selectedValues != null) {
+      tempPrint('Selected values: $selectedValues');
+    }
+  }
+
+  // void _showSelectionDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       final dropdownValues = ['a', 'b', 'c'];
+  //       return AlertDialog(
+  //         title: const Text('Dialog Title'),
+  //         content: _buildMultiSelectDropdown(context, dropdownValues),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //             child: const Text('Close'),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }
