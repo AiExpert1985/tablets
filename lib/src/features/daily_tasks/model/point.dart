@@ -89,7 +89,7 @@ class SalesPoint implements BaseItem {
       map['isVisited'] as bool,
       map['hasTransaction'] as bool,
       map['dbRef'] as String,
-      List<String>.from((map['imageUrls'] as List<String>)),
+      List<String>.from((map['imageUrls'])),
       map['name'] as String,
     );
   }

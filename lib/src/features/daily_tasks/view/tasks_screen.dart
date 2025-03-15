@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/empty_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/daily_tasks/model/point.dart';
 import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 
@@ -12,6 +13,7 @@ class TasksScreen extends ConsumerStatefulWidget {
   const TasksScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _TasksScreenState createState() => _TasksScreenState();
 }
 
@@ -48,11 +50,10 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         child: Column(
           children: [
             _showDatePicker(),
+            VerticalGap.xl,
             Expanded(
               child: supervisorAsyncValue.when(
-                data: (supervisors) {
-                  return supervisors.isEmpty ? const EmptyPage() : SalesPoints(supervisors);
-                },
+                data: (supervisors) => SalesPoints(supervisors),
                 loading: () => const CircularProgressIndicator(), // Show loading indicator
                 error: (error, stack) => Text('Error: $error'), // Handle errors
               ),
@@ -102,54 +103,85 @@ class SalesPoints extends ConsumerWidget {
     List<Widget> widgetList = [];
     groupedMap.forEach((key, value) {
       widgetList.add(
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.add,
-                  color: Colors.green,
+        Column(
+          children: [
+            VerticalGap.xl,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.green,
+                  ),
+                  onPressed: () {
+                    //TODO logic for adding new task, either by choosing multiple customers or regions
+                  },
                 ),
-                onPressed: () {},
-              ),
-              HorizontalGap.l,
-              Container(
-                width: 150,
-                padding: const EdgeInsets.all(5),
-                child: Text(
-                  key, // The name as title
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
+                HorizontalGap.l,
+                Container(
+                  width: 150,
+                  padding: const EdgeInsets.all(5),
+                  child: Text(
+                    key, // The name as title
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              ...value.map((item) {
-                final color = !item['isVisited']
-                    ? Colors.red
-                    : item['hasTransaction']
-                        ? Colors.green
-                        : Colors.amber;
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    HorizontalGap.l,
-                    Container(
-                        width: 120,
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(8)),
-                          color: color,
-                        ),
-                        child: Text(
-                          item['customerName'],
-                          textAlign: TextAlign.center,
-                        )),
-                  ],
-                );
-              }),
-            ],
-          ),
+                if (value.isEmpty)
+                  Image.asset(
+                    'assets/images/empty.png',
+                    fit: BoxFit.scaleDown,
+                    width: 60,
+                  ),
+                ...value.map((item) {
+                  final color = !item['isVisited']
+                      ? Colors.red
+                      : item['hasTransaction']
+                          ? Colors.green
+                          : Colors.amber;
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      HorizontalGap.l,
+                      Stack(
+                        children: [
+                          Container(
+                            width: 140,
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(Radius.circular(8)),
+                              color: color,
+                            ),
+                            child: Text(
+                              item['customerName'],
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            child: SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: TextButton(
+                                onPressed: () {
+                                  ref
+                                      .read(tasksRepositoryProvider)
+                                      .deleteItem(SalesPoint.fromMap(item));
+                                },
+                                child: const Text('x'),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  );
+                }),
+              ],
+            )
+          ],
         ),
       );
     });
