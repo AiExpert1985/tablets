@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
@@ -58,7 +58,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
             VerticalGap.xl,
             Expanded(
               child: supervisorAsyncValue.when(
-                data: (supervisors) => SalesPoints(supervisors),
+                data: (supervisors) => SalesPoints(supervisors, selectedDate),
                 loading: () => const CircularProgressIndicator(), // Show loading indicator
                 error: (error, stack) => Text('Error: $error'), // Handle errors
               ),
@@ -71,8 +71,9 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
 }
 
 class SalesPoints extends ConsumerWidget {
-  const SalesPoints(this.salesPoints, {super.key});
+  const SalesPoints(this.salesPoints, this.selectedDate, {super.key});
   final List<Map<String, dynamic>> salesPoints;
+  final DateTime? selectedDate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -120,16 +121,29 @@ class SalesPoints extends ConsumerWidget {
                     color: Colors.green,
                   ),
                   onPressed: () async {
-                    //TODO logic for adding new task, either by choosing multiple customers or regions
-                    final selectedCustomerNamess =
+                    final salesman = ref
+                        .read(salesmanDbCacheProvider.notifier)
+                        .getItemByProperty('name', salesmanName);
+                    final selectedCustomerNames =
                         await _showMultiSelectDialog(context, ref, salesmanName) ?? [];
-                    for (var customerName in selectedCustomerNamess) {
+                    for (var customerName in selectedCustomerNames) {
                       final customer = ref
                           .read(customerDbCacheProvider.notifier)
                           .getItemByProperty('name', customerName);
-                      customerMaps.add(customer);
+                      final salesPoint = SalesPoint(
+                        salesmanName,
+                        salesman['dbRef'],
+                        customerName,
+                        customer['dbRef'],
+                        selectedDate ?? DateTime.now(),
+                        false,
+                        false,
+                        generateRandomString(len: 8),
+                        [],
+                        generateRandomString(len: 8),
+                      );
+                      ref.read(tasksRepositoryProvider).addItem(salesPoint);
                     }
-                    tempPrint(customerMaps);
                   },
                 ),
                 HorizontalGap.l,
@@ -161,7 +175,8 @@ class SalesPoints extends ConsumerWidget {
                       Stack(
                         children: [
                           Container(
-                            width: 140,
+                            width: 150,
+                            height: 85,
                             padding: const EdgeInsets.symmetric(vertical: 20),
                             decoration: BoxDecoration(
                               borderRadius: const BorderRadius.all(Radius.circular(8)),
