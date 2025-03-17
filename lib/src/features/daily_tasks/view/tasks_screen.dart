@@ -5,27 +5,21 @@ import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/daily_tasks/controllers/selected_date_provider.dart';
 import 'package:tablets/src/features/daily_tasks/model/point.dart';
 import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
 import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 
-class TasksScreen extends ConsumerStatefulWidget {
+class TasksScreen extends ConsumerWidget {
   const TasksScreen({super.key});
 
-  @override
-  // ignore: library_private_types_in_public_api
-  _TasksScreenState createState() => _TasksScreenState();
-}
-
-class _TasksScreenState extends ConsumerState<TasksScreen> {
-  DateTime? selectedDate = DateTime.now();
-
-  Widget _showDatePicker() {
+  Widget _showDatePicker(WidgetRef ref) {
     return SizedBox(
       width: 200,
       child: FormBuilderDateTimePicker(
@@ -40,25 +34,26 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
         inputType: InputType.date,
         format: DateFormat('dd-MM-yyyy'),
         onChanged: (value) {
-          selectedDate = value;
+          ref.read(selectedDateProvider.notifier).setDate(value);
         },
       ),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    final supervisorAsyncValue = ref.watch(tasksStreamProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final salesPointsAsyncValue = ref.watch(tasksStreamProvider);
+    ref.watch(selectedDateProvider);
     return AppScreenFrame(
       Container(
         padding: const EdgeInsets.all(0),
         child: Column(
           children: [
-            _showDatePicker(),
+            _showDatePicker(ref),
             VerticalGap.xl,
             Expanded(
-              child: supervisorAsyncValue.when(
-                data: (supervisors) => SalesPoints(supervisors, selectedDate),
+              child: salesPointsAsyncValue.when(
+                data: (salespoints) => SalesPoints(salespoints),
                 loading: () => const CircularProgressIndicator(), // Show loading indicator
                 error: (error, stack) => Text('Error: $error'), // Handle errors
               ),
@@ -71,12 +66,13 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
 }
 
 class SalesPoints extends ConsumerWidget {
-  const SalesPoints(this.salesPoints, this.selectedDate, {super.key});
+  const SalesPoints(this.salesPoints, {super.key});
   final List<Map<String, dynamic>> salesPoints;
-  final DateTime? selectedDate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    tempPrint(salesPoints.length);
+    final selectedDate = ref.watch(selectedDateProvider);
     // Create list of unique salesman names found in firebase for that date
     Set<String> uniqueSalesmanNames = {};
     for (var salesPoint in salesPoints) {
@@ -104,6 +100,7 @@ class SalesPoints extends ConsumerWidget {
     groupedMap.forEach((salesmanName, customerMaps) {
       widgetList.add(
         Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             VerticalGap.xl,
             Row(
@@ -158,6 +155,7 @@ class SalesPoints extends ConsumerWidget {
                   ),
               ],
             ),
+            VerticalGap.l,
             // Use Wrap instead of Row for customers
             Wrap(
               spacing: 8.0, // Space between items
@@ -173,7 +171,7 @@ class SalesPoints extends ConsumerWidget {
                     Container(
                       width: 140,
                       height: 80,
-                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10, right: 10),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(Radius.circular(8)),
                         color: color,
