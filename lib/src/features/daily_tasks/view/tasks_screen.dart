@@ -123,7 +123,7 @@ class SalesPoints extends ConsumerWidget {
                     //TODO logic for adding new task, either by choosing multiple customers or regions
                     final selectedCustomers =
                         await _showMultiSelectDialog(context, ref, salesmanName);
-                    tempPrint(selectedCustomers);
+                    // value.addAll(selectedCustomers);
                   },
                 ),
                 HorizontalGap.l,
