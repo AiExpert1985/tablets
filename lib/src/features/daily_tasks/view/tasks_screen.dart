@@ -106,7 +106,7 @@ class SalesPoints extends ConsumerWidget {
 
     // Convert the map to a list of widgets
     List<Widget> widgetList = [];
-    groupedMap.forEach((salesmanName, value) {
+    groupedMap.forEach((salesmanName, customerMaps) {
       widgetList.add(
         Column(
           children: [
@@ -121,9 +121,15 @@ class SalesPoints extends ConsumerWidget {
                   ),
                   onPressed: () async {
                     //TODO logic for adding new task, either by choosing multiple customers or regions
-                    final selectedCustomers =
-                        await _showMultiSelectDialog(context, ref, salesmanName);
-                    // value.addAll(selectedCustomers);
+                    final selectedCustomerNamess =
+                        await _showMultiSelectDialog(context, ref, salesmanName) ?? [];
+                    for (var customerName in selectedCustomerNamess) {
+                      final customer = ref
+                          .read(customerDbCacheProvider.notifier)
+                          .getItemByProperty('name', customerName);
+                      customerMaps.add(customer);
+                    }
+                    tempPrint(customerMaps);
                   },
                 ),
                 HorizontalGap.l,
@@ -136,13 +142,13 @@ class SalesPoints extends ConsumerWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                if (value.isEmpty)
+                if (customerMaps.isEmpty)
                   Image.asset(
                     'assets/images/empty.png',
                     fit: BoxFit.scaleDown,
                     width: 60,
                   ),
-                ...value.map((item) {
+                ...customerMaps.map((item) {
                   final color = !item['isVisited']
                       ? Colors.red
                       : item['hasTransaction']
