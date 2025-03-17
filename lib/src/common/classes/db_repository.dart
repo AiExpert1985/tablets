@@ -127,8 +127,8 @@ class DbRepository {
   Stream<List<Map<String, dynamic>>> watchItemListAsFilteredDateMaps(
       String key, DateTime targetDate) {
     // Get the start and end of the target date in UTC
-    final startOfDay = DateTime.utc(targetDate.year, targetDate.month, targetDate.day);
-    final endOfDay = DateTime.utc(targetDate.year, targetDate.month, targetDate.day, 23, 59, 59);
+    final startOfDay = DateTime(targetDate.year, targetDate.month, targetDate.day, 00, 00, 00);
+    final endOfDay = DateTime(targetDate.year, targetDate.month, targetDate.day, 23, 59, 59);
 
     // Log the start and end dates for debugging
     tempPrint('Filtering from $startOfDay to $endOfDay');

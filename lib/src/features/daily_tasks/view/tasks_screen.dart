@@ -97,7 +97,19 @@ class SalesPoints extends ConsumerWidget {
 
     // Convert the map to a list of widgets
     List<Widget> widgetList = [];
-    groupedMap.forEach((salesmanName, customerMaps) {
+    groupedMap.forEach((salesmanName, tasks) {
+      // Sort customers by the 'region' property
+      // Sort the list by the 'age' property, handling nulls
+
+      tasks.sort((a, b) {
+        // Handle null values: consider nulls as greater than any number
+        final regionA = a['region'];
+        final regionB = b['region'];
+        if (regionA == null && regionB == null) return 0; // Both are null
+        if (regionA == null) return 1; // Nulls are considered greater
+        if (regionB == null) return -1; // Nulls are considered greater
+        return regionA.compareTo(regionB); // Compare non-null ages
+      });
       widgetList.add(
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -147,7 +159,7 @@ class SalesPoints extends ConsumerWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                if (customerMaps.isEmpty)
+                if (tasks.isEmpty)
                   Image.asset(
                     'assets/images/empty.png',
                     fit: BoxFit.scaleDown,
@@ -160,12 +172,13 @@ class SalesPoints extends ConsumerWidget {
             Wrap(
               spacing: 8.0, // Space between items
               runSpacing: 8.0, // Space between rows
-              children: customerMaps.map((item) {
-                final color = !item['isVisited']
+              children: tasks.map((item) {
+                final bgColor = !item['isVisited']
                     ? Colors.red
                     : item['hasTransaction']
                         ? Colors.green
                         : Colors.amber;
+                final fontColor = item['isVisited'] ? Colors.black : Colors.white;
                 return Stack(
                   children: [
                     Container(
@@ -174,12 +187,10 @@ class SalesPoints extends ConsumerWidget {
                       padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10, right: 10),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(Radius.circular(8)),
-                        color: color,
+                        color: bgColor,
                       ),
-                      child: Text(
-                        item['customerName'],
-                        textAlign: TextAlign.center,
-                      ),
+                      child: Text(item['customerName'],
+                          textAlign: TextAlign.center, style: TextStyle(color: fontColor)),
                     ),
                     Positioned(
                       top: 0,
@@ -191,10 +202,13 @@ class SalesPoints extends ConsumerWidget {
                           onPressed: () {
                             ref.read(tasksRepositoryProvider).deleteItem(SalesPoint.fromMap(item));
                           },
-                          child: const Text('x'),
+                          child: const Text(
+                            'x',
+                            style: TextStyle(color: Colors.black54),
+                          ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 );
               }).toList(),
