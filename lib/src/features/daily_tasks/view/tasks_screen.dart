@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
@@ -99,11 +100,7 @@ class SalesPoints extends ConsumerWidget {
       groupedMap[salesmanName]?.add(salesPoint);
     }
 
-    // Populate the map with data from the list of maps
-    for (var map in salesPoints) {
-      String name = map['salesmanName'] as String;
-      groupedMap[name]?.add(map);
-    }
+    tempPrint(groupedMap);
 
     // Convert the map to a list of widgets
     List<Widget> widgetList = [];
