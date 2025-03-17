@@ -14,6 +14,7 @@ import 'package:tablets/src/common/widgets/circled_container.dart';
 import 'package:tablets/src/features/authentication/model/user_account.dart';
 import 'package:tablets/src/features/categories/controllers/category_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
+import 'package:tablets/src/features/daily_tasks/controllers/selected_date_provider.dart';
 import 'package:tablets/src/features/deleted_transactions/controllers/deleted_transaction_screen_controller.dart';
 import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_screen_controller.dart';
 import 'package:tablets/src/features/pending_transactions/repository/pending_transaction_db_cache_provider.dart';
@@ -349,6 +350,8 @@ class TasksButton extends ConsumerWidget {
         Navigator.of(context).pop();
         context.goNamed(route);
       }
+      // make datePicker equals today
+      ref.read(selectedDateProvider.notifier).setDate(DateTime.now());
     });
   }
 }

@@ -5,9 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/daily_tasks/controllers/selected_date_provider.dart';
@@ -23,7 +23,7 @@ class TasksScreen extends ConsumerWidget {
     return SizedBox(
       width: 200,
       child: FormBuilderDateTimePicker(
-        initialDate: DateTime.now(),
+        initialDate: ref.read(selectedDateProvider),
         name: 'date',
         textAlign: TextAlign.center,
         decoration: const InputDecoration(
@@ -50,7 +50,6 @@ class TasksScreen extends ConsumerWidget {
         child: Column(
           children: [
             _showDatePicker(ref),
-            VerticalGap.xl,
             Expanded(
               child: salesPointsAsyncValue.when(
                 data: (salespoints) => SalesPoints(salespoints),
@@ -71,7 +70,6 @@ class SalesPoints extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    tempPrint(salesPoints.length);
     final selectedDate = ref.watch(selectedDateProvider);
     // Create list of unique salesman names found in firebase for that date
     Set<String> uniqueSalesmanNames = {};
@@ -133,7 +131,7 @@ class SalesPoints extends ConsumerWidget {
                       final customer = ref
                           .read(customerDbCacheProvider.notifier)
                           .getItemByProperty('name', customerName);
-                      final salesPoint = SalesPoint(
+                      final newSalesPoint = SalesPoint(
                         salesmanName,
                         salesman['dbRef'],
                         customerName,
@@ -145,7 +143,8 @@ class SalesPoints extends ConsumerWidget {
                         [],
                         generateRandomString(len: 8),
                       );
-                      ref.read(tasksRepositoryProvider).addItem(salesPoint);
+                      //TODO to not add salespoint if it exists
+                      ref.read(tasksRepositoryProvider).addItem(newSalesPoint);
                     }
                   },
                 ),
@@ -305,11 +304,11 @@ Future<List<String>?> _showMultiSelectDialog(
 
                 // Confirm button to return selected values
 
-                ElevatedButton(
+                IconButton(
                   onPressed: () {
                     Navigator.of(context).pop(customers); // Return both selected values
                   },
-                  child: const Text('اضافة الزبائن'),
+                  icon: const ApproveIcon(),
                 ),
               ],
             ),
