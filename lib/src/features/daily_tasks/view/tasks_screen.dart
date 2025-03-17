@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
@@ -78,13 +77,13 @@ class SalesPoints extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // create list of unique salesman names found in firebase for that date
+    // Create list of unique salesman names found in firebase for that date
     Set<String> uniqueSalesmanNames = {};
     for (var salesPoint in salesPoints) {
       String salesmanName = salesPoint['salesmanName'] as String;
       uniqueSalesmanNames.add(salesmanName);
     }
-    // then add the salesmen not found in that day
+    // Then add the salesmen not found in that day
     final salesmenDbCache = ref.read(salesmanDbCacheProvider.notifier).data;
     final allSalemenNames = salesmenDbCache.map((salesman) => salesman['name']).toList();
     for (var salesmanName in allSalemenNames) {
@@ -99,8 +98,6 @@ class SalesPoints extends ConsumerWidget {
       String salesmanName = salesPoint['salesmanName'] as String;
       groupedMap[salesmanName]?.add(salesPoint);
     }
-
-    tempPrint(groupedMap);
 
     // Convert the map to a list of widgets
     List<Widget> widgetList = [];
@@ -159,54 +156,51 @@ class SalesPoints extends ConsumerWidget {
                     fit: BoxFit.scaleDown,
                     width: 60,
                   ),
-                ...customerMaps.map((item) {
-                  final color = !item['isVisited']
-                      ? Colors.red
-                      : item['hasTransaction']
-                          ? Colors.green
-                          : Colors.amber;
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      HorizontalGap.l,
-                      Stack(
-                        children: [
-                          Container(
-                            width: 150,
-                            height: 85,
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(Radius.circular(8)),
-                              color: color,
-                            ),
-                            child: Text(
-                              item['customerName'],
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Positioned(
-                            top: 0,
-                            left: 0,
-                            child: SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: TextButton(
-                                onPressed: () {
-                                  ref
-                                      .read(tasksRepositoryProvider)
-                                      .deleteItem(SalesPoint.fromMap(item));
-                                },
-                                child: const Text('x'),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  );
-                }),
               ],
-            )
+            ),
+            // Use Wrap instead of Row for customers
+            Wrap(
+              spacing: 8.0, // Space between items
+              runSpacing: 8.0, // Space between rows
+              children: customerMaps.map((item) {
+                final color = !item['isVisited']
+                    ? Colors.red
+                    : item['hasTransaction']
+                        ? Colors.green
+                        : Colors.amber;
+                return Stack(
+                  children: [
+                    Container(
+                      width: 140,
+                      height: 80,
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(8)),
+                        color: color,
+                      ),
+                      child: Text(
+                        item['customerName'],
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      child: SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: TextButton(
+                          onPressed: () {
+                            ref.read(tasksRepositoryProvider).deleteItem(SalesPoint.fromMap(item));
+                          },
+                          child: const Text('x'),
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              }).toList(),
+            ),
           ],
         ),
       );
@@ -216,102 +210,102 @@ class SalesPoints extends ConsumerWidget {
       children: widgetList,
     );
   }
+}
 
-  Future<List<String>?> _showMultiSelectDialog(
-      BuildContext context, WidgetRef ref, String salesmanName) async {
-    final customerDbCache = ref.read(customerDbCacheProvider.notifier).data;
-    List<String> customerNames =
-        customerDbCache.map((customer) => customer['name'] as String).toList();
+Future<List<String>?> _showMultiSelectDialog(
+    BuildContext context, WidgetRef ref, String salesmanName) async {
+  final customerDbCache = ref.read(customerDbCacheProvider.notifier).data;
+  List<String> customerNames =
+      customerDbCache.map((customer) => customer['name'] as String).toList();
 
-    final regionDbCache = ref.read(regionDbCacheProvider.notifier).data;
-    List<String> regionNames = regionDbCache.map((region) => region['name'] as String).toList();
+  final regionDbCache = ref.read(regionDbCacheProvider.notifier).data;
+  List<String> regionNames = regionDbCache.map((region) => region['name'] as String).toList();
 
-    final selectedValues = showDialog<List<String>?>(
-      context: context,
-      builder: (BuildContext context) {
-        List<String> customers = []; // to store customers selection from both dropdowns
-        return Dialog(
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            width: 400,
-            height: 400,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // Use min size to avoid unnecessary height
+  final selectedValues = showDialog<List<String>?>(
+    context: context,
+    builder: (BuildContext context) {
+      List<String> customers = []; // to store customers selection from both dropdowns
+      return Dialog(
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          width: 400,
+          height: 400,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Use min size to avoid unnecessary height
 
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10, bottom: 40, left: 25.0, right: 25.0),
-                    child: Text(
-                      salesmanName,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 40, left: 25.0, right: 25.0),
+                  child: Text(
+                    salesmanName,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
+                ),
 
-                  // First MultiSelectDialogField
+                // First MultiSelectDialogField
 
-                  MultiSelectDialogField(
-                    confirmText: Text(S.of(context).select),
-                    cancelText: Text(S.of(context).cancel),
-                    title: const Text('اختيار الزبائن'),
-                    buttonText: const Text(
-                      'اختيار الزبائن',
-                      style: TextStyle(color: Colors.black26, fontSize: 15),
-                    ),
-                    items: customerNames
-                        .map((String value) => MultiSelectItem<String>(value, value))
-                        .toList(),
-                    onConfirm: (List<String> values) {
-                      customers.addAll(values); // add selected customers
-                    },
-                    searchable: true,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
+                MultiSelectDialogField(
+                  confirmText: Text(S.of(context).select),
+                  cancelText: Text(S.of(context).cancel),
+                  title: const Text('اختيار الزبائن'),
+                  buttonText: const Text(
+                    'اختيار الزبائن',
+                    style: TextStyle(color: Colors.black26, fontSize: 15),
                   ),
-
-                  const SizedBox(height: 16), // Add some spacing
-
-                  // Second MultiSelectDialogField
-
-                  MultiSelectDialogField(
-                    confirmText: Text(S.of(context).select),
-                    cancelText: Text(S.of(context).cancel),
-                    title: const Text('اختيار المناطق'),
-                    buttonText: const Text(
-                      'اختيار المناطق',
-                      style: TextStyle(color: Colors.black26, fontSize: 15),
-                    ),
-                    items: regionNames
-                        .map((String value) => MultiSelectItem<String>(value, value))
-                        .toList(),
-                    onConfirm: (List<String> values) {},
-                    searchable: true,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
+                  items: customerNames
+                      .map((String value) => MultiSelectItem<String>(value, value))
+                      .toList(),
+                  onConfirm: (List<String> values) {
+                    customers.addAll(values); // add selected customers
+                  },
+                  searchable: true,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(4.0),
                   ),
+                ),
 
-                  const SizedBox(height: 16), // Add some spacing
+                const SizedBox(height: 16), // Add some spacing
 
-                  // Confirm button to return selected values
+                // Second MultiSelectDialogField
 
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(customers); // Return both selected values
-                    },
-                    child: const Text('اضافة الزبائن'),
+                MultiSelectDialogField(
+                  confirmText: Text(S.of(context).select),
+                  cancelText: Text(S.of(context).cancel),
+                  title: const Text('اختيار المناطق'),
+                  buttonText: const Text(
+                    'اختيار المناطق',
+                    style: TextStyle(color: Colors.black26, fontSize: 15),
                   ),
-                ],
-              ),
+                  items: regionNames
+                      .map((String value) => MultiSelectItem<String>(value, value))
+                      .toList(),
+                  onConfirm: (List<String> values) {},
+                  searchable: true,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(4.0),
+                  ),
+                ),
+
+                const SizedBox(height: 16), // Add some spacing
+
+                // Confirm button to return selected values
+
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(customers); // Return both selected values
+                  },
+                  child: const Text('اضافة الزبائن'),
+                ),
+              ],
             ),
           ),
-        );
-      },
-    );
+        ),
+      );
+    },
+  );
 
-    return selectedValues; // Return the selected values to the calling function
-  }
+  return selectedValues; // Return the selected values to the calling function
 }
