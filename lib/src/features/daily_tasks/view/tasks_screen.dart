@@ -17,17 +17,18 @@ import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.
 import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 
-class TasksScreen extends ConsumerWidget {
-  const TasksScreen({super.key});
+class DatePickerWidget extends ConsumerWidget {
+  const DatePickerWidget({super.key});
 
-  Widget _showDatePicker(WidgetRef ref) {
-    // Use ref.watch to listen for changes in the selectedDateProvider
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final DateTime? initialDate = ref.watch(selectedDateProvider);
 
     return SizedBox(
       width: 200,
       child: FormBuilderDateTimePicker(
         initialDate: initialDate, // TODO initial date is not displayed in the UI
+        //       name: 'date',
         name: 'date',
         textAlign: TextAlign.center,
         decoration: const InputDecoration(
@@ -37,12 +38,15 @@ class TasksScreen extends ConsumerWidget {
         inputType: InputType.date,
         format: DateFormat('dd-MM-yyyy'),
         onChanged: (value) {
-          // Update the provider with the new date
           ref.read(selectedDateProvider.notifier).setDate(value);
         },
       ),
     );
   }
+}
+
+class TasksScreen extends ConsumerWidget {
+  const TasksScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,7 +57,7 @@ class TasksScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(0),
         child: Column(
           children: [
-            _showDatePicker(ref),
+            const DatePickerWidget(),
             Expanded(
               child: salesPointsAsyncValue.when(
                 data: (salespoints) => SalesPoints(salespoints),
