@@ -152,6 +152,8 @@ class SalesPoints extends ConsumerWidget {
                         generateRandomString(len: 8),
                         [],
                         generateRandomString(len: 8),
+                        customer['x'],
+                        customer['y'],
                       );
                       //TODO to prevent adding new salespoint if it already exists
                       ref.read(tasksRepositoryProvider).addItem(newSalesPoint);
