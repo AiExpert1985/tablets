@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
@@ -20,20 +21,23 @@ class TasksScreen extends ConsumerWidget {
   const TasksScreen({super.key});
 
   Widget _showDatePicker(WidgetRef ref) {
+    // Use ref.watch to listen for changes in the selectedDateProvider
+    final DateTime? initialDate = ref.watch(selectedDateProvider);
+
     return SizedBox(
       width: 200,
       child: FormBuilderDateTimePicker(
-        initialDate: ref.read(selectedDateProvider),
+        initialDate: initialDate, // TODO initial date is not displayed in the UI
         name: 'date',
         textAlign: TextAlign.center,
         decoration: const InputDecoration(
-          labelStyle: TextStyle(color: Colors.red, fontSize: 17),
-          // labelText: S.of(context).from_date,
-          border: OutlineInputBorder(),
-        ),
+            labelStyle: TextStyle(color: Colors.red, fontSize: 15),
+            border: OutlineInputBorder(),
+            label: Text('اختيار اليوم')),
         inputType: InputType.date,
         format: DateFormat('dd-MM-yyyy'),
         onChanged: (value) {
+          // Update the provider with the new date
           ref.read(selectedDateProvider.notifier).setDate(value);
         },
       ),
@@ -143,7 +147,7 @@ class SalesPoints extends ConsumerWidget {
                         [],
                         generateRandomString(len: 8),
                       );
-                      //TODO to not add salespoint if it exists
+                      //TODO to prevent adding new salespoint if it already exists
                       ref.read(tasksRepositoryProvider).addItem(newSalesPoint);
                     }
                   },
@@ -235,7 +239,7 @@ Future<List<String>?> _showMultiSelectDialog(
   final selectedValues = showDialog<List<String>?>(
     context: context,
     builder: (BuildContext context) {
-      List<String> customers = []; // to store customers selection from both dropdowns
+      List<String> selectedCustomerNames = []; // to store customers selection from both dropdowns
       return Dialog(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -268,7 +272,7 @@ Future<List<String>?> _showMultiSelectDialog(
                       .map((String value) => MultiSelectItem<String>(value, value))
                       .toList(),
                   onConfirm: (List<String> values) {
-                    customers.addAll(values); // add selected customers
+                    selectedCustomerNames.addAll(values); // add selected customers
                   },
                   searchable: true,
                   decoration: BoxDecoration(
@@ -292,7 +296,18 @@ Future<List<String>?> _showMultiSelectDialog(
                   items: regionNames
                       .map((String value) => MultiSelectItem<String>(value, value))
                       .toList(),
-                  onConfirm: (List<String> values) {},
+                  onConfirm: (List<String> selectedRegionNames) {
+                    // convert regions to customer names, and then add it to
+                    for (var regionName in selectedRegionNames) {
+                      final regionCustomers = customerDbCache
+                          .where((customer) => customer['region'] == regionName)
+                          .toList();
+                      final regionCustomerNames =
+                          regionCustomers.map((customer) => customer['name'] as String).toList();
+                      tempPrint(regionCustomerNames);
+                      selectedCustomerNames.addAll(regionCustomerNames);
+                    }
+                  },
                   searchable: true,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
@@ -306,7 +321,7 @@ Future<List<String>?> _showMultiSelectDialog(
 
                 IconButton(
                   onPressed: () {
-                    Navigator.of(context).pop(customers); // Return both selected values
+                    Navigator.of(context).pop(selectedCustomerNames); // Return both selected values
                   },
                   icon: const ApproveIcon(),
                 ),
