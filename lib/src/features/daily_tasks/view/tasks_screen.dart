@@ -22,13 +22,9 @@ class DatePickerWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final DateTime? initialDate = ref.watch(selectedDateProvider);
-
     return SizedBox(
       width: 200,
       child: FormBuilderDateTimePicker(
-        initialDate: initialDate, // TODO initial date is not displayed in the UI
-        //       name: 'date',
         name: 'date',
         textAlign: TextAlign.center,
         decoration: const InputDecoration(
