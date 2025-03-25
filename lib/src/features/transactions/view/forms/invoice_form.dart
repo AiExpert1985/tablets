@@ -305,7 +305,7 @@ class TotalsRow extends ConsumerWidget {
     final formNavigator = ref.read(formNavigatorProvider);
         final isShowProfit = ref.watch(showProfitProvider);
     return SizedBox(
-        width: customerInvoiceFormWidth * 0.6,
+        width: customerInvoiceFormWidth * 0.8,
         child: Row(
           children: [
             FormInputField(
@@ -347,7 +347,7 @@ class TotalsRow extends ConsumerWidget {
                 formDataNotifier.updateProperties({totalWeightKey: value});
               },
             ),
-            HorizontalGap.xxl,
+            if(isShowProfit) HorizontalGap.xxl,
             if(isShowProfit)FormInputField(
               controller: textEditingNotifier.getController(transactionTotalProfitKey),
               isReadOnly: true,
@@ -360,7 +360,8 @@ class TotalsRow extends ConsumerWidget {
                 formDataNotifier.updateProperties({totalWeightKey: value});
               },
             ),
-            IconButton(onPressed: ()=> ref.read(showProfitProvider.notifier).state = !isShowProfit, icon: const Icon(Icons.hide_image))
+            HorizontalGap.xl,
+            IconButton(onPressed: ()=> ref.read(showProfitProvider.notifier).state = !isShowProfit, icon: const Icon(Icons.password))
           ],
         ));
   }
