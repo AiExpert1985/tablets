@@ -22,6 +22,7 @@ import 'package:tablets/src/features/products/controllers/product_screen_control
 import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/hide_profit_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_utils_controller.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
@@ -61,7 +62,7 @@ class ItemsList extends ConsumerWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            _buildItemsTitles(context, formDataNotifier, textEditingNotifier, hideGifts, hidePrice),
+            _buildItemsTitles(context, formDataNotifier, textEditingNotifier, hideGifts, hidePrice, ref),
             ..._buildDataRows(formDataNotifier, textEditingNotifier, productRepository, hideGifts,
                 hidePrice, transactionType, productDbCache, productScreenController, context, ref),
           ],
@@ -91,6 +92,7 @@ List<Widget> _buildDataRows(
   BuildContext context,
   WidgetRef ref,
 ) {
+          final isShowProfit = ref.watch(showProfitProvider);
   final formNavigator = ref.read(formNavigatorProvider);
   if (!formDataNotifier.data.containsKey(itemsKey) || formDataNotifier.data[itemsKey] is! List) {
     return const [];
@@ -108,14 +110,14 @@ List<Widget> _buildDataRows(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-              if (!hideGifts)
+              if (!hideGifts && isShowProfit)
                           TransactionFormInputField(
                 index, buyingPriceColumnWidth, itemsKey, itemBuyingPriceKey, transactionType,
                 isReadOnly: formNavigator.isReadOnly, isDisabled: formNavigator.isReadOnly, isOnSubmit: true, isFirst: true),
             CodeFormInputField(
                 index, codeColumnWidth, itemsKey, itemCodeKey, transactionType, items.length,
                 isReadOnly: formNavigator.isReadOnly,
-                isDisabled: formNavigator.isReadOnly),
+                isDisabled: formNavigator.isReadOnly, isFirst: !isShowProfit),
             _buildDropDownWithSearch(ref, formDataNotifier, textEditingNotifier, index,
                 nameColumnWidth, productDbCache, productScreenController, context, items.length,
                 isReadOnly: formNavigator.isReadOnly),
@@ -268,10 +270,11 @@ Widget _buildDeleteItemButton(
 }
 
 Widget _buildItemsTitles(BuildContext context, ItemFormData formDataNotifier,
-    TextControllerNotifier textEditingNotifier, bool hideGifts, bool hidePrice) {
+    TextControllerNotifier textEditingNotifier, bool hideGifts, bool hidePrice, WidgetRef ref) {
+      final isShowProfit = ref.watch(showProfitProvider);
   final titles = [
     // _buildAddItemButton(formDataNotifier, textEditingNotifier), // not needed, row auto added
-    if (!hideGifts) Text(S.of(context).product_buying_price, style: const TextStyle(color: Colors.white, fontSize: 14)),
+    if (!hideGifts && isShowProfit) Text(S.of(context).product_buying_price, style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).code, style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).item_name, style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).item_sold_quantity,
@@ -289,7 +292,7 @@ Widget _buildItemsTitles(BuildContext context, ItemFormData formDataNotifier,
   ];
 
   final widths = [
-    if (!hideGifts) buyingPriceColumnWidth,
+    if (!hideGifts && isShowProfit) buyingPriceColumnWidth,
     codeColumnWidth,
     nameColumnWidth,
     soldQuantityColumnWidth,
@@ -369,7 +372,7 @@ Widget _buildDropDownWithSearch(
         }
         // calculate the quantity of the product
         final productQuantity = calculateProductStock(context, ref, item['dbRef']);
-        if (productQuantity < 1) {
+        if (productQuantity < 1 && formDataNotifier.getProperty(transTypeKey) != TransactionType.vendorInvoice.name) {
           failureUserMessage(context, S.of(context).product_out_of_stock);
         }
         // updates related fields using the item selected (of type Map<String, dynamic>)
