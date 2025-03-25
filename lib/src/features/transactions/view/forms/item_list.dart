@@ -33,7 +33,7 @@ const double sequenceColumnWidth = customerInvoiceFormWidth * 0.06;
 const double nameColumnWidth = customerInvoiceFormWidth * 0.35;
 const double priceColumnWidth = customerInvoiceFormWidth * 0.145;
 const double soldQuantityColumnWidth = customerInvoiceFormWidth * 0.11;
-const double stockColumnWidth = customerInvoiceFormWidth * 0.15;
+const double stockColumnWidth = customerInvoiceFormWidth * 0.11;
 const double giftQuantityColumnWidth = customerInvoiceFormWidth * 0.11;
 const double soldTotalAmountColumnWidth = customerInvoiceFormWidth * 0.11;
 
@@ -108,15 +108,14 @@ List<Widget> _buildDataRows(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-              if (!hidePrice)
-              TransactionFormInputField(
-                  index, buyingPriceColumnWidth, itemsKey, itemBuyingPriceKey, transactionType,
-                  isReadOnly: formNavigator.isReadOnly, isDisabled: formNavigator.isReadOnly),
+              if (!hideGifts)
+                          TransactionFormInputField(
+                index, buyingPriceColumnWidth, itemsKey, itemBuyingPriceKey, transactionType,
+                isReadOnly: formNavigator.isReadOnly, isDisabled: formNavigator.isReadOnly, isOnSubmit: true, isFirst: true),
             CodeFormInputField(
                 index, codeColumnWidth, itemsKey, itemCodeKey, transactionType, items.length,
                 isReadOnly: formNavigator.isReadOnly,
-                isDisabled: formNavigator.isReadOnly,
-                isFirst: true),
+                isDisabled: formNavigator.isReadOnly),
             _buildDropDownWithSearch(ref, formDataNotifier, textEditingNotifier, index,
                 nameColumnWidth, productDbCache, productScreenController, context, items.length,
                 isReadOnly: formNavigator.isReadOnly),
@@ -272,7 +271,7 @@ Widget _buildItemsTitles(BuildContext context, ItemFormData formDataNotifier,
     TextControllerNotifier textEditingNotifier, bool hideGifts, bool hidePrice) {
   final titles = [
     // _buildAddItemButton(formDataNotifier, textEditingNotifier), // not needed, row auto added
-    Text(S.of(context).product_buying_price, style: const TextStyle(color: Colors.white, fontSize: 14)),
+    if (!hideGifts) Text(S.of(context).product_buying_price, style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).code, style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).item_name, style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).item_sold_quantity,
@@ -290,7 +289,7 @@ Widget _buildItemsTitles(BuildContext context, ItemFormData formDataNotifier,
   ];
 
   final widths = [
-    buyingPriceColumnWidth,
+    if (!hideGifts) buyingPriceColumnWidth,
     codeColumnWidth,
     nameColumnWidth,
     soldQuantityColumnWidth,
@@ -406,6 +405,7 @@ class TransactionFormInputField extends ConsumerWidget {
       this.isReadOnly = false,
       this.isFirst = false,
       this.isDisabled = false,
+      this.isOnSubmit = false,
       super.key});
 
   final int index;
@@ -417,6 +417,7 @@ class TransactionFormInputField extends ConsumerWidget {
   final bool isFirst;
   final bool isReadOnly;
   final bool isDisabled;
+  final bool isOnSubmit;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -431,6 +432,7 @@ class TransactionFormInputField extends ConsumerWidget {
         hideBorders: true,
         isRequired: false,
         isDisabled: isDisabled,
+        isOnSubmit: isOnSubmit,
         isReadOnly: isReadOnly,
         dataType: constants.FieldDataType.num,
         name: subProperty,
@@ -446,9 +448,11 @@ class TransactionFormInputField extends ConsumerWidget {
           if (soldQuantity == null || sellingPrice == null) {
             return;
           }
+          final buyingPrice = formDataNotifier.getSubProperty(property, index, itemBuyingPriceKey);
           final updatedSubProperties = {
             itemTotalAmountKey: soldQuantity * sellingPrice,
-            itemTotalWeightKey: soldQuantity * weight
+            itemTotalWeightKey: soldQuantity * weight,
+            itemBuyingPriceKey: buyingPrice,
           };
           formDataNotifier.updateSubProperties(property, updatedSubProperties, index: index);
           textEditingNotifier.updateSubControllers(property, updatedSubProperties, index: index);
@@ -466,7 +470,7 @@ class TransactionFormInputField extends ConsumerWidget {
           final giftQuantity =
               formDataNotifier.getSubProperty(property, index, itemGiftQuantityKey);
           if (giftQuantity == null) return;
-          final buyingPrice = formDataNotifier.getSubProperty(property, index, itemBuyingPriceKey);
+          
           final salesmanCommission =
               formDataNotifier.getSubProperty(property, index, itemSalesmanCommissionKey);
           final salesmanTotalCommission = salesmanCommission * soldQuantity;
@@ -492,6 +496,7 @@ class TransactionFormInputField extends ConsumerWidget {
               salesmanTransactionComssionKey: salesmanTransactionComssion
             },
           );
+          textEditingNotifier.updateControllers({transactionTotalProfitKey: transactionTotalProfit});
         },
       ),
       isLast: isLast,

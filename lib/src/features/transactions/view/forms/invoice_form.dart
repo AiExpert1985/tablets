@@ -345,6 +345,19 @@ class TotalsRow extends ConsumerWidget {
                 formDataNotifier.updateProperties({totalWeightKey: value});
               },
             ),
+            HorizontalGap.xxl,
+            FormInputField(
+              controller: textEditingNotifier.getController(transactionTotalProfitKey),
+              isReadOnly: true,
+              isDisabled: formNavigator.isReadOnly,
+              dataType: constants.FieldDataType.num,
+              label: S.of(context).invoice_profit,
+              name: totalWeightKey,
+              initialValue: formDataNotifier.getProperty(transactionTotalProfitKey),
+              onChangedFn: (value) {
+                formDataNotifier.updateProperties({totalWeightKey: value});
+              },
+            ),
           ],
         ));
   }
