@@ -27,14 +27,15 @@ import 'package:tablets/src/features/transactions/controllers/transaction_utils_
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/view/transaction_form.dart';
 
-const double codeColumnWidth = customerInvoiceFormWidth * 0.075;
+const double codeColumnWidth = customerInvoiceFormWidth * 0.11;
+const double buyingPriceColumnWidth = customerInvoiceFormWidth * 0.145;
 const double sequenceColumnWidth = customerInvoiceFormWidth * 0.06;
-const double nameColumnWidth = customerInvoiceFormWidth * 0.4;
+const double nameColumnWidth = customerInvoiceFormWidth * 0.35;
 const double priceColumnWidth = customerInvoiceFormWidth * 0.145;
-const double soldQuantityColumnWidth = customerInvoiceFormWidth * 0.15;
+const double soldQuantityColumnWidth = customerInvoiceFormWidth * 0.11;
 const double stockColumnWidth = customerInvoiceFormWidth * 0.15;
-const double giftQuantityColumnWidth = customerInvoiceFormWidth * 0.15;
-const double soldTotalAmountColumnWidth = customerInvoiceFormWidth * 0.15;
+const double giftQuantityColumnWidth = customerInvoiceFormWidth * 0.11;
+const double soldTotalAmountColumnWidth = customerInvoiceFormWidth * 0.11;
 
 class ItemsList extends ConsumerWidget {
   const ItemsList(this.hideGifts, this.hidePrice, this.transactionType, {super.key});
@@ -107,6 +108,10 @@ List<Widget> _buildDataRows(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+              if (!hidePrice)
+              TransactionFormInputField(
+                  index, buyingPriceColumnWidth, itemsKey, itemBuyingPriceKey, transactionType,
+                  isReadOnly: formNavigator.isReadOnly, isDisabled: formNavigator.isReadOnly),
             CodeFormInputField(
                 index, codeColumnWidth, itemsKey, itemCodeKey, transactionType, items.length,
                 isReadOnly: formNavigator.isReadOnly,
@@ -187,6 +192,7 @@ void addNewRow(ItemFormData formDataNotifier, TextControllerNotifier textEditing
     itemStockQuantityKey: 0,
     itemTotalProfitKey: 0,
     itemSalesmanTotalCommissionKey: 0,
+    itemBuyingPriceKey:0,
   });
   textEditingNotifier.updateSubControllers(itemsKey, {
     itemCodeKey: null,
@@ -194,7 +200,8 @@ void addNewRow(ItemFormData formDataNotifier, TextControllerNotifier textEditing
     itemSoldQuantityKey: 0,
     itemGiftQuantityKey: 0,
     itemTotalAmountKey: 0,
-    itemTotalWeightKey: 0
+    itemTotalWeightKey: 0,
+    itemBuyingPriceKey:0,
   });
 }
 
@@ -265,6 +272,7 @@ Widget _buildItemsTitles(BuildContext context, ItemFormData formDataNotifier,
     TextControllerNotifier textEditingNotifier, bool hideGifts, bool hidePrice) {
   final titles = [
     // _buildAddItemButton(formDataNotifier, textEditingNotifier), // not needed, row auto added
+    Text(S.of(context).product_buying_price, style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).code, style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).item_name, style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).item_sold_quantity,
@@ -282,6 +290,7 @@ Widget _buildItemsTitles(BuildContext context, ItemFormData formDataNotifier,
   ];
 
   final widths = [
+    buyingPriceColumnWidth,
     codeColumnWidth,
     nameColumnWidth,
     soldQuantityColumnWidth,
