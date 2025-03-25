@@ -20,6 +20,8 @@ class SalesPoint implements BaseItem {
   List<String> imageUrls;
   @override
   String name;
+  double? x;
+  double? y;
 
   SalesPoint(
     this.salesmanName,
@@ -32,6 +34,8 @@ class SalesPoint implements BaseItem {
     this.dbRef,
     this.imageUrls,
     this.name,
+    this.x,
+    this.y,
   );
 
   @override
@@ -48,6 +52,8 @@ class SalesPoint implements BaseItem {
     String? dbRef,
     List<String>? imageUrls,
     String? name,
+    double? x,
+    double? y,
   }) {
     return SalesPoint(
       salesmanName ?? this.salesmanName,
@@ -60,6 +66,8 @@ class SalesPoint implements BaseItem {
       dbRef ?? this.dbRef,
       imageUrls ?? this.imageUrls,
       name ?? this.name,
+      x ?? this.x,
+      y ?? this.y,
     );
   }
 
@@ -76,6 +84,8 @@ class SalesPoint implements BaseItem {
       'dbRef': dbRef,
       'imageUrls': imageUrls,
       'name': name,
+      'x': x,
+      'y': y,
     };
   }
 
@@ -91,6 +101,8 @@ class SalesPoint implements BaseItem {
       map['dbRef'] as String,
       List<String>.from((map['imageUrls'])),
       map['name'] as String,
+      map['x'] != null ? map['x'] as double : null,
+      map['y'] != null ? map['y'] as double : null,
     );
   }
 
@@ -101,7 +113,7 @@ class SalesPoint implements BaseItem {
 
   @override
   String toString() {
-    return 'SalesPoint(salesmanName: $salesmanName, salesmanDbRef: $salesmanDbRef, customerName: $customerName, customerDbRef: $customerDbRef, date: $date, isVisited: $isVisited, hasTransaction: $hasTransaction, dbRef: $dbRef, imageUrls: $imageUrls, name: $name)';
+    return 'SalesPoint(salesmanName: $salesmanName, salesmanDbRef: $salesmanDbRef, customerName: $customerName, customerDbRef: $customerDbRef, date: $date, isVisited: $isVisited, hasTransaction: $hasTransaction, dbRef: $dbRef, imageUrls: $imageUrls, name: $name, x: $x, y: $y)';
   }
 
   @override
@@ -117,7 +129,9 @@ class SalesPoint implements BaseItem {
         other.hasTransaction == hasTransaction &&
         other.dbRef == dbRef &&
         listEquals(other.imageUrls, imageUrls) &&
-        other.name == name;
+        other.name == name &&
+        other.x == x &&
+        other.y == y;
   }
 
   @override
@@ -131,6 +145,8 @@ class SalesPoint implements BaseItem {
         hasTransaction.hashCode ^
         dbRef.hashCode ^
         imageUrls.hashCode ^
-        name.hashCode;
+        name.hashCode ^
+        x.hashCode ^
+        y.hashCode;
   }
 }

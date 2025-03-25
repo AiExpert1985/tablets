@@ -17,17 +17,14 @@ import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.
 import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 
-class TasksScreen extends ConsumerWidget {
-  const TasksScreen({super.key});
+class DatePickerWidget extends ConsumerWidget {
+  const DatePickerWidget({super.key});
 
-  Widget _showDatePicker(WidgetRef ref) {
-    // Use ref.watch to listen for changes in the selectedDateProvider
-    final DateTime? initialDate = ref.watch(selectedDateProvider);
-
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       width: 200,
       child: FormBuilderDateTimePicker(
-        initialDate: initialDate, // TODO initial date is not displayed in the UI
         name: 'date',
         textAlign: TextAlign.center,
         decoration: const InputDecoration(
@@ -37,12 +34,15 @@ class TasksScreen extends ConsumerWidget {
         inputType: InputType.date,
         format: DateFormat('dd-MM-yyyy'),
         onChanged: (value) {
-          // Update the provider with the new date
           ref.read(selectedDateProvider.notifier).setDate(value);
         },
       ),
     );
   }
+}
+
+class TasksScreen extends ConsumerWidget {
+  const TasksScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,7 +53,7 @@ class TasksScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(0),
         child: Column(
           children: [
-            _showDatePicker(ref),
+            const DatePickerWidget(),
             Expanded(
               child: salesPointsAsyncValue.when(
                 data: (salespoints) => SalesPoints(salespoints),
@@ -88,18 +88,18 @@ class SalesPoints extends ConsumerWidget {
       uniqueSalesmanNames.add(salesmanName);
     }
 
-    Map<String, List<Map<String, dynamic>>> groupedMap = {};
+    Map<String, List<Map<String, dynamic>>> salesmenTasks = {};
     for (var name in uniqueSalesmanNames) {
-      groupedMap[name] = []; // Initialize each key with an empty list
+      salesmenTasks[name] = []; // Initialize each key with an empty list
     }
     for (var salesPoint in salesPoints) {
       String salesmanName = salesPoint['salesmanName'] as String;
-      groupedMap[salesmanName]?.add(salesPoint);
+      salesmenTasks[salesmanName]?.add(salesPoint);
     }
 
     // Convert the map to a list of widgets
     List<Widget> widgetList = [];
-    groupedMap.forEach((salesmanName, tasks) {
+    salesmenTasks.forEach((salesmanName, tasks) {
       // Sort customers by the 'region' property
       // Sort the list by the 'age' property, handling nulls
 
@@ -112,6 +112,8 @@ class SalesPoints extends ConsumerWidget {
         if (regionB == null) return -1; // Nulls are considered greater
         return regionA.compareTo(regionB); // Compare non-null ages
       });
+      List<String> tasksCustomerNames =
+          tasks.map((task) => task['customerName'] as String).toList();
       widgetList.add(
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -132,6 +134,10 @@ class SalesPoints extends ConsumerWidget {
                     final selectedCustomerNames =
                         await _showMultiSelectDialog(context, ref, salesmanName) ?? [];
                     for (var customerName in selectedCustomerNames) {
+                      if (tasksCustomerNames.contains(customerName)) {
+                        // if name already exists (it is surely same dates no need to check it), pass it
+                        return;
+                      }
                       final customer = ref
                           .read(customerDbCacheProvider.notifier)
                           .getItemByProperty('name', customerName);
@@ -146,6 +152,8 @@ class SalesPoints extends ConsumerWidget {
                         generateRandomString(len: 8),
                         [],
                         generateRandomString(len: 8),
+                        customer['x'],
+                        customer['y'],
                       );
                       //TODO to prevent adding new salespoint if it already exists
                       ref.read(tasksRepositoryProvider).addItem(newSalesPoint);
@@ -240,11 +248,12 @@ Future<List<String>?> _showMultiSelectDialog(
     context: context,
     builder: (BuildContext context) {
       List<String> selectedCustomerNames = []; // to store customers selection from both dropdowns
+      List<String> selectedRegions = [];
       return Dialog(
         child: Container(
           padding: const EdgeInsets.all(20),
           width: 400,
-          height: 400,
+          height: 800,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min, // Use min size to avoid unnecessary height
@@ -261,6 +270,9 @@ Future<List<String>?> _showMultiSelectDialog(
                 // First MultiSelectDialogField
 
                 MultiSelectDialogField(
+                  dialogWidth: 400,
+                  dialogHeight: 700,
+                  initialValue: selectedCustomerNames,
                   confirmText: Text(S.of(context).select),
                   cancelText: Text(S.of(context).cancel),
                   title: const Text('اختيار الزبائن'),
@@ -271,8 +283,12 @@ Future<List<String>?> _showMultiSelectDialog(
                   items: customerNames
                       .map((String value) => MultiSelectItem<String>(value, value))
                       .toList(),
-                  onConfirm: (List<String> values) {
-                    selectedCustomerNames.addAll(values); // add selected customers
+                  onConfirm: (List<String> newCustomerNames) {
+                    for (var newName in newCustomerNames) {
+                      if (!selectedCustomerNames.contains(newName)) {
+                        selectedCustomerNames.add(newName);
+                      }
+                    }
                   },
                   searchable: true,
                   decoration: BoxDecoration(
@@ -286,6 +302,9 @@ Future<List<String>?> _showMultiSelectDialog(
                 // Second MultiSelectDialogField
 
                 MultiSelectDialogField(
+                  dialogWidth: 400,
+                  dialogHeight: 700,
+                  initialValue: selectedRegions,
                   confirmText: Text(S.of(context).select),
                   cancelText: Text(S.of(context).cancel),
                   title: const Text('اختيار المناطق'),
@@ -297,16 +316,23 @@ Future<List<String>?> _showMultiSelectDialog(
                       .map((String value) => MultiSelectItem<String>(value, value))
                       .toList(),
                   onConfirm: (List<String> selectedRegionNames) {
-                    // convert regions to customer names, and then add it to
+                    selectedRegions = selectedRegionNames; // to reflect selected regions
+                    // convert regions to customer names, and then add it to selected names
+                    // note that selected names is for both regions and customers
                     for (var regionName in selectedRegionNames) {
                       final regionCustomers = customerDbCache
                           .where((customer) => customer['region'] == regionName)
                           .toList();
                       final regionCustomerNames =
                           regionCustomers.map((customer) => customer['name'] as String).toList();
-                      tempPrint(regionCustomerNames);
-                      selectedCustomerNames.addAll(regionCustomerNames);
+                      for (var customerName in regionCustomerNames) {
+                        // to avoid duplicate customer names
+                        if (!selectedCustomerNames.contains(customerName)) {
+                          selectedCustomerNames.add(customerName);
+                        }
+                      }
                     }
+                    tempPrint(selectedCustomerNames);
                   },
                   searchable: true,
                   decoration: BoxDecoration(
