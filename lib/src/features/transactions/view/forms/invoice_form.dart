@@ -303,7 +303,7 @@ class TotalsRow extends ConsumerWidget {
     // final customerScreenData = ref.read(customerScreenDataProvider);
     final transactionUtils = ref.read(transactionUtilsControllerProvider);
     final formNavigator = ref.read(formNavigatorProvider);
-        final isShowProfit = ref.watch(showProfitProvider);
+    final isShowProfit = ref.watch(showProfitProvider);
     return SizedBox(
         width: customerInvoiceFormWidth * 0.8,
         child: Row(
@@ -347,21 +347,24 @@ class TotalsRow extends ConsumerWidget {
                 formDataNotifier.updateProperties({totalWeightKey: value});
               },
             ),
-            if(isShowProfit) HorizontalGap.xxl,
-            if(isShowProfit)FormInputField(
-              controller: textEditingNotifier.getController(transactionTotalProfitKey),
-              isReadOnly: true,
-              isDisabled: formNavigator.isReadOnly,
-              dataType: constants.FieldDataType.num,
-              label: S.of(context).invoice_profit,
-              name: totalWeightKey,
-              initialValue: formDataNotifier.getProperty(transactionTotalProfitKey),
-              onChangedFn: (value) {
-                formDataNotifier.updateProperties({totalWeightKey: value});
-              },
-            ),
+            if (isShowProfit) HorizontalGap.xxl,
+            if (isShowProfit)
+              FormInputField(
+                controller: textEditingNotifier.getController(transactionTotalProfitKey),
+                isReadOnly: true,
+                isDisabled: formNavigator.isReadOnly,
+                dataType: constants.FieldDataType.num,
+                label: S.of(context).invoice_profit,
+                name: transactionTotalProfitKey,
+                initialValue: formDataNotifier.getProperty(transactionTotalProfitKey),
+                onChangedFn: (value) {
+                  formDataNotifier.updateProperties({transactionTotalProfitKey: value});
+                },
+              ),
             HorizontalGap.xl,
-            IconButton(onPressed: ()=> ref.read(showProfitProvider.notifier).state = !isShowProfit, icon: const Icon(Icons.password))
+            IconButton(
+                onPressed: () => ref.read(showProfitProvider.notifier).state = !isShowProfit,
+                icon: const Icon(Icons.password))
           ],
         ));
   }
