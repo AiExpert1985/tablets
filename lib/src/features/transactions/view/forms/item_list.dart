@@ -121,6 +121,7 @@ List<Widget> _buildDataRows(
                 isReadOnly: formNavigator.isReadOnly,
                 isDisabled: formNavigator.isReadOnly,
                 isFirst: true,
+                isOnSubmit: true,
               ),
             CodeFormInputField(
               index,
