@@ -62,7 +62,8 @@ class ItemsList extends ConsumerWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            _buildItemsTitles(context, formDataNotifier, textEditingNotifier, hideGifts, hidePrice, ref),
+            _buildItemsTitles(
+                context, formDataNotifier, textEditingNotifier, hideGifts, hidePrice, ref),
             ..._buildDataRows(formDataNotifier, textEditingNotifier, productRepository, hideGifts,
                 hidePrice, transactionType, productDbCache, productScreenController, context, ref),
           ],
@@ -92,7 +93,7 @@ List<Widget> _buildDataRows(
   BuildContext context,
   WidgetRef ref,
 ) {
-          final isShowProfit = ref.watch(showProfitProvider);
+  final isShowProfit = ref.watch(showProfitProvider);
   final formNavigator = ref.read(formNavigatorProvider);
   if (!formDataNotifier.data.containsKey(itemsKey) || formDataNotifier.data[itemsKey] is! List) {
     return const [];
@@ -110,14 +111,28 @@ List<Widget> _buildDataRows(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-              if (!hideGifts && isShowProfit)
-                          TransactionFormInputField(
-                index, buyingPriceColumnWidth, itemsKey, itemBuyingPriceKey, transactionType,
-                isReadOnly: formNavigator.isReadOnly, isDisabled: formNavigator.isReadOnly, isOnSubmit: true, isFirst: true),
-            CodeFormInputField(
-                index, codeColumnWidth, itemsKey, itemCodeKey, transactionType, items.length,
+            if (!hideGifts && isShowProfit)
+              TransactionFormInputField(
+                index,
+                buyingPriceColumnWidth,
+                itemsKey,
+                itemBuyingPriceKey,
+                transactionType,
                 isReadOnly: formNavigator.isReadOnly,
-                isDisabled: formNavigator.isReadOnly, isFirst: !isShowProfit),
+                isDisabled: formNavigator.isReadOnly,
+                isFirst: true,
+              ),
+            CodeFormInputField(
+              index,
+              codeColumnWidth,
+              itemsKey,
+              itemCodeKey,
+              transactionType,
+              items.length,
+              isReadOnly: formNavigator.isReadOnly,
+              isDisabled: formNavigator.isReadOnly,
+              isFirst: !isShowProfit,
+            ),
             _buildDropDownWithSearch(ref, formDataNotifier, textEditingNotifier, index,
                 nameColumnWidth, productDbCache, productScreenController, context, items.length,
                 isReadOnly: formNavigator.isReadOnly),
@@ -193,7 +208,7 @@ void addNewRow(ItemFormData formDataNotifier, TextControllerNotifier textEditing
     itemStockQuantityKey: 0,
     itemTotalProfitKey: 0,
     itemSalesmanTotalCommissionKey: 0,
-    itemBuyingPriceKey:0,
+    itemBuyingPriceKey: 0,
   });
   textEditingNotifier.updateSubControllers(itemsKey, {
     itemCodeKey: null,
@@ -202,7 +217,7 @@ void addNewRow(ItemFormData formDataNotifier, TextControllerNotifier textEditing
     itemGiftQuantityKey: 0,
     itemTotalAmountKey: 0,
     itemTotalWeightKey: 0,
-    itemBuyingPriceKey:0,
+    itemBuyingPriceKey: 0,
   });
 }
 
@@ -271,10 +286,12 @@ Widget _buildDeleteItemButton(
 
 Widget _buildItemsTitles(BuildContext context, ItemFormData formDataNotifier,
     TextControllerNotifier textEditingNotifier, bool hideGifts, bool hidePrice, WidgetRef ref) {
-      final isShowProfit = ref.watch(showProfitProvider);
+  final isShowProfit = ref.watch(showProfitProvider);
   final titles = [
     // _buildAddItemButton(formDataNotifier, textEditingNotifier), // not needed, row auto added
-    if (!hideGifts && isShowProfit) Text(S.of(context).product_buying_price, style: const TextStyle(color: Colors.white, fontSize: 14)),
+    if (!hideGifts && isShowProfit)
+      Text(S.of(context).product_buying_price,
+          style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).code, style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).item_name, style: const TextStyle(color: Colors.white, fontSize: 14)),
     Text(S.of(context).item_sold_quantity,
@@ -372,7 +389,8 @@ Widget _buildDropDownWithSearch(
         }
         // calculate the quantity of the product
         final productQuantity = calculateProductStock(context, ref, item['dbRef']);
-        if (productQuantity < 1 && formDataNotifier.getProperty(transTypeKey) != TransactionType.vendorInvoice.name) {
+        if (productQuantity < 1 &&
+            formDataNotifier.getProperty(transTypeKey) != TransactionType.vendorInvoice.name) {
           failureUserMessage(context, S.of(context).product_out_of_stock);
         }
         // updates related fields using the item selected (of type Map<String, dynamic>)
@@ -473,7 +491,7 @@ class TransactionFormInputField extends ConsumerWidget {
           final giftQuantity =
               formDataNotifier.getSubProperty(property, index, itemGiftQuantityKey);
           if (giftQuantity == null) return;
-          
+
           final salesmanCommission =
               formDataNotifier.getSubProperty(property, index, itemSalesmanCommissionKey);
           final salesmanTotalCommission = salesmanCommission * soldQuantity;
@@ -499,7 +517,8 @@ class TransactionFormInputField extends ConsumerWidget {
               salesmanTransactionComssionKey: salesmanTransactionComssion
             },
           );
-          textEditingNotifier.updateControllers({transactionTotalProfitKey: transactionTotalProfit});
+          textEditingNotifier
+              .updateControllers({transactionTotalProfitKey: transactionTotalProfit});
         },
       ),
       isLast: isLast,
