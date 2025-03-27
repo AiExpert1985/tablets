@@ -14,6 +14,7 @@ import 'package:tablets/src/features/customers/repository/customer_db_cache_prov
 import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_debt_info_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
@@ -30,6 +31,7 @@ class TransactionShowForm {
       {String? formType,
       Transaction? transaction,
       DbCache? transactionDbCache}) {
+    tempPrint(ref.read(formNavigatorProvider).isReadOnly);
     if (formType == null && transaction?.transactionType == null) {
       errorPrint(
           'both formType and transaction can not be null, one of them is needed for transactionType');
@@ -97,7 +99,7 @@ class TransactionShowForm {
       itemStockQuantityKey: 0,
       itemTotalProfitKey: 0,
       itemSalesmanTotalCommissionKey: 0,
-      itemBuyingPriceKey:0,
+      itemBuyingPriceKey: 0,
     });
     if (transaction != null) return; // if we are in edit, we don't need further initialization
     String paymentType = settingsDataNotifier.getProperty(settingsPaymentTypeKey) ??
@@ -152,7 +154,8 @@ class TransactionShowForm {
         itemBuyingPriceKey: buyingPrice,
         itemSoldQuantityKey: soldQuantity,
         itemGiftQuantityKey: giftQuantity,
-        itemTotalAmountKey: soldQuantity == null || sellingPrice == null ? 0 : soldQuantity * sellingPrice,
+        itemTotalAmountKey:
+            soldQuantity == null || sellingPrice == null ? 0 : soldQuantity * sellingPrice,
         itemTotalWeightKey: soldQuantity == null || weight == null ? 0 : soldQuantity * weight,
       });
       // I create textEditingControllers for fields that:
