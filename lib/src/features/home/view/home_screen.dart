@@ -224,7 +224,6 @@ class FastAccessFormButton extends ConsumerWidget {
       ),
       onPressed: () async {
         fromNavigator.isReadOnly = false;
-
         // checkTransactionsTotals(ref);
         // first we set pageLoadingNotifier to true, to prevent any side bar button press
         // until initialization is completed
@@ -494,7 +493,6 @@ Widget buildSoldItemsButton(BuildContext context, WidgetRef ref, {bool isSupervi
         }
         List<List<dynamic>> soldItemsList = salesmanScreenController.salesmanItemsSold(
             salesmanData['dbRef'], startDate, endDate, ref);
-
         if (isSupervisor) {
           // filter items not to show for the supervisor
           soldItemsList = soldItemsList.where((item) {
