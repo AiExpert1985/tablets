@@ -5,6 +5,7 @@ import 'package:tablets/src/common/widgets/empty_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
+import 'package:tablets/src/features/supplier_discount/controllers/supplier_discount_form_controller.dart';
 import 'package:tablets/src/features/supplier_discount/model/supplier_discount.dart';
 import 'package:tablets/src/features/supplier_discount/repository/supplier_discount_repository_provider.dart';
 import 'package:tablets/src/features/supplier_discount/view/supplier_discount_form.dart';
@@ -83,7 +84,6 @@ class ListHeaders extends ConsumerWidget {
     return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        MainScreenPlaceholder(width: 20, isExpanded: false),
         Text('تسلسل'),
         Text('المجهز'),
         Text('المادة'),
@@ -126,6 +126,7 @@ class SupplierDiscountFloatingButtons extends ConsumerWidget {
   const SupplierDiscountFloatingButtons({super.key});
 
   void showAddSupplierDiscountForm(BuildContext context, WidgetRef ref) {
+    ref.read(supplierDiscountFormDataProvider.notifier).reset();
     showDialog(
       context: context,
       builder: (BuildContext ctx) => const SupplierDiscountForm(),
