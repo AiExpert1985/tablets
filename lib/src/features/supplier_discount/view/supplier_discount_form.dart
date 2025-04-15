@@ -8,6 +8,8 @@ import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/regions/view/region_form_fields.dart';
+import 'package:tablets/src/features/supplier_discount/model/supplier_discount.dart';
+import 'package:tablets/src/features/supplier_discount/repository/supplier_discount_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class SupplierDiscountForm extends ConsumerWidget {
@@ -41,7 +43,7 @@ class SupplierDiscountForm extends ConsumerWidget {
         ),
         buttons: [
           IconButton(
-            onPressed: () => _onSavePress(context),
+            onPressed: () => _onSavePress(context, ref),
             icon: const SaveIcon(),
           ),
           IconButton(
@@ -55,11 +57,24 @@ class SupplierDiscountForm extends ConsumerWidget {
     );
   }
 
-  void _onSavePress(
-    BuildContext context,
-  ) {}
+  void _onSavePress(BuildContext context, WidgetRef ref) {
+    final discountRep = ref.read(supplierDiscountRepositoryProvider);
+    final discount = SupplierDiscount(
+        dbRef: 'werwerwer',
+        name: 'malksdfsdf',
+        supplierDbRef: 'tey456456',
+        supplierName: 'rhgrey45',
+        productDbRef: 'erhry45645',
+        productName: 'rtyrtyery',
+        date: DateTime.now(),
+        discountAmount: 1111,
+        newPrice: 111111,
+        quantity: 10);
+    discountRep.addItem(discount);
+    Navigator.pop(context);
+  }
 
-  void _onDeletePressed(
-    BuildContext context,
-  ) {}
+  void _onDeletePressed(BuildContext context) {
+    Navigator.pop(context);
+  }
 }

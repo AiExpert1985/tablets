@@ -7,6 +7,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/src/common/widgets/main_screen_list_cells.dart';
 import 'package:tablets/src/features/supplier_discount/model/supplier_discount.dart';
 import 'package:tablets/src/features/supplier_discount/repository/supplier_discount_repository_provider.dart';
+import 'package:tablets/src/features/supplier_discount/view/supplier_discount_form.dart';
 
 class SupplierDiscountScreen extends ConsumerWidget {
   const SupplierDiscountScreen({super.key});
@@ -83,6 +84,7 @@ class ListHeaders extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         MainScreenPlaceholder(width: 20, isExpanded: false),
+        Text('تسلسل'),
         Text('المجهز'),
         Text('المادة'),
         Text('التاريخ'),
@@ -107,6 +109,7 @@ class DataRow extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          MainScreenNumberedEditButton(sequence, () {}),
           Text(discount.supplierName),
           Text(discount.productName),
           Text(formatDateTime(discount.date)),
@@ -123,29 +126,10 @@ class SupplierDiscountFloatingButtons extends ConsumerWidget {
   const SupplierDiscountFloatingButtons({super.key});
 
   void showAddSupplierDiscountForm(BuildContext context, WidgetRef ref) {
-    final discountRep = ref.read(supplierDiscountRepositoryProvider);
-    final discount = SupplierDiscount(
-        dbRef: 'werwerwer',
-        name: 'malksdfsdf',
-        supplierDbRef: 'tey456456',
-        supplierName: 'rhgrey45',
-        productDbRef: 'erhry45645',
-        productName: 'rtyrtyery',
-        date: DateTime.now(),
-        discountAmount: 1111,
-        newPrice: 111111,
-        quantity: 10);
-    discountRep.addItem(discount);
-    // final formDataNotifier = ref.read(productFormDataProvider.notifier);
-
-    // formDataNotifier.initialize();
-    // formDataNotifier.updateProperties({'initialDate': DateTime.now()});
-    // final imagePicker = ref.read(imagePickerProvider.notifier);
-    // imagePicker.initialize();
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext ctx) => const ProductForm(),
-    // ).whenComplete(imagePicker.close);
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => const SupplierDiscountForm(),
+    );
   }
 
   @override
