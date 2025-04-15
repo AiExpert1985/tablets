@@ -12,6 +12,7 @@ import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/supplier_discount/controllers/supplier_discount_form_controller.dart';
 import 'package:tablets/src/features/supplier_discount/model/supplier_discount.dart';
 import 'package:tablets/src/features/supplier_discount/repository/supplier_discount_repository_provider.dart';
+import 'package:tablets/src/features/supplier_discount/services/apply_discount.dart';
 import 'package:tablets/src/features/supplier_discount/view/supplier_discount_form_fields.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
@@ -61,6 +62,7 @@ class SupplierDiscountForm extends ConsumerWidget {
   void _onSavePress(BuildContext context, WidgetRef ref) {
     final discountRep = ref.read(supplierDiscountRepositoryProvider);
     final formDataNotifier = ref.read(supplierDiscountFormDataProvider.notifier);
+    final supplierDiscountService = ref.read(supplierDiscountServiceProvider);
     addRequiredProperties(ref);
     bool isValid = userEnteredAllData(formDataNotifier.data);
     if (!isValid) {
@@ -70,6 +72,7 @@ class SupplierDiscountForm extends ConsumerWidget {
     final discount = SupplierDiscount.fromMap(formDataNotifier.data);
     discountRep.addItem(discount);
     formDataNotifier.reset();
+    supplierDiscountService.applySupplierDiscount(ref, discount);
     Navigator.pop(context);
   }
 
