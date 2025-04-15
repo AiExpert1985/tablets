@@ -1,10 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
+import 'package:tablets/src/common/widgets/form_fields/date_picker.dart';
+import 'package:tablets/src/common/widgets/form_fields/drop_down_with_search.dart';
 import 'package:tablets/src/common/widgets/form_fields/edit_box.dart';
+import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/supplier_discount/controllers/supplier_discount_form_controller.dart';
+import 'package:tablets/src/features/vendors/repository/vendor_db_cache_provider.dart';
 
 class SupplierDiscountFormFields extends ConsumerWidget {
   const SupplierDiscountFormFields({super.key});
@@ -46,11 +50,35 @@ class SupplierDiscountFormFields extends ConsumerWidget {
   }
 
   Widget _buildSupplierName(WidgetRef ref) {
-    return const Text('hi');
+    final formDataNotifier = ref.watch(supplierDiscountFormDataProvider.notifier);
+    final dbCache = ref.read(vendorDbCacheProvider.notifier);
+    return DropDownWithSearchFormField(
+      label: 'اسم المجهز',
+      initialValue: formDataNotifier.getProperty('supplierName'),
+      itemsList: dbCache.data,
+      onChangedFn: (item) {
+        formDataNotifier.updateProperties({
+          'supplierName': item['name'],
+          'supplierDbRef': item['dbRef'],
+        });
+      },
+    );
   }
 
   Widget _buildProductName(WidgetRef ref) {
-    return const Text('hi');
+    final formDataNotifier = ref.watch(supplierDiscountFormDataProvider.notifier);
+    final dbCache = ref.read(productDbCacheProvider.notifier);
+    return DropDownWithSearchFormField(
+      label: 'اسم المادة',
+      initialValue: formDataNotifier.getProperty('productName'),
+      itemsList: dbCache.data,
+      onChangedFn: (item) {
+        formDataNotifier.updateProperties({
+          'productName': item['name'],
+          'productDbRef': item['dbRef'],
+        });
+      },
+    );
   }
 
   Widget _buildQuantity(WidgetRef ref) {
@@ -80,7 +108,17 @@ class SupplierDiscountFormFields extends ConsumerWidget {
   }
 
   Widget _buildDate(WidgetRef ref) {
-    return const Text('hi');
+    final formDataNotifier = ref.watch(supplierDiscountFormDataProvider.notifier);
+    return FormDatePickerField(
+      initialValue: formDataNotifier.getProperty('date') is Timestamp
+          ? formDataNotifier.getProperty('date').toDate()
+          : formDataNotifier.getProperty('date'),
+      name: 'date',
+      label: 'التاريخ',
+      onChangedFn: (date) {
+        formDataNotifier.updateProperties({'date': Timestamp.fromDate(date!)});
+      },
+    );
   }
 
   Widget _buildNewPrice(WidgetRef ref) {
@@ -96,15 +134,3 @@ class SupplierDiscountFormFields extends ConsumerWidget {
     );
   }
 }
-
-
-    // final formDataNotifier = ref.watch(supplierDiscountFormDataProvider.notifier);
-    // return FormInputField(
-    //   onChangedFn: (value) {
-    //     formDataNotifier.updateProperties({'name': value});
-    //   },
-    //   dataType: FieldDataType.text,
-    //   name: 'name',
-    //   label: S.of(context).region_name,
-    //   initialValue: formDataNotifier.getProperty('name'),
-    // );
