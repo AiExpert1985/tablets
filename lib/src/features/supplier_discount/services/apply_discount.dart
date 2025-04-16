@@ -18,7 +18,7 @@ class SupplierDiscountService {
       for (var item in transaction['items']) {
         if (item['dbRef'] == discount.productDbRef) {
           isTransactionUpdated = true;
-          if (remainingQuantity < item['soldQuantity']) {
+          if (remainingQuantity <= item['soldQuantity']) {
             // create a new item with quantity remained & new Price
             final newItem = deepCopyMap(item);
             newItem['soldQuantity'] = remainingQuantity;
@@ -27,8 +27,11 @@ class SupplierDiscountService {
             newItems.add(newItem);
             // reduce quantity of original item
             item['soldQuantity'] -= remainingQuantity;
+            remainingQuantity = 0;
+            break;
           } else {
             item['sellingPrice'] = discount.newPrice;
+            remainingQuantity -= item['soldQuantity'];
           }
           item['itemTotalAmount'] = item['soldQuantity'] * item['sellingPrice'];
         }
@@ -45,6 +48,7 @@ class SupplierDiscountService {
         transaction['subTotalAmount'] = newSubTotalAmount;
         transaction['totalAmount'] = transaction['discount'] + transaction['subTotalAmount'];
       }
+      if (remainingQuantity <= 0) break;
     }
   }
 }
