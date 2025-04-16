@@ -42,7 +42,10 @@ class SupplierDiscountService {
       if (isTransactionUpdated) {
         transaction['items'].addAll(newItems);
         // update transaction related fields
-        transaction['notes'] = 'تم اضافة تخفيض من قبل المجهز ';
+        const notePartOne = 'في تاريخ';
+        const notePartTwo = 'تم تخفيض سعر المادة';
+        transaction['notes'] =
+            '$notePartOne ${formatDate(discount.date)} $notePartTwo ${discount.productName}';
         double newSubTotalAmount = 0.0;
         for (var item in transaction['items']) {
           newSubTotalAmount += item['itemTotalAmount'];
