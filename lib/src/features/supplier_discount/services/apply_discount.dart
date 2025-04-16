@@ -39,11 +39,10 @@ class SupplierDiscountService {
           item['itemTotalAmount'] = item['soldQuantity'] * item['sellingPrice'];
         }
       }
-      transaction['items'].addAll(newItems);
       if (isTransactionUpdated) {
+        transaction['items'].addAll(newItems);
         // update transaction related fields
-        transaction['notes'] =
-            'تم اضافة تخفيض بمبلغ ${discount.productName} على المادة ${discount.discountAmount} ';
+        transaction['notes'] = 'تم اضافة تخفيض من قبل المجهز ';
         double newSubTotalAmount = 0.0;
         for (var item in transaction['items']) {
           newSubTotalAmount += item['itemTotalAmount'];
