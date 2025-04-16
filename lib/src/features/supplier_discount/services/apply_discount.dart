@@ -32,7 +32,6 @@ class SupplierDiscountService {
             // reduce quantity of original item
             item['soldQuantity'] -= remainingQuantity;
             remainingQuantity = 0;
-            break;
           } else {
             item['sellingPrice'] = discount.newPrice;
             remainingQuantity -= item['soldQuantity'];
