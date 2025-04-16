@@ -59,7 +59,7 @@ class SupplierDiscountForm extends ConsumerWidget {
     );
   }
 
-  void _onSavePress(BuildContext context, WidgetRef ref) {
+  void _onSavePress(BuildContext context, WidgetRef ref) async {
     final discountRep = ref.read(supplierDiscountRepositoryProvider);
     final formDataNotifier = ref.read(supplierDiscountFormDataProvider.notifier);
     final supplierDiscountService = ref.read(supplierDiscountServiceProvider);
@@ -72,7 +72,7 @@ class SupplierDiscountForm extends ConsumerWidget {
     final discount = SupplierDiscount.fromMap(formDataNotifier.data);
     discountRep.addItem(discount);
     formDataNotifier.reset();
-    supplierDiscountService.applySupplierDiscount(ref, discount);
+    await supplierDiscountService.applySupplierDiscount(context, ref, discount);
     Navigator.pop(context);
   }
 
