@@ -14,6 +14,8 @@ import 'package:tablets/src/features/supplier_discount/model/supplier_discount.d
 import 'package:tablets/src/features/supplier_discount/repository/supplier_discount_repository_provider.dart';
 import 'package:tablets/src/features/supplier_discount/services/apply_discount.dart';
 import 'package:tablets/src/features/supplier_discount/view/supplier_discount_form_fields.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
 class SupplierDiscountForm extends ConsumerWidget {
@@ -73,6 +75,10 @@ class SupplierDiscountForm extends ConsumerWidget {
     discountRep.addItem(discount);
     formDataNotifier.reset();
     await supplierDiscountService.applySupplierDiscount(context, ref, discount);
+    // update transaction dbCache
+    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+    final transactionData = await ref.read(transactionRepositoryProvider).fetchItemListAsMaps();
+    transactionDbCache.set(transactionData);
     if (context.mounted) {
       Navigator.pop(context);
     }

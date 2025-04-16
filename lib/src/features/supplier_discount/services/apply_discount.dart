@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/features/supplier_discount/model/supplier_discount.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
@@ -55,6 +56,7 @@ class SupplierDiscountService {
       }
       if (remainingQuantity <= 0) break;
     }
+    tempPrint('successfully applied');
   }
 }
 
