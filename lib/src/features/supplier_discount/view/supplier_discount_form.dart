@@ -73,7 +73,9 @@ class SupplierDiscountForm extends ConsumerWidget {
     discountRep.addItem(discount);
     formDataNotifier.reset();
     await supplierDiscountService.applySupplierDiscount(context, ref, discount);
-    Navigator.pop(context);
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
   }
 
   void _onDeletePressed(BuildContext context, WidgetRef ref) {

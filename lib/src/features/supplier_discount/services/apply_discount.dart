@@ -1,9 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/features/supplier_discount/model/supplier_discount.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
 
@@ -11,7 +9,6 @@ class SupplierDiscountService {
   Future<void> applySupplierDiscount(
       BuildContext context, WidgetRef ref, SupplierDiscount discount) async {
     final transactionRepo = ref.read(transactionRepositoryProvider);
-    final transactionController = ref.read(transactionFormControllerProvider);
     final supplierTransactions = await transactionRepo.fetchItemListAsMaps(
         filterKey: 'nameDbRef', filterValue: discount.supplierDbRef);
     sortMapsByProperty(supplierTransactions, 'date');
@@ -54,8 +51,7 @@ class SupplierDiscountService {
         transaction['subTotalAmount'] = newSubTotalAmount;
         transaction['totalAmount'] = transaction['discount'] + transaction['subTotalAmount'];
         if (context.mounted) {
-          tempPrint('updated transaction');
-          transactionController.saveItemToDb(context, Transaction.fromMap(transaction), true);
+          await transactionRepo.updateItem(Transaction.fromMap(transaction));
         }
       }
       if (remainingQuantity <= 0) break;
