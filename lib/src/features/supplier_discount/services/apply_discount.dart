@@ -48,7 +48,7 @@ class SupplierDiscountService {
           newSubTotalAmount += item['itemTotalAmount'];
         }
         transaction['subTotalAmount'] = newSubTotalAmount;
-        transaction['totalAmount'] = transaction['discount'] + transaction['subTotalAmount'];
+        transaction['totalAmount'] = transaction['subTotalAmount'] - transaction['discount'];
         if (context.mounted) {
           await transactionRepo.updateItem(Transaction.fromMap(transaction));
         }
