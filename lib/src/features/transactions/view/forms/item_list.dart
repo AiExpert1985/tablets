@@ -654,22 +654,27 @@ double _getItemPrice(
 double getBuyingPrice(WidgetRef ref, num currentQuantity, String productDbRef) {
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
   final transactions = transactionDbCache.data;
+  List<Map<String, dynamic>> vendorTransactions = [];
   List<Map<String, dynamic>> boughtItems = [];
   for (var trans in transactions) {
     if (trans[transactionTypeKey] == TransactionType.vendorInvoice.name && trans['items'] is List) {
-      for (var item in trans['items']) {
-        if (item['dbRef'] == productDbRef) {
-          boughtItems.add(item);
-        }
+      vendorTransactions.add(trans);
+    }
+  }
+  sortMapsByProperty(vendorTransactions, 'date');
+  for (var trans in vendorTransactions) {
+    for (var item in trans['items']) {
+      if (item['dbRef'] == productDbRef) {
+        boughtItems.add(item);
       }
     }
   }
-  sortMapsByProperty(boughtItems, 'date');
+
   for (var item in boughtItems) {
     if (item[itemSoldQuantityKey] > currentQuantity) {
       return item[itemSellingPriceKey];
     }
-    currentQuantity = item[itemSoldQuantityKey];
+    currentQuantity -= item[itemSoldQuantityKey];
   }
   // if no item transaction found, return the default price (or initial quanity price)
   final productDbCache = ref.read(productDbCacheProvider.notifier);
