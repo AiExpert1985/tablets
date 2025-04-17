@@ -651,7 +651,13 @@ double _getItemPrice(
 // amount with top invoice if the quanity is bigger, then pop the invoice from the stack and reduce its amount
 // from the quanitity, and repeat until quanitity is <= zero. in that way we get the proper buying price for the item
 // we return the default price if there is no price detected in customer invoice (which is the price in product form)
+// we usually get the last recorded price
 double getBuyingPrice(WidgetRef ref, num currentQuantity, String productDbRef) {
+  // if no item transaction found, return the default price (or initial quanity price)
+  final productDbCache = ref.read(productDbCacheProvider.notifier);
+  final productData = productDbCache.getItemByProperty('dbRef', productDbRef);
+  double productCost = productData['buyingPrice'];
+
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
   final transactions = transactionDbCache.data;
   List<Map<String, dynamic>> vendorTransactions = [];
@@ -671,13 +677,13 @@ double getBuyingPrice(WidgetRef ref, num currentQuantity, String productDbRef) {
   }
 
   for (var item in boughtItems) {
-    if (item[itemSoldQuantityKey] > currentQuantity) {
-      return item[itemSellingPriceKey];
+    if (item['dbRef'] == productDbRef) {
+      if (item[itemSoldQuantityKey] >= currentQuantity || currentQuantity <= 0) {
+        productCost = item[itemSellingPriceKey];
+        break;
+      }
+      currentQuantity -= item[itemSoldQuantityKey];
     }
-    currentQuantity -= item[itemSoldQuantityKey];
   }
-  // if no item transaction found, return the default price (or initial quanity price)
-  final productDbCache = ref.read(productDbCacheProvider.notifier);
-  final productData = productDbCache.getItemByProperty('dbRef', productDbRef);
-  return productData['buyingPrice'];
+  return productCost;
 }

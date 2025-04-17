@@ -349,7 +349,7 @@ class TotalsRow extends ConsumerWidget {
               },
             ),
             if (isShowProfit) HorizontalGap.xxl,
-            if (isShowProfit)
+            if (isShowProfit & !isVendor)
               FormInputField(
                 controller: textEditingNotifier.getController(transactionTotalProfitKey),
                 isReadOnly: true,
