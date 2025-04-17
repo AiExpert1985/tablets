@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/features/supplier_discount/model/supplier_discount.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
@@ -31,7 +32,6 @@ class SupplierDiscountService {
             // reduce quantity of original item
             item['soldQuantity'] -= remainingQuantity;
             remainingQuantity = 0;
-            break;
           } else {
             item['sellingPrice'] = discount.newPrice;
             remainingQuantity -= item['soldQuantity'];
@@ -42,19 +42,23 @@ class SupplierDiscountService {
       if (isTransactionUpdated) {
         transaction['items'].addAll(newItems);
         // update transaction related fields
-        transaction['notes'] = 'تم اضافة تخفيض من قبل المجهز ';
+        const notePartOne = 'في تاريخ';
+        const notePartTwo = 'تم تخفيض سعر المادة';
+        transaction['notes'] =
+            '$notePartOne ${formatDate(discount.date)} $notePartTwo ${discount.productName}';
         double newSubTotalAmount = 0.0;
         for (var item in transaction['items']) {
           newSubTotalAmount += item['itemTotalAmount'];
         }
         transaction['subTotalAmount'] = newSubTotalAmount;
-        transaction['totalAmount'] = transaction['discount'] + transaction['subTotalAmount'];
+        transaction['totalAmount'] = transaction['subTotalAmount'] - transaction['discount'];
         if (context.mounted) {
           await transactionRepo.updateItem(Transaction.fromMap(transaction));
         }
       }
       if (remainingQuantity <= 0) break;
     }
+    tempPrint('successfully applied');
   }
 }
 
