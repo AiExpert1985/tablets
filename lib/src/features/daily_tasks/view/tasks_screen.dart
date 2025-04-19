@@ -1,10 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -13,6 +18,7 @@ import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/daily_tasks/controllers/selected_date_provider.dart';
 import 'package:tablets/src/features/daily_tasks/model/point.dart';
+import 'package:tablets/src/features/daily_tasks/printing/tasks_pdf.dart';
 import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
 import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
@@ -61,6 +67,12 @@ class TasksScreen extends ConsumerWidget {
                 error: (error, stack) => Text('Error: $error'), // Handle errors
               ),
             ),
+            VerticalGap.xl,
+            IconButton(
+                onPressed: () {
+                  printReport(salesPointsAsyncValue.value ?? []);
+                },
+                icon: const PrintIcon())
           ],
         ),
       ),
@@ -368,4 +380,25 @@ Future<List<String>?> _showMultiSelectDialog(
   );
 
   return selectedValues; // Return the selected values to the calling function
+}
+
+Future<void> printReport(List<Map<String, dynamic>> salesPointMaps) async {
+  try {
+    List<SalesPoint> salesPoints = [];
+    for (var map in salesPointMaps) {
+      salesPoints.add(SalesPoint.fromMap(map));
+    }
+    // 1. Generate the PDF bytes
+    final Uint8List pdfBytes =
+        await SalesPointPdfGenerator.generatePdf(salesPoints); // Use your actual list here
+
+    // 2. Use the printing package to preview and print
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdfBytes,
+      name:
+          'Sales_Report_${salesPoints.first.salesmanName}_${DateFormat('yyyyMMdd').format(DateTime.now())}.pdf', // Optional: set default file name
+    );
+  } catch (e) {
+    errorPrint('Error generating or printing PDF for tasks: $e');
+  }
 }
