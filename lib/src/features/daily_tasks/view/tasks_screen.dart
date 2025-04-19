@@ -67,12 +67,6 @@ class TasksScreen extends ConsumerWidget {
                 error: (error, stack) => Text('Error: $error'), // Handle errors
               ),
             ),
-            VerticalGap.xl,
-            IconButton(
-                onPressed: () {
-                  printReport(salesPointsAsyncValue.value ?? []);
-                },
-                icon: const PrintIcon())
           ],
         ),
       ),
@@ -178,6 +172,12 @@ class SalesPoints extends ConsumerWidget {
                       }
                     },
                   ),
+                HorizontalGap.s,
+                IconButton(
+                    onPressed: () {
+                      printReport(tasks);
+                    },
+                    icon: const Icon(Icons.print)),
                 HorizontalGap.l,
                 Container(
                   width: 150,
