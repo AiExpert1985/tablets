@@ -1,142 +1,139 @@
-import 'dart:typed_data';
-import 'package:flutter/services.dart'; // Required for rootBundle
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:tablets/src/features/daily_tasks/model/point.dart'; // Import printing package
+import 'package:tablets/src/features/daily_tasks/model/point.dart';
+// Import your SalesPoint model
 
 class SalesPointPdfGenerator {
   static Future<Uint8List> generatePdf(List<SalesPoint> salesPoints) async {
     if (salesPoints.isEmpty) {
-      // Handle empty list case - maybe return an empty PDF or throw error
+      // ... (empty list handling remains the same)
       final emptyDoc = pw.Document();
+      // Load font even for empty message if it could be Arabic
+      final fontData =
+          await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf");
+      final arabicFont = pw.Font.ttf(fontData);
       emptyDoc.addPage(pw.Page(
-        build: (context) => pw.Center(child: pw.Text('No sales data available.')),
-      ));
+          theme: pw.ThemeData.withFont(base: arabicFont),
+          build: (context) => pw.Directionality(
+              // Add Directionality even here
+              textDirection: pw.TextDirection.rtl,
+              child:
+                  pw.Center(child: pw.Text('لا توجد بيانات مبيعات متاحة.')) // Example Arabic text
+              )));
       return emptyDoc.save();
     }
 
-    final pdf = pw.Document();
+    // Load the Arabic Font (same as before)
+    final fontData =
+        await rootBundle.load("assets/fonts/NotoSansArabic-VariableFont_wdth,wght.ttf");
+    final arabicFont = pw.Font.ttf(fontData);
+    final theme = pw.ThemeData.withFont(base: arabicFont);
 
-    // --- Font Loading (Optional but recommended for broader character support) ---
-    // If you need specific fonts (e.g., for different languages or styles)
-    // 1. Add .ttf font file(s) to an 'assets/fonts/' folder in your project
-    // 2. Declare the folder in pubspec.yaml:
-    // flutter:
-    //   uses-material-design: true
-    //   assets:
-    //     - assets/fonts/
-    //
-    // Uncomment and modify the lines below:
-    // final fontData = await rootBundle.load("assets/fonts/YourFont-Regular.ttf");
-    // final ttf = pw.Font.ttf(fontData);
-    // final boldFontData = await rootBundle.load("assets/fonts/YourFont-Bold.ttf");
-    // final boldTtf = pw.Font.ttf(boldFontData);
-    // final pw.ThemeData theme = pw.ThemeData.withFont(base: ttf, bold: boldTtf);
-    // --- End Font Loading ---
-
-    // Assuming all points in the list belong to the same salesman and date context for this report
     final String salesmanName = salesPoints.first.salesmanName;
-    // Use intl for robust date formatting
-    final String reportDate = DateFormat.yMMMd().format(salesPoints.first.date); // Example format
+    // Format date - consider locale if needed 'ar'
+    final String reportDate = DateFormat.yMMMd('ar')
+        .format(salesPoints.first.date); // Using 'ar' locale for Arabic date format
 
-    // Calculate Summary Stats
+    // --- Translate Labels --- (Recommended)
+    const String reportDateLabel = 'تاريخ التقرير:';
+    const String totalPointsLabel = 'إجمالي نقاط العملاء:';
+    const String visitedNoTxLabel = 'زيارة فقط:';
+    const String visitedWithTxLabel = 'زيارة مع تعامل:';
+    const String notVisitedWithTxLabel = 'لم يتم زيارتها:';
+    // ------------------------
+
+    // Calculate Summary Stats (same as before)
     final int totalCount = salesPoints.length;
     final int visitedNoTransactionCount =
         salesPoints.where((p) => p.isVisited && !p.hasTransaction).length;
-    final int visitedWithTransactionCount = salesPoints
-        .where((p) => p.isVisited && p.hasTransaction) // As per request
-        .length;
-    // Note: The prompt asked for visited+transaction, which is the same condition for green.
-    // If green *only* means transaction (visited is implied), then the count is simply:
-    // final int transactionCount = salesPoints.where((p) => p.hasTransaction).length;
+    final int visitedWithTransactionCount = salesPoints.where((p) => p.hasTransaction).length;
+    final int notVisistedCount =
+        totalCount - visitedNoTransactionCount - visitedWithTransactionCount;
+
+    final pdf = pw.Document();
 
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
-        // If using custom fonts, add theme: theme here
+        theme: theme, // Apply the theme for the font
         build: (pw.Context context) {
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              // 1. Header
-              pw.Text(
-                salesmanName,
-                style: pw.TextStyle(
-                  fontSize: 24, // Large font
-                  fontWeight: pw.FontWeight.bold, // Bold font
-                  // font: boldTtf, // Use custom bold font if loaded
+          // Wrap the entire page content with Directionality for RTL
+          return pw.Directionality(
+            textDirection: pw.TextDirection.rtl, // <--- Key change: Set RTL direction
+            child: pw.Column(
+              // CrossAxisAlignment.start often works visually better even in RTL
+              // as it aligns to the start edge (right edge in RTL). Test if needed.
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                // 1. Header
+                pw.Center(
+                  // Keep title centered
+                  child: pw.Text(salesmanName),
                 ),
-              ),
-              pw.SizedBox(height: 5),
-              pw.Text(
-                'Report Date: $reportDate',
-                style: const pw.TextStyle(fontSize: 12),
-                // style: pw.TextStyle(fontSize: 12, font: ttf), // Use custom font if loaded
-              ),
-              pw.SizedBox(height: 20), // Spacing before the grid
+                pw.SizedBox(height: 5),
+                // Date - Directionality handles RTL. Use translated label.
+                pw.Text(
+                  '$reportDateLabel $reportDate',
+                  style: const pw.TextStyle(fontSize: 12),
+                ),
+                pw.SizedBox(height: 20),
 
-              // 2. Body - Grid of Boxes using Wrap
-              pw.Wrap(
-                spacing: 10, // Horizontal space between boxes
-                runSpacing: 10, // Vertical space between lines of boxes
-                children: salesPoints.map((point) {
-                  // Determine box color based on conditions
-                  PdfColor boxColor;
-                  if (point.hasTransaction) {
-                    // Green if has transaction (implies visited)
-                    boxColor = PdfColors.green100; // Use lighter shades for better text contrast
-                  } else if (point.isVisited) {
-                    // Yellow if visited but no transaction
-                    boxColor = PdfColors.yellow100;
-                  } else {
-                    // Red if not visited
-                    boxColor = PdfColors.red100;
-                  }
+                // 2. Body - Grid
+                pw.Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  // Wrap direction is influenced by Directionality
+                  children: salesPoints.map((point) {
+                    PdfColor boxColor;
+                    if (point.hasTransaction) {
+                      boxColor = PdfColors.green100;
+                    } else if (point.isVisited) {
+                      boxColor = PdfColors.yellow100;
+                    } else {
+                      boxColor = PdfColors.red100;
+                    }
 
-                  return pw.Container(
-                    width: 80, // Adjust width as needed
-                    height: 60, // Adjust height as needed
-                    padding: const pw.EdgeInsets.all(4),
-                    decoration: pw.BoxDecoration(
-                      color: boxColor,
-                      border: pw.Border.all(color: PdfColors.grey, width: 0.5),
-                      borderRadius: pw.BorderRadius.circular(4),
-                    ),
-                    child: pw.Center(
-                      child: pw.Text(
-                        point.customerName,
-                        textAlign: pw.TextAlign.center,
-                        style: const pw.TextStyle(fontSize: 9), // Adjust font size if needed
-                        // style: pw.TextStyle(fontSize: 9, font: ttf), // Use custom font
+                    return pw.Container(
+                      width: 80,
+                      height: 60,
+                      padding: const pw.EdgeInsets.all(4),
+                      decoration: pw.BoxDecoration(
+                        color: boxColor,
+                        border: pw.Border.all(color: PdfColors.grey, width: 0.5),
+                        borderRadius: pw.BorderRadius.circular(4),
                       ),
-                    ),
-                  );
-                }).toList(),
-              ),
+                      child: pw.Center(
+                        child: pw.Text(
+                          point.customerName, // Should render correctly RTL
+                          textAlign: pw.TextAlign.center, // Keep text centered
+                          // textDirection inherited from Directionality
+                          style: const pw.TextStyle(fontSize: 9),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
 
-              pw.Spacer(), // Pushes the summary to the bottom
+                pw.Spacer(), // Pushes the summary to the bottom
 
-              // 3. Footer - Summary
-              pw.Divider(),
-              pw.SizedBox(height: 10),
-              pw.Text(
-                'Summary:',
-                style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
-                // style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold, font: boldTtf),
-              ),
-              pw.SizedBox(height: 5),
-              pw.Text('Total Customer Points: $totalCount'),
-              pw.Text('Visited (No Transaction): $visitedNoTransactionCount'),
-              pw.Text('Visited (With Transaction): $visitedWithTransactionCount'),
-              // pw.Text('Has Transaction: $transactionCount'), // Alternative if needed
-            ],
+                // 3. Footer - Summary
+                pw.Divider(),
+                pw.SizedBox(height: 10),
+                pw.SizedBox(height: 5),
+                // Use translated labels
+                pw.Text('$totalPointsLabel $totalCount'),
+                pw.Text('$visitedNoTxLabel $visitedNoTransactionCount'),
+                pw.Text('$visitedWithTxLabel $visitedWithTransactionCount'),
+                pw.Text('$notVisitedWithTxLabel $notVisistedCount'),
+              ],
+            ),
           );
         },
       ),
     );
 
-    // Save the PDF document
     return pdf.save();
   }
 }
