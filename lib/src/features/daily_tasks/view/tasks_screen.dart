@@ -256,7 +256,7 @@ class SalesPoints extends ConsumerWidget {
                           Text(
                             item['customerName'],
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: fontColor),
+                            style: TextStyle(color: fontColor, fontWeight: FontWeight.w500),
                           ),
                           const Spacer(),
                           Row(
