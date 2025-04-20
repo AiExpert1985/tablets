@@ -245,20 +245,39 @@ class SalesPoints extends ConsumerWidget {
                   children: [
                     Container(
                       width: 140,
-                      height: 80,
-                      padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10, right: 10),
+                      height: 90,
+                      padding: const EdgeInsets.only(top: 20, bottom: 10, left: 10, right: 10),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(Radius.circular(8)),
                         color: bgColor,
                       ),
                       child: Column(
                         children: [
-                          VerticalGap.s,
                           Text(
                             item['customerName'],
                             textAlign: TextAlign.center,
                             style: TextStyle(color: fontColor),
                           ),
+                          const Spacer(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                item['visitDate'] == null
+                                    ? ''
+                                    : DateFormat('hh:mm a').format(item['visitDate'].toDate()),
+                                style: const TextStyle(fontSize: 12, color: Colors.black),
+                              ),
+                              if (item['transactionDate'] != null) const Spacer(),
+                              Text(
+                                item['transactionDate'] == null
+                                    ? ''
+                                    : DateFormat('hh:mm a')
+                                        .format(item['transactionDate'].toDate()),
+                                style: const TextStyle(fontSize: 12, color: Colors.black),
+                              ),
+                            ],
+                          )
                         ],
                       ),
                     ),
@@ -282,15 +301,15 @@ class SalesPoints extends ConsumerWidget {
                           ),
                         ),
                       ),
-                    Positioned(
-                        top: 2,
-                        right: 10,
-                        child: Text(
-                          item['visitDate'] == null
-                              ? ''
-                              : DateFormat('hh:mm a').format(item['visitDate'].toDate()),
-                          style: const TextStyle(fontSize: 12, color: Colors.black),
-                        ))
+                    // Positioned(
+                    //     top: 2,
+                    //     right: 10,
+                    //     child: Text(
+                    //       item['visitDate'] == null
+                    //           ? ''
+                    //           : DateFormat('hh:mm a').format(item['visitDate'].toDate()),
+                    //       style: const TextStyle(fontSize: 12, color: Colors.black),
+                    //     ))
                   ],
                 );
               }).toList(),
