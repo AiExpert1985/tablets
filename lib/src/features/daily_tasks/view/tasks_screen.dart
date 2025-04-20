@@ -218,8 +218,16 @@ class SalesPoints extends ConsumerWidget {
                         borderRadius: const BorderRadius.all(Radius.circular(8)),
                         color: bgColor,
                       ),
-                      child: Text(item['customerName'],
-                          textAlign: TextAlign.center, style: TextStyle(color: fontColor)),
+                      child: Column(
+                        children: [
+                          VerticalGap.s,
+                          Text(
+                            item['customerName'],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: fontColor),
+                          ),
+                        ],
+                      ),
                     ),
                     if (!isReadOnly)
                       Positioned(
@@ -241,6 +249,13 @@ class SalesPoints extends ConsumerWidget {
                           ),
                         ),
                       ),
+                    Positioned(
+                        top: 2,
+                        right: 10,
+                        child: Text(
+                          DateFormat('hh:mm a').format(item['date'].toDate()),
+                          style: const TextStyle(fontSize: 12, color: Colors.amber),
+                        ))
                   ],
                 );
               }).toList(),
