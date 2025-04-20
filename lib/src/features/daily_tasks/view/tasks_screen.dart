@@ -111,18 +111,49 @@ class SalesPoints extends ConsumerWidget {
     // Convert the map to a list of widgets
     List<Widget> widgetList = [];
     salesmenTasks.forEach((salesmanName, tasks) {
+      // Sort the list by the 'visitDate' property, handling nulls
       // Sort customers by the 'region' property
-      // Sort the list by the 'age' property, handling nulls
-
       tasks.sort((a, b) {
-        // Handle null values: consider nulls as greater than any number
+        // --- Primary Sort: visitDate (DateTime?, nulls last) ---
+        final DateTime? visitDateA = a['visitDate']?.toDate(); // Get visitDate or null
+        final DateTime? visitDateB = b['visitDate']?.toDate(); // Get visitDate or null
+
+        int dateComparison;
+        if (visitDateA == null && visitDateB == null) {
+          // If both dates are null, they are considered equal for the primary sort.
+          dateComparison = 0;
+        } else if (visitDateA == null) {
+          // Null visitDateA is considered greater (comes after non-null dateB)
+          dateComparison = 1;
+        } else if (visitDateB == null) {
+          // Non-null visitDateA comes before null dateB
+          dateComparison = -1;
+        } else {
+          // Both dates are non-null, compare them chronologically (earlier date first)
+          dateComparison = visitDateA.compareTo(visitDateB);
+        }
+
+        // If the dates are different, return the result of the date comparison.
+        if (dateComparison != 0) {
+          return dateComparison;
+        }
+
+        // --- Secondary Sort: region (using original logic, nulls last) ---
+        // This code only runs if the visitDates were equal (or both null).
         final regionA = a['region'];
         final regionB = b['region'];
-        if (regionA == null && regionB == null) return 0; // Both are null
-        if (regionA == null) return 1; // Nulls are considered greater
-        if (regionB == null) return -1; // Nulls are considered greater
-        return regionA.compareTo(regionB); // Compare non-null ages
+
+        // Use the exact null-handling logic from your original snippet for 'region'
+        if (regionA == null && regionB == null) return 0; // Both are null, equal
+        if (regionA == null) return 1; // Null regionA is considered greater
+        if (regionB == null) return -1; // Non-null regionA comes before null regionB
+
+        // Assuming non-null regions are Comparable (like String)
+        // Use compareTo as in the original snippet
+        // Add type check/cast if necessary for safety, e.g., (regionA as String).compareTo(regionB as String)
+        return (regionA as Comparable).compareTo(regionB as Comparable);
       });
+
       List<String> tasksCustomerNames =
           tasks.map((task) => task['customerName'] as String).toList();
       widgetList.add(
@@ -166,6 +197,8 @@ class SalesPoints extends ConsumerWidget {
                           generateRandomString(len: 8),
                           customer['x'],
                           customer['y'],
+                          null,
+                          null,
                         );
                         //TODO to prevent adding new salespoint if it already exists
                         ref.read(tasksRepositoryProvider).addItem(newSalesPoint);
@@ -253,8 +286,10 @@ class SalesPoints extends ConsumerWidget {
                         top: 2,
                         right: 10,
                         child: Text(
-                          DateFormat('hh:mm a').format(item['date'].toDate()),
-                          style: const TextStyle(fontSize: 12, color: Colors.amber),
+                          item['visitDate'] == null
+                              ? ''
+                              : DateFormat('hh:mm a').format(item['visitDate'].toDate()),
+                          style: const TextStyle(fontSize: 12, color: Colors.black),
                         ))
                   ],
                 );
