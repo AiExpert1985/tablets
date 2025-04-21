@@ -1,16 +1,9 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
-import 'package:pdf/pdf.dart';
-import 'package:printing/printing.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -19,57 +12,33 @@ import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/daily_tasks/controllers/selected_date_provider.dart';
 import 'package:tablets/src/features/daily_tasks/model/point.dart';
-import 'package:tablets/src/features/daily_tasks/printing/tasks_pdf.dart';
 import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
 import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
-import 'package:tablets/src/routers/go_router_provider.dart';
 
-class DatePickerWidget extends ConsumerWidget {
-  const DatePickerWidget({super.key});
+class DayPicker extends ConsumerWidget {
+  const DayPicker({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      width: 200,
-      child: FormBuilderDateTimePicker(
-        name: 'date',
-        textAlign: TextAlign.center,
-        decoration: const InputDecoration(
-            labelStyle: TextStyle(color: Colors.red, fontSize: 15),
-            border: OutlineInputBorder(),
-            label: Text('اختيار اليوم')),
-        inputType: InputType.date,
-        format: DateFormat('dd-MM-yyyy'),
-        onChanged: (value) {
-          ref.read(selectedDateProvider.notifier).setDate(value);
-        },
-      ),
-    );
+    return const SizedBox(child: Text('hi'));
   }
 }
 
-class TasksScreen extends ConsumerWidget {
-  const TasksScreen({super.key});
+class WeeklyTasksScreen extends ConsumerWidget {
+  const WeeklyTasksScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final salesPointsAsyncValue = ref.watch(tasksStreamProvider);
     ref.watch(selectedDateProvider);
-    return AppScreenFrame(
-      Container(
-        padding: const EdgeInsets.all(0),
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(
+        padding: const EdgeInsets.all(25),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const DatePickerWidget(),
-                IconButton(
-                    onPressed: () => context.pushNamed(AppRoute.weeklyTasks.name),
-                    icon: const Icon(Icons.calendar_month))
-              ],
-            ),
+            const DayPicker(),
             Expanded(
               child: salesPointsAsyncValue.when(
                 data: (salespoints) => SalesPoints(salespoints),
@@ -215,12 +184,6 @@ class SalesPoints extends ConsumerWidget {
                       }
                     },
                   ),
-                HorizontalGap.s,
-                IconButton(
-                    onPressed: () {
-                      printReport(tasks);
-                    },
-                    icon: const Icon(Icons.print)),
                 HorizontalGap.l,
                 Container(
                   width: 150,
@@ -311,15 +274,6 @@ class SalesPoints extends ConsumerWidget {
                           ),
                         ),
                       ),
-                    // Positioned(
-                    //     top: 2,
-                    //     right: 10,
-                    //     child: Text(
-                    //       item['visitDate'] == null
-                    //           ? ''
-                    //           : DateFormat('hh:mm a').format(item['visitDate'].toDate()),
-                    //       style: const TextStyle(fontSize: 12, color: Colors.black),
-                    //     ))
                   ],
                 );
               }).toList(),
@@ -459,25 +413,4 @@ Future<List<String>?> _showMultiSelectDialog(
   );
 
   return selectedValues; // Return the selected values to the calling function
-}
-
-Future<void> printReport(List<Map<String, dynamic>> salesPointMaps) async {
-  try {
-    List<SalesPoint> salesPoints = [];
-    for (var map in salesPointMaps) {
-      salesPoints.add(SalesPoint.fromMap(map));
-    }
-    // 1. Generate the PDF bytes
-    final Uint8List pdfBytes =
-        await SalesPointPdfGenerator.generatePdf(salesPoints); // Use your actual list here
-
-    // 2. Use the printing package to preview and print
-    await Printing.layoutPdf(
-      onLayout: (PdfPageFormat format) async => pdfBytes,
-      name:
-          'Sales_Report_${salesPoints.first.salesmanName}_${DateFormat('yyyyMMdd').format(DateTime.now())}.pdf', // Optional: set default file name
-    );
-  } catch (e) {
-    errorPrint('Error generating or printing PDF for tasks: $e');
-  }
 }

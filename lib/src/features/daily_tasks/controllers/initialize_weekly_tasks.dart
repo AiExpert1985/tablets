@@ -1,11 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/features/daily_tasks/model/point.dart';
+import 'package:tablets/src/features/daily_tasks/model/weekly_tasks.dart';
 import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
+import 'package:tablets/src/features/daily_tasks/repo/weekly_tasks_repo.dart';
 
 //! This code is only done once to copy pre entered tasks by Jihan and Kinton accountants
 
-Map<int, List<SalesPoint>> createWeeklyTasks(List<Map<String, dynamic>> tasks) {
-  Map<int, List<SalesPoint>> weeklyTasks = {};
+List<WeeklyTask> createWeeklyTasksFromTasks(List<Map<String, dynamic>> tasks) {
+  Map<int, List<SalesPoint>> weeklyTasksMap = {};
   for (var taskMap in tasks) {
     SalesPoint task = SalesPoint.fromMap(taskMap);
     int weekday = task.date.weekday;
@@ -15,7 +18,7 @@ Map<int, List<SalesPoint>> createWeeklyTasks(List<Map<String, dynamic>> tasks) {
     //    associate it with the key `weekday`.
     // 3. Whether the list was newly created or already existed, add the
     //    current `date` to that list.
-    weeklyTasks.putIfAbsent(weekday, () => []).add(task);
+    weeklyTasksMap.putIfAbsent(weekday, () => []).add(task);
 
     /*
     // Alternative approach (more verbose):
@@ -31,13 +34,27 @@ Map<int, List<SalesPoint>> createWeeklyTasks(List<Map<String, dynamic>> tasks) {
     */
   }
 
+  List<WeeklyTask> weeklyTasks = [];
+
+  weeklyTasksMap.forEach((key, value) {
+    weeklyTasks.add(WeeklyTask(
+        weekDay: key,
+        tasks: value,
+        name: generateRandomString(),
+        dbRef: generateRandomString(),
+        imageUrls: []));
+  });
+
   // Return the map containing the grouped dates.
   return weeklyTasks;
 }
 
-void copyWeeklyTasks(WidgetRef ref) async {
+void initializeWeeklyTasks(WidgetRef ref) async {
   final tasksRepo = ref.read(tasksRepositoryProvider);
+  final weeklyTasksRepo = ref.read(weeklyTasksRepositoryProvider);
   final tasks = await tasksRepo.fetchItemListAsMaps();
-  final weeklyTasksMap = createWeeklyTasks(tasks);
-  weeklyTasksMap.forEach((key, vlaue) {});
+  final weeklyTasks = createWeeklyTasksFromTasks(tasks);
+  for (var task in weeklyTasks) {
+    weeklyTasksRepo.addItem(task);
+  }
 }
