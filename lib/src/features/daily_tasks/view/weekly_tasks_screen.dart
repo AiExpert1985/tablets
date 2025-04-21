@@ -1,27 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
-import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
-import 'package:tablets/src/features/daily_tasks/controllers/selected_date_provider.dart';
 import 'package:tablets/src/features/daily_tasks/model/point.dart';
 import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
+import 'package:tablets/src/features/daily_tasks/repo/weekly_tasks_repo.dart';
 import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
+
+/// Provider holding the index of the selected weekday (0-6, or null if none selected).
+final selectedWeekdayIndexProvider = StateProvider<int>((ref) => 1);
 
 class DayPicker extends ConsumerWidget {
   const DayPicker({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const SizedBox(child: Text('hi'));
+    return SimpleWeekdaySelector(
+      onWeekdayTap: (index) {
+        ref.read(selectedWeekdayIndexProvider.notifier).state = index;
+      },
+    );
   }
 }
 
@@ -30,8 +36,8 @@ class WeeklyTasksScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final salesPointsAsyncValue = ref.watch(tasksStreamProvider);
-    ref.watch(selectedDateProvider);
+    final dailyTasksAsyncValue = ref.watch(weeklyTasksStreamProvider);
+    ref.watch(selectedWeekdayIndexProvider);
     return Scaffold(
       appBar: AppBar(),
       body: Container(
@@ -40,8 +46,11 @@ class WeeklyTasksScreen extends ConsumerWidget {
           children: [
             const DayPicker(),
             Expanded(
-              child: salesPointsAsyncValue.when(
-                data: (salespoints) => SalesPoints(salespoints),
+              child: dailyTasksAsyncValue.when(
+                data: (dailyTasks) {
+                  final tasks = dailyTasks.isEmpty ? [] : dailyTasks.first['tasks'];
+                  return SalesPoints(tasks);
+                },
                 loading: () => const CircularProgressIndicator(), // Show loading indicator
                 error: (error, stack) => Text('Error: $error'), // Handle errors
               ),
@@ -55,7 +64,7 @@ class WeeklyTasksScreen extends ConsumerWidget {
 
 class SalesPoints extends ConsumerWidget {
   const SalesPoints(this.salesPoints, {super.key});
-  final List<Map<String, dynamic>> salesPoints;
+  final List<dynamic> salesPoints;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -64,7 +73,6 @@ class SalesPoints extends ConsumerWidget {
     if (userInfo != null && userInfo.privilage != 'guest') {
       isReadOnly = false;
     }
-    final selectedDate = ref.watch(selectedDateProvider);
     // Create list of unique salesman names found in firebase for that date
     Set<String> uniqueSalesmanNames = {};
     for (var salesPoint in salesPoints) {
@@ -168,7 +176,7 @@ class SalesPoints extends ConsumerWidget {
                           salesman['dbRef'],
                           customerName,
                           customer['dbRef'],
-                          selectedDate ?? DateTime.now(),
+                          DateTime.now(),
                           false,
                           false,
                           generateRandomString(len: 8),
@@ -208,49 +216,23 @@ class SalesPoints extends ConsumerWidget {
               spacing: 8.0, // Space between items
               runSpacing: 8.0, // Space between rows
               children: tasks.map((item) {
-                final bgColor = !item['isVisited']
-                    ? Colors.red
-                    : item['hasTransaction']
-                        ? Colors.green
-                        : Colors.amber;
-                final fontColor = item['isVisited'] ? Colors.black : Colors.white;
                 return Stack(
                   children: [
                     Container(
                       width: 140,
-                      height: 90,
+                      height: 80,
                       padding: const EdgeInsets.only(top: 20, bottom: 10, left: 10, right: 10),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(Radius.circular(8)),
-                        color: bgColor,
+                        color: Colors.blue[100],
                       ),
                       child: Column(
                         children: [
                           Text(
                             item['customerName'],
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: fontColor, fontWeight: FontWeight.w500),
+                            style: const TextStyle(fontWeight: FontWeight.w500),
                           ),
-                          const Spacer(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                item['visitDate'] == null
-                                    ? ''
-                                    : DateFormat('hh:mm a').format(item['visitDate'].toDate()),
-                                style: const TextStyle(fontSize: 12, color: Colors.black),
-                              ),
-                              if (item['transactionDate'] != null) const Spacer(),
-                              Text(
-                                item['transactionDate'] == null
-                                    ? ''
-                                    : DateFormat('hh:mm a')
-                                        .format(item['transactionDate'].toDate()),
-                                style: const TextStyle(fontSize: 12, color: Colors.black),
-                              ),
-                            ],
-                          )
                         ],
                       ),
                     ),
@@ -413,4 +395,63 @@ Future<List<String>?> _showMultiSelectDialog(
   );
 
   return selectedValues; // Return the selected values to the calling function
+}
+
+class SimpleWeekdaySelector extends StatelessWidget {
+  // The callback function that receives the index (0-6) when a day is tapped.
+  final Function(int index) onWeekdayTap;
+
+  // Define the weekday labels (0 = Monday, 6 = Sunday)
+  final List<String> weekdays = const [
+    'السبت',
+    'الاحد',
+    'الاثنين',
+    'الثلاثاء',
+    'الاربعاء',
+    'الخميس',
+    'الجمعة'
+  ];
+
+  const SimpleWeekdaySelector({
+    super.key,
+    required this.onWeekdayTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      // Distribute space nicely between the boxes
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(weekdays.length, (index) {
+        return InkWell(
+          // The function to call when tapped, passing the current index
+          onTap: () => onWeekdayTap(index + 1),
+          // Optional: Makes the ripple effect match the box shape
+          borderRadius: BorderRadius.circular(8.0),
+          child: Container(
+            width: 75,
+            margin: const EdgeInsets.all(5),
+            // Internal padding for the box content
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+            decoration: BoxDecoration(
+              // A simple background color for the box
+              color: Colors.blueGrey[100],
+              // Rounded corners for a nicer look
+              borderRadius: BorderRadius.circular(8.0),
+              // Optional: Add a subtle border
+              // border: Border.all(color: Colors.blueGrey[200]!),
+            ),
+            child: Text(
+              textAlign: TextAlign.center,
+              weekdays[index], // Display the weekday abbreviation
+              style: const TextStyle(
+                color: Colors.black87, // Text color
+                // fontWeight: FontWeight.bold, // Optional: Make text bold
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
 }
