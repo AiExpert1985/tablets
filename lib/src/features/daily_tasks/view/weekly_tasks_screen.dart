@@ -7,6 +7,7 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
@@ -49,9 +50,19 @@ class WeeklyTasksScreen extends ConsumerWidget {
             Expanded(
               child: dailyTasksAsyncValue.when(
                 data: (dailyTasks) {
-                  final dayTasks = dailyTasks.isEmpty
-                      ? {'weekDay': selectedDayIndex, 'tasks': []}
-                      : dailyTasks.first;
+                  late Map<String, dynamic> dayTasks;
+                  if (dailyTasks.isEmpty) {
+                    dayTasks = {
+                      'weekDay': selectedDayIndex,
+                      'tasks': [],
+                      'dbRef': generateRandomString(len: 8),
+                      'name': generateRandomString(len: 8),
+                      'imageUrls': []
+                    };
+                    ref.read(weeklyTasksRepositoryProvider).addItem(WeeklyTask.fromMap(dayTasks));
+                  } else {
+                    dailyTasks.first;
+                  }
                   return SalesPoints(dayTasks);
                 },
                 loading: () => const CircularProgressIndicator(), // Show loading indicator
@@ -184,20 +195,18 @@ class SalesPoints extends ConsumerWidget {
                           false,
                           false,
                           generateRandomString(len: 8),
-                          [],
+                          [defaultImageUrl],
                           generateRandomString(len: 8),
                           customer['x'],
                           customer['y'],
                           null,
                           null,
                         );
-                        //TODO to prevent adding new salespoint if it already exists
                         final newSalesPointMap = newSalesPoint.toMap();
                         newSalesPointMap['date'] = Timestamp.fromDate(newSalesPointMap['date']);
                         dailyTasks['tasks'].add(newSalesPointMap);
-                        ref
-                            .read(weeklyTasksRepositoryProvider)
-                            .updateItem(WeeklyTask.fromMap(dailyTasks));
+                        final dailyTasksObject = WeeklyTask.fromMap(dailyTasks);
+                        ref.read(weeklyTasksRepositoryProvider).updateItem(dailyTasksObject);
                       }
                     },
                   ),

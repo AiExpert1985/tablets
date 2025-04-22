@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/features/daily_tasks/controllers/selected_date_provider.dart';
 import 'package:tablets/src/features/daily_tasks/model/point.dart';
 import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
@@ -11,12 +10,8 @@ void copyWeeklyDayTasks(WidgetRef ref) async {
   final selectedDate = ref.read(selectedDateProvider) ?? DateTime.now();
   final weekDay = selectedDate.weekday;
   final weekTasks = await weekDayRepo.fetchItemListAsMaps();
-  tempPrint(weekDay);
-  tempPrint(weekTasks);
   final dayTasks = weekTasks.where((item) => item['weekDay'] == weekDay).toList();
-  tempPrint(dayTasks);
   final tasks = dayTasks.isEmpty ? [] : dayTasks.first['tasks'];
-  tempPrint(tasks);
   for (var task in tasks) {
     final salesPoint = SalesPoint.fromMap(task);
     salesPoint.isVisited = false;
