@@ -404,7 +404,7 @@ Future<List<String>?> _showMultiSelectDialog(
   return selectedValues; // Return the selected values to the calling function
 }
 
-class SimpleWeekdaySelector extends StatelessWidget {
+class SimpleWeekdaySelector extends ConsumerWidget {
   // The callback function that receives the index (0-6) when a day is tapped.
   final Function(int index) onWeekdayTap;
 
@@ -425,35 +425,41 @@ class SimpleWeekdaySelector extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedIndex = ref.watch(selectedWeekdayIndexProvider);
+
     return Row(
       // Distribute space nicely between the boxes
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(weekdays.length, (index) {
+        Color? bgColor = selectedIndex == (index + 1) ? Colors.blueGrey[300] : Colors.blueGrey[100];
         return InkWell(
           // The function to call when tapped, passing the current index
           onTap: () => onWeekdayTap(index + 1),
           // Optional: Makes the ripple effect match the box shape
           borderRadius: BorderRadius.circular(8.0),
           child: Container(
-            width: 75,
+            width: 110,
+            height: 85,
             margin: const EdgeInsets.all(5),
             // Internal padding for the box content
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
             decoration: BoxDecoration(
               // A simple background color for the box
-              color: Colors.blueGrey[100],
+              color: bgColor,
               // Rounded corners for a nicer look
               borderRadius: BorderRadius.circular(8.0),
               // Optional: Add a subtle border
               // border: Border.all(color: Colors.blueGrey[200]!),
             ),
-            child: Text(
-              textAlign: TextAlign.center,
-              weekdays[index], // Display the weekday abbreviation
-              style: const TextStyle(
-                color: Colors.black87, // Text color
-                // fontWeight: FontWeight.bold, // Optional: Make text bold
+            child: Center(
+              child: Text(
+                weekdays[index], // Display the weekday abbreviation
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.black87, // Text color
+                  // fontWeight: FontWeight.bold, // Optional: Make text bold
+                ),
               ),
             ),
           ),
