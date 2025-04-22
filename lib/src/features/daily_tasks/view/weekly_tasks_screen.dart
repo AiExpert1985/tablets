@@ -1,15 +1,16 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/daily_tasks/model/point.dart';
+import 'package:tablets/src/features/daily_tasks/model/weekly_tasks.dart';
 import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
 import 'package:tablets/src/features/daily_tasks/repo/weekly_tasks_repo.dart';
 import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
@@ -37,7 +38,7 @@ class WeeklyTasksScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dailyTasksAsyncValue = ref.watch(weeklyTasksStreamProvider);
-    ref.watch(selectedWeekdayIndexProvider);
+    final selectedDayIndex = ref.watch(selectedWeekdayIndexProvider);
     return Scaffold(
       appBar: AppBar(),
       body: Container(
@@ -48,8 +49,10 @@ class WeeklyTasksScreen extends ConsumerWidget {
             Expanded(
               child: dailyTasksAsyncValue.when(
                 data: (dailyTasks) {
-                  final tasks = dailyTasks.isEmpty ? [] : dailyTasks.first['tasks'];
-                  return SalesPoints(tasks);
+                  final dayTasks = dailyTasks.isEmpty
+                      ? {'weekDay': selectedDayIndex, 'tasks': []}
+                      : dailyTasks.first;
+                  return SalesPoints(dayTasks);
                 },
                 loading: () => const CircularProgressIndicator(), // Show loading indicator
                 error: (error, stack) => Text('Error: $error'), // Handle errors
@@ -63,12 +66,13 @@ class WeeklyTasksScreen extends ConsumerWidget {
 }
 
 class SalesPoints extends ConsumerWidget {
-  const SalesPoints(this.salesPoints, {super.key});
-  final List<dynamic> salesPoints;
+  const SalesPoints(this.dailyTasks, {super.key});
+  final Map<String, dynamic> dailyTasks;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool isReadOnly = true;
+    final salesPoints = dailyTasks['tasks'];
     final userInfo = ref.watch(userInfoProvider); // to update UI when user info finally loaded
     if (userInfo != null && userInfo.privilage != 'guest') {
       isReadOnly = false;
@@ -215,7 +219,7 @@ class SalesPoints extends ConsumerWidget {
             Wrap(
               spacing: 8.0, // Space between items
               runSpacing: 8.0, // Space between rows
-              children: tasks.map((item) {
+              children: tasks.map((task) {
                 return Stack(
                   children: [
                     Container(
@@ -229,7 +233,7 @@ class SalesPoints extends ConsumerWidget {
                       child: Column(
                         children: [
                           Text(
-                            item['customerName'],
+                            task['customerName'],
                             textAlign: TextAlign.center,
                             style: const TextStyle(fontWeight: FontWeight.w500),
                           ),
@@ -245,9 +249,12 @@ class SalesPoints extends ConsumerWidget {
                           height: 22,
                           child: TextButton(
                             onPressed: () {
+                              const mapEquality = MapEquality<String, dynamic>();
+                              dailyTasks['tasks']
+                                  .removeWhere((item) => mapEquality.equals(item, task));
                               ref
-                                  .read(tasksRepositoryProvider)
-                                  .deleteItem(SalesPoint.fromMap(item));
+                                  .read(weeklyTasksRepositoryProvider)
+                                  .updateItem(WeeklyTask.fromMap(dailyTasks));
                             },
                             child: const Text(
                               'x',
