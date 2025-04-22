@@ -16,6 +16,7 @@ void copyWeeklyDayTasks(WidgetRef ref) async {
     final salesPoint = SalesPoint.fromMap(task);
     salesPoint.isVisited = false;
     salesPoint.hasTransaction = false;
+    salesPoint.date = selectedDate;
     tasksRepo.addItem(salesPoint);
   }
 }
