@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +12,6 @@ import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/daily_tasks/model/point.dart';
 import 'package:tablets/src/features/daily_tasks/model/weekly_tasks.dart';
-import 'package:tablets/src/features/daily_tasks/repo/tasks_repository_provider.dart';
 import 'package:tablets/src/features/daily_tasks/repo/weekly_tasks_repo.dart';
 import 'package:tablets/src/features/regions/repository/region_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
@@ -192,7 +192,12 @@ class SalesPoints extends ConsumerWidget {
                           null,
                         );
                         //TODO to prevent adding new salespoint if it already exists
-                        ref.read(tasksRepositoryProvider).addItem(newSalesPoint);
+                        final newSalesPointMap = newSalesPoint.toMap();
+                        newSalesPointMap['date'] = Timestamp.fromDate(newSalesPointMap['date']);
+                        dailyTasks['tasks'].add(newSalesPointMap);
+                        ref
+                            .read(weeklyTasksRepositoryProvider)
+                            .updateItem(WeeklyTask.fromMap(dailyTasks));
                       }
                     },
                   ),
