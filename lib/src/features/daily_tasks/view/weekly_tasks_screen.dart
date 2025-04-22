@@ -228,7 +228,7 @@ class SalesPoints extends ConsumerWidget {
                       padding: const EdgeInsets.only(top: 20, bottom: 10, left: 10, right: 10),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(Radius.circular(8)),
-                        color: Colors.blue[100],
+                        color: Colors.blueGrey[100],
                       ),
                       child: Column(
                         children: [
@@ -432,7 +432,7 @@ class SimpleWeekdaySelector extends ConsumerWidget {
       // Distribute space nicely between the boxes
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(weekdays.length, (index) {
-        Color? bgColor = selectedIndex == (index + 1) ? Colors.blueGrey[300] : Colors.blueGrey[100];
+        Color? bgColor = selectedIndex == (index + 1) ? Colors.orange[300] : Colors.orange[100];
         return InkWell(
           // The function to call when tapped, passing the current index
           onTap: () => onWeekdayTap(index + 1),
