@@ -17,6 +17,7 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/daily_tasks/controllers/copy_weekly_tasks_to_day.dart';
 import 'package:tablets/src/features/daily_tasks/controllers/selected_date_provider.dart';
 import 'package:tablets/src/features/daily_tasks/model/point.dart';
 import 'package:tablets/src/features/daily_tasks/printing/tasks_pdf.dart';
@@ -90,6 +91,9 @@ class SalesPoints extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (salesPoints.isEmpty) {
+      copyWeeklyDayTasks(ref);
+    }
     bool isReadOnly = true;
     final userInfo = ref.watch(userInfoProvider); // to update UI when user info finally loaded
     if (userInfo != null && userInfo.privilage != 'guest') {

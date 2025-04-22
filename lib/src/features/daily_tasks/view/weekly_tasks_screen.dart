@@ -415,13 +415,13 @@ class SimpleWeekdaySelector extends ConsumerWidget {
 
   // Define the weekday labels (0 = Monday, 6 = Sunday)
   final List<String> weekdays = const [
-    'السبت',
-    'الاحد',
     'الاثنين',
     'الثلاثاء',
     'الاربعاء',
     'الخميس',
-    'الجمعة'
+    'الجمعة',
+    'السبت',
+    'الاحد',
   ];
 
   const SimpleWeekdaySelector({
