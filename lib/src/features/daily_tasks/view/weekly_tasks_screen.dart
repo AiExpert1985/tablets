@@ -61,7 +61,7 @@ class WeeklyTasksScreen extends ConsumerWidget {
                     };
                     ref.read(weeklyTasksRepositoryProvider).addItem(WeeklyTask.fromMap(dayTasks));
                   } else {
-                    dailyTasks.first;
+                    dayTasks = dailyTasks.first;
                   }
                   return SalesPoints(dayTasks);
                 },
