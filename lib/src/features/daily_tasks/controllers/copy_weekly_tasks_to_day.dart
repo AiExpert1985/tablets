@@ -15,7 +15,8 @@ void copyWeeklyDayTasks(WidgetRef ref) async {
   final tasks = dayTasks.isEmpty ? [] : dayTasks.first['tasks'];
   for (var task in tasks) {
     final salesPoint = SalesPoint.fromMap(task);
-    salesPoint.dbRef = generateRandomString(len: 8); // important to give unqiue dbRef
+    // important to give unqiue dbRef, face bug without ti
+    salesPoint.dbRef = generateRandomString(len: 8);
     salesPoint.isVisited = false;
     salesPoint.hasTransaction = false;
     salesPoint.date = selectedDate;
