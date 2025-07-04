@@ -27,6 +27,9 @@ import 'package:tablets/src/features/customers/controllers/customer_report_contr
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/products/controllers/product_report_controller.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_data_notifier.dart';
 import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_report_controller.dart';
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
@@ -326,6 +329,8 @@ class FastReports extends ConsumerWidget {
                     VerticalGap.xl,
                     buildSalesmanTasksButton(context, ref),
                     VerticalGap.xl,
+                    buildInventoryButton(context, ref),
+                    VerticalGap.xl,
                     const RistrictedAccessWidget(
                       allowedPrivilages: [],
                       child: HideProductCheckBox(),
@@ -474,6 +479,23 @@ Widget buildAllDebtButton(BuildContext context, WidgetRef ref) {
       await initializeAppData(context, ref);
       if (context.mounted) {
         customerReportController.showAllCustomersDebt(context, ref);
+      }
+    },
+  );
+}
+
+Widget buildInventoryButton(BuildContext context, WidgetRef ref) {
+  final productReportController = ref.read(productReportControllerProvider);
+  final productScreenController = ref.read(productScreenControllerProvider);
+  // TODO calculate inventory using productScreenController
+  List<List<dynamic>> inventory = [];
+  return FastAccessReportsButton(
+    backgroundColor: Colors.orange[100],
+    'الجرد المخزني',
+    () async {
+      await initializeAppData(context, ref);
+      if (context.mounted) {
+        productReportController.showInvontoryReport(context, inventory, 'الجرد المخزني');
       }
     },
   );
