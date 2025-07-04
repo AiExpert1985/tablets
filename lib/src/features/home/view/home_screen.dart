@@ -485,6 +485,8 @@ Widget buildAllDebtButton(BuildContext context, WidgetRef ref) {
   );
 }
 
+// Path: lib/src/features/home/view/home_screen.dart
+
 Widget buildInventoryButton(BuildContext context, WidgetRef ref) {
   final productReportController = ref.read(productReportControllerProvider);
   final productScreenController = ref.read(productScreenControllerProvider);
@@ -495,25 +497,22 @@ Widget buildInventoryButton(BuildContext context, WidgetRef ref) {
     () async {
       await initializeAppData(context, ref);
       if (context.mounted) {
-        // Trigger the calculation of all product data, including quantities.
-        // This will update the productScreenDataNotifier.
         productScreenController.setFeatureScreenData(context);
 
-        // Read the calculated data from the notifier.
-        // The notifier's state is a Map, and the list of products is stored under the 'data' key.
         final List<Map<String, dynamic>> allProductsData =
             ref.read(productScreenDataNotifier)['data'];
 
-        // Format the data for the inventory report.
-        // The report expects a list of lists, with each inner list being [productName, quantity].
-        final List<List<dynamic>> inventory = allProductsData.map((product) {
+        // --- FIX IS HERE ---
+        // Filter the products to exclude any that are marked as hidden in special reports.
+        final List<List<dynamic>> inventory = allProductsData
+            .where((product) => product['isHiddenInSpecialReports'] != true)
+            .map((product) {
           return [
             product[productNameKey],
             product[productQuantityKey],
           ];
         }).toList();
 
-        // Display the report dialog with the inventory data.
         productReportController.showInvontoryReport(context, inventory, 'الجرد المخزني');
       }
     },
