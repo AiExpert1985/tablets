@@ -15,6 +15,7 @@ import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
+import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/home_greetings.dart';
@@ -487,14 +488,32 @@ Widget buildAllDebtButton(BuildContext context, WidgetRef ref) {
 Widget buildInventoryButton(BuildContext context, WidgetRef ref) {
   final productReportController = ref.read(productReportControllerProvider);
   final productScreenController = ref.read(productScreenControllerProvider);
-  // TODO calculate inventory using productScreenController
-  List<List<dynamic>> inventory = [];
+
   return FastAccessReportsButton(
     backgroundColor: Colors.orange[100],
     'الجرد المخزني',
     () async {
       await initializeAppData(context, ref);
       if (context.mounted) {
+        // Trigger the calculation of all product data, including quantities.
+        // This will update the productScreenDataNotifier.
+        productScreenController.setFeatureScreenData(context);
+
+        // Read the calculated data from the notifier.
+        // The notifier's state is a Map, and the list of products is stored under the 'data' key.
+        final List<Map<String, dynamic>> allProductsData =
+            ref.read(productScreenDataNotifier)['data'];
+
+        // Format the data for the inventory report.
+        // The report expects a list of lists, with each inner list being [productName, quantity].
+        final List<List<dynamic>> inventory = allProductsData.map((product) {
+          return [
+            product[productNameKey],
+            product[productQuantityKey],
+          ];
+        }).toList();
+
+        // Display the report dialog with the inventory data.
         productReportController.showInvontoryReport(context, inventory, 'الجرد المخزني');
       }
     },

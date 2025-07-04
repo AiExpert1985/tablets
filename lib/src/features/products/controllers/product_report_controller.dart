@@ -42,10 +42,10 @@ class ProductReportController {
 
   void showInvontoryReport(BuildContext context, List<List<dynamic>> inventory, String title) {
     showReportDialog(context, ['المادة', 'العدد'], inventory,
-        dropdownIndex: 1,
+        dropdownIndex: 0,
         dropdownLabel: 'المادة',
         title: title,
-        summaryIndexes: [2],
+        summaryIndexes: [1],
         useOriginalTransaction: false);
   }
 
