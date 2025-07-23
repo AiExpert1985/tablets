@@ -8,6 +8,9 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
+import 'package:tablets/src/features/customers/model/customer.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/home/view/home_screen.dart';
 import 'package:tablets/src/common/widgets/main_frame.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -201,10 +204,25 @@ class SliderButton extends ConsumerWidget {
           // minorTicksPerInterval: 1,
           onChanged: (dynamic value) {
             settingsDataNotifier.updateProperties({propertyName: value.round()});
+            if (label == S.of(context).max_debt_duration_allowed) {
+              _updateDurationForAllClients(ref, value);
+            }
           },
         ),
       ],
     );
+  }
+}
+
+// when the date duration is update, we update that for all current clients
+// that was the request of Jihan - Shamil
+void _updateDurationForAllClients(WidgetRef ref, double value) {
+  final customersDbCache = ref.watch(customerDbCacheProvider);
+  final customerRepo = ref.watch(customerRepositoryProvider);
+  int roundedUp = value.ceil();
+  for (var customerMap in customersDbCache) {
+    customerMap['paymentDurationLimit'] = roundedUp.toDouble();
+    customerRepo.updateItem(Customer.fromMap(customerMap));
   }
 }
 
