@@ -2423,6 +2423,266 @@ class S {
       args: [],
     );
   }
+
+  /// `Warehouse print queue`
+  String get warehouse_print_queue_title {
+    return Intl.message(
+      'Warehouse print queue',
+      name: 'warehouse_print_queue_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Warehouse print queue`
+  String get warehouse_print_queue_menu {
+    return Intl.message(
+      'Warehouse print queue',
+      name: 'warehouse_print_queue_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to load pending invoices.`
+  String get warehouse_print_queue_error {
+    return Intl.message(
+      'Unable to load pending invoices.',
+      name: 'warehouse_print_queue_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Print`
+  String get warehouse_print_queue_print {
+    return Intl.message(
+      'Print',
+      name: 'warehouse_print_queue_print',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invoice # {invoiceNumber}`
+  String warehouse_print_job_title(String invoiceNumber) {
+    return Intl.message(
+      'Invoice # $invoiceNumber',
+      name: 'warehouse_print_job_title',
+      desc: '',
+      args: [invoiceNumber],
+    );
+  }
+
+  /// `Client`
+  String get warehouse_print_queue_client {
+    return Intl.message(
+      'Client',
+      name: 'warehouse_print_queue_client',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invoice date`
+  String get warehouse_print_queue_date {
+    return Intl.message(
+      'Invoice date',
+      name: 'warehouse_print_queue_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sent on`
+  String get warehouse_print_queue_created {
+    return Intl.message(
+      'Sent on',
+      name: 'warehouse_print_queue_created',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Items`
+  String get warehouse_print_queue_items {
+    return Intl.message(
+      'Items',
+      name: 'warehouse_print_queue_items',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total`
+  String get warehouse_print_queue_total {
+    return Intl.message(
+      'Total',
+      name: 'warehouse_print_queue_total',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sent by`
+  String get warehouse_print_queue_created_by {
+    return Intl.message(
+      'Sent by',
+      name: 'warehouse_print_queue_created_by',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Printed by {name} on {date}`
+  String warehouse_print_queue_already_printed(String name, String date) {
+    return Intl.message(
+      'Printed by $name on $date',
+      name: 'warehouse_print_queue_already_printed',
+      desc: '',
+      args: [name, date],
+    );
+  }
+
+  /// `You must be signed in to print.`
+  String get warehouse_print_queue_missing_user {
+    return Intl.message(
+      'You must be signed in to print.',
+      name: 'warehouse_print_queue_missing_user',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invoice sent to printer.`
+  String get warehouse_print_queue_printed {
+    return Intl.message(
+      'Invoice sent to printer.',
+      name: 'warehouse_print_queue_printed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Printing failed. Please try again.`
+  String get warehouse_print_queue_print_error {
+    return Intl.message(
+      'Printing failed. Please try again.',
+      name: 'warehouse_print_queue_print_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only customer invoices can be sent to the warehouse.`
+  String get warehouse_print_queue_only_invoices {
+    return Intl.message(
+      'Only customer invoices can be sent to the warehouse.',
+      name: 'warehouse_print_queue_only_invoices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the client name before sending.`
+  String get warehouse_print_queue_missing_name {
+    return Intl.message(
+      'Enter the client name before sending.',
+      name: 'warehouse_print_queue_missing_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invoice is missing an identifier.`
+  String get warehouse_print_queue_missing_id {
+    return Intl.message(
+      'Invoice is missing an identifier.',
+      name: 'warehouse_print_queue_missing_id',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invoice is ready for the warehouse.`
+  String get warehouse_print_queue_sent {
+    return Intl.message(
+      'Invoice is ready for the warehouse.',
+      name: 'warehouse_print_queue_sent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to send invoice to warehouse.`
+  String get warehouse_print_queue_send_error {
+    return Intl.message(
+      'Failed to send invoice to warehouse.',
+      name: 'warehouse_print_queue_send_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send to warehouse`
+  String get warehouse_print_queue_send {
+    return Intl.message(
+      'Send to warehouse',
+      name: 'warehouse_print_queue_send',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not sent to warehouse`
+  String get warehouse_print_queue_status_not_sent {
+    return Intl.message(
+      'Not sent to warehouse',
+      name: 'warehouse_print_queue_status_not_sent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for warehouse since {sentAt}`
+  String warehouse_print_queue_status_pending(String sentAt) {
+    return Intl.message(
+      'Waiting for warehouse since $sentAt',
+      name: 'warehouse_print_queue_status_pending',
+      desc: '',
+      args: [sentAt],
+    );
+  }
+
+  /// `Printed by {user} at {printedAt}`
+  String warehouse_print_queue_status_printed(String user, String printedAt) {
+    return Intl.message(
+      'Printed by $user at $printedAt',
+      name: 'warehouse_print_queue_status_printed',
+      desc: '',
+      args: [user, printedAt],
+    );
+  }
+
+  /// `Checking warehouse status...`
+  String get warehouse_print_queue_status_loading {
+    return Intl.message(
+      'Checking warehouse status...',
+      name: 'warehouse_print_queue_status_loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to load warehouse status.`
+  String get warehouse_print_queue_status_error {
+    return Intl.message(
+      'Unable to load warehouse status.',
+      name: 'warehouse_print_queue_status_error',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

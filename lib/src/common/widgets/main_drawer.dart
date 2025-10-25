@@ -57,6 +57,8 @@ class MainDrawer extends ConsumerWidget {
                   TasksButton(),
                   VerticalGap.m,
                   SettingsButton(),
+                  VerticalGap.m,
+                  WarehousePrintQueueButton(),
                   Spacer(),
                   PendingsButton(),
                 ],
@@ -203,6 +205,24 @@ class PendingsButton extends ConsumerWidget {
       ),
       onTap: () async =>
           processAndMoveToTargetPage(context, ref, pendingScreenController, route, pageTitle),
+    );
+  }
+}
+
+class WarehousePrintQueueButton extends ConsumerWidget {
+  const WarehousePrintQueueButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    return ListTile(
+      leading: const Icon(Icons.print_outlined),
+      title: Text(S.of(context).warehouse_print_queue_menu),
+      onTap: () {
+        pageTitleNotifier.state = S.of(context).warehouse_print_queue_title;
+        Navigator.of(context).pop();
+        context.goNamed(AppRoute.warehousePrintQueue.name);
+      },
     );
   }
 }
