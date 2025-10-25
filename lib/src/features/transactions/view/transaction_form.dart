@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
@@ -15,6 +16,7 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 // import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -275,16 +277,69 @@ class TransactionForm extends ConsumerWidget {
   }
 
   Future<void> _onSendToWarehouse(
-      BuildContext context, WidgetRef ref, ItemFormData formDataNotifier) async {
+    BuildContext context,
+    WidgetRef ref,
+    ItemFormData formDataNotifier,
+  ) async {
+    final l10n = S.of(context);
     final transactionData = formDataNotifier.data;
-    if ((transactionData[nameKey] as String? ?? '').isEmpty) {
-      failureUserMessage(context, S.of(context).warehouse_print_queue_missing_name);
+    final clientName = (transactionData[nameKey] as String? ?? '').trim();
+    if (clientName.isEmpty) {
+      failureUserMessage(context, l10n.warehouse_print_queue_missing_name);
       return;
     }
+
+    final user = ref.read(userInfoProvider);
+    if (user == null) {
+      failureUserMessage(context, l10n.warehouse_print_queue_missing_user);
+      return;
+    }
+
     saveTransaction(context, ref, transactionData, true);
     final sanitizedData = removeEmptyRows(transactionData);
     final service = ref.read(warehousePrintQueueServiceProvider);
-    await service.enqueueInvoice(context, ref, sanitizedData);
+
+    try {
+      await service.enqueueInvoice(
+        context: context,
+        ref: ref,
+        transactionData: sanitizedData,
+        user: user,
+      );
+      if (!context.mounted) return;
+      successUserMessage(context, l10n.warehouse_print_queue_sent);
+    } on WarehouseEnqueueException catch (error) {
+      final message = _warehouseEnqueueErrorMessage(l10n, error);
+      if (!context.mounted) return;
+      failureUserMessage(context, message);
+    } catch (error, stackTrace) {
+      debugPrint('Failed to send invoice to warehouse: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      if (!context.mounted) return;
+      failureUserMessage(context, l10n.warehouse_print_queue_send_error);
+    }
+  }
+
+  String _warehouseEnqueueErrorMessage(
+    S l10n,
+    WarehouseEnqueueException error,
+  ) {
+    switch (error.reason) {
+      case WarehouseEnqueueFailure.unsupportedType:
+        return l10n.warehouse_print_queue_only_invoices;
+      case WarehouseEnqueueFailure.missingClientName:
+        return l10n.warehouse_print_queue_missing_name;
+      case WarehouseEnqueueFailure.missingInvoiceId:
+        return l10n.warehouse_print_queue_missing_id;
+      case WarehouseEnqueueFailure.uploadFailed:
+        final details = error.details;
+        if (details is FirebaseException) {
+          return details.message ?? details.code;
+        }
+        return l10n.warehouse_print_queue_send_error;
+      case WarehouseEnqueueFailure.pdfGenerationFailed:
+        return l10n.warehouse_print_queue_send_error;
+    }
   }
 
   static void onNavigationPressed(ItemFormData formDataNotifier, BuildContext context,

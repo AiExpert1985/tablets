@@ -4,12 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tablets/generated/l10n.dart';
-import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/printing/print_document.dart';
-import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
+import 'package:tablets/src/features/authentication/model/user_account.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart'
+    show transactionTypeKey;
 import 'package:tablets/src/features/warehouse_print_queue/model/warehouse_print_job.dart';
 import 'package:tablets/src/features/warehouse_print_queue/repository/warehouse_print_queue_repository.dart';
 
@@ -18,33 +18,31 @@ class WarehousePrintQueueService {
 
   final WarehousePrintQueueRepository _repository;
 
-  Future<void> enqueueInvoice(
-    BuildContext context,
-    WidgetRef ref,
-    Map<String, dynamic> transactionData,
-  ) async {
+  Future<WarehousePrintJob> enqueueInvoice({
+    required BuildContext context,
+    required WidgetRef ref,
+    required Map<String, dynamic> transactionData,
+    required UserAccount user,
+  }) async {
     final type = transactionData[transactionTypeKey];
     if (type != TransactionType.customerInvoice.name) {
-      infoUserMessage(context, S.of(context).warehouse_print_queue_only_invoices);
-      return;
+      throw const WarehouseEnqueueException(
+        WarehouseEnqueueFailure.unsupportedType,
+      );
     }
 
-    final name = transactionData[nameKey] as String? ?? '';
+    final name = (transactionData[nameKey] as String? ?? '').trim();
     if (name.isEmpty) {
-      failureUserMessage(context, S.of(context).warehouse_print_queue_missing_name);
-      return;
+      throw const WarehouseEnqueueException(
+        WarehouseEnqueueFailure.missingClientName,
+      );
     }
 
     final invoiceId = transactionData[dbRefKey] as String?;
     if (invoiceId == null || invoiceId.isEmpty) {
-      failureUserMessage(context, S.of(context).warehouse_print_queue_missing_id);
-      return;
-    }
-
-    final user = ref.read(userInfoProvider);
-    if (user == null) {
-      failureUserMessage(context, S.of(context).warehouse_print_queue_missing_user);
-      return;
+      throw const WarehouseEnqueueException(
+        WarehouseEnqueueFailure.missingInvoiceId,
+      );
     }
 
     final invoiceDateRaw = transactionData[dateKey];
@@ -86,16 +84,23 @@ class WarehousePrintQueueService {
     try {
       final pdfBytes = await buildTransactionPdfBytes(context, ref, transactionData);
       await _repository.uploadInvoice(job, pdfBytes);
-      successUserMessage(context, S.of(context).warehouse_print_queue_sent);
+      return job;
     } on FirebaseException catch (error, stackTrace) {
-      failureUserMessage(
-          context, error.message ?? S.of(context).warehouse_print_queue_send_error);
-      debugPrint('Failed to send invoice to warehouse: ${error.message ?? error.code}');
+      debugPrint(
+        'Failed to send invoice ${job.invoiceId} to warehouse: ${error.message ?? error.code}',
+      );
       debugPrintStack(stackTrace: stackTrace);
+      throw WarehouseEnqueueException(
+        WarehouseEnqueueFailure.uploadFailed,
+        details: error,
+      );
     } catch (error, stackTrace) {
-      failureUserMessage(context, S.of(context).warehouse_print_queue_send_error);
-      debugPrint('Failed to send invoice to warehouse: $error');
+      debugPrint('Failed to build invoice ${job.invoiceId} PDF for warehouse: $error');
       debugPrintStack(stackTrace: stackTrace);
+      throw WarehouseEnqueueException(
+        WarehouseEnqueueFailure.pdfGenerationFailed,
+        details: error,
+      );
     }
   }
 }
@@ -104,3 +109,18 @@ final warehousePrintQueueServiceProvider = Provider<WarehousePrintQueueService>(
   final repository = ref.read(warehousePrintQueueRepositoryProvider);
   return WarehousePrintQueueService(repository);
 });
+
+class WarehouseEnqueueException implements Exception {
+  const WarehouseEnqueueException(this.reason, {this.details});
+
+  final WarehouseEnqueueFailure reason;
+  final Object? details;
+}
+
+enum WarehouseEnqueueFailure {
+  unsupportedType,
+  missingClientName,
+  missingInvoiceId,
+  uploadFailed,
+  pdfGenerationFailed,
+}
