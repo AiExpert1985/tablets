@@ -65,6 +65,20 @@ Future<void> printForm(BuildContext context, WidgetRef ref, Map<String, dynamic>
   }
 }
 
+Future<Uint8List> buildTransactionPdfBytes(
+  BuildContext context,
+  WidgetRef ref,
+  Map<String, dynamic> transactionData, {
+  bool isLogoB = false,
+}) async {
+  final imagePath =
+      isLogoB ? 'assets/images/invoice_logo_b.png' : 'assets/images/invoice_logo.PNG';
+  final image = await loadImage(imagePath);
+  final pdf = await getPdfFile(context, ref, transactionData, image);
+  final bytes = await pdf.save();
+  return Uint8List.fromList(bytes);
+}
+
 Future<void> printReport(
   BuildContext context,
   WidgetRef ref,
