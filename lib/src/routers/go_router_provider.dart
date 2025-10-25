@@ -16,6 +16,7 @@ import 'package:tablets/src/features/settings/view/settings_screen.dart';
 import 'package:tablets/src/features/supplier_discount/view/supplier_discount_screen.dart';
 import 'package:tablets/src/features/transactions/view/transaction_screen.dart';
 import 'package:tablets/src/features/vendors/view/vendor_screen.dart';
+import 'package:tablets/src/features/warehouse_print_queue/view/warehouse_print_queue_screen.dart';
 import 'package:tablets/src/routers/go_router_refresh_stream.dart';
 import 'package:tablets/src/features/authentication/view/login_screen.dart';
 import 'package:tablets/src/routers/not_found_screen.dart';
@@ -36,6 +37,7 @@ enum AppRoute {
   deletedTransactions,
   supplierDiscount,
   weeklyTasks,
+  warehousePrintQueue,
 }
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
@@ -138,6 +140,12 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/weekly-tasks',
           name: AppRoute.weeklyTasks.name,
           builder: (BuildContext context, GoRouterState state) => const WeeklyTasksScreen(),
+        ),
+        GoRoute(
+          path: '/warehouse-print-queue',
+          name: AppRoute.warehousePrintQueue.name,
+          builder: (BuildContext context, GoRouterState state) =>
+              const WarehousePrintQueueScreen(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),

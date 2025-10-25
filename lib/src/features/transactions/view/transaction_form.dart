@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:tablets/generated/l10n.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
@@ -14,6 +16,7 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 // import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
+import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -39,6 +42,9 @@ import 'package:tablets/src/features/transactions/view/forms/invoice_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/receipt_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/statement_form.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
+import 'package:tablets/src/features/warehouse_print_queue/controllers/warehouse_print_queue_providers.dart';
+import 'package:tablets/src/features/warehouse_print_queue/controllers/warehouse_print_queue_service.dart';
+import 'package:tablets/src/features/warehouse_print_queue/model/warehouse_print_job.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 
@@ -209,15 +215,20 @@ class TransactionForm extends ConsumerWidget {
         ),
       // only show delete button if we are in editing mode
       if (!formNavigation.isReadOnly)
-        IconButton(
-          onPressed: () {
-            formNavigation.isReadOnly = true;
-            deleteTransaction(context, ref, formDataNotifier, formImagesNotifier, formController,
-                transactionDbCache, screenController,
-                formNavigation: formNavigation);
-          },
-          icon: const DeleteIcon(),
-        ),
+      IconButton(
+        onPressed: () {
+          formNavigation.isReadOnly = true;
+          deleteTransaction(context, ref, formDataNotifier, formImagesNotifier, formController,
+              transactionDbCache, screenController,
+              formNavigation: formNavigation);
+        },
+        icon: const DeleteIcon(),
+      ),
+      IconButton(
+        onPressed: () => _onSendToWarehouse(context, ref, formDataNotifier),
+        tooltip: S.of(context).warehouse_print_queue_send,
+        icon: const Icon(Icons.local_shipping_outlined),
+      ),
       IconButton(
         onPressed: () {
           _onPrintPressed(context, ref, formDataNotifier);
@@ -263,6 +274,72 @@ class TransactionForm extends ConsumerWidget {
     saveTransaction(context, ref, formDataNotifier.data, true);
     printForm(context, ref, formDataNotifier.data, isLogoB: isLogoB);
     formDataNotifier.updateProperties({isPrintedKey: true});
+  }
+
+  Future<void> _onSendToWarehouse(
+    BuildContext context,
+    WidgetRef ref,
+    ItemFormData formDataNotifier,
+  ) async {
+    final l10n = S.of(context);
+    final transactionData = formDataNotifier.data;
+    final clientName = (transactionData[nameKey] as String? ?? '').trim();
+    if (clientName.isEmpty) {
+      failureUserMessage(context, l10n.warehouse_print_queue_missing_name);
+      return;
+    }
+
+    final user = ref.read(userInfoProvider);
+    if (user == null) {
+      failureUserMessage(context, l10n.warehouse_print_queue_missing_user);
+      return;
+    }
+
+    saveTransaction(context, ref, transactionData, true);
+    final sanitizedData = removeEmptyRows(transactionData);
+    final service = ref.read(warehousePrintQueueServiceProvider);
+
+    try {
+      await service.enqueueInvoice(
+        context: context,
+        ref: ref,
+        transactionData: sanitizedData,
+        user: user,
+      );
+      if (!context.mounted) return;
+      successUserMessage(context, l10n.warehouse_print_queue_sent);
+    } on WarehouseEnqueueException catch (error) {
+      final message = _warehouseEnqueueErrorMessage(l10n, error);
+      if (!context.mounted) return;
+      failureUserMessage(context, message);
+    } catch (error, stackTrace) {
+      debugPrint('Failed to send invoice to warehouse: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      if (!context.mounted) return;
+      failureUserMessage(context, l10n.warehouse_print_queue_send_error);
+    }
+  }
+
+  String _warehouseEnqueueErrorMessage(
+    S l10n,
+    WarehouseEnqueueException error,
+  ) {
+    switch (error.reason) {
+      case WarehouseEnqueueFailure.unsupportedType:
+        return l10n.warehouse_print_queue_only_invoices;
+      case WarehouseEnqueueFailure.missingClientName:
+        return l10n.warehouse_print_queue_missing_name;
+      case WarehouseEnqueueFailure.missingInvoiceId:
+        return l10n.warehouse_print_queue_missing_id;
+      case WarehouseEnqueueFailure.uploadFailed:
+        final details = error.details;
+        if (details is FirebaseException) {
+          return details.message ?? details.code;
+        }
+        return l10n.warehouse_print_queue_send_error;
+      case WarehouseEnqueueFailure.pdfGenerationFailed:
+        return l10n.warehouse_print_queue_send_error;
+    }
   }
 
   static void onNavigationPressed(ItemFormData formDataNotifier, BuildContext context,
@@ -507,6 +584,7 @@ class CustomerDebtReview extends ConsumerWidget {
     // show debt review for customer invoices & receipts
     bool showDebtInfo = transactionType == TransactionType.customerInvoice.name ||
         transactionType == TransactionType.customerReceipt.name;
+    final showWarehouseStatus = transactionType == TransactionType.customerInvoice.name;
     return Container(
       width: 300,
       padding: const EdgeInsets.only(left: 20),
@@ -514,6 +592,10 @@ class CustomerDebtReview extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const PrintStatus(),
+          if (showWarehouseStatus) ...[
+            VerticalGap.s,
+            const WarehousePrintStatus(),
+          ],
           if (showDebtInfo)
             Column(
               children: [
@@ -559,6 +641,96 @@ class PrintStatus extends ConsumerWidget {
             )),
       ],
     );
+  }
+}
+
+class WarehousePrintStatus extends ConsumerWidget {
+  const WarehousePrintStatus({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(transactionFormDataProvider);
+    final formData = ref.read(transactionFormDataProvider.notifier).data;
+    final invoiceId = formData[dbRefKey] as String?;
+    if (invoiceId == null || invoiceId.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final asyncJob = ref.watch(warehouseJobStreamProvider(invoiceId));
+    return asyncJob.when(
+      data: (job) {
+        if (job == null) {
+          return _buildStatusContainer(
+            context,
+            Colors.grey.shade400,
+            Colors.black,
+            S.of(context).warehouse_print_queue_status_not_sent,
+          );
+        }
+        if (job.status == WarehousePrintJob.pendingStatus) {
+          final sentAt = _formatDate(job.createdAt);
+          return _buildStatusContainer(
+            context,
+            Colors.amber.shade200,
+            Colors.black,
+            S.of(context).warehouse_print_queue_status_pending(sentAt),
+          );
+        }
+        if (job.status == WarehousePrintJob.printedStatus) {
+          final printedAt = job.printedAt != null ? _formatDate(job.printedAt!) : '';
+          final printedBy = job.printedByName ?? '';
+          return _buildStatusContainer(
+            context,
+            Colors.green,
+            Colors.white,
+            S.of(context).warehouse_print_queue_status_printed(printedBy, printedAt),
+          );
+        }
+        return _buildStatusContainer(
+          context,
+          Colors.blueGrey.shade100,
+          Colors.black,
+          job.status,
+        );
+      },
+      loading: () => _buildStatusContainer(
+        context,
+        Colors.blueGrey.shade100,
+        Colors.black,
+        S.of(context).warehouse_print_queue_status_loading,
+      ),
+      error: (error, stackTrace) => _buildStatusContainer(
+        context,
+        Colors.red.shade200,
+        Colors.black,
+        S.of(context).warehouse_print_queue_status_error,
+      ),
+    );
+  }
+
+  static Widget _buildStatusContainer(
+    BuildContext context,
+    Color backgroundColor,
+    Color textColor,
+    String message,
+  ) {
+    return Container(
+      width: 280,
+      decoration: BoxDecoration(color: backgroundColor, border: Border.all(width: 0.5)),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Center(
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: textColor, fontSize: 14, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  static String _formatDate(DateTime date) {
+    final formatter = DateFormat('dd/MM/yyyy HH:mm');
+    return formatter.format(date);
   }
 }
 
