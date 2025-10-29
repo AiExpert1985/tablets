@@ -3,8 +3,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:tablets/generated/l10n.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
@@ -16,15 +16,15 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/background_color.dart';
 // import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
-import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
+import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/common/widgets/custome_appbar_for_back_return.dart';
+import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
-import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
 import 'package:tablets/src/features/deleted_transactions/model/deleted_transactions.dart';
 import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_db_cache_provider.dart';
@@ -32,11 +32,11 @@ import 'package:tablets/src/features/deleted_transactions/repository/deleted_tra
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_debt_info_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
+import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_form_controller.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/view/forms/expenditure_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/invoice_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/receipt_form.dart';
@@ -215,20 +215,22 @@ class TransactionForm extends ConsumerWidget {
         ),
       // only show delete button if we are in editing mode
       if (!formNavigation.isReadOnly)
-      IconButton(
-        onPressed: () {
-          formNavigation.isReadOnly = true;
-          deleteTransaction(context, ref, formDataNotifier, formImagesNotifier, formController,
-              transactionDbCache, screenController,
-              formNavigation: formNavigation);
-        },
-        icon: const DeleteIcon(),
-      ),
-      IconButton(
-        onPressed: () => _onSendToWarehouse(context, ref, formDataNotifier),
-        tooltip: S.of(context).warehouse_print_queue_send,
-        icon: const Icon(Icons.local_shipping_outlined),
-      ),
+        IconButton(
+          onPressed: () {
+            formNavigation.isReadOnly = true;
+            deleteTransaction(context, ref, formDataNotifier, formImagesNotifier, formController,
+                transactionDbCache, screenController,
+                formNavigation: formNavigation);
+          },
+          icon: const DeleteIcon(),
+        ),
+      if (formDataNotifier.getProperty(transactionTypeKey) ==
+          TransactionType.customerInvoice.name)
+        IconButton(
+          onPressed: () => _onSendToWarehouse(context, ref, formDataNotifier),
+          tooltip: S.of(context).warehouse_print_queue_send,
+          icon: const Icon(Icons.local_shipping_outlined),
+        ),
       IconButton(
         onPressed: () {
           _onPrintPressed(context, ref, formDataNotifier);
@@ -277,12 +279,15 @@ class TransactionForm extends ConsumerWidget {
   }
 
   Future<void> _onSendToWarehouse(
-    BuildContext context,
-    WidgetRef ref,
-    ItemFormData formDataNotifier,
-  ) async {
+      BuildContext context, WidgetRef ref, ItemFormData formDataNotifier) async {
     final l10n = S.of(context);
     final transactionData = formDataNotifier.data;
+    final type = transactionData[transactionTypeKey];
+    if (type != TransactionType.customerInvoice.name) {
+      failureUserMessage(context, l10n.warehouse_print_queue_only_invoices);
+      return;
+    }
+
     final clientName = (transactionData[nameKey] as String? ?? '').trim();
     if (clientName.isEmpty) {
       failureUserMessage(context, l10n.warehouse_print_queue_missing_name);
@@ -296,7 +301,7 @@ class TransactionForm extends ConsumerWidget {
     }
 
     saveTransaction(context, ref, transactionData, true);
-    final sanitizedData = removeEmptyRows(transactionData);
+    final sanitizedData = removeEmptyRows(Map<String, dynamic>.from(transactionData));
     final service = ref.read(warehousePrintQueueServiceProvider);
 
     try {
@@ -313,8 +318,7 @@ class TransactionForm extends ConsumerWidget {
       if (!context.mounted) return;
       failureUserMessage(context, message);
     } catch (error, stackTrace) {
-      debugPrint('Failed to send invoice to warehouse: $error');
-      debugPrintStack(stackTrace: stackTrace);
+      errorPrint('Failed to send invoice to warehouse: $error', stackTrace: stackTrace);
       if (!context.mounted) return;
       failureUserMessage(context, l10n.warehouse_print_queue_send_error);
     }
@@ -593,7 +597,7 @@ class CustomerDebtReview extends ConsumerWidget {
         children: [
           const PrintStatus(),
           if (showWarehouseStatus) ...[
-            VerticalGap.s,
+            VerticalGap.l,
             const WarehousePrintStatus(),
           ],
           if (showDebtInfo)
@@ -653,7 +657,11 @@ class WarehousePrintStatus extends ConsumerWidget {
     final formData = ref.read(transactionFormDataProvider.notifier).data;
     final invoiceId = formData[dbRefKey] as String?;
     if (invoiceId == null || invoiceId.isEmpty) {
-      return const SizedBox.shrink();
+      return _buildStatusContainer(
+        Colors.grey.shade400,
+        Colors.black,
+        S.of(context).warehouse_print_queue_status_not_sent,
+      );
     }
 
     final asyncJob = ref.watch(warehouseJobStreamProvider(invoiceId));
@@ -661,7 +669,6 @@ class WarehousePrintStatus extends ConsumerWidget {
       data: (job) {
         if (job == null) {
           return _buildStatusContainer(
-            context,
             Colors.grey.shade400,
             Colors.black,
             S.of(context).warehouse_print_queue_status_not_sent,
@@ -670,7 +677,6 @@ class WarehousePrintStatus extends ConsumerWidget {
         if (job.status == WarehousePrintJob.pendingStatus) {
           final sentAt = _formatDate(job.createdAt);
           return _buildStatusContainer(
-            context,
             Colors.amber.shade200,
             Colors.black,
             S.of(context).warehouse_print_queue_status_pending(sentAt),
@@ -680,27 +686,23 @@ class WarehousePrintStatus extends ConsumerWidget {
           final printedAt = job.printedAt != null ? _formatDate(job.printedAt!) : '';
           final printedBy = job.printedByName ?? '';
           return _buildStatusContainer(
-            context,
             Colors.green,
             Colors.white,
             S.of(context).warehouse_print_queue_status_printed(printedBy, printedAt),
           );
         }
         return _buildStatusContainer(
-          context,
           Colors.blueGrey.shade100,
           Colors.black,
           job.status,
         );
       },
       loading: () => _buildStatusContainer(
-        context,
         Colors.blueGrey.shade100,
         Colors.black,
         S.of(context).warehouse_print_queue_status_loading,
       ),
       error: (error, stackTrace) => _buildStatusContainer(
-        context,
         Colors.red.shade200,
         Colors.black,
         S.of(context).warehouse_print_queue_status_error,
@@ -708,12 +710,7 @@ class WarehousePrintStatus extends ConsumerWidget {
     );
   }
 
-  static Widget _buildStatusContainer(
-    BuildContext context,
-    Color backgroundColor,
-    Color textColor,
-    String message,
-  ) {
+  Widget _buildStatusContainer(Color backgroundColor, Color textColor, String message) {
     return Container(
       width: 280,
       decoration: BoxDecoration(color: backgroundColor, border: Border.all(width: 0.5)),
@@ -728,7 +725,7 @@ class WarehousePrintStatus extends ConsumerWidget {
     );
   }
 
-  static String _formatDate(DateTime date) {
+  String _formatDate(DateTime date) {
     final formatter = DateFormat('dd/MM/yyyy HH:mm');
     return formatter.format(date);
   }
