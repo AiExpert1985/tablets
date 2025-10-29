@@ -19,7 +19,8 @@ class WarehousePrintJobTile extends ConsumerStatefulWidget {
   final Uint8List? cachedPdf;
 
   @override
-  ConsumerState<WarehousePrintJobTile> createState() => _WarehousePrintJobTileState();
+  ConsumerState<WarehousePrintJobTile> createState() =>
+      _WarehousePrintJobTileState();
 }
 
 class _WarehousePrintJobTileState extends ConsumerState<WarehousePrintJobTile> {
@@ -135,17 +136,17 @@ class _WarehousePrintJobTileState extends ConsumerState<WarehousePrintJobTile> {
         printedByName: userName,
       );
       cacheNotifier.remove(widget.job.invoiceId);
-      if (context.mounted) {
+      if (mounted) {
         successUserMessage(context, S.of(context).warehouse_print_queue_printed);
       }
     } on FirebaseException catch (error, stackTrace) {
-      if (context.mounted) {
+      if (mounted) {
         failureUserMessage(context, error.message ?? error.code);
       }
       debugPrint('Warehouse print failed: ${error.code}');
       debugPrintStack(stackTrace: stackTrace);
     } catch (error, stackTrace) {
-      if (context.mounted) {
+      if (mounted) {
         failureUserMessage(context, S.of(context).warehouse_print_queue_print_error);
       }
       debugPrint('Warehouse print failed: $error');

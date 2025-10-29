@@ -51,15 +51,15 @@ Future<void> printForm(BuildContext context, WidgetRef ref, Map<String, dynamic>
     final imagePath =
         isLogoB ? 'assets/images/invoice_logo_b.png' : 'assets/images/invoice_logo.PNG';
     final image = await loadImage(imagePath);
-    final filePath = gePdfpath('test_file');
-    if (context.mounted) {
-      final pdf = await getPdfFile(context, ref, transactionData, image);
-      if (filePath == null) return;
+    if (!context.mounted) return;
 
-      final file = File(filePath);
-      await file.writeAsBytes(await pdf.save());
-      _printPDf(pdf, numCopies);
-    }
+    final filePath = gePdfpath('test_file');
+    if (filePath == null) return;
+
+    final pdf = await getPdfFile(context, ref, transactionData, image);
+    final file = File(filePath);
+    await file.writeAsBytes(await pdf.save());
+    await _printPDf(pdf, numCopies);
   } catch (e) {
     debugLog('Pdf creation failed - ($e)');
   }
@@ -71,7 +71,8 @@ Future<Uint8List> buildTransactionPdfBytes(
   Map<String, dynamic> transactionData, {
   bool isLogoB = false,
 }) async {
-  final imagePath = isLogoB ? 'assets/images/invoice_logo_b.png' : 'assets/images/invoice_logo.PNG';
+  final imagePath =
+      isLogoB ? 'assets/images/invoice_logo_b.png' : 'assets/images/invoice_logo.PNG';
   final image = await loadImage(imagePath);
   final pdf = await getPdfFile(context, ref, transactionData, image);
   final bytes = await pdf.save();
@@ -93,27 +94,28 @@ Future<void> printReport(
 ) async {
   try {
     final image = await loadImage('assets/images/invoice_logo.PNG');
+    if (!context.mounted) return;
+
     final filePath = gePdfpath('test_file');
-    if (context.mounted) {
-      final pdf = await getReportPdf(
-        context,
-        ref,
-        reportData,
-        image,
-        title,
-        listTitles,
-        startDate,
-        endDate,
-        summaryList,
-        filter1Values,
-        filter2Values,
-        filter3Values,
-      );
-      if (filePath == null) return;
-      final file = File(filePath);
-      await file.writeAsBytes(await pdf.save());
-      _printPDf(pdf, 1);
-    }
+    if (filePath == null) return;
+
+    final pdf = await getReportPdf(
+      context,
+      ref,
+      reportData,
+      image,
+      title,
+      listTitles,
+      startDate,
+      endDate,
+      summaryList,
+      filter1Values,
+      filter2Values,
+      filter3Values,
+    );
+    final file = File(filePath);
+    await file.writeAsBytes(await pdf.save());
+    await _printPDf(pdf, 1);
   } catch (e) {
     debugLog('Pdf creation failed - ($e)');
   }

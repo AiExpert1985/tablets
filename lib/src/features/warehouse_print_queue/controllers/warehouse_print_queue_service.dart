@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/printing/print_document.dart';
@@ -54,7 +55,8 @@ class WarehousePrintQueueService {
       invoiceDate = DateTime.now();
     }
 
-    final items = (transactionData[itemsKey] as List<dynamic>? ?? []).cast<Map<String, dynamic>>();
+    final items = (transactionData[itemsKey] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     final int itemCount = items.fold(0, (previousValue, item) {
       final sold = (item[itemSoldQuantityKey] as num?)?.toInt() ?? 0;
       final gift = (item[itemGiftQuantityKey] as num?)?.toInt() ?? 0;
