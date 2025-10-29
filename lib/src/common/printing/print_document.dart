@@ -74,6 +74,7 @@ Future<Uint8List> buildTransactionPdfBytes(
   final imagePath =
       isLogoB ? 'assets/images/invoice_logo_b.png' : 'assets/images/invoice_logo.PNG';
   final image = await loadImage(imagePath);
+  if (!context.mounted) return Uint8List(0);
   final pdf = await getPdfFile(context, ref, transactionData, image);
   final bytes = await pdf.save();
   return Uint8List.fromList(bytes);

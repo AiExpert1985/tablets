@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:tablets/generated/l10n.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_controller.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
@@ -19,7 +18,6 @@ import 'package:tablets/src/common/providers/background_color.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
-import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
@@ -226,8 +224,7 @@ class TransactionForm extends ConsumerWidget {
           },
           icon: const DeleteIcon(),
         ),
-      if (formDataNotifier.getProperty(transactionTypeKey) ==
-          TransactionType.customerInvoice.name)
+      if (formDataNotifier.getProperty(transactionTypeKey) == TransactionType.customerInvoice.name)
         IconButton(
           onPressed: () => _onSendToWarehouse(context, ref, formDataNotifier),
           tooltip: S.of(context).warehouse_print_queue_send,

@@ -136,17 +136,17 @@ class _WarehousePrintJobTileState extends ConsumerState<WarehousePrintJobTile> {
         printedByName: userName,
       );
       cacheNotifier.remove(widget.job.invoiceId);
-      if (mounted) {
+      if (context.mounted) {
         successUserMessage(context, S.of(context).warehouse_print_queue_printed);
       }
     } on FirebaseException catch (error, stackTrace) {
-      if (mounted) {
+      if (context.mounted) {
         failureUserMessage(context, error.message ?? error.code);
       }
       debugPrint('Warehouse print failed: ${error.code}');
       debugPrintStack(stackTrace: stackTrace);
     } catch (error, stackTrace) {
-      if (mounted) {
+      if (context.mounted) {
         failureUserMessage(context, S.of(context).warehouse_print_queue_print_error);
       }
       debugPrint('Warehouse print failed: $error');
