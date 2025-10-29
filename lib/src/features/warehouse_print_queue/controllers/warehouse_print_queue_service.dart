@@ -3,12 +3,11 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/printing/print_document.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/authentication/model/user_account.dart';
-import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart'
-    show transactionTypeKey;
 import 'package:tablets/src/features/warehouse_print_queue/model/warehouse_print_job.dart';
 import 'package:tablets/src/features/warehouse_print_queue/repository/warehouse_print_queue_repository.dart';
 
@@ -25,23 +24,17 @@ class WarehousePrintQueueService {
   }) async {
     final type = transactionData[transactionTypeKey];
     if (type != TransactionType.customerInvoice.name) {
-      throw const WarehouseEnqueueException(
-        WarehouseEnqueueFailure.unsupportedType,
-      );
+      throw const WarehouseEnqueueException(WarehouseEnqueueFailure.unsupportedType);
     }
 
     final name = (transactionData[nameKey] as String? ?? '').trim();
     if (name.isEmpty) {
-      throw const WarehouseEnqueueException(
-        WarehouseEnqueueFailure.missingClientName,
-      );
+      throw const WarehouseEnqueueException(WarehouseEnqueueFailure.missingClientName);
     }
 
     final invoiceId = transactionData[dbRefKey] as String?;
     if (invoiceId == null || invoiceId.isEmpty) {
-      throw const WarehouseEnqueueException(
-        WarehouseEnqueueFailure.missingInvoiceId,
-      );
+      throw const WarehouseEnqueueException(WarehouseEnqueueFailure.missingInvoiceId);
     }
 
     final invoiceDateRaw = transactionData[dateKey];
@@ -54,7 +47,8 @@ class WarehousePrintQueueService {
       invoiceDate = DateTime.now();
     }
 
-    final items = (transactionData[itemsKey] as List<dynamic>? ?? []).cast<Map<String, dynamic>>();
+    final items = (transactionData[itemsKey] as List<dynamic>? ?? [])
+        .cast<Map<String, dynamic>>();
     final int itemCount = items.fold(0, (previousValue, item) {
       final sold = (item[itemSoldQuantityKey] as num?)?.toInt() ?? 0;
       final gift = (item[itemGiftQuantityKey] as num?)?.toInt() ?? 0;
@@ -81,24 +75,22 @@ class WarehousePrintQueueService {
 
     try {
       final pdfBytes = await buildTransactionPdfBytes(context, ref, transactionData);
-      await _repository.uploadInvoice(job, pdfBytes);
-      return job;
-    } on FirebaseException catch (error, stackTrace) {
-      debugPrint(
-        'Failed to send invoice ${job.invoiceId} to warehouse: ${error.message ?? error.code}',
-      );
-      debugPrintStack(stackTrace: stackTrace);
-      throw WarehouseEnqueueException(
-        WarehouseEnqueueFailure.uploadFailed,
-        details: error,
-      );
+      try {
+        await _repository.uploadInvoice(job, pdfBytes);
+        return job;
+      } on FirebaseException catch (error, stackTrace) {
+        errorPrint('Failed to upload invoice ${job.invoiceId} for warehouse - ${error.message ?? error.code}',
+            stackTrace: stackTrace);
+        throw WarehouseEnqueueException(WarehouseEnqueueFailure.uploadFailed, details: error);
+      } catch (error, stackTrace) {
+        errorPrint('Failed to upload invoice ${job.invoiceId} for warehouse - $error',
+            stackTrace: stackTrace);
+        throw WarehouseEnqueueException(WarehouseEnqueueFailure.uploadFailed, details: error);
+      }
     } catch (error, stackTrace) {
-      debugPrint('Failed to build invoice ${job.invoiceId} PDF for warehouse: $error');
-      debugPrintStack(stackTrace: stackTrace);
-      throw WarehouseEnqueueException(
-        WarehouseEnqueueFailure.pdfGenerationFailed,
-        details: error,
-      );
+      errorPrint('Failed to build invoice ${job.invoiceId} pdf for warehouse - $error',
+          stackTrace: stackTrace);
+      throw WarehouseEnqueueException(WarehouseEnqueueFailure.pdfGenerationFailed, details: error);
     }
   }
 }

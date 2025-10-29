@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WarehousePrintJob {
-  WarehousePrintJob({
+  const WarehousePrintJob({
     required this.invoiceId,
     required this.invoiceNumber,
     required this.clientName,
@@ -13,10 +13,10 @@ class WarehousePrintJob {
     required this.createdAt,
     required this.createdById,
     required this.createdByName,
-    required this.version,
     this.printedAt,
     this.printedById,
     this.printedByName,
+    this.version = 0,
   });
 
   final String invoiceId;
@@ -30,13 +30,13 @@ class WarehousePrintJob {
   final DateTime createdAt;
   final String createdById;
   final String createdByName;
-  final int version;
   final DateTime? printedAt;
   final String? printedById;
   final String? printedByName;
+  final int version;
 
-  static const String pendingStatus = 'pending';
-  static const String printedStatus = 'printed';
+  static const pendingStatus = 'pending';
+  static const printedStatus = 'printed';
 
   WarehousePrintJob copyWith({
     String? status,
@@ -45,8 +45,6 @@ class WarehousePrintJob {
     String? printedByName,
     int? version,
     DateTime? createdAt,
-    String? createdById,
-    String? createdByName,
   }) {
     return WarehousePrintJob(
       invoiceId: invoiceId,
@@ -58,12 +56,12 @@ class WarehousePrintJob {
       storagePath: storagePath,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
-      createdById: createdById ?? this.createdById,
-      createdByName: createdByName ?? this.createdByName,
-      version: version ?? this.version,
+      createdById: createdById,
+      createdByName: createdByName,
       printedAt: printedAt ?? this.printedAt,
       printedById: printedById ?? this.printedById,
       printedByName: printedByName ?? this.printedByName,
+      version: version ?? this.version,
     );
   }
 
@@ -80,40 +78,40 @@ class WarehousePrintJob {
       'createdAt': Timestamp.fromDate(createdAt),
       'createdById': createdById,
       'createdByName': createdByName,
-      'version': version,
-      'printedAt': printedAt == null ? null : Timestamp.fromDate(printedAt!),
+      'printedAt': printedAt != null ? Timestamp.fromDate(printedAt!) : null,
       'printedById': printedById,
       'printedByName': printedByName,
+      'version': version,
     };
   }
 
-  factory WarehousePrintJob.fromMap(Map<String, dynamic> map) {
+  factory WarehousePrintJob.fromMap(Map<String, dynamic> data) {
     return WarehousePrintJob(
-      invoiceId: map['invoiceId'] as String,
-      invoiceNumber: map['invoiceNumber']?.toString() ?? '',
-      clientName: map['clientName'] as String,
-      invoiceDate: _timestampToDate(map['invoiceDate']),
-      itemCount: (map['itemCount'] as num?)?.toInt() ?? 0,
-      totalPrice: (map['totalPrice'] as num?)?.toDouble() ?? 0,
-      storagePath: map['storagePath'] as String,
-      status: map['status'] as String,
-      createdAt: _timestampToDate(map['createdAt']),
-      createdById: map['createdById'] as String? ?? '',
-      createdByName: map['createdByName'] as String? ?? '',
-      version: (map['version'] as num?)?.toInt() ?? 1,
-      printedAt: map['printedAt'] == null ? null : _timestampToDate(map['printedAt']),
-      printedById: map['printedById'] as String?,
-      printedByName: map['printedByName'] as String?,
+      invoiceId: data['invoiceId'] as String,
+      invoiceNumber: (data['invoiceNumber'] as String?) ?? '',
+      clientName: (data['clientName'] as String?) ?? '',
+      invoiceDate: _readTimestamp(data['invoiceDate']) ?? DateTime.now(),
+      itemCount: (data['itemCount'] as num?)?.toInt() ?? 0,
+      totalPrice: (data['totalPrice'] as num?)?.toDouble() ?? 0,
+      storagePath: (data['storagePath'] as String?) ?? '',
+      status: (data['status'] as String?) ?? pendingStatus,
+      createdAt: _readTimestamp(data['createdAt']) ?? DateTime.now(),
+      createdById: (data['createdById'] as String?) ?? '',
+      createdByName: (data['createdByName'] as String?) ?? '',
+      printedAt: _readTimestamp(data['printedAt']),
+      printedById: data['printedById'] as String?,
+      printedByName: data['printedByName'] as String?,
+      version: (data['version'] as num?)?.toInt() ?? 0,
     );
   }
 
-  static DateTime _timestampToDate(dynamic value) {
+  static DateTime? _readTimestamp(dynamic value) {
     if (value is Timestamp) {
       return value.toDate();
     }
     if (value is DateTime) {
       return value;
     }
-    throw ArgumentError('Unsupported date value: $value');
+    return null;
   }
 }

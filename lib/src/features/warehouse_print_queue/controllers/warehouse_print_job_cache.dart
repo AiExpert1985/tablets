@@ -6,8 +6,7 @@ import 'package:tablets/src/features/warehouse_print_queue/model/warehouse_print
 import 'package:tablets/src/features/warehouse_print_queue/repository/warehouse_print_queue_repository.dart';
 
 class WarehousePrintJobCacheNotifier extends StateNotifier<Map<String, Uint8List>> {
-  WarehousePrintJobCacheNotifier(this._repository)
-      : super(const {});
+  WarehousePrintJobCacheNotifier(this._repository) : super(const {});
 
   final WarehousePrintQueueRepository _repository;
 
@@ -24,8 +23,9 @@ class WarehousePrintJobCacheNotifier extends StateNotifier<Map<String, Uint8List
   }
 
   Future<Uint8List> ensurePdf(WarehousePrintJob job) async {
-    if (state.containsKey(job.invoiceId)) {
-      return state[job.invoiceId]!;
+    final existing = state[job.invoiceId];
+    if (existing != null) {
+      return existing;
     }
     final data = await _repository.downloadPdf(job.invoiceId);
     state = {...state, job.invoiceId: data};
@@ -36,9 +36,9 @@ class WarehousePrintJobCacheNotifier extends StateNotifier<Map<String, Uint8List
     if (!state.containsKey(invoiceId)) {
       return;
     }
-    final newState = {...state};
-    newState.remove(invoiceId);
-    state = newState;
+    final next = {...state};
+    next.remove(invoiceId);
+    state = next;
   }
 }
 
