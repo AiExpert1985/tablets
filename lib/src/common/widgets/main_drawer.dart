@@ -56,6 +56,8 @@ class MainDrawer extends ConsumerWidget {
                   VerticalGap.m,
                   TasksButton(),
                   VerticalGap.m,
+                  WarehousePrintQueueButton(),
+                  VerticalGap.m,
                   SettingsButton(),
                   Spacer(),
                   PendingsButton(),
@@ -233,6 +235,24 @@ class SettingsButton extends ConsumerWidget {
         if (context.mounted) {
           showDialog(context: context, builder: (BuildContext ctx) => const SettingsDialog());
         }
+      },
+    );
+  }
+}
+
+class WarehousePrintQueueButton extends ConsumerWidget {
+  const WarehousePrintQueueButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+    return ListTile(
+      leading: const Icon(Icons.print_outlined),
+      title: Text(S.of(context).warehouse_print_queue_menu),
+      onTap: () {
+        pageTitleNotifier.state = S.of(context).warehouse_print_queue_title;
+        Navigator.of(context).pop();
+        context.goNamed(AppRoute.warehousePrintQueue.name);
       },
     );
   }

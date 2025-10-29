@@ -280,5 +280,72 @@
     "deleted_transactions": "التعاملات المحذوفة",
     "deletion_time": "وقت الحذف",
     "alert_before_signout": "هل ترغب بالخروج من البرنامج",
-    "last_invoice_date": "اخر قائمة تسديد"
+  "last_invoice_date": "اخر قائمة تسديد",
+  "warehouse_print_queue_send": "إرسال إلى المستودع",
+  "warehouse_print_queue_only_invoices": "يمكن إرسال فواتير العملاء فقط إلى المستودع",
+  "warehouse_print_queue_missing_name": "يرجى إدخال اسم العميل قبل الإرسال",
+  "warehouse_print_queue_missing_user": "يجب تسجيل الدخول مجدداً قبل الإرسال",
+  "warehouse_print_queue_missing_id": "احفظ الفاتورة قبل إرسالها إلى المستودع",
+  "warehouse_print_queue_sent": "تم إرسال الفاتورة إلى المستودع",
+  "warehouse_print_queue_send_error": "تعذر إرسال الفاتورة إلى المستودع",
+  "warehouse_print_queue_status_not_sent": "لم تُرسل إلى المستودع",
+  "warehouse_print_queue_status_pending": "بانتظار الطباعة منذ {sentAt}",
+  "@warehouse_print_queue_status_pending": {
+    "placeholders": {
+      "sentAt": {
+        "type": "String"
+      }
+    }
+  },
+  "warehouse_print_queue_status_printed": "طُبعت بواسطة {printedBy} في {printedAt}",
+  "@warehouse_print_queue_status_printed": {
+    "placeholders": {
+      "printedBy": {
+        "type": "String"
+      },
+      "printedAt": {
+        "type": "String"
+      }
+    }
+  },
+  "warehouse_print_queue_status_loading": "جاري التحقق من حالة المستودع...",
+  "warehouse_print_queue_status_error": "تعذر تحميل حالة المستودع",
+  "warehouse_print_queue_menu": "طابور طباعة المستودع",
+  "warehouse_print_queue_title": "طابور طباعة المستودع",
+  "warehouse_print_queue_empty": "لا توجد فواتير بانتظار الطباعة",
+  "warehouse_print_queue_error": "تعذر تحميل طابور طباعة المستودع",
+  "warehouse_print_queue_invoice": "فاتورة رقم {invoiceNumber}",
+  "@warehouse_print_queue_invoice": {
+    "placeholders": {
+      "invoiceNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "warehouse_print_queue_created": "أُرسلت {createdAt}",
+  "@warehouse_print_queue_created": {
+    "placeholders": {
+      "createdAt": {
+        "type": "String"
+      }
+    }
+  },
+  "warehouse_print_queue_items": "{count} عناصر",
+  "@warehouse_print_queue_items": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "warehouse_print_queue_total": "الإجمالي {amount}",
+  "@warehouse_print_queue_total": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "warehouse_print_queue_marked_printed": "تم وضع علامة مطبوعة على الفاتورة",
+  "warehouse_print_queue_print_error": "فشلت عملية الطباعة، حاول مجدداً"
 }

@@ -280,5 +280,72 @@
     "deleted_transactions": "Deleted transactions",
     "deletion_time": "Deletion time",
     "alert_before_signout": "Do you want to signout",
-    "last_invoice_date": "Last invoice date"
+  "last_invoice_date": "Last invoice date",
+  "warehouse_print_queue_send": "Send to warehouse",
+  "warehouse_print_queue_only_invoices": "Only customer invoices can be sent to the warehouse",
+  "warehouse_print_queue_missing_name": "Enter the customer name before sending",
+  "warehouse_print_queue_missing_user": "You must sign in again before sending",
+  "warehouse_print_queue_missing_id": "Save the invoice before sending to the warehouse",
+  "warehouse_print_queue_sent": "Invoice sent to the warehouse",
+  "warehouse_print_queue_send_error": "Couldn't send invoice to the warehouse",
+  "warehouse_print_queue_status_not_sent": "Not sent to warehouse",
+  "warehouse_print_queue_status_pending": "Waiting for print since {sentAt}",
+  "@warehouse_print_queue_status_pending": {
+    "placeholders": {
+      "sentAt": {
+        "type": "String"
+      }
+    }
+  },
+  "warehouse_print_queue_status_printed": "Printed by {printedBy} at {printedAt}",
+  "@warehouse_print_queue_status_printed": {
+    "placeholders": {
+      "printedBy": {
+        "type": "String"
+      },
+      "printedAt": {
+        "type": "String"
+      }
+    }
+  },
+  "warehouse_print_queue_status_loading": "Checking warehouse status...",
+  "warehouse_print_queue_status_error": "Can't load warehouse status",
+  "warehouse_print_queue_menu": "Warehouse print queue",
+  "warehouse_print_queue_title": "Warehouse print queue",
+  "warehouse_print_queue_empty": "No pending warehouse print jobs",
+  "warehouse_print_queue_error": "Failed to load warehouse print queue",
+  "warehouse_print_queue_invoice": "Invoice # {invoiceNumber}",
+  "@warehouse_print_queue_invoice": {
+    "placeholders": {
+      "invoiceNumber": {
+        "type": "String"
+      }
+    }
+  },
+  "warehouse_print_queue_created": "Sent {createdAt}",
+  "@warehouse_print_queue_created": {
+    "placeholders": {
+      "createdAt": {
+        "type": "String"
+      }
+    }
+  },
+  "warehouse_print_queue_items": "{count} items",
+  "@warehouse_print_queue_items": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "warehouse_print_queue_total": "Total {amount}",
+  "@warehouse_print_queue_total": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "warehouse_print_queue_marked_printed": "Invoice marked as printed",
+  "warehouse_print_queue_print_error": "Printing failed. Try again."
 }
