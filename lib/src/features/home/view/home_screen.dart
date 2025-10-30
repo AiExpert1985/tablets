@@ -89,6 +89,7 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
                       CustomerFastAccessButtons(),
                       VendorFastAccessButtons(),
                       InternalFastAccessButtons(),
+                      WarehouseFastAccessButtons(),
                     ],
                   ),
                 ),
@@ -815,5 +816,39 @@ class _MyStatefulConsumerWidgetState extends ConsumerState<ReloadDbCacheData> {
             ),
       const Text(' مزامنة البيانات')
     ]);
+  }
+}
+
+class WarehouseFastAccessButtons extends ConsumerWidget {
+  const WarehouseFastAccessButtons({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userInfo = ref.watch(userInfoProvider);
+
+    if (userInfo == null || userInfo.privilage != UserPrivilage.warehouse.name) {
+      return const SizedBox.shrink();
+    }
+
+    return FastAccessButtonsContainer(
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.orange[100],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+        onPressed: () {
+          context.goNamed('warehouse');
+        },
+        child: const Padding(
+          padding: EdgeInsets.all(12.0),
+          child: Text(
+            'طباعة المجهز',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -41,6 +41,8 @@ import 'package:tablets/src/features/transactions/view/forms/statement_form.dart
 import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
+import 'package:tablets/src/features/warehouse/services/warehouse_service.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 final Map<String, dynamic> transactionFormDimenssions = {
   TransactionType.customerInvoice.name: {'height': 1100, 'width': 900},
@@ -246,6 +248,14 @@ class TransactionForm extends ConsumerWidget {
         },
         icon: const PrintIconB(),
       ),
+      if (transactionType == TransactionType.customerInvoice.name)
+        IconButton(
+          onPressed: () {
+            _onSendToWarehousePressed(context, ref, formDataNotifier);
+          },
+          icon: const Icon(Icons.send, color: Colors.orange),
+          tooltip: 'ارسال الى المجهز',
+        ),
     ];
   }
 
@@ -263,6 +273,25 @@ class TransactionForm extends ConsumerWidget {
     saveTransaction(context, ref, formDataNotifier.data, true);
     printForm(context, ref, formDataNotifier.data, isLogoB: isLogoB);
     formDataNotifier.updateProperties({isPrintedKey: true});
+  }
+
+  void _onSendToWarehousePressed(
+      BuildContext context, WidgetRef ref, ItemFormData formDataNotifier) async {
+    if (formDataNotifier.data[nameKey] == '') {
+      failureUserMessage(context, S.of(context).no_name_print_error);
+      return;
+    }
+
+    saveTransaction(context, ref, formDataNotifier.data, true);
+
+    final imagePath = 'assets/images/invoice_logo.PNG';
+    final image = await loadImage(imagePath);
+    final pdf = await getPdfFile(context, ref, formDataNotifier.data, image);
+
+    final warehouseService = ref.read(warehouseServiceProvider);
+    if (context.mounted) {
+      await warehouseService.sendToWarehouse(context, ref, formDataNotifier.data, pdf);
+    }
   }
 
   static void onNavigationPressed(ItemFormData formDataNotifier, BuildContext context,
@@ -514,6 +543,7 @@ class CustomerDebtReview extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const PrintStatus(),
+          if (transactionType == TransactionType.customerInvoice.name) const WarehouseStatus(),
           if (showDebtInfo)
             Column(
               children: [
@@ -558,6 +588,51 @@ class PrintStatus extends ConsumerWidget {
               ),
             )),
       ],
+    );
+  }
+}
+
+class WarehouseStatus extends ConsumerWidget {
+  const WarehouseStatus({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final invoiceId = formDataNotifier.data[dbRefKey];
+    final warehouseService = ref.read(warehouseServiceProvider);
+
+    return FutureBuilder(
+      future: warehouseService.getQueueItem(invoiceId),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.data == null) {
+          return const SizedBox.shrink();
+        }
+
+        final queueItem = snapshot.data!;
+        final isPrinted = queueItem.status == 'printed';
+        final statusText = isPrinted ? 'تم الطباعة في المجهز' : 'في انتظار الطباعة';
+        final color = isPrinted ? Colors.green : Colors.orange;
+
+        return Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Row(
+            children: [
+              Container(
+                width: 280,
+                decoration: BoxDecoration(color: color, border: Border.all(width: 0.5)),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Center(
+                  child: Text(
+                    statusText,
+                    style: const TextStyle(
+                        color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
