@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/widgets/custome_appbar_for_back_return.dart';
 import 'package:tablets/src/features/warehouse/model/warehouse_queue_item.dart';
 import 'package:tablets/src/features/warehouse/services/warehouse_service.dart';
+import 'package:tablets/src/routers/go_router_provider.dart';
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 
@@ -18,8 +20,8 @@ class WarehousePrintScreen extends ConsumerWidget {
     return Scaffold(
       appBar: buildArabicAppBar(
         context,
-        () => Navigator.pop(context),
-        () => Navigator.pop(context),
+        () => context.goNamed(AppRoute.home.name),
+        () => context.goNamed(AppRoute.home.name),
       ),
       body: Column(
         children: [
