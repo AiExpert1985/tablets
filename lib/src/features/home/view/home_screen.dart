@@ -72,6 +72,13 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
     ref.watch(settingsFormDataProvider);
     ref.watch(userInfoProvider); // to update UI when user info finally loaded
     final settingsDbCache = ref.read(settingsDbCacheProvider.notifier);
+    final userInfo = ref.read(userInfoProvider);
+
+    // Warehouse users get a dedicated simple view
+    if (userInfo != null && userInfo.privilage == UserPrivilage.warehouse.name) {
+      return const WarehouseHomeView();
+    }
+
     // since settings is the last doecument loaded from db, if it is being not empty means it finish loading
     Widget screenWidget = (settingsDbCache.data.isEmpty)
         ? const PageLoading()
@@ -79,7 +86,7 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               RistrictedAccessWidget(
-                allowedPrivilages: const ['warehouse'],
+                allowedPrivilages: const [],
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   width: 200,
@@ -848,6 +855,53 @@ class WarehouseFastAccessButtons extends ConsumerWidget {
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class WarehouseHomeView extends ConsumerWidget {
+  const WarehouseHomeView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userInfo = ref.watch(userInfoProvider);
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'مرحبا ${userInfo?.name ?? ""}',
+            style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Colors.blueGrey,
+            ),
+          ),
+          const SizedBox(height: 60),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 40),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              elevation: 8,
+            ),
+            onPressed: () {
+              context.goNamed(AppRoute.warehouse.name);
+            },
+            child: const Text(
+              'طباعة المجهز',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

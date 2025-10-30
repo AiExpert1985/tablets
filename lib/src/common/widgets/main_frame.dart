@@ -39,7 +39,7 @@ class AppScreenFrame extends ConsumerWidget {
                   leadingWidth: 140,
                   leading: Builder(
                     builder: (context) => RistrictedAccessWidget(
-                      allowedPrivilages: const ['warehouse'],
+                      allowedPrivilages: const [],
                       child: IconButton(
                         icon: const MainMenuIcon(),
                         onPressed: () {
