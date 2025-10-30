@@ -70,13 +70,15 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
   Widget build(BuildContext context) {
     ref.watch(settingsDbCacheProvider);
     ref.watch(settingsFormDataProvider);
-    ref.watch(userInfoProvider); // to update UI when user info finally loaded
+    final userInfo = ref.watch(userInfoProvider); // Watch for changes
     final settingsDbCache = ref.read(settingsDbCacheProvider.notifier);
-    final userInfo = ref.read(userInfoProvider);
 
-    // Warehouse users get a dedicated simple view
+    // Warehouse users get a dedicated simple view (show immediately without waiting for settings)
     if (userInfo != null && userInfo.privilage == UserPrivilage.warehouse.name) {
-      return const WarehouseHomeView();
+      return Container(
+        padding: const EdgeInsets.all(15),
+        child: const WarehouseHomeView(),
+      );
     }
 
     // since settings is the last doecument loaded from db, if it is being not empty means it finish loading
