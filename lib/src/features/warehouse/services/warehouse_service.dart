@@ -80,11 +80,17 @@ class WarehouseService {
     return _firestore
         .collection(collectionName)
         .where('status', isEqualTo: 'pending')
-        .orderBy('sentAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => WarehouseQueueItem.fromMap(doc.data()))
-            .toList());
+        .map((snapshot) {
+          final items = snapshot.docs
+              .map((doc) => WarehouseQueueItem.fromMap(doc.data()))
+              .toList();
+
+          // Sort in the app instead of Firestore (no index needed)
+          items.sort((a, b) => b.sentAt.compareTo(a.sentAt));
+
+          return items;
+        });
   }
 
   Future<void> markAsPrinted(String invoiceId) async {
