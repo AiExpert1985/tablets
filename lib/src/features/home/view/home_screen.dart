@@ -991,10 +991,10 @@ class AccountantHomeView extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 60),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const ReloadDbCacheData(),
+              ReloadDbCacheData(),
             ],
           ),
         ],
@@ -1042,7 +1042,8 @@ class _AccountantCustomerMatchingButton extends ConsumerWidget {
               .getCustomerTransactions(customerData['dbRef']);
           final customer = Customer.fromMap(customerData);
           if (customer.initialCredit > 0) {
-            final intialDebtTransaction = _createInitialDebtTransaction(customer);
+            final intialDebtTransaction =
+                _createInitialDebtTransaction(customer);
             customerTransactions.add(intialDebtTransaction);
           }
           if (context.mounted) {
