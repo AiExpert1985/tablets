@@ -969,11 +969,7 @@ class AccountantHomeView extends ConsumerWidget {
             runSpacing: 20,
             alignment: WrapAlignment.center,
             children: [
-              _AccountantButton(
-                label: 'كشف زبون',
-                color: Colors.red[100],
-                transactionType: TransactionType.customerReceipt.name,
-              ),
+              buildCustomerMatchingButton(context, ref),
               _AccountantButton(
                 label: 'قائمة بيع',
                 color: Colors.green[100],
