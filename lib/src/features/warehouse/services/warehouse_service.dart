@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:tablets/src/common/functions/user_messages.dart';
-import 'package:tablets/src/common/printing/print_document.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
+import 'package:tablets/src/features/deleted_transactions/controllers/deleted_transaction_screen_controller.dart';
 import 'package:tablets/src/features/warehouse/model/warehouse_queue_item.dart';
 
 class WarehouseService {
@@ -82,15 +82,15 @@ class WarehouseService {
         .where('status', isEqualTo: 'pending')
         .snapshots()
         .map((snapshot) {
-          final items = snapshot.docs
-              .map((doc) => WarehouseQueueItem.fromMap(doc.data()))
-              .toList();
+      final items = snapshot.docs
+          .map((doc) => WarehouseQueueItem.fromMap(doc.data()))
+          .toList();
 
-          // Sort in the app instead of Firestore (no index needed)
-          items.sort((a, b) => b.sentAt.compareTo(a.sentAt));
+      // Sort in the app instead of Firestore (no index needed)
+      items.sort((a, b) => b.sentAt.compareTo(a.sentAt));
 
-          return items;
-        });
+      return items;
+    });
   }
 
   Future<void> markAsPrinted(String invoiceId) async {
@@ -134,7 +134,8 @@ class WarehouseService {
 
   Future<WarehouseQueueItem?> getQueueItem(String invoiceId) async {
     try {
-      final doc = await _firestore.collection(collectionName).doc(invoiceId).get();
+      final doc =
+          await _firestore.collection(collectionName).doc(invoiceId).get();
       if (!doc.exists) return null;
       return WarehouseQueueItem.fromMap(doc.data()!);
     } catch (e) {
