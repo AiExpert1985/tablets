@@ -83,6 +83,15 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
       );
     }
 
+    // Accountant users get a dedicated view with limited access
+    if (userInfo != null &&
+        userInfo.privilage == UserPrivilage.accountant.name) {
+      return Container(
+        padding: const EdgeInsets.all(15),
+        child: const AccountantHomeView(),
+      );
+    }
+
     // since settings is the last doecument loaded from db, if it is being not empty means it finish loading
     Widget screenWidget = (settingsDbCache.data.isEmpty)
         ? const PageLoading()
@@ -930,6 +939,194 @@ class WarehouseHomeView extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class AccountantHomeView extends ConsumerWidget {
+  const AccountantHomeView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userInfo = ref.watch(userInfoProvider);
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'مرحبا ${userInfo?.name ?? ""}',
+            style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Colors.blueGrey,
+            ),
+          ),
+          const SizedBox(height: 40),
+          Wrap(
+            spacing: 20,
+            runSpacing: 20,
+            alignment: WrapAlignment.center,
+            children: [
+              _AccountantCustomerMatchingButton(
+                label: 'كشف زبون',
+                color: Colors.red[100],
+              ),
+              _AccountantButton(
+                label: 'قائمة بيع',
+                color: Colors.green[100],
+                transactionType: TransactionType.customerInvoice.name,
+              ),
+              _AccountantButton(
+                label: 'ارجاع زبون',
+                color: Colors.grey[300],
+                transactionType: TransactionType.customerReturn.name,
+              ),
+              _AccountantButton(
+                label: 'هدية زبون',
+                color: Colors.orange[100],
+                transactionType: TransactionType.gifts.name,
+              ),
+            ],
+          ),
+          const SizedBox(height: 60),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const ReloadDbCacheData(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AccountantCustomerMatchingButton extends ConsumerWidget {
+  const _AccountantCustomerMatchingButton({
+    required this.label,
+    required this.color,
+  });
+
+  final String label;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+    final customerScreenController = ref.read(customerScreenControllerProvider);
+    final customerReportController = ref.read(customerReportControllerProvider);
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 50),
+        elevation: 4,
+      ),
+      onPressed: () async {
+        await initializeAppData(context, ref);
+        if (context.mounted) {
+          final nameAndDates = await selectionDialog(
+              context, ref, customerDbCache.data, S.of(context).customers,
+              includeDates: false);
+          final customerData = nameAndDates[0];
+          // customer must be selected, otherwise we can't create report
+          if (customerData == null) {
+            return;
+          }
+          final customerTransactions = customerScreenController
+              .getCustomerTransactions(customerData['dbRef']);
+          final customer = Customer.fromMap(customerData);
+          if (customer.initialCredit > 0) {
+            final intialDebtTransaction = _createInitialDebtTransaction(customer);
+            customerTransactions.add(intialDebtTransaction);
+          }
+          if (context.mounted) {
+            final customerMatchingData = customerScreenController
+                .customerMatching(context, customerTransactions);
+            customerReportController.showCustomerMatchingReport(
+                context, customerMatchingData, customerData['name']);
+          }
+        }
+      },
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+}
+
+class _AccountantButton extends ConsumerWidget {
+  const _AccountantButton({
+    required this.label,
+    required this.color,
+    required this.transactionType,
+  });
+
+  final String label;
+  final Color? color;
+  final String transactionType;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+    final fromNavigator = ref.read(formNavigatorProvider);
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 50),
+        elevation: 4,
+      ),
+      onPressed: () async {
+        fromNavigator.isReadOnly = false;
+        final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
+        if (pageLoadingNotifier.state) {
+          failureUserMessage(
+              context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
+          return;
+        }
+        pageLoadingNotifier.state = true;
+        await initializeAppData(context, ref);
+        backgroundColorNofifier.state = normalColor!;
+        if (context.mounted) {
+          TransactionShowForm.showForm(
+            context,
+            ref,
+            imagePickerNotifier,
+            formDataNotifier,
+            settingsDataNotifier,
+            textEditingNotifier,
+            formType: transactionType,
+            transactionDbCache: transactionDbCache,
+          );
+          pageLoadingNotifier.state = false;
+        }
+      },
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
