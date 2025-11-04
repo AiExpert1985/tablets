@@ -969,7 +969,10 @@ class AccountantHomeView extends ConsumerWidget {
             runSpacing: 20,
             alignment: WrapAlignment.center,
             children: [
-              buildCustomerMatchingButton(context, ref),
+              _AccountantCustomerMatchingButton(
+                label: 'كشف زبون',
+                color: Colors.red[100],
+              ),
               _AccountantButton(
                 label: 'قائمة بيع',
                 color: Colors.green[100],
@@ -988,6 +991,68 @@ class AccountantHomeView extends ConsumerWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _AccountantCustomerMatchingButton extends ConsumerWidget {
+  const _AccountantCustomerMatchingButton({
+    required this.label,
+    required this.color,
+  });
+
+  final String label;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+    final customerScreenController = ref.read(customerScreenControllerProvider);
+    final customerReportController = ref.read(customerReportControllerProvider);
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 50),
+        elevation: 4,
+      ),
+      onPressed: () async {
+        await initializeAppData(context, ref);
+        if (context.mounted) {
+          final nameAndDates = await selectionDialog(
+              context, ref, customerDbCache.data, S.of(context).customers,
+              includeDates: false);
+          final customerData = nameAndDates[0];
+          // customer must be selected, otherwise we can't create report
+          if (customerData == null) {
+            return;
+          }
+          final customerTransactions = customerScreenController
+              .getCustomerTransactions(customerData['dbRef']);
+          final customer = Customer.fromMap(customerData);
+          if (customer.initialCredit > 0) {
+            final intialDebtTransaction = _createInitialDebtTransaction(customer);
+            customerTransactions.add(intialDebtTransaction);
+          }
+          if (context.mounted) {
+            final customerMatchingData = customerScreenController
+                .customerMatching(context, customerTransactions);
+            customerReportController.showCustomerMatchingReport(
+                context, customerMatchingData, customerData['name']);
+          }
+        }
+      },
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
