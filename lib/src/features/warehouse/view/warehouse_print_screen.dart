@@ -100,7 +100,7 @@ class InvoiceCard extends ConsumerWidget {
           children: [
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'رقم الفاتورة: ${invoice.invoiceNumber}',
@@ -136,7 +136,6 @@ class InvoiceCard extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 16),
             ElevatedButton.icon(
               onPressed: () async {
                 await _printInvoice(context, ref, invoice, warehouseService);
@@ -146,7 +145,8 @@ class InvoiceCard extends ConsumerWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               ),
             ),
           ],

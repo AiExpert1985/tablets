@@ -922,7 +922,7 @@ class WarehouseHomeView extends ConsumerWidget {
               context.goNamed(AppRoute.warehouse.name);
             },
             child: const Text(
-              'طباعة المجهز',
+              'طباعة القوائم',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
