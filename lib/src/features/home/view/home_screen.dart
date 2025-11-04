@@ -991,8 +991,11 @@ class AccountantHomeView extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 60),
-          Center(
-            child: const ReloadDbCacheData(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const ReloadDbCacheData(),
+            ],
           ),
         ],
       ),
