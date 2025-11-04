@@ -35,6 +35,7 @@ class Settings implements BaseItem {
 
   // text box
   double maxDebtAmount;
+  double usdExchangeRate;
   String companyUrl;
   String mainPageGreetingText;
 
@@ -53,6 +54,7 @@ class Settings implements BaseItem {
     required this.printedCustomerInvoices,
     required this.printedCustomerReceipts,
     required this.maxDebtAmount,
+    required this.usdExchangeRate,
     required this.companyUrl,
     required this.mainPageGreetingText,
     required this.paymentType,
@@ -80,6 +82,7 @@ class Settings implements BaseItem {
       'printedCustomerInvoices': printedCustomerInvoices,
       'printedCustomerReceipts': printedCustomerReceipts,
       'maxDebtAmount': maxDebtAmount,
+      'usdExchangeRate': usdExchangeRate,
       'companyUrl': companyUrl,
       'mainPageGreetingText': mainPageGreetingText,
       'paymentType': paymentType,
@@ -103,6 +106,7 @@ class Settings implements BaseItem {
       printedCustomerInvoices: map['printedCustomerInvoices']?.toInt() ?? 1,
       printedCustomerReceipts: map['printedCustomerReceipts']?.toInt() ?? 1,
       maxDebtAmount: map['maxDebtAmount']?.toDouble() ?? 1000000,
+      usdExchangeRate: map['usdExchangeRate']?.toDouble() ?? 1400,
       companyUrl: map['companyUrl'] ?? '',
       mainPageGreetingText: map['mainPageGreetingText'] ?? '',
       paymentType: map['paymentType'] ?? PaymentType.credit.name,

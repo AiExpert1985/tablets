@@ -150,6 +150,8 @@ class ThirdColumn extends ConsumerWidget {
         SettingsInputField(S.of(context).max_debt_amount_allowed, settingsMaxDebtAmountKey,
             FieldDataType.num.name),
         VerticalGap.xl,
+        SettingsInputField('USD Exchange Rate', usdExchangeRateKey, FieldDataType.num.name),
+        VerticalGap.xl,
         SettingsInputField(
             S.of(context).settings_company_url, companyUrlKey, FieldDataType.text.name),
         VerticalGap.xl,

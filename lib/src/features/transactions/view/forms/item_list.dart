@@ -21,6 +21,7 @@ import 'package:tablets/src/features/deleted_transactions/controllers/deleted_tr
 import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/products/repository/product_repository_provider.dart';
+import 'package:tablets/src/features/settings/repository/settings_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/hide_profit_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_form_data_notifier.dart';
@@ -709,5 +710,12 @@ double getBuyingPrice(WidgetRef ref, num currentQuantity, String productDbRef) {
       currentQuantity -= item[itemSoldQuantityKey];
     }
   }
-  return productCost;
+
+  // Get exchange rate from settings and multiply (vendor prices are in USD)
+  final settingsDbCache = ref.read(settingsDbCacheProvider);
+  final exchangeRate = settingsDbCache.isNotEmpty
+      ? (settingsDbCache.first['usdExchangeRate'] ?? 1400.0)
+      : 1400.0;
+
+  return productCost * exchangeRate;
 }

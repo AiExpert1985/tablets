@@ -12,6 +12,7 @@ String settingsMaxDebtDurationKey = 'maxDebtDuration';
 String printedCustomerInvoicesKey = 'printedCustomerInvoices';
 String printedCustomerReceiptsKey = 'printedCustomerReceipts';
 String settingsMaxDebtAmountKey = 'maxDebtAmount';
+String usdExchangeRateKey = 'usdExchangeRate';
 String companyUrlKey = 'companyUrl';
 String mainPageGreetingTextKey = 'mainPageGreetingText';
 String settingsPaymentTypeKey = 'paymentType';
