@@ -83,6 +83,15 @@ class _HomeScreenGreetingState extends ConsumerState<HomeScreenGreeting> {
       );
     }
 
+    // Accountant users get a dedicated view with limited access
+    if (userInfo != null &&
+        userInfo.privilage == UserPrivilage.accountant.name) {
+      return Container(
+        padding: const EdgeInsets.all(15),
+        child: const AccountantHomeView(),
+      );
+    }
+
     // since settings is the last doecument loaded from db, if it is being not empty means it finish loading
     Widget screenWidget = (settingsDbCache.data.isEmpty)
         ? const PageLoading()
@@ -930,6 +939,126 @@ class WarehouseHomeView extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class AccountantHomeView extends ConsumerWidget {
+  const AccountantHomeView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userInfo = ref.watch(userInfoProvider);
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'مرحبا ${userInfo?.name ?? ""}',
+            style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Colors.blueGrey,
+            ),
+          ),
+          const SizedBox(height: 40),
+          Wrap(
+            spacing: 20,
+            runSpacing: 20,
+            alignment: WrapAlignment.center,
+            children: [
+              _AccountantButton(
+                label: 'كشف زبون',
+                color: Colors.red[100],
+                transactionType: TransactionType.customerReceipt.name,
+              ),
+              _AccountantButton(
+                label: 'قائمة بيع',
+                color: Colors.green[100],
+                transactionType: TransactionType.customerInvoice.name,
+              ),
+              _AccountantButton(
+                label: 'ارجاع زبون',
+                color: Colors.grey[300],
+                transactionType: TransactionType.customerReturn.name,
+              ),
+              _AccountantButton(
+                label: 'هدية زبون',
+                color: Colors.orange[100],
+                transactionType: TransactionType.gifts.name,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AccountantButton extends ConsumerWidget {
+  const _AccountantButton({
+    required this.label,
+    required this.color,
+    required this.transactionType,
+  });
+
+  final String label;
+  final Color? color;
+  final String transactionType;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
+    final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
+    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+    final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
+    final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
+    final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
+    final fromNavigator = ref.read(formNavigatorProvider);
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 50),
+        elevation: 4,
+      ),
+      onPressed: () async {
+        fromNavigator.isReadOnly = false;
+        final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
+        if (pageLoadingNotifier.state) {
+          failureUserMessage(
+              context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
+          return;
+        }
+        pageLoadingNotifier.state = true;
+        await initializeAppData(context, ref);
+        backgroundColorNofifier.state = normalColor!;
+        if (context.mounted) {
+          TransactionShowForm.showForm(
+            context,
+            ref,
+            imagePickerNotifier,
+            formDataNotifier,
+            settingsDataNotifier,
+            textEditingNotifier,
+            formType: transactionType,
+            transactionDbCache: transactionDbCache,
+          );
+          pageLoadingNotifier.state = false;
+        }
+      },
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
