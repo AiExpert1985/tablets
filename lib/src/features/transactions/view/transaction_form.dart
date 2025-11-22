@@ -284,7 +284,7 @@ class TransactionForm extends ConsumerWidget {
       if (transactionType == TransactionType.customerInvoice.name)
         IconButton(
             onPressed: () {
-              _onSendToWarehousePressed(context, ref, formDataNotifier);
+              _onSendToWarehousePressed(context, ref, formDataNotifier, formImagesNotifier);
             },
             icon: const SendIcon()),
     ];
@@ -308,13 +308,15 @@ class TransactionForm extends ConsumerWidget {
   }
 
   void _onSendToWarehousePressed(BuildContext context, WidgetRef ref,
-      ItemFormData formDataNotifier) async {
+      ItemFormData formDataNotifier, ImageSliderNotifier formImagesNotifier) async {
+    // Save/delete current transaction before warehouse operation (similar to navigation)
+    await onLeavingTransaction(context, ref, formImagesNotifier);
+
+    // Check if transaction still has name after cleanup
     if (formDataNotifier.data[nameKey] == '') {
       failureUserMessage(context, S.of(context).no_name_print_error);
       return;
     }
-
-    saveTransaction(context, ref, formDataNotifier.data, true);
 
     const imagePath = 'assets/images/invoice_logo.PNG';
     final image = await loadImage(imagePath);
