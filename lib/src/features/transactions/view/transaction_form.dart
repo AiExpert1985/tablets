@@ -42,6 +42,7 @@ import 'package:tablets/src/features/transactions/view/transaction_show_form.dar
 import 'package:tablets/src/routers/go_router_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:tablets/src/features/warehouse/services/warehouse_service.dart';
+import 'package:tablets/src/features/counters/repository/counter_repository_provider.dart';
 
 final Map<String, dynamic> transactionFormDimenssions = {
   TransactionType.customerInvoice.name: {'height': 1100, 'width': 900},
@@ -402,6 +403,10 @@ class TransactionForm extends ConsumerWidget {
       final formController = ref.read(transactionFormControllerProvider);
       final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
       final screenController = ref.read(transactionScreenControllerProvider);
+
+      // Check if this is the last transaction and decrement counter
+      await _decrementCounterIfLastTransaction(ref, formData);
+
       deleteTransaction(context, ref, formDataNotifier, formImagesNotifier,
           formController, transactionDbCache, screenController,
           dialogOn: false);
@@ -554,6 +559,35 @@ class TransactionForm extends ConsumerWidget {
     // redo screenData calculations
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
+    }
+
+    // Update counter if transaction number is >= current counter
+    _updateCounterIfNeeded(ref, formData);
+  }
+
+  static void _updateCounterIfNeeded(WidgetRef ref, Map<String, dynamic> formData) {
+    final transactionType = formData[transactionTypeKey];
+    final transactionNumber = formData[numberKey];
+
+    if (transactionType != null && transactionNumber != null) {
+      final counterRepository = ref.read(counterRepositoryProvider);
+      counterRepository.ensureCounterAtLeast(transactionType, transactionNumber);
+    }
+  }
+
+  static Future<void> _decrementCounterIfLastTransaction(
+      WidgetRef ref, Map<String, dynamic> formData) async {
+    final transactionType = formData[transactionTypeKey];
+    final transactionNumber = formData[numberKey];
+
+    if (transactionType != null && transactionNumber != null) {
+      final counterRepository = ref.read(counterRepositoryProvider);
+      final currentCounter = await counterRepository.getCurrentNumber(transactionType);
+
+      // If this transaction number is the last one (currentCounter - 1), decrement
+      if (transactionNumber == currentCounter - 1) {
+        await counterRepository.decrementCounter(transactionType);
+      }
     }
   }
 
