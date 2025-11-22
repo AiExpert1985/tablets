@@ -213,9 +213,9 @@ class TransactionForm extends ConsumerWidget {
   ) {
     return [
       IconButton(
-        onPressed: () {
+        onPressed: () async {
           formNavigation.isReadOnly = false;
-          onNavigationPressed(formDataNotifier, context, ref,
+          await onNavigationPressed(formDataNotifier, context, ref,
               formImagesNotifier, formNavigation,
               isNewTransaction: true);
         },
@@ -223,12 +223,12 @@ class TransactionForm extends ConsumerWidget {
       ),
       if (formNavigation.isReadOnly)
         IconButton(
-          onPressed: () {
+          onPressed: () async {
             formNavigation.isReadOnly = false;
             // TODO navigation to self  is added only to layout rebuild because formNavigation is not stateNotifier
             // TODO later I might change formNavigation to StateNotifier and watch it in this widget
             final formData = formDataNotifier.data;
-            onNavigationPressed(formDataNotifier, context, ref,
+            await onNavigationPressed(formDataNotifier, context, ref,
                 formImagesNotifier, formNavigation,
                 targetTransactionData: formData);
           },
@@ -252,30 +252,30 @@ class TransactionForm extends ConsumerWidget {
           icon: const DeleteIcon(),
         ),
       IconButton(
-        onPressed: () {
-          _onPrintPressed(context, ref, formDataNotifier);
+        onPressed: () async {
+          await _onPrintPressed(context, ref, formDataNotifier);
           // if not printed due to empty name, don't continue
           if (!formDataNotifier.getProperty(isPrintedKey)) return;
           formNavigation.isReadOnly = true;
           // TODO navigation to self  is added only to layout rebuild because formNavigation is not stateNotifier
           // TODO later I might change formNavigation to StateNotifier and watch it in this widget
           final formData = formDataNotifier.data;
-          onNavigationPressed(formDataNotifier, context, ref,
+          await onNavigationPressed(formDataNotifier, context, ref,
               formImagesNotifier, formNavigation,
               targetTransactionData: formData);
         },
         icon: const PrintIcon(),
       ),
       IconButton(
-        onPressed: () {
-          _onPrintPressed(context, ref, formDataNotifier, isLogoB: true);
+        onPressed: () async {
+          await _onPrintPressed(context, ref, formDataNotifier, isLogoB: true);
           // if not printed due to empty name, don't continue
           if (!formDataNotifier.getProperty(isPrintedKey)) return;
           formNavigation.isReadOnly = true;
           // TODO navigation to self  is added only to layout rebuild because formNavigation is not stateNotifier
           // TODO later I might change formNavigation to StateNotifier and watch it in this widget
           final formData = formDataNotifier.data;
-          onNavigationPressed(formDataNotifier, context, ref,
+          await onNavigationPressed(formDataNotifier, context, ref,
               formImagesNotifier, formNavigation,
               targetTransactionData: formData);
         },
@@ -329,7 +329,7 @@ class TransactionForm extends ConsumerWidget {
     }
   }
 
-  static void onNavigationPressed(
+  static Future<void> onNavigationPressed(
       ItemFormData formDataNotifier,
       BuildContext context,
       WidgetRef ref,
@@ -337,7 +337,7 @@ class TransactionForm extends ConsumerWidget {
       FromNavigator formNavigation,
       {Map<String, dynamic>? targetTransactionData,
       bool isNewTransaction = false,
-      bool isDeleting = false}) {
+      bool isDeleting = false}) async {
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
@@ -350,7 +350,7 @@ class TransactionForm extends ConsumerWidget {
     if (!isDeleting) {
       // as we are leaving the current transaction, we should make sure to delete the transaction if it has no name
       // or to save (update) it if it does have name.
-      onLeavingTransaction(context, ref, formImagesNotifier);
+      await onLeavingTransaction(context, ref, formImagesNotifier);
     }
     Navigator.of(context).pop();
     // now load the target transaction into the form, whether it is navigated or new transaction
@@ -491,7 +491,7 @@ class TransactionForm extends ConsumerWidget {
     // move point to previous transaction
     if (formNavigation != null && context.mounted) {
       final targetTransactionData = formNavigation.previous();
-      onNavigationPressed(
+      await onNavigationPressed(
         formDataNotifier,
         context,
         ref,
@@ -786,41 +786,41 @@ class NavigationButtons extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
-                onPressed: () {
+                onPressed: () async {
                   final formData = formNavigation.first();
                   formNavigation.isReadOnly = true;
-                  TransactionForm.onNavigationPressed(formDataNotifier, context,
+                  await TransactionForm.onNavigationPressed(formDataNotifier, context,
                       ref, formImagesNotifier, formNavigation,
                       targetTransactionData: formData);
                 },
                 icon: const GoFirstIcon(),
               ),
               IconButton(
-                onPressed: () {
+                onPressed: () async {
                   final formData = formNavigation.previous();
                   formNavigation.isReadOnly = true;
-                  TransactionForm.onNavigationPressed(formDataNotifier, context,
+                  await TransactionForm.onNavigationPressed(formDataNotifier, context,
                       ref, formImagesNotifier, formNavigation,
                       targetTransactionData: formData);
                 },
                 icon: const GoPreviousIcon(),
               ),
               IconButton(
-                onPressed: () {
+                onPressed: () async {
                   formNavigation.isReadOnly = true;
                   final formData = formNavigation.next();
 
-                  TransactionForm.onNavigationPressed(formDataNotifier, context,
+                  await TransactionForm.onNavigationPressed(formDataNotifier, context,
                       ref, formImagesNotifier, formNavigation,
                       targetTransactionData: formData);
                 },
                 icon: const GoNextIcon(),
               ),
               IconButton(
-                onPressed: () {
+                onPressed: () async {
                   final formData = formNavigation.last();
                   formNavigation.isReadOnly = true;
-                  TransactionForm.onNavigationPressed(formDataNotifier, context,
+                  await TransactionForm.onNavigationPressed(formDataNotifier, context,
                       ref, formImagesNotifier, formNavigation,
                       targetTransactionData: formData);
                 },
@@ -848,13 +848,13 @@ class NavigationSearch extends ConsumerWidget {
         textAlign: TextAlign.center,
         decoration:
             formFieldDecoration(label: S.of(context).transaction_number),
-        onFieldSubmitted: (value) {
+        onFieldSubmitted: (value) async {
           try {
             formNavigator.goTo(context, int.tryParse(value.trim()));
             formNavigator.isReadOnly = true;
             // TODO navigation to self  is added only to layout rebuild because formNavigation is not stateNotifier
             // TODO later I might change formNavigation to StateNotifier and watch it in this widget
-            TransactionForm.onNavigationPressed(formDataNotifier, context, ref,
+            await TransactionForm.onNavigationPressed(formDataNotifier, context, ref,
                 formImagesNotifier, formNavigator,
                 targetTransactionData: formNavigator
                     .navigatorTransactions[formNavigator.currentIndex]);
