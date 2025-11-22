@@ -82,6 +82,33 @@ class CounterRepository {
       return 1;
     }
   }
+
+  // Decrement the counter by 1 (used when last transaction is deleted without being saved)
+  Future<void> decrementCounter(String transactionType) async {
+    try {
+      final docRef = _firestore.collection(_collectionName).doc(transactionType);
+      final docSnapshot = await docRef.get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data();
+        if (data != null && data['nextNumber'] != null) {
+          int currentNumber = data['nextNumber'] is int
+              ? data['nextNumber']
+              : (data['nextNumber'] as num).toInt();
+
+          // Only decrement if greater than 1 to avoid going below minimum
+          if (currentNumber > 1) {
+            await docRef.update({
+              'nextNumber': currentNumber - 1,
+            });
+            tempPrint('Counter for $transactionType decremented from $currentNumber to ${currentNumber - 1}');
+          }
+        }
+      }
+    } catch (e) {
+      errorPrint('Error decrementing counter for $transactionType: $e');
+    }
+  }
 }
 
 final counterRepositoryProvider = Provider<CounterRepository>((ref) => CounterRepository());

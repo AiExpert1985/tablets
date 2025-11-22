@@ -42,6 +42,7 @@ import 'package:tablets/src/features/transactions/view/transaction_show_form.dar
 import 'package:tablets/src/routers/go_router_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:tablets/src/features/warehouse/services/warehouse_service.dart';
+import 'package:tablets/src/features/counters/repository/counter_repository_provider.dart';
 
 final Map<String, dynamic> transactionFormDimenssions = {
   TransactionType.customerInvoice.name: {'height': 1100, 'width': 900},
@@ -466,6 +467,20 @@ class TransactionForm extends ConsumerWidget {
         addToDeletedTransactionsDb(ref, itemData);
       }
     }
+
+    // Decrement counter if transaction was deleted without client name and it was the last transaction
+    if (itemData[nameKey] == null || itemData[nameKey].isEmpty) {
+      final transactionType = itemData[transTypeKey];
+      final transactionNumber = itemData[numberKey];
+      final counterRepository = ref.read(counterRepositoryProvider);
+      final currentCounter = await counterRepository.getCurrentNumber(transactionType);
+
+      // If this transaction number equals current counter - 1, it was the last transaction
+      if (transactionNumber == currentCounter - 1) {
+        await counterRepository.decrementCounter(transactionType);
+      }
+    }
+
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     const operationType = DbCacheOperationTypes.delete;
     transactionDbCache.update(itemData, operationType);

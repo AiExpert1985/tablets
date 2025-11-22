@@ -32,17 +32,10 @@ class CounterMigrationService {
   }
 
   // Initialize counter for a specific transaction type
-  // Uses the tested methods from TransactionShowForm
+  // Always recalculates and overwrites existing counter values
   Future<void> initializeCounterForType(BuildContext context, String transactionType, WidgetRef ref) async {
     try {
       final counterRepository = ref.read(counterRepositoryProvider);
-
-      // Check if counter already exists
-      final currentCounter = await counterRepository.getCurrentNumber(transactionType);
-      if (currentCounter > 1) {
-        tempPrint('Counter for $transactionType already exists with value: $currentCounter');
-        return;
-      }
 
       // Get all transactions data
       final transactionRepository = ref.read(transactionRepositoryProvider);
@@ -50,14 +43,15 @@ class CounterMigrationService {
 
       if (!context.mounted) return;
 
-      // Use the tested methods from TransactionShowForm to calculate the next number
+      // Calculate the next number based on highest transaction number (including deleted transactions)
       final nextNumber = TransactionShowForm.getNextTransactionNumberFromLocalData(
           context, transactions, transactionType, ref);
 
+      // Always overwrite the counter with the recalculated value
       await counterRepository.initializeCounter(transactionType, nextNumber);
 
       tempPrint(
-          'Initialized counter for $transactionType: nextNumber = $nextNumber');
+          'Recalculated and set counter for $transactionType: nextNumber = $nextNumber');
     } catch (e) {
       errorPrint('Error initializing counter for $transactionType: $e');
     }
