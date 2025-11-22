@@ -68,12 +68,13 @@ class TransactionShowForm {
         final customerDbCache = ref.read(customerDbCacheProvider.notifier);
         final customerData = customerDbCache.getItemByProperty('name', customerName);
         final customerDebtInfo = ref.read(customerDebtNotifierProvider.notifier);
+        if (!context.mounted) return;
         customerDebtInfo.update(context, customerData);
       } catch (e) {
         errorPrint('unable to load debt info for $customerName - $e');
       }
     }
-
+    if (!context.mounted) return;
     Navigator.push(
       context,
       MaterialPageRoute(
