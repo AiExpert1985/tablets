@@ -81,6 +81,8 @@ class TransactionShowForm {
 
     // Use pushReplacement when navigating from within form (e.g., "new" button)
     // Use push when opening form from outside (e.g., from home screen)
+    if (!context.mounted) return;
+
     try {
       if (useReplacement) {
         Navigator.pushReplacement(
