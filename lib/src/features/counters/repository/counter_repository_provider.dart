@@ -59,6 +59,7 @@ class CounterRepository {
       tempPrint('Counter initialized for $transactionType with starting value $startingNumber');
     } catch (e) {
       errorPrint('Error initializing counter for $transactionType: $e');
+      rethrow; // Propagate error so button handler can show it
     }
   }
 

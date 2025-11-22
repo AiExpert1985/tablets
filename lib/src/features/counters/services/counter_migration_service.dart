@@ -47,22 +47,37 @@ class CounterMigrationService {
   Future<void> initializeCounterForType(BuildContext context, String transactionType, WidgetRef ref) async {
     final counterRepository = ref.read(counterRepositoryProvider);
 
+    // Get current counter value before recalculation
+    final currentCounter = await counterRepository.getCurrentNumber(transactionType);
+    tempPrint('=== Recalculating counter for $transactionType ===');
+    tempPrint('Current counter value: $currentCounter');
+
     // Get all transactions data
     final transactionRepository = ref.read(transactionRepositoryProvider);
     final transactions = await transactionRepository.fetchItemListAsMaps();
 
     if (!context.mounted) return;
 
-    // Use the tested methods from TransactionShowForm to calculate the next number
-    // This includes both regular and deleted transactions
+    // Get highest numbers for debugging
+    final maxTransactionNumber = TransactionShowForm.getHighestTransactionNumber(
+        context, transactions, transactionType);
+    final maxDeletedNumber = TransactionShowForm.getHighestDeletedTransactionNumber(
+        ref, transactionType);
+
+    tempPrint('Highest active transaction number: $maxTransactionNumber');
+    tempPrint('Highest deleted transaction number: $maxDeletedNumber');
+
+    // Calculate next number (includes both regular and deleted transactions)
     final nextNumber = TransactionShowForm.getNextTransactionNumberFromLocalData(
         context, transactions, transactionType, ref);
+
+    tempPrint('Calculated next number: $nextNumber');
 
     // Always overwrite the counter with the recalculated value
     await counterRepository.initializeCounter(transactionType, nextNumber);
 
-    tempPrint(
-        'Counter for $transactionType recalculated and set to: nextNumber = $nextNumber');
+    tempPrint('Counter updated from $currentCounter to $nextNumber');
+    tempPrint('=== End recalculation for $transactionType ===\n');
   }
 }
 
