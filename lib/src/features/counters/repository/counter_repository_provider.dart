@@ -109,6 +109,37 @@ class CounterRepository {
       errorPrint('Error decrementing counter for $transactionType: $e');
     }
   }
+
+  // Ensure counter is at least as high as the given transaction number + 1
+  // Used when a transaction is saved with a manually entered higher number
+  Future<void> ensureCounterAtLeast(String transactionType, int transactionNumber) async {
+    try {
+      final docRef = _firestore.collection(_collectionName).doc(transactionType);
+      final docSnapshot = await docRef.get();
+
+      int currentCounter = 1;
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data();
+        if (data != null && data['nextNumber'] != null) {
+          currentCounter = data['nextNumber'] is int
+              ? data['nextNumber']
+              : (data['nextNumber'] as num).toInt();
+        }
+      }
+
+      // If transaction number is higher than or equal to current counter, update counter
+      if (transactionNumber >= currentCounter) {
+        final newCounter = transactionNumber + 1;
+        await docRef.set({
+          'transactionType': transactionType,
+          'nextNumber': newCounter,
+        });
+        tempPrint('Counter for $transactionType updated from $currentCounter to $newCounter (transaction #$transactionNumber was saved)');
+      }
+    } catch (e) {
+      errorPrint('Error ensuring counter for $transactionType: $e');
+    }
+  }
 }
 
 final counterRepositoryProvider = Provider<CounterRepository>((ref) => CounterRepository());

@@ -377,6 +377,11 @@ void saveToTransactionCollection(
   // note that I can't calculate buyingPrice at mobile, because it is CPU expensive
   updateBuyingPricesAndProfit(context, ref, transaction);
   formController.saveItemToDb(context, transaction, false, keepDialogOpen: true);
+
+  // Ensure counter is updated if transaction number is higher than current counter
+  final counterRepository = ref.read(counterRepositoryProvider);
+  counterRepository.ensureCounterAtLeast(transaction.transactionType, transaction.number);
+
   // update the bdCache (database mirror) so that we don't need to fetch data from db
   final itemData = transaction.toMap();
 

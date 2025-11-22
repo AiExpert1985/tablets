@@ -556,6 +556,13 @@ class TransactionForm extends ConsumerWidget {
         Transaction.fromMap({...formData, 'imageUrls': imageUrls});
     formController.saveItemToDb(context, transaction, isEditing,
         keepDialogOpen: true);
+
+    // Ensure counter is updated if transaction number is higher than current counter
+    final transactionType = itemData[transTypeKey];
+    final transactionNumber = itemData[numberKey];
+    final counterRepository = ref.read(counterRepositoryProvider);
+    counterRepository.ensureCounterAtLeast(transactionType, transactionNumber);
+
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     if (itemData[transactionDateKey] is DateTime) {
       // in our form the data type usually is DateTime, but the date type in dbCache should be
