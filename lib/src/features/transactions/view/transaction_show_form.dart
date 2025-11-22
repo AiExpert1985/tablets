@@ -30,7 +30,8 @@ class TransactionShowForm {
       TextControllerNotifier textEditingNotifier,
       {String? formType,
       Transaction? transaction,
-      DbCache? transactionDbCache}) async {
+      DbCache? transactionDbCache,
+      bool useReplacement = false}) async {
     if (formType == null && transaction?.transactionType == null) {
       errorPrint(
           'both formType and transaction can not be null, one of them is needed for transactionType');
@@ -78,14 +79,22 @@ class TransactionShowForm {
       }
     }
 
-    // Push new form - this works even if context is from a popped widget
-    // as long as the Navigator is still in the tree
+    // Use pushReplacement when navigating from within form (e.g., "new" button)
+    // Use push when opening form from outside (e.g., from home screen)
     try {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType)),
-      );
+      if (useReplacement) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType)),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType)),
+        );
+      }
     } catch (e) {
       errorPrint('Error pushing transaction form: $e');
     }

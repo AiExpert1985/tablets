@@ -352,7 +352,8 @@ class TransactionForm extends ConsumerWidget {
       // or to save (update) it if it does have name.
       await onLeavingTransaction(context, ref, formImagesNotifier);
     }
-    Navigator.of(context).pop();
+    // Don't pop here - let showForm handle navigation using pushReplacement
+    // Navigator.of(context).pop();
     // now load the target transaction into the form, whether it is navigated or new transaction
     // note that navigatorFormData shouldn't be null if isNewTransaction is false
     if (isNewTransaction) {
@@ -365,6 +366,7 @@ class TransactionForm extends ConsumerWidget {
         textEditingNotifier,
         formType: formType,
         transactionDbCache: transactionDbCache,
+        useReplacement: true,
       );
     } else {
       if (targetTransactionData == null) {
@@ -383,6 +385,7 @@ class TransactionForm extends ConsumerWidget {
         textEditingNotifier,
         transaction: transaction,
         formType: formType,
+        useReplacement: true,
       );
     }
     final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
