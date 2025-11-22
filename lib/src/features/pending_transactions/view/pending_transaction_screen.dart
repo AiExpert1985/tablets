@@ -345,7 +345,7 @@ Future<void> approveTransaction(
   if (!context.mounted) return;
 
   // save transaction to transaction database
-  saveToTransactionCollection(context, ref, transaction);
+  await saveToTransactionCollection(context, ref, transaction);
   // // finally, we open it form edit (it opens unEditable, if user want he press the edit button)
   // final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
   // final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
@@ -365,11 +365,11 @@ Future<void> approveTransaction(
   // );
 }
 
-void saveToTransactionCollection(
+Future<void> saveToTransactionCollection(
   BuildContext context,
   WidgetRef ref,
   Transaction transaction,
-) {
+) async {
   final formController = ref.read(transactionFormControllerProvider);
   final screenController = ref.read(transactionScreenControllerProvider);
   final dbCache = ref.read(transactionDbCacheProvider.notifier);
@@ -380,7 +380,7 @@ void saveToTransactionCollection(
 
   // Ensure counter is updated if transaction number is higher than current counter
   final counterRepository = ref.read(counterRepositoryProvider);
-  counterRepository.ensureCounterAtLeast(transaction.transactionType, transaction.number);
+  await counterRepository.ensureCounterAtLeast(transaction.transactionType, transaction.number);
 
   // update the bdCache (database mirror) so that we don't need to fetch data from db
   final itemData = transaction.toMap();

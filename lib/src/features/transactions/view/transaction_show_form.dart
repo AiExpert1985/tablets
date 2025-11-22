@@ -55,7 +55,7 @@ class TransactionShowForm {
 
     if (!isEditMode) {
       // if the transaction is new, we save it directly with empty data
-      TransactionForm.saveTransaction(context, ref, formDataNotifier.data, false);
+      await TransactionForm.saveTransaction(context, ref, formDataNotifier.data, false);
     }
 
     // if we are loading a transaction (not new) for (customer invoices only) we update the debt info

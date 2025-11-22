@@ -302,7 +302,7 @@ class TransactionForm extends ConsumerWidget {
     // then the debt of customer will not accurately calculated
     // also, as a policy, I want always to save before print, because I want to ensure always the transaction in
     // database matches the printed transaction.
-    saveTransaction(context, ref, formDataNotifier.data, true);
+    await saveTransaction(context, ref, formDataNotifier.data, true);
     printForm(context, ref, formDataNotifier.data, isLogoB: isLogoB);
     formDataNotifier.updateProperties({isPrintedKey: true});
   }
@@ -314,7 +314,7 @@ class TransactionForm extends ConsumerWidget {
       return;
     }
 
-    saveTransaction(context, ref, formDataNotifier.data, true);
+    await saveTransaction(context, ref, formDataNotifier.data, true);
 
     const imagePath = 'assets/images/invoice_logo.PNG';
     final image = await loadImage(imagePath);
@@ -403,7 +403,7 @@ class TransactionForm extends ConsumerWidget {
       final formController = ref.read(transactionFormControllerProvider);
       final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
       final screenController = ref.read(transactionScreenControllerProvider);
-      deleteTransaction(context, ref, formDataNotifier, formImagesNotifier,
+      await deleteTransaction(context, ref, formDataNotifier, formImagesNotifier,
           formController, transactionDbCache, screenController,
           dialogOn: false);
       return;
@@ -426,7 +426,7 @@ class TransactionForm extends ConsumerWidget {
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     final transDbRef = formDataNotifier.data[dbRefKey];
     if (dbCache.getItemByDbRef(transDbRef).isNotEmpty && context.mounted) {
-      saveTransaction(context, ref, formDataNotifier.data, true);
+      await saveTransaction(context, ref, formDataNotifier.data, true);
     }
     // clear customer debt info
     final customerDebInfo = ref.read(customerDebtNotifierProvider.notifier);
@@ -532,12 +532,12 @@ class TransactionForm extends ConsumerWidget {
         deletionItemData, DbCacheOperationTypes.add);
   }
 
-  static void saveTransaction(
+  static Future<void> saveTransaction(
     BuildContext context,
     WidgetRef ref,
     Map<String, dynamic> formData,
     bool isEditing,
-  ) {
+  ) async {
     final formController = ref.read(transactionFormControllerProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
@@ -561,7 +561,7 @@ class TransactionForm extends ConsumerWidget {
     final transactionType = itemData[transTypeKey];
     final transactionNumber = itemData[numberKey];
     final counterRepository = ref.read(counterRepositoryProvider);
-    counterRepository.ensureCounterAtLeast(transactionType, transactionNumber);
+    await counterRepository.ensureCounterAtLeast(transactionType, transactionNumber);
 
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     if (itemData[transactionDateKey] is DateTime) {
