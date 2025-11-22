@@ -24,8 +24,19 @@ class CounterMigrationService {
       TransactionType.damagedItems.name,
     ];
 
+    final errors = <String>[];
+
     for (final transactionType in transactionTypes) {
-      await initializeCounterForType(context, transactionType, ref);
+      try {
+        await initializeCounterForType(context, transactionType, ref);
+      } catch (e) {
+        errorPrint('Failed to initialize counter for $transactionType: $e');
+        errors.add('$transactionType: $e');
+      }
+    }
+
+    if (errors.isNotEmpty) {
+      throw Exception('Failed to initialize some counters: ${errors.join(", ")}');
     }
 
     tempPrint('Counter initialization completed!');
@@ -34,28 +45,24 @@ class CounterMigrationService {
   // Initialize counter for a specific transaction type
   // Always recalculates and overwrites existing counter based on highest transaction number
   Future<void> initializeCounterForType(BuildContext context, String transactionType, WidgetRef ref) async {
-    try {
-      final counterRepository = ref.read(counterRepositoryProvider);
+    final counterRepository = ref.read(counterRepositoryProvider);
 
-      // Get all transactions data
-      final transactionRepository = ref.read(transactionRepositoryProvider);
-      final transactions = await transactionRepository.fetchItemListAsMaps();
+    // Get all transactions data
+    final transactionRepository = ref.read(transactionRepositoryProvider);
+    final transactions = await transactionRepository.fetchItemListAsMaps();
 
-      if (!context.mounted) return;
+    if (!context.mounted) return;
 
-      // Use the tested methods from TransactionShowForm to calculate the next number
-      // This includes both regular and deleted transactions
-      final nextNumber = TransactionShowForm.getNextTransactionNumberFromLocalData(
-          context, transactions, transactionType, ref);
+    // Use the tested methods from TransactionShowForm to calculate the next number
+    // This includes both regular and deleted transactions
+    final nextNumber = TransactionShowForm.getNextTransactionNumberFromLocalData(
+        context, transactions, transactionType, ref);
 
-      // Always overwrite the counter with the recalculated value
-      await counterRepository.initializeCounter(transactionType, nextNumber);
+    // Always overwrite the counter with the recalculated value
+    await counterRepository.initializeCounter(transactionType, nextNumber);
 
-      tempPrint(
-          'Counter for $transactionType recalculated and set to: nextNumber = $nextNumber');
-    } catch (e) {
-      errorPrint('Error initializing counter for $transactionType: $e');
-    }
+    tempPrint(
+        'Counter for $transactionType recalculated and set to: nextNumber = $nextNumber');
   }
 }
 
