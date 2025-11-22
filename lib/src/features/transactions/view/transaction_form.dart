@@ -162,11 +162,13 @@ class TransactionForm extends ConsumerWidget {
       appBar: buildArabicAppBar(context, () async {
         // back to transactions screen
         await onLeavingTransaction(context, ref, formImagesNotifier);
+        if (!context.mounted) return;
         Navigator.pop(context);
         // context.goNamed(AppRoute.transactions.name);
       }, () async {
         // back to home screen
         await onLeavingTransaction(context, ref, formImagesNotifier);
+        if (!context.mounted) return;
         Navigator.pop(context);
         context.goNamed(AppRoute.home.name);
       }),
@@ -358,6 +360,8 @@ class TransactionForm extends ConsumerWidget {
     // Navigator.of(context).pop();
     // now load the target transaction into the form, whether it is navigated or new transaction
     // note that navigatorFormData shouldn't be null if isNewTransaction is false
+    if (!context.mounted) return;
+
     if (isNewTransaction) {
       TransactionShowForm.showForm(
         context,
@@ -412,6 +416,7 @@ class TransactionForm extends ConsumerWidget {
       // Check if this is the last transaction and decrement counter
       await _decrementCounterIfLastTransaction(ref, formData);
 
+      if (!context.mounted) return;
       await deleteTransaction(context, ref, formDataNotifier, formImagesNotifier,
           formController, transactionDbCache, screenController,
           dialogOn: false);
