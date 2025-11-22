@@ -42,6 +42,7 @@ import 'package:tablets/src/features/transactions/view/transaction_show_form.dar
 import 'package:tablets/src/routers/go_router_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:tablets/src/features/warehouse/services/warehouse_service.dart';
+import 'package:tablets/src/features/counters/repository/counter_repository_provider.dart';
 
 final Map<String, dynamic> transactionFormDimenssions = {
   TransactionType.customerInvoice.name: {'height': 1100, 'width': 900},
@@ -160,12 +161,12 @@ class TransactionForm extends ConsumerWidget {
     return Scaffold(
       appBar: buildArabicAppBar(context, () async {
         // back to transactions screen
-        onLeavingTransaction(context, ref, formImagesNotifier);
+        await onLeavingTransaction(context, ref, formImagesNotifier);
         Navigator.pop(context);
         // context.goNamed(AppRoute.transactions.name);
       }, () async {
         // back to home screen
-        onLeavingTransaction(context, ref, formImagesNotifier);
+        await onLeavingTransaction(context, ref, formImagesNotifier);
         Navigator.pop(context);
         context.goNamed(AppRoute.home.name);
       }),
@@ -328,7 +329,7 @@ class TransactionForm extends ConsumerWidget {
     }
   }
 
-  static void onNavigationPressed(
+  static Future<void> onNavigationPressed(
       ItemFormData formDataNotifier,
       BuildContext context,
       WidgetRef ref,
@@ -336,7 +337,7 @@ class TransactionForm extends ConsumerWidget {
       FromNavigator formNavigation,
       {Map<String, dynamic>? targetTransactionData,
       bool isNewTransaction = false,
-      bool isDeleting = false}) {
+      bool isDeleting = false}) async {
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
@@ -349,9 +350,10 @@ class TransactionForm extends ConsumerWidget {
     if (!isDeleting) {
       // as we are leaving the current transaction, we should make sure to delete the transaction if it has no name
       // or to save (update) it if it does have name.
-      onLeavingTransaction(context, ref, formImagesNotifier);
+      await onLeavingTransaction(context, ref, formImagesNotifier);
     }
-    Navigator.of(context).pop();
+    // Don't pop here - let showForm handle navigation using pushReplacement
+    // Navigator.of(context).pop();
     // now load the target transaction into the form, whether it is navigated or new transaction
     // note that navigatorFormData shouldn't be null if isNewTransaction is false
     if (isNewTransaction) {
@@ -364,6 +366,7 @@ class TransactionForm extends ConsumerWidget {
         textEditingNotifier,
         formType: formType,
         transactionDbCache: transactionDbCache,
+        useReplacement: true,
       );
     } else {
       if (targetTransactionData == null) {
@@ -382,6 +385,7 @@ class TransactionForm extends ConsumerWidget {
         textEditingNotifier,
         transaction: transaction,
         formType: formType,
+        useReplacement: true,
       );
     }
     final backgroundColorNofifier = ref.read(backgroundColorProvider.notifier);
@@ -402,7 +406,11 @@ class TransactionForm extends ConsumerWidget {
       final formController = ref.read(transactionFormControllerProvider);
       final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
       final screenController = ref.read(transactionScreenControllerProvider);
-      deleteTransaction(context, ref, formDataNotifier, formImagesNotifier,
+
+      // Check if this is the last transaction and decrement counter
+      await _decrementCounterIfLastTransaction(ref, formData);
+
+      await deleteTransaction(context, ref, formDataNotifier, formImagesNotifier,
           formController, transactionDbCache, screenController,
           dialogOn: false);
       return;
@@ -554,6 +562,35 @@ class TransactionForm extends ConsumerWidget {
     // redo screenData calculations
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
+    }
+
+    // Update counter if transaction number is >= current counter
+    _updateCounterIfNeeded(ref, formData);
+  }
+
+  static void _updateCounterIfNeeded(WidgetRef ref, Map<String, dynamic> formData) {
+    final transactionType = formData[transactionTypeKey];
+    final transactionNumber = formData[numberKey];
+
+    if (transactionType != null && transactionNumber != null) {
+      final counterRepository = ref.read(counterRepositoryProvider);
+      counterRepository.ensureCounterAtLeast(transactionType, transactionNumber);
+    }
+  }
+
+  static Future<void> _decrementCounterIfLastTransaction(
+      WidgetRef ref, Map<String, dynamic> formData) async {
+    final transactionType = formData[transactionTypeKey];
+    final transactionNumber = formData[numberKey];
+
+    if (transactionType != null && transactionNumber != null) {
+      final counterRepository = ref.read(counterRepositoryProvider);
+      final currentCounter = await counterRepository.getCurrentNumber(transactionType);
+
+      // If this transaction number is the last one (currentCounter - 1), decrement
+      if (transactionNumber == currentCounter - 1) {
+        await counterRepository.decrementCounter(transactionType);
+      }
     }
   }
 
