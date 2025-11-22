@@ -329,7 +329,7 @@ class TransactionForm extends ConsumerWidget {
     }
   }
 
-  static void onNavigationPressed(
+  static Future<void> onNavigationPressed(
       ItemFormData formDataNotifier,
       BuildContext context,
       WidgetRef ref,
@@ -337,7 +337,7 @@ class TransactionForm extends ConsumerWidget {
       FromNavigator formNavigation,
       {Map<String, dynamic>? targetTransactionData,
       bool isNewTransaction = false,
-      bool isDeleting = false}) {
+      bool isDeleting = false}) async {
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
     final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
@@ -350,7 +350,7 @@ class TransactionForm extends ConsumerWidget {
     if (!isDeleting) {
       // as we are leaving the current transaction, we should make sure to delete the transaction if it has no name
       // or to save (update) it if it does have name.
-      onLeavingTransaction(context, ref, formImagesNotifier);
+      await onLeavingTransaction(context, ref, formImagesNotifier);
     }
     Navigator.of(context).pop();
     // now load the target transaction into the form, whether it is navigated or new transaction
