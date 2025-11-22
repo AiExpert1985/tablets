@@ -48,14 +48,17 @@ class TransactionShowForm {
       transactionDbCache: transactionDbCache,
     );
 
-    if (!context.mounted) return;
+    // Note: Don't check context.mounted here as context may be from a popped widget
+    // when navigating from "new" button. Navigator.push will handle invalid context gracefully.
 
     initializeTextFieldControllers(textEditingNotifier, formDataNotifier);
     bool isEditMode = transaction != null;
 
     if (!isEditMode) {
       // if the transaction is new, we save it directly with empty data
-      TransactionForm.saveTransaction(context, ref, formDataNotifier.data, false);
+      if (context.mounted) {
+        TransactionForm.saveTransaction(context, ref, formDataNotifier.data, false);
+      }
     }
 
     // if we are loading a transaction (not new) for (customer invoices only) we update the debt info
@@ -63,7 +66,8 @@ class TransactionShowForm {
     if ((transactionType == TransactionType.customerInvoice.name ||
             transactionType == TransactionType.customerReceipt.name) &&
         customerName is String &&
-        customerName.isNotEmpty) {
+        customerName.isNotEmpty &&
+        context.mounted) {
       try {
         final customerDbCache = ref.read(customerDbCacheProvider.notifier);
         final customerData = customerDbCache.getItemByProperty('name', customerName);
@@ -74,12 +78,17 @@ class TransactionShowForm {
       }
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType)),
-      // builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType)),
-    );
+    // Push new form - this works even if context is from a popped widget
+    // as long as the Navigator is still in the tree
+    try {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext ctx) => TransactionForm(isEditMode, transactionType)),
+      );
+    } catch (e) {
+      errorPrint('Error pushing transaction form: $e');
+    }
   }
 
   static Future<void> initializeFormData(BuildContext context, ItemFormData formDataNotifier,
