@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,7 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
+import 'package:tablets/src/common/services/screen_data_cache_service.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
@@ -98,41 +100,79 @@ class SalesmanScreenController implements ScreenDataController {
   final CustomerScreenController _customerScreenController;
   final ScreenDataNotifier _customerScreenDataNotifier;
   final DbCache _productDbCache;
+  final ScreenDataCacheService _cacheService = ScreenDataCacheService();
+  static bool _hasRecalculatedThisSession = false;
 
   @override
   Future<void> setFeatureScreenData(BuildContext context) async {
     _customerScreenController.setFeatureScreenData(context);
 
-    final allSalesmenData = _salesmanDbCache.data;
-    final allSalesmenCustomers = _getSalesmenCustomers();
-    final allSalesmenTransactions = _getSalesmenTransactions();
-
-    final allCustomerDbRefs =
-        allSalesmenCustomers.values.expand((customers) => customers.map((c) => c.dbRef)).toSet();
-    final customerDebtInfoMap = <String, Map<String, dynamic>>{};
-    for (var dbRef in allCustomerDbRefs) {
-      final screenData = _customerScreenDataNotifier.getItem(dbRef);
-      if (screenData.isNotEmpty) {
-        customerDebtInfoMap[dbRef] = screenData;
+    final hasCache = await _cacheService.hasSalesmanScreenData();
+    if (hasCache) {
+      final cachedData = await _cacheService.fetchAllSalesmanScreenData();
+      if (cachedData.isNotEmpty) {
+        _applyScreenData(cachedData);
       }
     }
 
-    final translations = {
-      TransactionType.customerInvoice.name:
-          translateDbTextToScreenText(context, TransactionType.customerInvoice.name),
-      TransactionType.customerReceipt.name:
-          translateDbTextToScreenText(context, TransactionType.customerReceipt.name),
-      TransactionType.customerReturn.name:
-          translateDbTextToScreenText(context, TransactionType.customerReturn.name),
-    };
+    if (!hasCache) {
+      final recalculated = await _calculateAndSaveAllSalesmen(context);
+      _applyScreenData(recalculated);
+    } else if (!_hasRecalculatedThisSession) {
+      _hasRecalculatedThisSession = true;
+      unawaited(_calculateAndSaveAllSalesmen(context));
+    }
+  }
 
-    // Prepare hidden products data for the isolate
-    final hiddenProductDbRefs = _productDbCache.data
-        .where((p) => Product.fromMap(p).isHiddenInSpecialReports == true)
-        .map<String>((p) => p['dbRef'] as String)
-        .toSet();
+  Future<List<Map<String, dynamic>>> _calculateAndSaveAllSalesmen(
+      BuildContext context) async {
+    final payload = _buildSalesmanPayload(context);
+    final screenData = await _runSalesmanProcessing(payload);
+    await _cacheService.saveSalesmanScreenData(screenData);
+    return screenData;
+  }
 
-    final payload = _SalesmanDataPayload(
+  void _applyScreenData(List<Map<String, dynamic>> screenData) {
+    Map<String, dynamic> summaryTypes = {commissionKey: 'sum', profitKey: 'sum'};
+    _screenDataNotifier.initialize(summaryTypes);
+    _screenDataNotifier.set(screenData);
+  }
+
+  Future<void> updateSingleSalesmanCache(BuildContext context, String salesmanDbRef) async {
+    final salesmanData = _salesmanDbCache.getItemByDbRef(salesmanDbRef);
+    if (salesmanData.isEmpty) return;
+    final customers = _getSalesmenCustomers();
+    final transactions = _getSalesmenTransactions();
+    final payload = _buildSalesmanPayload(context,
+        overrideSalesmenData: [salesmanData],
+        overrideSalesmenCustomers: {salesmanDbRef: customers[salesmanDbRef] ?? []},
+        overrideSalesmenTransactions: {salesmanDbRef: transactions[salesmanDbRef] ?? []});
+    final screenData = await _runSalesmanProcessing(payload);
+    if (screenData.isNotEmpty) {
+      await _cacheService.saveSalesmanRow(screenData.first);
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> _runSalesmanProcessing(
+      _SalesmanDataPayload payload) async {
+    return kIsWeb
+        ? _processSalesmanDataInIsolate(payload)
+        : await Isolate.run(() => _processSalesmanDataInIsolate(payload));
+  }
+
+  _SalesmanDataPayload _buildSalesmanPayload(BuildContext context,
+      {List<Map<String, dynamic>>? overrideSalesmenData,
+      Map<String, List<Customer>>? overrideSalesmenCustomers,
+      Map<String, List<Transaction>>? overrideSalesmenTransactions}) {
+    final allSalesmenData = overrideSalesmenData ?? _salesmanDbCache.data;
+    final allSalesmenCustomers = overrideSalesmenCustomers ?? _getSalesmenCustomers();
+    final allSalesmenTransactions = overrideSalesmenTransactions ?? _getSalesmenTransactions();
+
+    final customerDebtInfoMap = _buildCustomerDebtInfoMap(allSalesmenCustomers);
+    final translations = _buildTranslations(context);
+    final hiddenProductDbRefs = _getHiddenProductDbRefs();
+
+    return _SalesmanDataPayload(
       allSalesmenData: allSalesmenData,
       allSalesmenCustomers: allSalesmenCustomers,
       allSalesmenTransactions: allSalesmenTransactions,
@@ -140,14 +180,6 @@ class SalesmanScreenController implements ScreenDataController {
       translations: translations,
       hiddenProductDbRefs: hiddenProductDbRefs,
     );
-
-    final screenData = kIsWeb
-        ? _processSalesmanDataInIsolate(payload)
-        : await Isolate.run(() => _processSalesmanDataInIsolate(payload));
-
-    Map<String, dynamic> summaryTypes = {commissionKey: 'sum', profitKey: 'sum'};
-    _screenDataNotifier.initialize(summaryTypes);
-    _screenDataNotifier.set(screenData);
   }
 
   Map<String, List<Customer>> _getSalesmenCustomers() {
@@ -161,6 +193,38 @@ class SalesmanScreenController implements ScreenDataController {
       }
     }
     return salesmenMap;
+  }
+
+  Map<String, Map<String, dynamic>> _buildCustomerDebtInfoMap(
+      Map<String, List<Customer>> allSalesmenCustomers) {
+    final allCustomerDbRefs =
+        allSalesmenCustomers.values.expand((customers) => customers.map((c) => c.dbRef)).toSet();
+    final customerDebtInfoMap = <String, Map<String, dynamic>>{};
+    for (var dbRef in allCustomerDbRefs) {
+      final screenData = _customerScreenDataNotifier.getItem(dbRef);
+      if (screenData.isNotEmpty) {
+        customerDebtInfoMap[dbRef] = screenData;
+      }
+    }
+    return customerDebtInfoMap;
+  }
+
+  Map<String, String> _buildTranslations(BuildContext context) {
+    return {
+      TransactionType.customerInvoice.name:
+          translateDbTextToScreenText(context, TransactionType.customerInvoice.name),
+      TransactionType.customerReceipt.name:
+          translateDbTextToScreenText(context, TransactionType.customerReceipt.name),
+      TransactionType.customerReturn.name:
+          translateDbTextToScreenText(context, TransactionType.customerReturn.name),
+    };
+  }
+
+  Set<String> _getHiddenProductDbRefs() {
+    return _productDbCache.data
+        .where((p) => Product.fromMap(p).isHiddenInSpecialReports == true)
+        .map<String>((p) => p['dbRef'] as String)
+        .toSet();
   }
 
   Map<String, List<Transaction>> _getSalesmenTransactions() {

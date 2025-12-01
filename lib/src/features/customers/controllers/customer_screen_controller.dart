@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -5,6 +7,7 @@ import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
+import 'package:tablets/src/common/services/screen_data_cache_service.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
@@ -47,19 +50,46 @@ class CustomerScreenController implements ScreenDataController {
   final ScreenDataNotifier _screenDataNotifier;
   final DbCache _transactionDbCache;
   final DbCache _customerDbCache;
+  final ScreenDataCacheService _cacheService = ScreenDataCacheService();
+  static bool _hasRecalculatedThisSession = false;
 
   @override
   void setFeatureScreenData(BuildContext context) {
+    () async {
+      final hasCache = await _cacheService.hasCustomerScreenData();
+      if (hasCache) {
+        final cachedData = await _cacheService.fetchAllCustomerScreenData();
+        if (cachedData.isNotEmpty) {
+          _applyScreenData(cachedData);
+        }
+      }
+
+      if (!hasCache) {
+        final recalculated = _calculateAndSaveAllCustomers(context);
+        _applyScreenData(recalculated);
+      } else if (!_hasRecalculatedThisSession) {
+        _hasRecalculatedThisSession = true;
+        unawaited(Future(() => _calculateAndSaveAllCustomers(context)));
+      }
+    }();
+  }
+
+  List<Map<String, dynamic>> _calculateAndSaveAllCustomers(BuildContext context) {
     final allCustomersData = _customerDbCache.data;
     List<Map<String, dynamic>> screenData = [];
     final allCustomersTransactions = _getAllCustomersTransactions();
     for (var customerData in allCustomersData) {
       final customerDbRef = customerData['dbRef'];
-      final customerTransactions = allCustomersTransactions[customerDbRef]!;
+      final customerTransactions = allCustomersTransactions[customerDbRef] ?? [];
       final newRow =
           getItemScreenData(context, customerData, customerTransactions: customerTransactions);
       screenData.add(newRow);
     }
+    unawaited(_cacheService.saveCustomerScreenData(screenData));
+    return screenData;
+  }
+
+  void _applyScreenData(List<Map<String, dynamic>> screenData) {
     Map<String, dynamic> summaryTypes = {
       totalDebtKey: 'sum',
       openInvoicesKey: 'sum',
@@ -71,6 +101,15 @@ class CustomerScreenController implements ScreenDataController {
     };
     _screenDataNotifier.initialize(summaryTypes);
     _screenDataNotifier.set(screenData);
+  }
+
+  Future<void> updateSingleCustomerCache(BuildContext context, String customerDbRef) async {
+    final customerData = _customerDbCache.getItemByDbRef(customerDbRef);
+    if (customerData.isEmpty) return;
+    final customerTransactions = getCustomerTransactions(customerDbRef);
+    final newRow =
+        getItemScreenData(context, customerData, customerTransactions: customerTransactions);
+    await _cacheService.saveCustomerRow(newRow);
   }
 
   /// create a map, its keys are salesman dbRef, and value is a list of all customers belong the the

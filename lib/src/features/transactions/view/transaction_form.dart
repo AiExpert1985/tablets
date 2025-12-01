@@ -23,6 +23,7 @@ import 'package:tablets/src/common/widgets/dialog_delete_confirmation.dart';
 import 'package:tablets/src/common/widgets/form_frame.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
 import 'package:tablets/src/common/widgets/form_title.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/deleted_transactions/model/deleted_transactions.dart';
 import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_repository_provider.dart';
@@ -39,6 +40,8 @@ import 'package:tablets/src/features/transactions/view/forms/invoice_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/receipt_form.dart';
 import 'package:tablets/src/features/transactions/view/forms/statement_form.dart';
 import 'package:tablets/src/features/transactions/view/transaction_show_form.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
+import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:tablets/src/features/warehouse/services/warehouse_service.dart';
@@ -445,7 +448,7 @@ class TransactionForm extends ConsumerWidget {
     transactionDbCache.update(itemData, operationType);
     // redo screenData calculations
     if (context.mounted) {
-      screenController.setFeatureScreenData(context);
+      _updateRelatedCaches(ref, context, itemData);
     }
     // move point to previous transaction
     if (formNavigation != null && context.mounted) {
@@ -519,11 +522,39 @@ class TransactionForm extends ConsumerWidget {
     dbCache.update(itemData, operationType);
     // redo screenData calculations
     if (context.mounted) {
-      screenController.setFeatureScreenData(context);
+      _updateRelatedCaches(ref, context, itemData);
     }
 
     // Update counter if transaction number is >= current counter
     _updateCounterIfNeeded(ref, formData);
+  }
+
+  static void _updateRelatedCaches(
+    WidgetRef ref,
+    BuildContext context,
+    Map<String, dynamic> itemData,
+  ) {
+    final customerDbRef = itemData['nameDbRef'];
+    final salesmanDbRef = itemData['salesmanDbRef'];
+    final items = itemData['items'] as List<dynamic>? ?? [];
+
+    if (customerDbRef != null) {
+      final controller = ref.read(customerScreenControllerProvider);
+      controller.updateSingleCustomerCache(context, customerDbRef);
+    }
+
+    if (salesmanDbRef != null) {
+      final controller = ref.read(salesmanScreenControllerProvider);
+      controller.updateSingleSalesmanCache(context, salesmanDbRef);
+    }
+
+    for (var item in items) {
+      final productDbRef = item['dbRef'];
+      if (productDbRef != null) {
+        final controller = ref.read(productScreenControllerProvider);
+        controller.updateSingleProductCache(context, productDbRef);
+      }
+    }
   }
 
   static void _updateCounterIfNeeded(WidgetRef ref, Map<String, dynamic> formData) {

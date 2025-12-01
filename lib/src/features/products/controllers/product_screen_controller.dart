@@ -1,17 +1,20 @@
+import 'dart:async';
+import 'dart:collection';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tablets/src/common/classes/db_cache.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
+import 'package:tablets/src/common/services/screen_data_cache_service.dart';
+import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/features/products/controllers/product_screen_data_notifier.dart';
-import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
-import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
-import 'package:tablets/src/common/classes/db_cache.dart';
-import 'package:flutter/material.dart';
-import 'package:tablets/src/common/functions/utils.dart';
-import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/products/model/product.dart';
+import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
-import 'dart:collection';
+import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 
 final productScreenControllerProvider = Provider<ProductScreenController>((ref) {
   final screenDataNotifier = ref.read(productScreenDataNotifier.notifier);
@@ -30,11 +33,32 @@ class ProductScreenController implements ScreenDataController {
   final ScreenDataNotifier _screenDataNotifier;
   final DbCache _transactionsDbCache;
   final DbCache _productDbCache;
+  final ScreenDataCacheService _cacheService = ScreenDataCacheService();
+  static bool _hasRecalculatedThisSession = false;
 
   @override
   void setFeatureScreenData(BuildContext context) {
+    () async {
+      final hasCache = await _cacheService.hasProductScreenData();
+      if (hasCache) {
+        final cachedData = await _cacheService.fetchAllProductScreenData();
+        if (cachedData.isNotEmpty) {
+          _applyScreenData(cachedData);
+        }
+      }
+
+      if (!hasCache) {
+        final recalculated = _calculateAndSaveAllProducts(context);
+        _applyScreenData(recalculated);
+      } else if (!_hasRecalculatedThisSession) {
+        _hasRecalculatedThisSession = true;
+        unawaited(Future(() => _calculateAndSaveAllProducts(context)));
+      }
+    }();
+  }
+
+  List<Map<String, dynamic>> _calculateAndSaveAllProducts(BuildContext context) {
     final allProductsData = _productDbCache.data;
-    // Pre-process and group transactions by product dbRef for efficient lookup.
     final transactionsByProduct = _groupTransactionsByProduct();
 
     List<Map<String, dynamic>> screenData = [];
@@ -44,12 +68,23 @@ class ProductScreenController implements ScreenDataController {
       final newRow = _createProductScreenData(context, product, productTransactions);
       screenData.add(newRow);
     }
+    unawaited(_cacheService.saveProductScreenData(screenData));
+    return screenData;
+  }
 
+  void _applyScreenData(List<Map<String, dynamic>> screenData) {
     Map<String, dynamic> summaryTypes = {
       productTotalStockPriceKey: 'sum',
     };
     _screenDataNotifier.initialize(summaryTypes);
     _screenDataNotifier.set(screenData);
+  }
+
+  Future<void> updateSingleProductCache(BuildContext context, String productDbRef) async {
+    final productData = _productDbCache.getItemByDbRef(productDbRef);
+    if (productData.isEmpty) return;
+    final newRow = getItemScreenData(context, productData);
+    await _cacheService.saveProductRow(newRow);
   }
 
   /// Groups all transactions by product `dbRef`.
