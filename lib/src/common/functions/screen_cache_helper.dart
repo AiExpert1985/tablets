@@ -21,6 +21,9 @@ const List<String> _detailFieldsWithTransactions = [
   'numReceiptsDetails',
   'numReturnsDetails',
   'profitDetails',
+  'invoices', // Full transaction lists in salesman data
+  'receipts',
+  'returns',
 ];
 
 /// Converts screen data for saving to Firebase cache
@@ -30,10 +33,20 @@ Map<String, dynamic> convertForCacheSave(Map<String, dynamic> screenData) {
   final Map<String, dynamic> result = {};
 
   screenData.forEach((key, value) {
-    if (_detailFieldsWithTransactions.contains(key) && value is List) {
-      // Convert list of lists, replacing Transaction at index 0 with dbRef
+    // Check if this is a List<List> (nested list) - needs JSON encoding for Firebase Web
+    if (value is List && value.isNotEmpty && value.first is List) {
+      // This is a nested list - convert Transaction/DateTime objects and JSON encode
+      if (_detailFieldsWithTransactions.contains(key)) {
+        // Contains Transaction objects - needs special conversion
+        final converted = _convertDetailListForSave(value);
+        result[key] = jsonEncode(converted);
+      } else {
+        // Doesn't contain Transaction objects, but still needs JSON encoding
+        result[key] = jsonEncode(value);
+      }
+    } else if (_detailFieldsWithTransactions.contains(key) && value is List) {
+      // Flat list with transactions - still convert and encode
       final converted = _convertDetailListForSave(value);
-      // Store as JSON string for Firebase Web compatibility
       result[key] = jsonEncode(converted);
     } else {
       result[key] = value;
@@ -53,22 +66,26 @@ Map<String, dynamic> enrichWithTransactions(
   final Map<String, dynamic> result = {};
 
   cachedData.forEach((key, value) {
-    if (_detailFieldsWithTransactions.contains(key)) {
-      // Handle JSON string (new format for Web compatibility) or List (legacy format)
-      List<dynamic> detailList;
-      if (value is String) {
-        // Parse JSON string
-        detailList = jsonDecode(value) as List<dynamic>;
-      } else if (value is List) {
-        // Legacy format - already a list
-        detailList = value;
-      } else {
+    if (value is String && (value.startsWith('[') || value.startsWith('{'))) {
+      // This looks like a JSON string - try to decode it
+      try {
+        final decoded = jsonDecode(value);
+        if (_detailFieldsWithTransactions.contains(key) && decoded is List) {
+          // This is a transaction detail list - needs enrichment
+          result[key] =
+              _enrichDetailListWithTransactions(decoded, transactionDbCache);
+        } else {
+          // Just a JSON-encoded nested list without transactions
+          result[key] = decoded;
+        }
+      } catch (_) {
+        // Not valid JSON, keep as-is
         result[key] = value;
-        return;
       }
-      // Convert list of lists, replacing dbRef at index 0 with Transaction
+    } else if (_detailFieldsWithTransactions.contains(key) && value is List) {
+      // Legacy format - already a list with transactions
       result[key] =
-          _enrichDetailListWithTransactions(detailList, transactionDbCache);
+          _enrichDetailListWithTransactions(value, transactionDbCache);
     } else {
       result[key] = value;
     }
