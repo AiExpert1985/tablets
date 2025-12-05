@@ -8,6 +8,7 @@ import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/providers/page_title_provider.dart';
+import 'package:tablets/src/common/providers/screen_cache_service.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/circled_container.dart';
@@ -125,6 +126,66 @@ void processAndMoveToTargetPage(BuildContext context, WidgetRef ref,
   }
 }
 
+/// Screen type enum for cached screens
+enum CachedScreenType { customer, product, salesman }
+
+/// Process and move to target page using cache service for main screens
+/// This loads data from Firebase cache if available, otherwise calculates and saves to cache
+void processAndMoveToTargetPageWithCache(
+    BuildContext context, WidgetRef ref, CachedScreenType screenType, String route, String pageTitle) async {
+  // update user info, so if the user is blocked by admin, while he uses the app he will be blocked
+  ref.read(userInfoProvider.notifier).loadUserInfo(ref);
+  final userInfo = ref.read(userInfoProvider);
+  if (userInfo == null || !userInfo.hasAccess) {
+    // user must have access
+    return;
+  }
+  final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
+  if (pageLoadingNotifier.state) {
+    failureUserMessage(context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
+    return;
+  }
+  final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
+  // Only admin users can trigger database backup
+  if (userInfo.privilage == UserPrivilage.admin.name) {
+    await autoDatabaseBackup(context, ref);
+  }
+  pageLoadingNotifier.state = true;
+  // note that dbCaches are only used for mirroring the database
+  if (context.mounted) {
+    await initializeAllDbCaches(context, ref);
+  }
+  // we initialize settings
+  if (context.mounted) {
+    initializeSettings(context, ref);
+  }
+  // Load screen data from cache (or calculate if cache is empty)
+  if (context.mounted) {
+    final cacheService = ref.read(screenCacheServiceProvider);
+    switch (screenType) {
+      case CachedScreenType.customer:
+        await cacheService.loadCustomerScreenData(context);
+        break;
+      case CachedScreenType.product:
+        await cacheService.loadProductScreenData(context);
+        break;
+      case CachedScreenType.salesman:
+        await cacheService.loadSalesmanScreenData(context);
+        break;
+    }
+  }
+  if (context.mounted) {
+    pageTitleNotifier.state = pageTitle;
+  }
+  // after loading and processing data, we turn off the loading spinner
+  pageLoadingNotifier.state = false;
+  // close side drawer and move to the target page
+  if (context.mounted) {
+    Navigator.of(context).pop();
+    context.goNamed(route);
+  }
+}
+
 class HomeButton extends ConsumerWidget {
   const HomeButton({super.key});
 
@@ -166,15 +227,13 @@ class CustomersButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final customerScreenController = ref.read(customerScreenControllerProvider);
-
     final route = AppRoute.customers.name;
     final pageTitle = S.of(context).customers;
     return MainDrawerButton(
         'customers',
         S.of(context).customers,
-        () async =>
-            processAndMoveToTargetPage(context, ref, customerScreenController, route, pageTitle));
+        () async => processAndMoveToTargetPageWithCache(
+            context, ref, CachedScreenType.customer, route, pageTitle));
   }
 }
 
@@ -255,14 +314,13 @@ class SalesmenButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final salesmanScreenController = ref.read(salesmanScreenControllerProvider);
     final route = AppRoute.salesman.name;
     final pageTitle = S.of(context).salesmen;
     return MainDrawerButton(
         'salesman',
         S.of(context).salesmen,
-        () async =>
-            processAndMoveToTargetPage(context, ref, salesmanScreenController, route, pageTitle));
+        () async => processAndMoveToTargetPageWithCache(
+            context, ref, CachedScreenType.salesman, route, pageTitle));
   }
 }
 
@@ -303,11 +361,11 @@ class ProductsButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productScreenController = ref.read(productScreenControllerProvider);
     final route = AppRoute.products.name;
     final pageTitle = S.of(context).products;
     return MainDrawerButton('products', S.of(context).products, () async {
-      processAndMoveToTargetPage(context, ref, productScreenController, route, pageTitle);
+      processAndMoveToTargetPageWithCache(
+          context, ref, CachedScreenType.product, route, pageTitle);
     });
   }
 }
