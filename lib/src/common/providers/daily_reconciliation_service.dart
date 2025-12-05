@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
@@ -11,7 +12,8 @@ final reconciliationSettingsRepositoryProvider = Provider<DbRepository>((ref) {
 });
 
 /// Provider for the DailyReconciliationService
-final dailyReconciliationServiceProvider = Provider<DailyReconciliationService>((ref) {
+final dailyReconciliationServiceProvider =
+    Provider<DailyReconciliationService>((ref) {
   return DailyReconciliationService(ref);
 });
 
@@ -39,19 +41,24 @@ class DailyReconciliationService {
         return;
       }
 
-      final lastReconciliation = settings['lastReconciliationTimestamp'] as int?;
+      final lastReconciliation =
+          settings['lastReconciliationTimestamp'] as int?;
       if (lastReconciliation == null) {
         await _updateLastReconciliationTimestamp();
         return;
       }
 
-      final lastReconciliationDate = DateTime.fromMillisecondsSinceEpoch(lastReconciliation);
-      final hoursSinceLastReconciliation = DateTime.now().difference(lastReconciliationDate).inHours;
+      final lastReconciliationDate =
+          DateTime.fromMillisecondsSinceEpoch(lastReconciliation);
+      final hoursSinceLastReconciliation =
+          DateTime.now().difference(lastReconciliationDate).inHours;
 
-      debugLog('Hours since last reconciliation: $hoursSinceLastReconciliation');
+      debugLog(
+          'Hours since last reconciliation: $hoursSinceLastReconciliation');
 
       if (hoursSinceLastReconciliation >= _reconciliationIntervalHours) {
-        debugLog('Scheduling reconciliation after $_delayBeforeReconciliationMinutes minutes');
+        debugLog(
+            'Scheduling reconciliation after $_delayBeforeReconciliationMinutes minutes');
         _scheduleReconciliation(context);
       } else {
         debugLog('No reconciliation needed yet');
@@ -65,7 +72,7 @@ class DailyReconciliationService {
   void _scheduleReconciliation(BuildContext context) {
     _reconciliationTimer?.cancel();
     _reconciliationTimer = Timer(
-      Duration(minutes: _delayBeforeReconciliationMinutes),
+      const Duration(minutes: _delayBeforeReconciliationMinutes),
       () => _runReconciliation(context),
     );
   }
@@ -119,7 +126,8 @@ class DailyReconciliationService {
     try {
       final repository = _ref.read(reconciliationSettingsRepositoryProvider);
       final settings = await repository.fetchItemAsMap(_settingsDocId);
-      final lastReconciliation = settings['lastReconciliationTimestamp'] as int?;
+      final lastReconciliation =
+          settings['lastReconciliationTimestamp'] as int?;
       if (lastReconciliation == null) return null;
       return DateTime.fromMillisecondsSinceEpoch(lastReconciliation);
     } catch (e) {

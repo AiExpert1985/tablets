@@ -59,10 +59,12 @@ class ScreenCacheService {
 
       if (cachedData.isNotEmpty) {
         // Enrich with transactions and set to notifier
-        final enrichedData = enrichScreenDataList(cachedData, transactionDbCache);
+        final enrichedData =
+            enrichScreenDataList(cachedData, transactionDbCache);
         screenDataNotifier.initialize(_customerSummaryTypes);
         screenDataNotifier.set(enrichedData);
-        debugLog('Customer screen data loaded from cache (${cachedData.length} items)');
+        debugLog(
+            'Customer screen data loaded from cache (${cachedData.length} items)');
       } else {
         // Cache is empty - calculate and save
         await _calculateAndSaveCustomerData(context);
@@ -86,10 +88,12 @@ class ScreenCacheService {
 
       if (cachedData.isNotEmpty) {
         // Enrich with transactions and set to notifier
-        final enrichedData = enrichScreenDataList(cachedData, transactionDbCache);
+        final enrichedData =
+            enrichScreenDataList(cachedData, transactionDbCache);
         screenDataNotifier.initialize(_productSummaryTypes);
         screenDataNotifier.set(enrichedData);
-        debugLog('Product screen data loaded from cache (${cachedData.length} items)');
+        debugLog(
+            'Product screen data loaded from cache (${cachedData.length} items)');
       } else {
         // Cache is empty - calculate and save
         await _calculateAndSaveProductData(context);
@@ -113,10 +117,12 @@ class ScreenCacheService {
 
       if (cachedData.isNotEmpty) {
         // Enrich with transactions and set to notifier
-        final enrichedData = enrichScreenDataList(cachedData, transactionDbCache);
+        final enrichedData =
+            enrichScreenDataList(cachedData, transactionDbCache);
         screenDataNotifier.initialize(_salesmanSummaryTypes);
         screenDataNotifier.set(enrichedData);
-        debugLog('Salesman screen data loaded from cache (${cachedData.length} items)');
+        debugLog(
+            'Salesman screen data loaded from cache (${cachedData.length} items)');
       } else {
         // Cache is empty - calculate and save
         await _calculateAndSaveSalesmanData(context);
@@ -162,7 +168,8 @@ class ScreenCacheService {
     controller.setFeatureScreenData(context);
 
     // Get the calculated data from notifier
-    final calculatedData = screenDataNotifier.data as List<Map<String, dynamic>>;
+    final calculatedData =
+        screenDataNotifier.data as List<Map<String, dynamic>>;
 
     // Save each item to cache (with transactions converted to dbRefs)
     await _saveToCacheCollection(calculatedData, repository);
@@ -180,7 +187,8 @@ class ScreenCacheService {
     controller.setFeatureScreenData(context);
 
     // Get the calculated data from notifier
-    final calculatedData = screenDataNotifier.data as List<Map<String, dynamic>>;
+    final calculatedData =
+        screenDataNotifier.data as List<Map<String, dynamic>>;
 
     // Save each item to cache (with transactions converted to dbRefs)
     await _saveToCacheCollection(calculatedData, repository);
@@ -198,7 +206,8 @@ class ScreenCacheService {
     await controller.setFeatureScreenData(context);
 
     // Get the calculated data from notifier
-    final calculatedData = screenDataNotifier.data as List<Map<String, dynamic>>;
+    final calculatedData =
+        screenDataNotifier.data as List<Map<String, dynamic>>;
 
     // Save each item to cache (with transactions converted to dbRefs)
     await _saveToCacheCollection(calculatedData, repository);
