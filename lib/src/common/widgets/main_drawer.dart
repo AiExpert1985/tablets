@@ -14,15 +14,12 @@ import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/circled_container.dart';
 import 'package:tablets/src/features/authentication/model/user_account.dart';
 import 'package:tablets/src/features/categories/controllers/category_screen_controller.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/utils/bulk_reassign_customers.dart';
 import 'package:tablets/src/features/daily_tasks/controllers/selected_date_provider.dart';
 import 'package:tablets/src/features/deleted_transactions/controllers/deleted_transaction_screen_controller.dart';
 import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_screen_controller.dart';
 import 'package:tablets/src/features/pending_transactions/repository/pending_transaction_db_cache_provider.dart';
-import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
 import 'package:tablets/src/features/regions/controllers/region_screen_controller.dart';
-import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_screen_controller.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
@@ -73,8 +70,12 @@ class MainDrawer extends ConsumerWidget {
 }
 
 /// initialize all dbCaches and settings, and move on the the target page
-void processAndMoveToTargetPage(BuildContext context, WidgetRef ref,
-    ScreenDataController screenController, String route, String pageTitle) async {
+void processAndMoveToTargetPage(
+    BuildContext context,
+    WidgetRef ref,
+    ScreenDataController screenController,
+    String route,
+    String pageTitle) async {
   // update user info, so if the user is blocked by admin, while he uses the app he will be blocked
   ref.read(userInfoProvider.notifier).loadUserInfo(ref);
   final userInfo = ref.read(userInfoProvider);
@@ -91,7 +92,8 @@ void processAndMoveToTargetPage(BuildContext context, WidgetRef ref,
     // so, we return and not proceed
     // this is done to fix the bug of pressing buttons multiple times at the very start of the app
     // when the app is loading databases into dBCaches
-    failureUserMessage(context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
+    failureUserMessage(
+        context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
     return;
   }
   final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
@@ -131,8 +133,8 @@ enum CachedScreenType { customer, product, salesman }
 
 /// Process and move to target page using cache service for main screens
 /// This loads data from Firebase cache if available, otherwise calculates and saves to cache
-void processAndMoveToTargetPageWithCache(
-    BuildContext context, WidgetRef ref, CachedScreenType screenType, String route, String pageTitle) async {
+void processAndMoveToTargetPageWithCache(BuildContext context, WidgetRef ref,
+    CachedScreenType screenType, String route, String pageTitle) async {
   // update user info, so if the user is blocked by admin, while he uses the app he will be blocked
   ref.read(userInfoProvider.notifier).loadUserInfo(ref);
   final userInfo = ref.read(userInfoProvider);
@@ -142,7 +144,8 @@ void processAndMoveToTargetPageWithCache(
   }
   final pageLoadingNotifier = ref.read(pageIsLoadingNotifier.notifier);
   if (pageLoadingNotifier.state) {
-    failureUserMessage(context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
+    failureUserMessage(
+        context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
     return;
   }
   final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
@@ -202,7 +205,8 @@ class HomeButton extends ConsumerWidget {
         // so, we return and not proceed
         // this is done to fix the bug of pressing buttons multiple times at the very start of the app
         // when the app is loading databases into dBCaches
-        failureUserMessage(context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
+        failureUserMessage(
+            context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
         return;
       }
       pageLoadingNotifier.state = true;
@@ -243,7 +247,8 @@ class PendingsButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pendingTransactions = ref.watch(pendingTransactionDbCacheProvider);
-    final pendingScreenController = ref.read(pendingTransactionScreenControllerProvider);
+    final pendingScreenController =
+        ref.read(pendingTransactionScreenControllerProvider);
 
     final route = AppRoute.pendingTransactions.name;
     final pageTitle = S.of(context).pending_transactions;
@@ -261,12 +266,13 @@ class PendingsButton extends ConsumerWidget {
             HorizontalGap.xl,
             CircledContainer(
                 child: Text(pendingTransactions.length.toString(),
-                    textAlign: TextAlign.center, style: const TextStyle(color: Colors.white)))
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white)))
           ]
         ],
       ),
-      onTap: () async =>
-          processAndMoveToTargetPage(context, ref, pendingScreenController, route, pageTitle),
+      onTap: () async => processAndMoveToTargetPage(
+          context, ref, pendingScreenController, route, pageTitle),
     );
   }
 }
@@ -302,7 +308,9 @@ class SettingsButton extends ConsumerWidget {
           Navigator.of(context).pop();
         }
         if (context.mounted) {
-          showDialog(context: context, builder: (BuildContext ctx) => const SettingsDialog());
+          showDialog(
+              context: context,
+              builder: (BuildContext ctx) => const SettingsDialog());
         }
       },
     );
@@ -335,8 +343,8 @@ class VendorsButton extends ConsumerWidget {
     return MainDrawerButton(
         'vendors',
         S.of(context).vendors,
-        () async =>
-            processAndMoveToTargetPage(context, ref, vendorScreenController, route, pageTitle));
+        () async => processAndMoveToTargetPage(
+            context, ref, vendorScreenController, route, pageTitle));
   }
 }
 
@@ -345,7 +353,8 @@ class TransactionsButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transactionScreenController = ref.read(transactionScreenControllerProvider);
+    final transactionScreenController =
+        ref.read(transactionScreenControllerProvider);
     final route = AppRoute.transactions.name;
     final pageTitle = S.of(context).transactions;
     return MainDrawerButton(
@@ -393,7 +402,8 @@ class TasksButton extends ConsumerWidget {
         // so, we return and not proceed
         // this is done to fix the bug of pressing buttons multiple times at the very start of the app
         // when the app is loading databases into dBCaches
-        failureUserMessage(context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
+        failureUserMessage(
+            context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
         return;
       }
       final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
@@ -434,7 +444,8 @@ class WarehouseButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userInfo = ref.watch(userInfoProvider);
 
-    if (userInfo == null || userInfo.privilage != UserPrivilage.warehouse.name) {
+    if (userInfo == null ||
+        userInfo.privilage != UserPrivilage.warehouse.name) {
       return const SizedBox.shrink();
     }
 
@@ -443,7 +454,8 @@ class WarehouseButton extends ConsumerWidget {
       final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
 
       if (pageLoadingNotifier.state) {
-        failureUserMessage(context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
+        failureUserMessage(
+            context, "يرجى الانتظار حتى اكتمال تحميل بيانات البرنامج");
         return;
       }
 
@@ -484,7 +496,8 @@ class MainDrawerHeader extends StatelessWidget {
                 // margin: const EdgeInsets.all(10),
                 width: double.infinity,
                 height: 200, // here I used width intentionally
-                child: Image.asset('assets/images/logo.png', fit: BoxFit.scaleDown),
+                child: Image.asset('assets/images/logo.png',
+                    fit: BoxFit.scaleDown),
               ),
               Text(
                 S.of(context).slogan,
@@ -586,7 +599,8 @@ class SettingChildButton extends ConsumerWidget {
     final pageTitleNotifier = ref.read(pageTitleProvider.notifier);
     final categoryScreenController = ref.read(categoryScreenControllerProvider);
     final regionScreenController = ref.read(regionScreenControllerProvider);
-    final deletedTransactionScreenController = ref.read(deletedTransactionScreenControllerProvider);
+    final deletedTransactionScreenController =
+        ref.read(deletedTransactionScreenControllerProvider);
 
     return InkWell(
       onTap: () {
