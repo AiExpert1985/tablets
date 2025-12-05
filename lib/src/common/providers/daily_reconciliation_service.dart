@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
+import 'package:tablets/src/common/classes/screen_cache_item.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/providers/screen_cache_service.dart';
 
@@ -31,12 +32,11 @@ class DailyReconciliationService {
   /// Call this when the app starts
   Future<void> checkAndScheduleReconciliation(BuildContext context) async {
     try {
-      final repository = _ref.read(reconciliationSettingsRepositoryProvider);
-      final settings = await repository.fetchItemAsMap(_settingsDocId);
+      final settings = await _fetchSettings();
 
       if (settings.isEmpty) {
         // First time - save current timestamp and don't reconcile yet
-        await _updateLastReconciliationTimestamp();
+        await _updateLastReconciliationTimestamp(isFirstTime: true);
         debugLog('First app start - no reconciliation needed');
         return;
       }
@@ -44,7 +44,7 @@ class DailyReconciliationService {
       final lastReconciliation =
           settings['lastReconciliationTimestamp'] as int?;
       if (lastReconciliation == null) {
-        await _updateLastReconciliationTimestamp();
+        await _updateLastReconciliationTimestamp(isFirstTime: false);
         return;
       }
 
@@ -68,6 +68,17 @@ class DailyReconciliationService {
     }
   }
 
+  /// Fetch settings from Firebase
+  Future<Map<String, dynamic>> _fetchSettings() async {
+    final repository = _ref.read(reconciliationSettingsRepositoryProvider);
+    final allSettings = await repository.fetchItemListAsMaps(
+      filterKey: 'dbRef',
+      filterValue: _settingsDocId,
+    );
+    if (allSettings.isEmpty) return {};
+    return allSettings.first;
+  }
+
   /// Schedule reconciliation after delay
   void _scheduleReconciliation(BuildContext context) {
     _reconciliationTimer?.cancel();
@@ -88,7 +99,7 @@ class DailyReconciliationService {
       await cacheService.refreshAllScreenData(context);
 
       // Update timestamp
-      await _updateLastReconciliationTimestamp();
+      await _updateLastReconciliationTimestamp(isFirstTime: false);
 
       debugLog('Daily reconciliation completed successfully');
     } catch (e) {
@@ -97,13 +108,21 @@ class DailyReconciliationService {
   }
 
   /// Update the last reconciliation timestamp in Firebase
-  Future<void> _updateLastReconciliationTimestamp() async {
+  Future<void> _updateLastReconciliationTimestamp({required bool isFirstTime}) async {
     try {
       final repository = _ref.read(reconciliationSettingsRepositoryProvider);
-      await repository.setItem(_settingsDocId, {
+      final data = {
         'dbRef': _settingsDocId,
+        'name': 'Reconciliation Config',
         'lastReconciliationTimestamp': DateTime.now().millisecondsSinceEpoch,
-      });
+      };
+      final item = ScreenCacheItem(data);
+
+      if (isFirstTime) {
+        await repository.addItem(item);
+      } else {
+        await repository.updateItem(item);
+      }
     } catch (e) {
       errorPrint('Error updating reconciliation timestamp: $e');
     }
@@ -124,10 +143,8 @@ class DailyReconciliationService {
   /// Get the last reconciliation date
   Future<DateTime?> getLastReconciliationDate() async {
     try {
-      final repository = _ref.read(reconciliationSettingsRepositoryProvider);
-      final settings = await repository.fetchItemAsMap(_settingsDocId);
-      final lastReconciliation =
-          settings['lastReconciliationTimestamp'] as int?;
+      final settings = await _fetchSettings();
+      final lastReconciliation = settings['lastReconciliationTimestamp'] as int?;
       if (lastReconciliation == null) return null;
       return DateTime.fromMillisecondsSinceEpoch(lastReconciliation);
     } catch (e) {
