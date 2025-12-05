@@ -5,7 +5,6 @@ import 'package:tablets/src/common/classes/screen_cache_item.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/screen_cache_helper.dart';
 import 'package:tablets/src/common/providers/screen_cache_repository_providers.dart';
-import 'package:tablets/src/common/providers/screen_data_notifier.dart';
 import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
@@ -232,20 +231,6 @@ class ScreenCacheService {
         // Item doesn't exist, add it
         await repository.addItem(screenCacheItem);
       }
-    }
-  }
-
-  /// Get the ScreenDataNotifier for a given screen type
-  ScreenDataNotifier _getScreenDataNotifier(String screenType) {
-    switch (screenType) {
-      case 'customer':
-        return _ref.read(customerScreenDataNotifier.notifier);
-      case 'product':
-        return _ref.read(productScreenDataNotifier.notifier);
-      case 'salesman':
-        return _ref.read(salesmanScreenDataNotifier.notifier);
-      default:
-        throw Exception('Unknown screen type: $screenType');
     }
   }
 }
