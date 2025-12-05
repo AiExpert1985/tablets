@@ -49,6 +49,35 @@ class DbRepository {
     }
   }
 
+  /// Batch add or update multiple items using their dbRef as document IDs
+  /// Firebase allows max 500 operations per batch, so we chunk the items
+  /// This is MUCH faster than individual writes for large collections
+  Future<void> batchAddOrUpdateItemsWithRef(List<BaseItem> items) async {
+    if (items.isEmpty) return;
+
+    const int batchSize = 500; // Firebase batch limit
+    final collectionRef = _firestore.collection(_collectionName);
+
+    // Process items in chunks of 500
+    for (var i = 0; i < items.length; i += batchSize) {
+      final chunk = items.skip(i).take(batchSize).toList();
+      final batch = _firestore.batch();
+
+      for (var item in chunk) {
+        final docRef = collectionRef.doc(item.dbRef);
+        // Use merge: true for Flutter Web compatibility
+        batch.set(docRef, item.toMap(), SetOptions(merge: true));
+      }
+
+      try {
+        await batch.commit();
+        debugLog('Batch committed ${chunk.length} items to $_collectionName');
+      } catch (e) {
+        errorPrint('Error in batch commit to $_collectionName: $e');
+      }
+    }
+  }
+
   Future<void> updateItem(BaseItem updatedItem) async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.wifi) ||

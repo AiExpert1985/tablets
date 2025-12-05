@@ -223,22 +223,24 @@ class ScreenCacheService {
     debugLog('Salesman screen cache saved (${calculatedData.length} items)');
   }
 
-  /// Save calculated data to a cache collection
+  /// Save calculated data to a cache collection using batch writes
+  /// This is MUCH faster than individual writes for large collections
   Future<void> _saveToCacheCollection(
     List<Map<String, dynamic>> data,
     DbRepository repository,
   ) async {
+    // Convert all items first
+    final List<ScreenCacheItem> cacheItems = [];
     for (var item in data) {
       try {
-        // Convert transactions to dbRefs for storage
         final cacheItem = convertForCacheSave(item);
-        final screenCacheItem = ScreenCacheItem(cacheItem);
-
-        // Use dbRef as document ID for consistent cache storage
-        await repository.addOrUpdateItemWithRef(screenCacheItem);
+        cacheItems.add(ScreenCacheItem(cacheItem));
       } catch (e) {
-        errorPrint('Error saving item to cache: $e');
+        errorPrint('Error converting item for cache: $e');
       }
     }
+
+    // Use batch write for all items at once
+    await repository.batchAddOrUpdateItemsWithRef(cacheItems);
   }
 }
