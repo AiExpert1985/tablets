@@ -8,7 +8,7 @@ class ScreenCacheItem implements BaseItem {
   final Map<String, dynamic> _data;
 
   @override
-  String get dbRef => _data['dbRef'] as String;
+  String get dbRef => (_data['dbRef'] ?? '') as String;
 
   @override
   String get name => _data['name'] as String? ?? '';

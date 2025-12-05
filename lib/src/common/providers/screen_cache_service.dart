@@ -53,8 +53,10 @@ class ScreenCacheService {
     final transactionDbCache = _ref.read(transactionDbCacheProvider);
 
     try {
+      debugLog('Attempting to load customer screen data from cache...');
       // Try to fetch from cache
       final cachedData = await repository.fetchItemListAsMaps();
+      debugLog('Cache returned ${cachedData.length} items');
 
       if (cachedData.isNotEmpty) {
         // Enrich with transactions and set to notifier
@@ -66,6 +68,7 @@ class ScreenCacheService {
             'Customer screen data loaded from cache (${cachedData.length} items)');
       } else {
         // Cache is empty - calculate and save
+        debugLog('Customer cache is empty, falling back to calculation...');
         await _calculateAndSaveCustomerData(context);
       }
     } catch (e) {
@@ -82,8 +85,10 @@ class ScreenCacheService {
     final transactionDbCache = _ref.read(transactionDbCacheProvider);
 
     try {
+      debugLog('Attempting to load product screen data from cache...');
       // Try to fetch from cache
       final cachedData = await repository.fetchItemListAsMaps();
+      debugLog('Cache returned ${cachedData.length} items');
 
       if (cachedData.isNotEmpty) {
         // Enrich with transactions and set to notifier
@@ -95,6 +100,7 @@ class ScreenCacheService {
             'Product screen data loaded from cache (${cachedData.length} items)');
       } else {
         // Cache is empty - calculate and save
+        debugLog('Product cache is empty, falling back to calculation...');
         await _calculateAndSaveProductData(context);
       }
     } catch (e) {
@@ -111,8 +117,10 @@ class ScreenCacheService {
     final transactionDbCache = _ref.read(transactionDbCacheProvider);
 
     try {
+      debugLog('Attempting to load salesman screen data from cache...');
       // Try to fetch from cache
       final cachedData = await repository.fetchItemListAsMaps();
+      debugLog('Cache returned ${cachedData.length} items');
 
       if (cachedData.isNotEmpty) {
         // Enrich with transactions and set to notifier
@@ -124,6 +132,7 @@ class ScreenCacheService {
             'Salesman screen data loaded from cache (${cachedData.length} items)');
       } else {
         // Cache is empty - calculate and save
+        debugLog('Salesman cache is empty, falling back to calculation...');
         await _calculateAndSaveSalesmanData(context);
       }
     } catch (e) {
@@ -220,16 +229,15 @@ class ScreenCacheService {
     DbRepository repository,
   ) async {
     for (var item in data) {
-      // Convert transactions to dbRefs for storage
-      final cacheItem = convertForCacheSave(item);
-      final screenCacheItem = ScreenCacheItem(cacheItem);
-
-      // Try to update first (in case document exists), if not found, add new
       try {
-        await repository.updateItem(screenCacheItem);
+        // Convert transactions to dbRefs for storage
+        final cacheItem = convertForCacheSave(item);
+        final screenCacheItem = ScreenCacheItem(cacheItem);
+
+        // Use dbRef as document ID for consistent cache storage
+        await repository.addOrUpdateItemWithRef(screenCacheItem);
       } catch (e) {
-        // Item doesn't exist, add it
-        await repository.addItem(screenCacheItem);
+        errorPrint('Error saving item to cache: $e');
       }
     }
   }

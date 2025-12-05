@@ -10,7 +10,8 @@ import 'package:tablets/src/features/products/controllers/product_screen_data_no
 import 'package:tablets/src/features/salesmen/controllers/salesman_screen_data_notifier.dart';
 
 /// Provider for the ScreenCacheUpdateService
-final screenCacheUpdateServiceProvider = Provider<ScreenCacheUpdateService>((ref) {
+final screenCacheUpdateServiceProvider =
+    Provider<ScreenCacheUpdateService>((ref) {
   return ScreenCacheUpdateService(ref);
 });
 
@@ -39,7 +40,8 @@ class ScreenCacheUpdateService {
       debugLog('Screen cache update triggered: $operation');
 
       // Get all affected entities from both old and new transaction
-      final affectedEntities = _getAffectedEntities(oldTransaction, newTransaction);
+      final affectedEntities =
+          _getAffectedEntities(oldTransaction, newTransaction);
 
       // Update cache collections sequentially: Products -> Customers -> Salesmen
       // (Salesman depends on customer data)
@@ -240,12 +242,8 @@ class ScreenCacheUpdateService {
     final cacheItem = convertForCacheSave(screenData);
     final screenCacheItem = ScreenCacheItem(cacheItem);
 
-    // Try to update first, if not found, add new
-    try {
-      await repository.updateItem(screenCacheItem);
-    } catch (e) {
-      await repository.addItem(screenCacheItem);
-    }
+    // Use dbRef as document ID for consistent cache storage
+    await repository.addOrUpdateItemWithRef(screenCacheItem);
   }
 }
 
