@@ -22,6 +22,8 @@ import 'package:tablets/src/features/settings/controllers/settings_form_data_not
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/features/authentication/model/user_account.dart';
+import 'package:tablets/src/common/providers/screen_cache_service.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 
 class CustomerScreen extends ConsumerWidget {
   const CustomerScreen({super.key});
@@ -279,6 +281,15 @@ class DataRow extends ConsumerWidget {
 class CustomerFloatingButtons extends ConsumerWidget {
   const CustomerFloatingButtons({super.key});
 
+  Future<void> _refreshScreenData(BuildContext context, WidgetRef ref) async {
+    successUserMessage(context, S.of(context).refreshing_data);
+    final cacheService = ref.read(screenCacheServiceProvider);
+    await cacheService.refreshCustomerScreenData(context);
+    if (context.mounted) {
+      successUserMessage(context, S.of(context).data_refreshed_successfully);
+    }
+  }
+
   void showAddCustomerForm(BuildContext context, WidgetRef ref) {
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
     final maxDebtAmount = settingsDataNotifier.getProperty(settingsMaxDebtAmountKey) ?? 1000000;
@@ -313,11 +324,11 @@ class CustomerFloatingButtons extends ConsumerWidget {
       visible: true,
       curve: Curves.bounceInOut,
       children: [
-        // SpeedDialChild(
-        //   child: const Icon(Icons.pie_chart, color: Colors.white),
-        //   backgroundColor: iconsColor,
-        //   onTap: () => drawerController.showReports(context),
-        // ),
+        SpeedDialChild(
+          child: const Icon(Icons.refresh, color: Colors.white),
+          backgroundColor: iconsColor,
+          onTap: () => _refreshScreenData(context, ref),
+        ),
         SpeedDialChild(
           child: const Icon(Icons.search, color: Colors.white),
           backgroundColor: iconsColor,

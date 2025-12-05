@@ -24,6 +24,8 @@ import 'package:tablets/src/features/salesmen/view/salesman_form.dart';
 import 'package:tablets/src/features/salesmen/model/salesman.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
+import 'package:tablets/src/common/providers/screen_cache_service.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 
 class SalesmanScreen extends ConsumerWidget {
   const SalesmanScreen({super.key});
@@ -296,6 +298,15 @@ class DataRow extends ConsumerWidget {
 class SalesmanFloatingButtons extends ConsumerWidget {
   const SalesmanFloatingButtons({super.key});
 
+  Future<void> _refreshScreenData(BuildContext context, WidgetRef ref) async {
+    successUserMessage(context, S.of(context).refreshing_data);
+    final cacheService = ref.read(screenCacheServiceProvider);
+    await cacheService.refreshSalesmanScreenData(context);
+    if (context.mounted) {
+      successUserMessage(context, S.of(context).data_refreshed_successfully);
+    }
+  }
+
   void showAddSalesmanForm(BuildContext context, WidgetRef ref) {
     ref.read(salesmanFormDataProvider.notifier).initialize();
     final imagePicker = ref.read(imagePickerProvider.notifier);
@@ -319,11 +330,11 @@ class SalesmanFloatingButtons extends ConsumerWidget {
       visible: true,
       curve: Curves.bounceInOut,
       children: [
-        // SpeedDialChild(
-        //   child: const Icon(Icons.pie_chart, color: Colors.white),
-        //   backgroundColor: iconsColor,
-        //   onTap: () => drawerController.showReports(context),
-        // ),
+        SpeedDialChild(
+          child: const Icon(Icons.refresh, color: Colors.white),
+          backgroundColor: iconsColor,
+          onTap: () => _refreshScreenData(context, ref),
+        ),
         SpeedDialChild(
           child: const Icon(Icons.search, color: Colors.white),
           backgroundColor: iconsColor,

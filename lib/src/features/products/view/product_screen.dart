@@ -28,6 +28,8 @@ import 'package:tablets/src/features/settings/controllers/settings_form_data_not
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/features/authentication/model/user_account.dart';
+import 'package:tablets/src/common/providers/screen_cache_service.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 
 class ProductsScreen extends ConsumerWidget {
   const ProductsScreen({super.key});
@@ -393,6 +395,15 @@ void _showEditProductForm(BuildContext context, WidgetRef ref, Product product) 
 class ProductFloatingButtons extends ConsumerWidget {
   const ProductFloatingButtons({super.key});
 
+  Future<void> _refreshScreenData(BuildContext context, WidgetRef ref) async {
+    successUserMessage(context, S.of(context).refreshing_data);
+    final cacheService = ref.read(screenCacheServiceProvider);
+    await cacheService.refreshProductScreenData(context);
+    if (context.mounted) {
+      successUserMessage(context, S.of(context).data_refreshed_successfully);
+    }
+  }
+
   void showAddProductForm(BuildContext context, WidgetRef ref) {
     final formDataNotifier = ref.read(productFormDataProvider.notifier);
 
@@ -419,6 +430,11 @@ class ProductFloatingButtons extends ConsumerWidget {
       visible: true,
       curve: Curves.bounceInOut,
       children: [
+        SpeedDialChild(
+          child: const Icon(Icons.refresh, color: Colors.white),
+          backgroundColor: iconsColor,
+          onTap: () => _refreshScreenData(context, ref),
+        ),
         SpeedDialChild(
           child: const Icon(Icons.print, color: Colors.white),
           backgroundColor: iconsColor,

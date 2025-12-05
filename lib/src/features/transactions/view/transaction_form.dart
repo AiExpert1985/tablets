@@ -43,6 +43,7 @@ import 'package:tablets/src/routers/go_router_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:tablets/src/features/warehouse/services/warehouse_service.dart';
 import 'package:tablets/src/features/counters/repository/counter_repository_provider.dart';
+import 'package:tablets/src/common/providers/screen_cache_update_service.dart';
 
 final Map<String, dynamic> transactionFormDimenssions = {
   TransactionType.customerInvoice.name: {'height': 1100, 'width': 900},
@@ -447,6 +448,16 @@ class TransactionForm extends ConsumerWidget {
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
     }
+
+    // Trigger screen cache update asynchronously (non-blocking)
+    _triggerScreenCacheUpdate(
+      context,
+      ref,
+      itemData, // deleted transaction as old
+      null, // no new transaction
+      TransactionOperation.delete,
+    );
+
     // move point to previous transaction
     if (formNavigation != null && context.mounted) {
       final targetTransactionData = formNavigation.previous();
@@ -498,22 +509,25 @@ class TransactionForm extends ConsumerWidget {
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
     final screenController = ref.read(transactionScreenControllerProvider);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
-    // if (isEditing) {
-    //   if (!formController.validateData()) return;
-    //   formController.submitData();
-    // }
-    Map<String, dynamic> formData = {...formDataNotifier.data};
+
+    // Capture old transaction before editing (for cache update)
+    Map<String, dynamic>? oldTransaction;
+    Map<String, dynamic> formDataCopy = {...formDataNotifier.data};
+    if (isEditing) {
+      oldTransaction = dbCache.getItemByDbRef(formDataCopy[dbRefKey]);
+    }
+
     // we need to remove empty rows (rows without item name, which is usally last one)
-    formData = removeEmptyRows(formData);
+    formDataCopy = removeEmptyRows(formDataCopy);
     final imageUrls = formImagesNotifier.saveChanges();
-    final itemData = {...formData, 'imageUrls': imageUrls};
-    final transaction = Transaction.fromMap({...formData, 'imageUrls': imageUrls});
+    final itemData = {...formDataCopy, 'imageUrls': imageUrls};
+    final transaction = Transaction.fromMap({...formDataCopy, 'imageUrls': imageUrls});
     formController.saveItemToDb(context, transaction, isEditing, keepDialogOpen: true);
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     if (itemData[transactionDateKey] is DateTime) {
       // in our form the data type usually is DateTime, but the date type in dbCache should be
       // Timestamp, as to mirror the datatype of firebase
-      itemData[transactionDateKey] = firebase.Timestamp.fromDate(formData[transactionDateKey]);
+      itemData[transactionDateKey] = firebase.Timestamp.fromDate(formDataCopy[transactionDateKey]);
     }
     final operationType = isEditing ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
     dbCache.update(itemData, operationType);
@@ -523,7 +537,40 @@ class TransactionForm extends ConsumerWidget {
     }
 
     // Update counter if transaction number is >= current counter
-    _updateCounterIfNeeded(ref, formData);
+    _updateCounterIfNeeded(ref, formDataCopy);
+
+    // Trigger screen cache update asynchronously (non-blocking)
+    _triggerScreenCacheUpdate(
+      context,
+      ref,
+      oldTransaction,
+      itemData,
+      isEditing ? TransactionOperation.edit : TransactionOperation.add,
+    );
+  }
+
+  /// Trigger screen cache update in the background (non-blocking)
+  static void _triggerScreenCacheUpdate(
+    BuildContext context,
+    WidgetRef ref,
+    Map<String, dynamic>? oldTransaction,
+    Map<String, dynamic> newTransaction,
+    TransactionOperation operation,
+  ) {
+    // Run asynchronously without blocking
+    Future.delayed(Duration.zero, () async {
+      try {
+        final cacheUpdateService = ref.read(screenCacheUpdateServiceProvider);
+        await cacheUpdateService.onTransactionChanged(
+          context,
+          oldTransaction,
+          newTransaction,
+          operation,
+        );
+      } catch (e) {
+        errorPrint('Error triggering screen cache update: $e');
+      }
+    });
   }
 
   static void _updateCounterIfNeeded(WidgetRef ref, Map<String, dynamic> formData) {
