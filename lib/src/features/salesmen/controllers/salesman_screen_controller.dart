@@ -8,10 +8,13 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/interfaces/screen_controller.dart';
 import 'package:tablets/src/common/providers/screen_data_notifier.dart';
+import 'package:tablets/src/common/services/cache/screen_cache_loader.dart';
+import 'package:tablets/src/common/services/cache/screen_cache_service.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/transactions_common_values.dart';
 import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart' as cust;
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart'
+    as cust;
 import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
@@ -50,16 +53,26 @@ const returnsKey = 'numReturnsDetails';
 const returnsAmountKey = 'returnsAmount';
 
 // --- Provider ---
-final salesmanScreenControllerProvider = Provider<SalesmanScreenController>((ref) {
+final salesmanScreenControllerProvider =
+    Provider<SalesmanScreenController>((ref) {
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
   final salesmanDbCache = ref.read(salesmanDbCacheProvider.notifier);
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
   final screenDataNotifier = ref.read(salesmanScreenDataNotifier.notifier);
   final customerScreenController = ref.read(customerScreenControllerProvider);
-  final customersScreenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
+  final customersScreenDataNotifier =
+      ref.read(customerScreenDataNotifier.notifier);
   final productDbCache = ref.read(productDbCacheProvider.notifier);
-  return SalesmanScreenController(screenDataNotifier, transactionDbCache, salesmanDbCache,
-      customerDbCache, customerScreenController, customersScreenDataNotifier, productDbCache);
+  final cacheLoader = ref.read(screenCacheLoaderProvider);
+  return SalesmanScreenController(
+      screenDataNotifier,
+      transactionDbCache,
+      salesmanDbCache,
+      customerDbCache,
+      customerScreenController,
+      customersScreenDataNotifier,
+      productDbCache,
+      cacheLoader);
 });
 
 // --- Data Payload for Isolate ---
@@ -90,6 +103,7 @@ class SalesmanScreenController implements ScreenDataController {
     this._customerScreenController,
     this._customerScreenDataNotifier,
     this._productDbCache,
+    this._cacheLoader,
   );
   final ScreenDataNotifier _screenDataNotifier;
   final DbCache _transactionDbCache;
@@ -98,54 +112,114 @@ class SalesmanScreenController implements ScreenDataController {
   final CustomerScreenController _customerScreenController;
   final ScreenDataNotifier _customerScreenDataNotifier;
   final DbCache _productDbCache;
+  final ScreenCacheLoader _cacheLoader;
 
   @override
-  Future<void> setFeatureScreenData(BuildContext context) async {
-    _customerScreenController.setFeatureScreenData(context);
+  Map<String, dynamic> getItemScreenData(
+      BuildContext? context, Map<String, dynamic> salesmanData) {
+    final salesmanDbRef = salesmanData['dbRef'];
 
-    final allSalesmenData = _salesmanDbCache.data;
-    final allSalesmenCustomers = _getSalesmenCustomers();
-    final allSalesmenTransactions = _getSalesmenTransactions();
+    // Filter customers
+    final salesmanCustomers = _customerDbCache.data
+        .where((c) => c['salesmanDbRef'] == salesmanDbRef)
+        .map((c) => Customer.fromMap(c))
+        .toList();
 
-    final allCustomerDbRefs =
-        allSalesmenCustomers.values.expand((customers) => customers.map((c) => c.dbRef)).toSet();
+    // Filter transactions
+    final salesmanTransactions = _transactionDbCache.data
+        .where((t) => t['salesmanDbRef'] == salesmanDbRef)
+        .map((t) => Transaction.fromMap(t))
+        .toList();
+
+    // Customer Debt Map
     final customerDebtInfoMap = <String, Map<String, dynamic>>{};
-    for (var dbRef in allCustomerDbRefs) {
-      final screenData = _customerScreenDataNotifier.getItem(dbRef);
+    for (var customer in salesmanCustomers) {
+      final screenData = _customerScreenDataNotifier.getItem(customer.dbRef);
       if (screenData.isNotEmpty) {
-        customerDebtInfoMap[dbRef] = screenData;
+        customerDebtInfoMap[customer.dbRef] = screenData;
       }
     }
 
     final translations = {
-      TransactionType.customerInvoice.name:
-          translateDbTextToScreenText(context, TransactionType.customerInvoice.name),
-      TransactionType.customerReceipt.name:
-          translateDbTextToScreenText(context, TransactionType.customerReceipt.name),
-      TransactionType.customerReturn.name:
-          translateDbTextToScreenText(context, TransactionType.customerReturn.name),
+      TransactionType.customerInvoice.name: translateDbTextToScreenText(
+          context, TransactionType.customerInvoice.name),
+      TransactionType.customerReceipt.name: translateDbTextToScreenText(
+          context, TransactionType.customerReceipt.name),
+      TransactionType.customerReturn.name: translateDbTextToScreenText(
+          context, TransactionType.customerReturn.name),
     };
 
-    // Prepare hidden products data for the isolate
     final hiddenProductDbRefs = _productDbCache.data
         .where((p) => Product.fromMap(p).isHiddenInSpecialReports == true)
         .map<String>((p) => p['dbRef'] as String)
         .toSet();
 
-    final payload = _SalesmanDataPayload(
-      allSalesmenData: allSalesmenData,
-      allSalesmenCustomers: allSalesmenCustomers,
-      allSalesmenTransactions: allSalesmenTransactions,
-      customerDebtInfoMap: customerDebtInfoMap,
-      translations: translations,
-      hiddenProductDbRefs: hiddenProductDbRefs,
+    return _getSalesmanScreenData(
+      salesmanData,
+      salesmanCustomers,
+      salesmanTransactions,
+      customerDebtInfoMap,
+      translations,
+      hiddenProductDbRefs,
+    );
+  }
+
+  @override
+  Future<void> setFeatureScreenData(BuildContext? context) async {
+    final screenData = await _cacheLoader.loadSalesmanScreenData(
+      calculateIfMissing: () async {
+        // Ensure customer data is calculated first as it's a dependency
+        _customerScreenController.setFeatureScreenData(context);
+
+        final allSalesmenData = _salesmanDbCache.data;
+        final allSalesmenCustomers = _getSalesmenCustomers();
+        final allSalesmenTransactions = _getSalesmenTransactions();
+
+        final allCustomerDbRefs = allSalesmenCustomers.values
+            .expand((customers) => customers.map((c) => c.dbRef))
+            .toSet();
+        final customerDebtInfoMap = <String, Map<String, dynamic>>{};
+        for (var dbRef in allCustomerDbRefs) {
+          final screenData = _customerScreenDataNotifier.getItem(dbRef);
+          if (screenData.isNotEmpty) {
+            customerDebtInfoMap[dbRef] = screenData;
+          }
+        }
+
+        final translations = {
+          TransactionType.customerInvoice.name: translateDbTextToScreenText(
+              context, TransactionType.customerInvoice.name),
+          TransactionType.customerReceipt.name: translateDbTextToScreenText(
+              context, TransactionType.customerReceipt.name),
+          TransactionType.customerReturn.name: translateDbTextToScreenText(
+              context, TransactionType.customerReturn.name),
+        };
+
+        // Prepare hidden products data for the isolate
+        final hiddenProductDbRefs = _productDbCache.data
+            .where((p) => Product.fromMap(p).isHiddenInSpecialReports == true)
+            .map<String>((p) => p['dbRef'] as String)
+            .toSet();
+
+        final payload = _SalesmanDataPayload(
+          allSalesmenData: allSalesmenData,
+          allSalesmenCustomers: allSalesmenCustomers,
+          allSalesmenTransactions: allSalesmenTransactions,
+          customerDebtInfoMap: customerDebtInfoMap,
+          translations: translations,
+          hiddenProductDbRefs: hiddenProductDbRefs,
+        );
+
+        return kIsWeb
+            ? _processSalesmanDataInIsolate(payload)
+            : await Isolate.run(() => _processSalesmanDataInIsolate(payload));
+      },
     );
 
-    final screenData = kIsWeb
-        ? _processSalesmanDataInIsolate(payload)
-        : await Isolate.run(() => _processSalesmanDataInIsolate(payload));
-
-    Map<String, dynamic> summaryTypes = {commissionKey: 'sum', profitKey: 'sum'};
+    Map<String, dynamic> summaryTypes = {
+      commissionKey: 'sum',
+      profitKey: 'sum'
+    };
     _screenDataNotifier.initialize(summaryTypes);
     _screenDataNotifier.set(screenData);
   }
@@ -170,7 +244,8 @@ class SalesmanScreenController implements ScreenDataController {
     }
     for (var transaction in _transactionDbCache.data) {
       if (salesmenMap.containsKey(transaction['salesmanDbRef'])) {
-        salesmenMap[transaction['salesmanDbRef']]?.add(Transaction.fromMap(transaction));
+        salesmenMap[transaction['salesmanDbRef']]
+            ?.add(Transaction.fromMap(transaction));
       }
     }
     return salesmenMap;
@@ -201,12 +276,15 @@ class SalesmanScreenController implements ScreenDataController {
   // These are now static so they belong to the class but don't need an instance.
   // This allows them to be called from an Isolate.
 
-  static List<Map<String, dynamic>> _processSalesmanDataInIsolate(_SalesmanDataPayload payload) {
+  static List<Map<String, dynamic>> _processSalesmanDataInIsolate(
+      _SalesmanDataPayload payload) {
     final screenData = <Map<String, dynamic>>[];
     for (var salesmanData in payload.allSalesmenData) {
       final salesmanDbRef = salesmanData['dbRef'];
-      final salesmanCustomers = payload.allSalesmenCustomers[salesmanDbRef] ?? [];
-      final salesmanTransactions = payload.allSalesmenTransactions[salesmanDbRef] ?? [];
+      final salesmanCustomers =
+          payload.allSalesmenCustomers[salesmanDbRef] ?? [];
+      final salesmanTransactions =
+          payload.allSalesmenTransactions[salesmanDbRef] ?? [];
 
       final newRow = _getSalesmanScreenData(
         salesmanData,
@@ -230,13 +308,16 @@ class SalesmanScreenController implements ScreenDataController {
       Set<String> hiddenProductDbRefs) {
     salesmanData['salary'] = salesmanData['salary'].toDouble();
     final salesman = Salesman.fromMap(salesmanData);
-    final customersInfo =
-        _getCustomersInfo(salesmanCustomers, salesmanTransactions, hiddenProductDbRefs);
-    final customersBasicData = customersInfo['customersData'] as List<List<dynamic>>;
+    final customersInfo = _getCustomersInfo(
+        salesmanCustomers, salesmanTransactions, hiddenProductDbRefs);
+    final customersBasicData =
+        customersInfo['customersData'] as List<List<dynamic>>;
     final customersDbRef = customersInfo['customersDbRef'] as List<String>;
-    final customersDebtInfo = _getCustomersDebtInfo(customersDbRef, customerDebtInfoMap);
+    final customersDebtInfo =
+        _getCustomersDebtInfo(customersDbRef, customerDebtInfoMap);
 
-    final processedTransactionsMap = _getProcessedTransactions(salesmanTransactions, translations);
+    final processedTransactionsMap =
+        _getProcessedTransactions(salesmanTransactions, translations);
 
     final invoices = _getInvoices(processedTransactionsMap, 'invoicesList');
     final receipts = _getInvoices(processedTransactionsMap, 'reciptsList');
@@ -271,8 +352,10 @@ class SalesmanScreenController implements ScreenDataController {
     };
   }
 
-  static Map<String, dynamic> _getCustomersInfo(List<Customer> salesmanCustomers,
-      List<Transaction> salesmanTransactions, Set<String> hiddenProductDbRefs) {
+  static Map<String, dynamic> _getCustomersInfo(
+      List<Customer> salesmanCustomers,
+      List<Transaction> salesmanTransactions,
+      Set<String> hiddenProductDbRefs) {
     final customerTransactionInfo = <String, Map<String, num>>{};
     for (final trans in salesmanTransactions) {
       if (trans.nameDbRef == null) continue;
@@ -297,16 +380,24 @@ class SalesmanScreenController implements ScreenDataController {
 
         final quantity = item[itemSoldQuantityKey] ?? 0;
         info['numItems'] = info['numItems']! +
-            (trans.transactionType == TransactionType.customerInvoice.name ? quantity : -quantity);
+            (trans.transactionType == TransactionType.customerInvoice.name
+                ? quantity
+                : -quantity);
       }
     }
 
     final customerData = <List<dynamic>>[];
     final customerDbRef = <String>[];
     for (final customer in salesmanCustomers) {
-      final info = customerTransactionInfo[customer.dbRef] ?? {'numInvoices': 0, 'numItems': 0};
-      customerData.add(
-          [customer.name, customer.region, customer.phone, info['numInvoices'], info['numItems']]);
+      final info = customerTransactionInfo[customer.dbRef] ??
+          {'numInvoices': 0, 'numItems': 0};
+      customerData.add([
+        customer.name,
+        customer.region,
+        customer.phone,
+        info['numInvoices'],
+        info['numItems']
+      ]);
       customerDbRef.add(customer.dbRef);
     }
     customerData.sort((a, b) => (a[1] as String).compareTo(b[1] as String));
@@ -314,8 +405,8 @@ class SalesmanScreenController implements ScreenDataController {
     return {'customersDbRef': customerDbRef, 'customersData': customerData};
   }
 
-  static Map<String, dynamic> _getCustomersDebtInfo(
-      List<String> dbRefList, Map<String, Map<String, dynamic>> customerDebtInfoMap) {
+  static Map<String, dynamic> _getCustomersDebtInfo(List<String> dbRefList,
+      Map<String, Map<String, dynamic>> customerDebtInfoMap) {
     double totalDebt = 0, dueDebt = 0, openInvoices = 0, dueInvoices = 0;
     List<List<dynamic>> debtsDetails = [], invoicesDetails = [];
     for (var dbRef in dbRefList) {
@@ -333,7 +424,8 @@ class SalesmanScreenController implements ScreenDataController {
       openInvoices += customerOpenInvoices;
       dueInvoices += customerDueInvoices;
       debtsDetails.add([customerName, customerTotalDebt, customerDueDebt]);
-      invoicesDetails.add([customerName, customerOpenInvoices, customerDueInvoices]);
+      invoicesDetails
+          .add([customerName, customerOpenInvoices, customerDueInvoices]);
     }
     return {
       totalDebtsKey: totalDebt,
@@ -346,7 +438,8 @@ class SalesmanScreenController implements ScreenDataController {
   }
 
   static Map<String, List<List<dynamic>>> _getProcessedTransactions(
-      List<Transaction> salesmanTransactions, Map<String, String> translations) {
+      List<Transaction> salesmanTransactions,
+      Map<String, String> translations) {
     List<List<dynamic>> invoicesList = [], receiptsList = [], returnsList = [];
     for (var t in salesmanTransactions) {
       final processed = [
@@ -371,15 +464,23 @@ class SalesmanScreenController implements ScreenDataController {
         returnsList.add(processed);
       }
     }
-    return {'invoicesList': invoicesList, 'reciptsList': receiptsList, 'returnsList': returnsList};
+    return {
+      'invoicesList': invoicesList,
+      'reciptsList': receiptsList,
+      'returnsList': returnsList
+    };
   }
 
-  static List<List<dynamic>> _getInvoices(Map<String, List<List<dynamic>>> map, String name) {
+  static List<List<dynamic>> _getInvoices(
+      Map<String, List<List<dynamic>>> map, String name) {
     final transactions = map[name] ?? [];
-    return transactions.isEmpty ? [] : trimLastXIndicesFromInnerLists(transactions, 2);
+    return transactions.isEmpty
+        ? []
+        : trimLastXIndicesFromInnerLists(transactions, 2);
   }
 
-  static List<List<dynamic>> _getProfitableInvoices(Map<String, List<List<dynamic>>> map) {
+  static List<List<dynamic>> _getProfitableInvoices(
+      Map<String, List<List<dynamic>>> map) {
     final invoices = map['invoicesList'] ?? [];
     final returns = map['returnsList'] ?? [];
     return invoices.isEmpty && returns.isEmpty
@@ -387,7 +488,8 @@ class SalesmanScreenController implements ScreenDataController {
         : removeIndicesFromInnerLists([...invoices, ...returns], [7, 9]);
   }
 
-  static List<List<dynamic>> _getCommissions(Map<String, List<List<dynamic>>> map) {
+  static List<List<dynamic>> _getCommissions(
+      Map<String, List<List<dynamic>>> map) {
     final invoices = map['invoicesList'] ?? [];
     final returns = map['returnsList'] ?? [];
     return invoices.isEmpty && returns.isEmpty
@@ -395,28 +497,30 @@ class SalesmanScreenController implements ScreenDataController {
         : removeIndicesFromInnerLists([...invoices, ...returns], [7, 8]);
   }
 
-  // --- Unchanged instance methods from original code ---
-  @override
-  Map<String, dynamic> getItemScreenData(BuildContext context, Map<String, dynamic> salesmanData) {
-    return {}; // Per TODO in original code
-  }
-
-  List<Map<String, dynamic>> filterTransactions(List<Map<String, dynamic>> allTransactions,
-      DateTime? startDate, DateTime? endDate, String salesmanDbRef) {
+  List<Map<String, dynamic>> filterTransactions(
+      List<Map<String, dynamic>> allTransactions,
+      DateTime? startDate,
+      DateTime? endDate,
+      String salesmanDbRef) {
     return allTransactions.where((transaction) {
-      DateTime transactionDate =
-          transaction['date'] is DateTime ? transaction['date'] : transaction['date'].toDate();
-      bool isAfterStartDate = startDate == null || !transactionDate.isBefore(startDate);
-      bool isBeforeEndDate = endDate == null || !transactionDate.isAfter(endDate);
-      return salesmanDbRef == transaction['salesmanDbRef'] && isAfterStartDate && isBeforeEndDate;
+      DateTime transactionDate = transaction['date'] is DateTime
+          ? transaction['date']
+          : transaction['date'].toDate();
+      bool isAfterStartDate =
+          startDate == null || !transactionDate.isBefore(startDate);
+      bool isBeforeEndDate =
+          endDate == null || !transactionDate.isAfter(endDate);
+      return salesmanDbRef == transaction['salesmanDbRef'] &&
+          isAfterStartDate &&
+          isBeforeEndDate;
     }).toList();
   }
 
-  List<List<dynamic>> salesmanItemsSold(
-      String salesmanDbRef, DateTime? startDate, DateTime? endDate, WidgetRef ref) {
+  List<List<dynamic>> salesmanItemsSold(String salesmanDbRef,
+      DateTime? startDate, DateTime? endDate, WidgetRef ref) {
     final productDbCache = ref.read(productDbCacheProvider.notifier);
-    List<Map<String, dynamic>> fliteredTransactions =
-        filterTransactions(_transactionDbCache.data, startDate, endDate, salesmanDbRef);
+    List<Map<String, dynamic>> fliteredTransactions = filterTransactions(
+        _transactionDbCache.data, startDate, endDate, salesmanDbRef);
     Map<String, Map<String, num>> summary = {};
     for (var transaction in fliteredTransactions) {
       final items = transaction[itemsKey];
@@ -424,14 +528,21 @@ class SalesmanScreenController implements ScreenDataController {
       for (var item in transaction[itemsKey]) {
         String itemName = item[itemNameKey];
         num soldQuantity = 0, giftQuantity = 0, returnedQuanity = 0;
-        if (transaction[transactionTypeKey] == TransactionType.customerInvoice.name) {
+        if (transaction[transactionTypeKey] ==
+            TransactionType.customerInvoice.name) {
           soldQuantity = item[itemSoldQuantityKey] ?? 0;
           giftQuantity = item[itemGiftQuantityKey] ?? 0;
-        } else if (transaction[transactionTypeKey] == TransactionType.customerReturn.name) {
+        } else if (transaction[transactionTypeKey] ==
+            TransactionType.customerReturn.name) {
           returnedQuanity = item[itemSoldQuantityKey] ?? 0;
         }
-        summary.putIfAbsent(itemName,
-            () => {itemSoldQuantityKey: 0, itemGiftQuantityKey: 0, 'returnedQuantity': 0});
+        summary.putIfAbsent(
+            itemName,
+            () => {
+                  itemSoldQuantityKey: 0,
+                  itemGiftQuantityKey: 0,
+                  'returnedQuantity': 0
+                });
         summary[itemName]![itemSoldQuantityKey] =
             summary[itemName]![itemSoldQuantityKey]! + soldQuantity;
         summary[itemName]![itemGiftQuantityKey] =
@@ -445,7 +556,8 @@ class SalesmanScreenController implements ScreenDataController {
       final product = productDbCache.getItemByProperty('name', itemName);
       if (product.isNotEmpty) {
         final commission = product['salesmanCommission'];
-        final netQuantity = quantities[itemSoldQuantityKey]! - quantities['returnedQuantity']!;
+        final netQuantity =
+            quantities[itemSoldQuantityKey]! - quantities['returnedQuantity']!;
         result.add([
           itemName,
           quantities[itemSoldQuantityKey],

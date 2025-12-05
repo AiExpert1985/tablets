@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 const String categoryDbRefKey = 'dbRef';
 const String categoryNameKey = 'name';
 
-final categoryScreenControllerProvider = Provider<CategoryScreenController>((ref) {
+final categoryScreenControllerProvider =
+    Provider<CategoryScreenController>((ref) {
   final screenDataNotifier = ref.read(categoryScreenDataNotifier.notifier);
   final categoriesDbCache = ref.read(categoryDbCacheProvider.notifier);
   return CategoryScreenController(screenDataNotifier, categoriesDbCache);
@@ -24,7 +25,7 @@ class CategoryScreenController implements ScreenDataController {
   final DbCache _categoriesDbCache;
 
   @override
-  void setFeatureScreenData(BuildContext context) {
+  void setFeatureScreenData(BuildContext? context) {
     final dbCache = [..._categoriesDbCache.data];
     _screenDataNotifier.initialize({});
     _screenDataNotifier.set(dbCache);
@@ -33,7 +34,8 @@ class CategoryScreenController implements ScreenDataController {
   /// create a list of lists, where each resulting list contains transaction info
   /// [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
   @override
-  Map<String, dynamic> getItemScreenData(BuildContext context, Map<String, dynamic> categoryData) {
+  Map<String, dynamic> getItemScreenData(
+      BuildContext? context, Map<String, dynamic> categoryData) {
     final dbRef = categoryData['dbRefKey'];
     return _categoriesDbCache.getItemByDbRef(dbRef);
   }

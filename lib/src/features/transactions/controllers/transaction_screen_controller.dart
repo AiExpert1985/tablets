@@ -15,7 +15,8 @@ const String transactionNumberKey = 'number';
 const String transactionTotalAmountKey = 'totalAmount';
 const String transactionNotesKey = 'notes';
 
-final transactionScreenControllerProvider = Provider<TransactionScreenController>((ref) {
+final transactionScreenControllerProvider =
+    Provider<TransactionScreenController>((ref) {
   final screenDataNotifier = ref.read(transactionScreenDataNotifier.notifier);
   final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
   return TransactionScreenController(screenDataNotifier, transactionsDbCache);
@@ -32,7 +33,7 @@ class TransactionScreenController implements ScreenDataController {
   /// This is the optimized version of the function.
   /// It avoids a slow deep copy and uses efficient Dart collection methods.
   @override
-  void setFeatureScreenData(BuildContext context) {
+  void setFeatureScreenData(BuildContext? context) {
     final originalCacheData = _transactionsDbCache.data;
 
     // Step 1: Efficiently transform the list.
@@ -40,9 +41,11 @@ class TransactionScreenController implements ScreenDataController {
     // We create a new map for each transaction using the spread operator (...)
     // and then update the 'transactionTypeKey'. This is much faster than deep copying.
     final screenData = originalCacheData.map((transaction) {
-      final newTransaction = {...transaction}; // Create a shallow copy of the map
-      newTransaction[transactionTypeKey] =
-          translateDbTextToScreenText(context, newTransaction[transactionTypeKey]);
+      final newTransaction = {
+        ...transaction
+      }; // Create a shallow copy of the map
+      newTransaction[transactionTypeKey] = translateDbTextToScreenText(
+          context, newTransaction[transactionTypeKey]);
       return newTransaction;
     }).toList();
 
@@ -70,7 +73,7 @@ class TransactionScreenController implements ScreenDataController {
   /// [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
   @override
   Map<String, dynamic> getItemScreenData(
-      BuildContext context, Map<String, dynamic> transactionData) {
+      BuildContext? context, Map<String, dynamic> transactionData) {
     final dbRef = transactionData['dbRefKey'];
     return _transactionsDbCache.getItemByDbRef(dbRef);
   }

@@ -46,7 +46,8 @@ class DbRepository {
         final query = _firestore
             .collection(_collectionName)
             .where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
-        final querySnapshot = await query.get(const GetOptions(source: Source.cache));
+        final querySnapshot =
+            await query.get(const GetOptions(source: Source.cache));
         if (querySnapshot.size > 0) {
           final documentRef = querySnapshot.docs[0].reference;
           await documentRef.update(updatedItem.toMap());
@@ -59,9 +60,11 @@ class DbRepository {
       }
     }
     // when offline
-    final query =
-        _firestore.collection(_collectionName).where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
-    final querySnapshot = await query.get(const GetOptions(source: Source.cache));
+    final query = _firestore
+        .collection(_collectionName)
+        .where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
+    final querySnapshot =
+        await query.get(const GetOptions(source: Source.cache));
     if (querySnapshot.size > 0) {
       final documentRef = querySnapshot.docs[0].reference;
       await documentRef.update(updatedItem.toMap()).then((_) {
@@ -111,24 +114,26 @@ class DbRepository {
 
   Stream<List<Map<String, dynamic>>> watchItemListAsMaps() {
     final ref = _firestore.collection(_collectionName);
-    return ref
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+    return ref.snapshots().map((snapshot) =>
+        snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
   // watch collection that is filtered by on one criterial, example watch specific date
-  Stream<List<Map<String, dynamic>>> watchItemListAsFilteredMaps(String key, dynamic value) {
-    final ref = _firestore.collection(_collectionName).where(key, isEqualTo: value);
-    return ref
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
+  Stream<List<Map<String, dynamic>>> watchItemListAsFilteredMaps(
+      String key, dynamic value) {
+    final ref =
+        _firestore.collection(_collectionName).where(key, isEqualTo: value);
+    return ref.snapshots().map((snapshot) =>
+        snapshot.docs.map((docSnapshot) => docSnapshot.data()).toList());
   }
 
   Stream<List<Map<String, dynamic>>> watchItemListAsFilteredDateMaps(
       String key, DateTime targetDate) {
     // Get the start and end of the target date in UTC
-    final startOfDay = DateTime(targetDate.year, targetDate.month, targetDate.day, 00, 00, 00);
-    final endOfDay = DateTime(targetDate.year, targetDate.month, targetDate.day, 23, 59, 59);
+    final startOfDay =
+        DateTime(targetDate.year, targetDate.month, targetDate.day, 00, 00, 00);
+    final endOfDay =
+        DateTime(targetDate.year, targetDate.month, targetDate.day, 23, 59, 59);
 
     // Log the start and end dates for debugging
     tempPrint('Filtering from $startOfDay to $endOfDay');
@@ -253,7 +258,8 @@ class DbRepository {
             .toList();
       } else {
         tempPrint('data fetched from cache ($_collectionName)');
-        final cachedSnapshot = await query.get(const GetOptions(source: Source.cache));
+        final cachedSnapshot =
+            await query.get(const GetOptions(source: Source.cache));
         return cachedSnapshot.docs
             .map((docSnapshot) => docSnapshot.data() as Map<String, dynamic>)
             .toList();
@@ -262,5 +268,28 @@ class DbRepository {
       debugLog('Error during fetching items from Firebase - $e');
       return [];
     }
+  }
+
+  Future<void> setDoc(String docId, Map<String, dynamic> data) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.wifi) ||
+        connectivityResult.contains(ConnectivityResult.ethernet) ||
+        connectivityResult.contains(ConnectivityResult.vpn) ||
+        connectivityResult.contains(ConnectivityResult.mobile)) {
+      try {
+        await _firestore.collection(_collectionName).doc(docId).set(data);
+        tempPrint('Doc $docId added to live firestore successfully!');
+        return;
+      } catch (e) {
+        errorPrint('Error adding doc $docId to live firestore: $e');
+        return;
+      }
+    }
+    final docRef = _firestore.collection(_collectionName).doc(docId);
+    docRef.set(data).then((_) {
+      tempPrint('Doc $docId added to firestore cache!');
+    }).catchError((e) {
+      errorPrint('Error adding doc $docId to firestore cache: $e');
+    });
   }
 }

@@ -11,6 +11,8 @@ import 'package:tablets/src/features/customers/repository/customer_db_cache_prov
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
+import 'package:tablets/src/common/services/cache/screen_cache_service.dart';
+import 'package:tablets/src/common/services/cache/screen_cache_loader.dart';
 
 const customerDbRefKey = 'dbRef';
 const customerNameKey = 'name';
@@ -31,11 +33,14 @@ const giftsKey = 'gifts';
 const giftsDetailsKey = 'giftsDetails';
 const inValidUserKey = 'inValid';
 
-final customerScreenControllerProvider = Provider<CustomerScreenController>((ref) {
+final customerScreenControllerProvider =
+    Provider<CustomerScreenController>((ref) {
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
   final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
   final customerDbCache = ref.read(customerDbCacheProvider.notifier);
-  return CustomerScreenController(screenDataNotifier, transactionDbCache, customerDbCache);
+  final cacheLoader = ref.read(screenCacheLoaderProvider);
+  return CustomerScreenController(
+      screenDataNotifier, transactionDbCache, customerDbCache, cacheLoader);
 });
 
 class CustomerScreenController implements ScreenDataController {
@@ -43,23 +48,31 @@ class CustomerScreenController implements ScreenDataController {
     this._screenDataNotifier,
     this._transactionDbCache,
     this._customerDbCache,
+    this._cacheLoader,
   );
   final ScreenDataNotifier _screenDataNotifier;
   final DbCache _transactionDbCache;
   final DbCache _customerDbCache;
+  final ScreenCacheLoader _cacheLoader;
 
   @override
-  void setFeatureScreenData(BuildContext context) {
-    final allCustomersData = _customerDbCache.data;
-    List<Map<String, dynamic>> screenData = [];
-    final allCustomersTransactions = _getAllCustomersTransactions();
-    for (var customerData in allCustomersData) {
-      final customerDbRef = customerData['dbRef'];
-      final customerTransactions = allCustomersTransactions[customerDbRef]!;
-      final newRow =
-          getItemScreenData(context, customerData, customerTransactions: customerTransactions);
-      screenData.add(newRow);
-    }
+  void setFeatureScreenData(BuildContext? context) async {
+    final screenData = await _cacheLoader.loadCustomerScreenData(
+      calculateIfMissing: () async {
+        final allCustomersData = _customerDbCache.data;
+        List<Map<String, dynamic>> calculatedData = [];
+        final allCustomersTransactions = _getAllCustomersTransactions();
+        for (var customerData in allCustomersData) {
+          final customerDbRef = customerData['dbRef'];
+          final customerTransactions = allCustomersTransactions[customerDbRef]!;
+          final newRow = getItemScreenData(context, customerData,
+              customerTransactions: customerTransactions);
+          calculatedData.add(newRow);
+        }
+        return calculatedData;
+      },
+    );
+
     Map<String, dynamic> summaryTypes = {
       totalDebtKey: 'sum',
       openInvoicesKey: 'sum',
@@ -105,31 +118,35 @@ class CustomerScreenController implements ScreenDataController {
   /// checking customer validity in new transaction, in this case we don't provide customer
   /// transactions and calculate them inside this functions
   @override
-  Map<String, dynamic> getItemScreenData(BuildContext context, Map<String, dynamic> customerData,
+  Map<String, dynamic> getItemScreenData(
+      BuildContext? context, Map<String, dynamic> customerData,
       {List<Map<String, dynamic>>? customerTransactions}) {
     final customer = Customer.fromMap(customerData);
     // Use a copy to avoid modifying the original cache
-    List<Map<String, dynamic>> localCustomerTransactions = List<Map<String, dynamic>>.from(
-        customerTransactions ?? getCustomerTransactions(customer.dbRef));
+    List<Map<String, dynamic>> localCustomerTransactions =
+        List<Map<String, dynamic>>.from(
+            customerTransactions ?? getCustomerTransactions(customer.dbRef));
 
     if (customer.initialCredit > 0) {
       localCustomerTransactions.add(_createInitialDebtTransaction(customer));
     }
 
     // *** OPTIMIZATION: All invoice processing is now consolidated into one function call ***
-    final invoiceMetrics =
-        processAndCategorizeInvoices(context, localCustomerTransactions, customer);
+    final invoiceMetrics = processAndCategorizeInvoices(
+        context, localCustomerTransactions, customer);
 
     // These functions have distinct logic and are kept separate for clarity.
     final matchingList = customerMatching(context, localCustomerTransactions);
-    final giftTransactions = _getGiftsAndDiscounts(context, localCustomerTransactions);
+    final giftTransactions =
+        _getGiftsAndDiscounts(context, localCustomerTransactions);
 
     // Calculations using the results from the optimized functions
     final totalDebt = matchingList.isEmpty
         ? 0.0
         : matchingList.map((item) => item[4] as double).reduce((a, b) => a + b);
     final totalGiftsAmount = _getTotalGiftsAndDiscounts(giftTransactions, 4);
-    final inValidCustomer = _inValidCustomer(invoiceMetrics.dueDebt, totalDebt, customer);
+    final inValidCustomer =
+        _inValidCustomer(invoiceMetrics.dueDebt, totalDebt, customer);
 
     // Assemble the final data row
     Map<String, dynamic> newDataRow = {
@@ -181,8 +198,8 @@ class CustomerScreenController implements ScreenDataController {
   /// sumProperties are properties that will store sum
   /// avgProperties are properties that avgProperties are properties that will store average
   /// *** OPTIMIZATION: Loop is swapped to iterate the list once. ***
-  Map<String, dynamic> sumProperties(
-      List<Map<String, dynamic>> list, List<String> sumProperties, List<String> avgProperties) {
+  Map<String, dynamic> sumProperties(List<Map<String, dynamic>> list,
+      List<String> sumProperties, List<String> avgProperties) {
     Map<String, dynamic> result = {};
     // Initialize properties to 0
     for (var property in sumProperties) {
@@ -210,7 +227,7 @@ class CustomerScreenController implements ScreenDataController {
   }
 
   List<List<dynamic>> customerMatching(
-      BuildContext context, List<Map<String, dynamic>> customerTransactions) {
+      BuildContext? context, List<Map<String, dynamic>> customerTransactions) {
     List<List<dynamic>> matchingTransactions = [];
     final sortedTransactions = deepCopyDbCache(customerTransactions);
     sortedTransactions.sort((a, b) {
@@ -223,10 +240,11 @@ class CustomerScreenController implements ScreenDataController {
       final transaction = Transaction.fromMap(sortedTransactions[i]);
       final transactionType = transaction.transactionType;
       if (transactionType == TransactionType.gifts.name) continue;
-      double amountSign = (transactionType == TransactionType.customerReceipt.name ||
-              transactionType == TransactionType.customerReturn.name)
-          ? -1
-          : 1;
+      double amountSign =
+          (transactionType == TransactionType.customerReceipt.name ||
+                  transactionType == TransactionType.customerReturn.name)
+              ? -1
+              : 1;
       final transactionAmount = transaction.totalAmount * amountSign;
       startingDebt = startingDebt + transactionAmount;
       matchingTransactions.add([
@@ -247,7 +265,7 @@ class CustomerScreenController implements ScreenDataController {
 // or gift items and return it in a list of lists, where each list contains
 // [Transaction, num, type, date, amount]
   List<List<dynamic>> _getGiftsAndDiscounts(
-      BuildContext context, List<Map<String, dynamic>> customerTransactions) {
+      BuildContext? context, List<Map<String, dynamic>> customerTransactions) {
     List<List<dynamic>> giftsAndDiscounts = [];
     for (var transactionMap in customerTransactions) {
       if (transactionMap['transactionType'] == TransactionType.gifts.name) {
@@ -259,7 +277,8 @@ class CustomerScreenController implements ScreenDataController {
           transaction.date,
           transaction.transactionTotalProfit,
         ]);
-      } else if (transactionMap['transactionType'] == TransactionType.customerInvoice.name) {
+      } else if (transactionMap['transactionType'] ==
+          TransactionType.customerInvoice.name) {
         final transaction = Transaction.fromMap(transactionMap);
         final items = transaction.items;
         final discount = transaction.discount ?? 0;
@@ -282,9 +301,12 @@ class CustomerScreenController implements ScreenDataController {
     return sortListOfListsByDate(giftsAndDiscounts, 3);
   }
 
-  double _getTotalGiftsAndDiscounts(List<List<dynamic>> giftsList, int amountIndex) {
+  double _getTotalGiftsAndDiscounts(
+      List<List<dynamic>> giftsList, int amountIndex) {
     if (giftsList.isEmpty) return 0;
-    return giftsList.map((item) => item[amountIndex] as double).reduce((a, b) => a + b);
+    return giftsList
+        .map((item) => item[amountIndex] as double)
+        .reduce((a, b) => a + b);
   }
 }
 
@@ -338,8 +360,17 @@ class InvoiceInfo {
   // the transaction
   Transaction originalTransaction;
 
-  InvoiceInfo(this.type, this.number, this.date, this.totalAmount, this.amountLeft, this.status,
-      this.receiptsUsed, this.durationToClose, this.profit, this.originalTransaction);
+  InvoiceInfo(
+      this.type,
+      this.number,
+      this.date,
+      this.totalAmount,
+      this.amountLeft,
+      this.status,
+      this.receiptsUsed,
+      this.durationToClose,
+      this.profit,
+      this.originalTransaction);
 }
 
 List<InvoiceInfo> processTransactions(List<Map<String, dynamic>> transactions) {
@@ -350,7 +381,8 @@ List<InvoiceInfo> processTransactions(List<Map<String, dynamic>> transactions) {
     if (transaction.transactionType == TransactionType.customerInvoice.name ||
         transaction.transactionType == TransactionType.initialCredit.name) {
       invoices.add(transaction);
-    } else if (transaction.transactionType == TransactionType.customerReceipt.name ||
+    } else if (transaction.transactionType ==
+            TransactionType.customerReceipt.name ||
         transaction.transactionType == TransactionType.customerReturn.name) {
       receipts.add(transaction);
     }
@@ -369,10 +401,15 @@ List<InvoiceInfo> processTransactions(List<Map<String, dynamic>> transactions) {
     while (remainingAmount > 0 && receiptIndex < receipts.length) {
       var receipt = receipts[receiptIndex];
       if (receipt.totalAmount > 0) {
-        double amountToUse =
-            (receipt.totalAmount >= remainingAmount) ? remainingAmount : receipt.totalAmount;
-        usedReceipts.add(ReceiptUsed(receipt.transactionType, receipt.number.toString(),
-            receipt.date, receipt.totalAmount, amountToUse));
+        double amountToUse = (receipt.totalAmount >= remainingAmount)
+            ? remainingAmount
+            : receipt.totalAmount;
+        usedReceipts.add(ReceiptUsed(
+            receipt.transactionType,
+            receipt.number.toString(),
+            receipt.date,
+            receipt.totalAmount,
+            amountToUse));
         remainingAmount -= amountToUse;
         receipt.totalAmount -= amountToUse;
         lastReceiptDate = receipt.date;
@@ -388,8 +425,17 @@ List<InvoiceInfo> processTransactions(List<Map<String, dynamic>> transactions) {
     Duration durationToClose = status == 'closed'
         ? lastReceiptDate.difference(invoice.date)
         : DateTime.now().difference(invoice.date);
-    result.add(InvoiceInfo(invoice.transactionType, invoice.number.toString(), invoice.date,
-        invoice.totalAmount, amountLeft, status, usedReceipts, durationToClose, profit, invoice));
+    result.add(InvoiceInfo(
+        invoice.transactionType,
+        invoice.number.toString(),
+        invoice.date,
+        invoice.totalAmount,
+        amountLeft,
+        status,
+        usedReceipts,
+        durationToClose,
+        profit,
+        invoice));
   }
   return result;
 }
@@ -397,8 +443,8 @@ List<InvoiceInfo> processTransactions(List<Map<String, dynamic>> transactions) {
 /// *** NEW OPTIMIZED METHOD ***
 /// This function replaces the old `getCustomerProcessedInvoices` and several other helper
 /// methods by processing all invoice-related metrics in a single, efficient loop.
-ProcessedInvoiceMetrics processAndCategorizeInvoices(
-    BuildContext context, List<Map<String, dynamic>> transactions, Customer customer) {
+ProcessedInvoiceMetrics processAndCategorizeInvoices(BuildContext? context,
+    List<Map<String, dynamic>> transactions, Customer customer) {
   // Initialize accumulators and lists
   final List<List<dynamic>> openInvoicesDetails = [];
   final List<List<dynamic>> dueInvoicesDetails = [];
@@ -411,9 +457,10 @@ ProcessedInvoiceMetrics processAndCategorizeInvoices(
   // Use the existing AI-generated function to get structured invoice info
   final List<InvoiceInfo> processedInvoices = processTransactions(transactions);
 
-  final String openStatus = S.of(context).invoice_status_open;
-  final String dueStatus = S.of(context).invoice_status_due;
-  final String closedStatus = S.of(context).invoice_status_closed;
+  final s = context != null ? S.of(context) : S.current;
+  final String openStatus = s.invoice_status_open;
+  final String dueStatus = s.invoice_status_due;
+  final String closedStatus = s.invoice_status_closed;
 
   // *** SINGLE LOOP over all processed invoices ***
   for (var invoice in processedInvoices) {
@@ -468,7 +515,9 @@ ProcessedInvoiceMetrics processAndCategorizeInvoices(
     // Create the filtered list for profit details (replicating original _getInvoicesWithProfit)
     final invoicesWithProfitRow = [
       invoice.originalTransaction,
-      invoice.type == TransactionType.initialCredit.name ? '' : invoice.number, // index 1
+      invoice.type == TransactionType.initialCredit.name
+          ? ''
+          : invoice.number, // index 1
       invoice.date, // index 2
       invoice.totalAmount, // index 3
       // index 4 (receiptInfo) is skipped

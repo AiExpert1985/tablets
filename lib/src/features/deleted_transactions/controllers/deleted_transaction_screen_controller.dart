@@ -17,7 +17,8 @@ const String transactionNotesKey = 'notes';
 
 final deletedTransactionScreenControllerProvider =
     Provider<DeletedTransactionScreenController>((ref) {
-  final screenDataNotifier = ref.read(deletedTransactionScreenDataNotifier.notifier);
+  final screenDataNotifier =
+      ref.read(deletedTransactionScreenDataNotifier.notifier);
   final dbCache = ref.read(deletedTransactionDbCacheProvider.notifier);
   return DeletedTransactionScreenController(screenDataNotifier, dbCache);
 });
@@ -31,7 +32,7 @@ class DeletedTransactionScreenController implements ScreenDataController {
   final DbCache _dbCache;
 
   @override
-  void setFeatureScreenData(BuildContext context) {
+  void setFeatureScreenData(BuildContext? context) {
     final dbCacheDataCopy = deepCopyDbCache(_dbCache.data);
     _screenDataNotifier.initialize({});
     for (var mapData in dbCacheDataCopy) {
@@ -47,7 +48,7 @@ class DeletedTransactionScreenController implements ScreenDataController {
   /// [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
   @override
   Map<String, dynamic> getItemScreenData(
-      BuildContext context, Map<String, dynamic> transactionData) {
+      BuildContext? context, Map<String, dynamic> transactionData) {
     final dbRef = transactionData['dbRefKey'];
     return _dbCache.getItemByDbRef(dbRef);
   }

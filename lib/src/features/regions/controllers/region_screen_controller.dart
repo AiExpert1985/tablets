@@ -24,7 +24,7 @@ class RegionScreenController implements ScreenDataController {
   final DbCache _regionDbCache;
 
   @override
-  void setFeatureScreenData(BuildContext context) {
+  void setFeatureScreenData(BuildContext? context) {
     final dbCache = [..._regionDbCache.data];
     _screenDataNotifier.initialize({});
     _screenDataNotifier.set(dbCache);
@@ -33,7 +33,8 @@ class RegionScreenController implements ScreenDataController {
   /// create a list of lists, where each resulting list contains transaction info
   /// [type, number, date, totalQuantity, totalProfit, totalSalesmanCommission, ]
   @override
-  Map<String, dynamic> getItemScreenData(BuildContext context, Map<String, dynamic> regionsData) {
+  Map<String, dynamic> getItemScreenData(
+      BuildContext? context, Map<String, dynamic> regionsData) {
     final dbRef = regionsData['dbRefKey'];
     return _regionDbCache.getItemByDbRef(dbRef);
   }

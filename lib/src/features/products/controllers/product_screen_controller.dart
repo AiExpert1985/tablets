@@ -12,12 +12,17 @@ import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/features/products/model/product.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'dart:collection';
+import 'package:tablets/src/common/services/cache/screen_cache_service.dart';
+import 'package:tablets/src/common/services/cache/screen_cache_loader.dart';
 
-final productScreenControllerProvider = Provider<ProductScreenController>((ref) {
+final productScreenControllerProvider =
+    Provider<ProductScreenController>((ref) {
   final screenDataNotifier = ref.read(productScreenDataNotifier.notifier);
   final transactionsDbCache = ref.read(transactionDbCacheProvider.notifier);
   final productDbCache = ref.read(productDbCacheProvider.notifier);
-  return ProductScreenController(screenDataNotifier, transactionsDbCache, productDbCache);
+  final cacheLoader = ref.read(screenCacheLoaderProvider);
+  return ProductScreenController(
+      screenDataNotifier, transactionsDbCache, productDbCache, cacheLoader);
 });
 
 class ProductScreenController implements ScreenDataController {
@@ -25,25 +30,34 @@ class ProductScreenController implements ScreenDataController {
     this._screenDataNotifier,
     this._transactionsDbCache,
     this._productDbCache,
+    this._cacheLoader,
   );
 
   final ScreenDataNotifier _screenDataNotifier;
   final DbCache _transactionsDbCache;
   final DbCache _productDbCache;
+  final ScreenCacheLoader _cacheLoader;
 
   @override
-  void setFeatureScreenData(BuildContext context) {
-    final allProductsData = _productDbCache.data;
-    // Pre-process and group transactions by product dbRef for efficient lookup.
-    final transactionsByProduct = _groupTransactionsByProduct();
+  void setFeatureScreenData(BuildContext? context) async {
+    final screenData = await _cacheLoader.loadProductScreenData(
+      calculateIfMissing: () async {
+        final allProductsData = _productDbCache.data;
+        // Pre-process and group transactions by product dbRef for efficient lookup.
+        final transactionsByProduct = _groupTransactionsByProduct();
 
-    List<Map<String, dynamic>> screenData = [];
-    for (var productData in allProductsData) {
-      final product = Product.fromMap(productData);
-      final productTransactions = transactionsByProduct[product.dbRef] ?? [];
-      final newRow = _createProductScreenData(context, product, productTransactions);
-      screenData.add(newRow);
-    }
+        List<Map<String, dynamic>> calculatedData = [];
+        for (var productData in allProductsData) {
+          final product = Product.fromMap(productData);
+          final productTransactions =
+              transactionsByProduct[product.dbRef] ?? [];
+          final newRow =
+              _createProductScreenData(context, product, productTransactions);
+          calculatedData.add(newRow);
+        }
+        return calculatedData;
+      },
+    );
 
     Map<String, dynamic> summaryTypes = {
       productTotalStockPriceKey: 'sum',
@@ -83,7 +97,8 @@ class ProductScreenController implements ScreenDataController {
   }
 
   /// Handles the type conversion for a single transaction map.
-  Map<String, dynamic> _convertTransactionMap(Map<String, dynamic> transactionMap) {
+  Map<String, dynamic> _convertTransactionMap(
+      Map<String, dynamic> transactionMap) {
     final newMap = Map<String, dynamic>.from(transactionMap);
     newMap.forEach((key, value) {
       if (value is int) {
@@ -95,7 +110,8 @@ class ProductScreenController implements ScreenDataController {
   }
 
   @override
-  Map<String, dynamic> getItemScreenData(BuildContext context, Map<String, dynamic>? productData) {
+  Map<String, dynamic> getItemScreenData(
+      BuildContext? context, Map<String, dynamic>? productData) {
     // If no product data is provided, we can't calculate anything.
     if (productData == null) {
       // Return a map with a zero quantity to be safe.
@@ -121,7 +137,8 @@ class ProductScreenController implements ScreenDataController {
     }
 
     // 3. Use your existing logic to do the final calculation for this single product.
-    final screenDataMap = _createProductScreenData(context, product, productTransactions);
+    final screenDataMap =
+        _createProductScreenData(context, product, productTransactions);
 
     // 4. Return the complete data map.
     return screenDataMap;
@@ -129,18 +146,19 @@ class ProductScreenController implements ScreenDataController {
 
   /// Creates the data row for a single product.
   Map<String, dynamic> _createProductScreenData(
-      BuildContext context, Product product, List<Transaction> transactions) {
+      BuildContext? context, Product product, List<Transaction> transactions) {
     List<List<dynamic>> productProcessedTransactions = [];
 
     // Add initial quantity transaction if it exists.
     if (product.initialQuantity > 0) {
-      productProcessedTransactions.add(_createInitialTransactionRow(context, product));
+      productProcessedTransactions
+          .add(_createInitialTransactionRow(context, product));
     }
 
     // Process all other transactions for this product.
     for (var transaction in transactions) {
-      productProcessedTransactions
-          .addAll(_processTransactionItems(context, transaction, product.dbRef));
+      productProcessedTransactions.addAll(
+          _processTransactionItems(context, transaction, product.dbRef));
     }
 
     // Sort transactions by date.
@@ -162,13 +180,15 @@ class ProductScreenController implements ScreenDataController {
       productQuantityKey: totalQuantity,
       productQuantityDetailsKey: productProcessedTransactions,
       productProfitKey: totalProfit,
-      productProfitDetailsKey: _getOnlyProfitInvoices(productProcessedTransactions, 5),
+      productProfitDetailsKey:
+          _getOnlyProfitInvoices(productProcessedTransactions, 5),
       productTotalStockPriceKey: totalQuantity * product.buyingPrice,
     };
   }
 
   /// Creates a row for the initial product quantity.
-  List<dynamic> _createInitialTransactionRow(BuildContext context, Product product) {
+  List<dynamic> _createInitialTransactionRow(
+      BuildContext? context, Product product) {
     final initialTransaction = _createInitialQuantityTransaction(product);
     return [
       initialTransaction,
@@ -183,7 +203,7 @@ class ProductScreenController implements ScreenDataController {
 
   /// Processes the items within a single transaction for a specific product.
   List<List<dynamic>> _processTransactionItems(
-      BuildContext context, Transaction transaction, String productDbRef) {
+      BuildContext? context, Transaction transaction, String productDbRef) {
     List<List<dynamic>> processedItems = [];
     final type = transaction.transactionType;
 
@@ -196,12 +216,14 @@ class ProductScreenController implements ScreenDataController {
 
       if (type == TransactionType.customerInvoice.name ||
           type == TransactionType.vendorReturn.name) {
-        totalQuantity -= (item['soldQuantity'] ?? 0) + (item['giftQuantity'] ?? 0);
+        totalQuantity -=
+            (item['soldQuantity'] ?? 0) + (item['giftQuantity'] ?? 0);
         totalProfit += item['itemTotalProfit'] ?? 0;
         totalSalesmanCommission += item['salesmanTotalCommission'] ?? 0;
       } else if (type == TransactionType.vendorInvoice.name ||
           type == TransactionType.customerReturn.name) {
-        totalQuantity += (item['soldQuantity'] ?? 0) + (item['giftQuantity'] ?? 0);
+        totalQuantity +=
+            (item['soldQuantity'] ?? 0) + (item['giftQuantity'] ?? 0);
         if (type == TransactionType.customerReturn.name) {
           totalProfit -= item['itemTotalProfit'] ?? 0;
         }
