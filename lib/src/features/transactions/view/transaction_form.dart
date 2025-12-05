@@ -450,9 +450,10 @@ class TransactionForm extends ConsumerWidget {
     }
 
     // Trigger screen cache update asynchronously (non-blocking)
+    // Capture the service before the async operation
+    final cacheUpdateService = ref.read(screenCacheUpdateServiceProvider);
     _triggerScreenCacheUpdate(
-      context,
-      ref,
+      cacheUpdateService,
       itemData, // deleted transaction as old
       null, // no new transaction
       TransactionOperation.delete,
@@ -540,9 +541,10 @@ class TransactionForm extends ConsumerWidget {
     _updateCounterIfNeeded(ref, formDataCopy);
 
     // Trigger screen cache update asynchronously (non-blocking)
+    // Capture the service before the async operation
+    final cacheUpdateService = ref.read(screenCacheUpdateServiceProvider);
     _triggerScreenCacheUpdate(
-      context,
-      ref,
+      cacheUpdateService,
       oldTransaction,
       itemData,
       isEditing ? TransactionOperation.edit : TransactionOperation.add,
@@ -551,18 +553,15 @@ class TransactionForm extends ConsumerWidget {
 
   /// Trigger screen cache update in the background (non-blocking)
   static void _triggerScreenCacheUpdate(
-    BuildContext context,
-    WidgetRef ref,
+    ScreenCacheUpdateService cacheUpdateService,
     Map<String, dynamic>? oldTransaction,
-    Map<String, dynamic> newTransaction,
+    Map<String, dynamic>? newTransaction,
     TransactionOperation operation,
   ) {
     // Run asynchronously without blocking
     Future.delayed(Duration.zero, () async {
       try {
-        final cacheUpdateService = ref.read(screenCacheUpdateServiceProvider);
         await cacheUpdateService.onTransactionChanged(
-          context,
           oldTransaction,
           newTransaction,
           operation,
