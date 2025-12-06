@@ -495,21 +495,28 @@ class TransactionForm extends ConsumerWidget {
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     const operationType = DbCacheOperationTypes.delete;
     transactionDbCache.update(itemData, operationType);
-    // redo screenData calculations
+    // redo screenData calculations for transaction screen
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
     }
 
-    // Trigger screen cache update asynchronously (non-blocking)
-    // Capture the service before the async operation
+    // PRE-CALCULATE affected entities synchronously while context is still valid
+    // This must happen BEFORE navigation which will invalidate context
     final cacheUpdateService = ref.read(screenCacheUpdateServiceProvider);
-    _triggerScreenCacheUpdate(
-      context,
-      cacheUpdateService,
-      itemData, // deleted transaction as old
-      null, // no new transaction
-      TransactionOperation.delete,
-    );
+    PreCalculatedCacheData? preCalculatedData;
+    if (context.mounted) {
+      preCalculatedData = cacheUpdateService.calculateAffectedEntities(
+        context,
+        itemData, // deleted transaction as old
+        null, // no new transaction
+        TransactionOperation.delete,
+      );
+    }
+
+    // Save pre-calculated data to Firebase asynchronously (no context needed)
+    if (preCalculatedData != null) {
+      _savePreCalculatedDataAsync(cacheUpdateService, preCalculatedData);
+    }
 
     // move point to previous transaction
     if (formNavigation != null && context.mounted) {
@@ -592,7 +599,7 @@ class TransactionForm extends ConsumerWidget {
     final operationType =
         isEditing ? DbCacheOperationTypes.edit : DbCacheOperationTypes.add;
     dbCache.update(itemData, operationType);
-    // redo screenData calculations
+    // redo screenData calculations for transaction screen
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
     }
@@ -600,38 +607,31 @@ class TransactionForm extends ConsumerWidget {
     // Update counter if transaction number is >= current counter
     _updateCounterIfNeeded(ref, formDataCopy);
 
-    // Trigger screen cache update asynchronously (non-blocking)
-    // Capture the service before the async operation
+    // PRE-CALCULATE affected entities synchronously while context is still valid
     final cacheUpdateService = ref.read(screenCacheUpdateServiceProvider);
-    _triggerScreenCacheUpdate(
-      context,
-      cacheUpdateService,
-      oldTransaction,
-      itemData,
-      isEditing ? TransactionOperation.edit : TransactionOperation.add,
-    );
+    if (context.mounted) {
+      final preCalculatedData = cacheUpdateService.calculateAffectedEntities(
+        context,
+        oldTransaction,
+        itemData,
+        isEditing ? TransactionOperation.edit : TransactionOperation.add,
+      );
+      // Save pre-calculated data to Firebase asynchronously (no context needed)
+      _savePreCalculatedDataAsync(cacheUpdateService, preCalculatedData);
+    }
   }
 
-  /// Trigger screen cache update in the background (non-blocking)
-  static void _triggerScreenCacheUpdate(
-    BuildContext context,
+  /// Save pre-calculated data to Firebase asynchronously (no context needed)
+  static void _savePreCalculatedDataAsync(
     ScreenCacheUpdateService cacheUpdateService,
-    Map<String, dynamic>? oldTransaction,
-    Map<String, dynamic>? newTransaction,
-    TransactionOperation operation,
+    PreCalculatedCacheData preCalculatedData,
   ) {
-    // Run asynchronously without blocking
+    // Run asynchronously without blocking the UI
     Future.delayed(Duration.zero, () async {
       try {
-        if (!context.mounted) return;
-        await cacheUpdateService.onTransactionChanged(
-          context,
-          oldTransaction,
-          newTransaction,
-          operation,
-        );
+        await cacheUpdateService.savePreCalculatedData(preCalculatedData);
       } catch (e) {
-        errorPrint('Error triggering screen cache update: $e');
+        errorPrint('Error saving pre-calculated cache data: $e');
       }
     });
   }

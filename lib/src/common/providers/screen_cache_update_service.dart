@@ -22,56 +22,127 @@ final screenCacheUpdateServiceProvider =
 /// Enum for transaction operation types
 enum TransactionOperation { add, edit, delete }
 
+/// Holds pre-calculated screen data for affected entities
+class PreCalculatedCacheData {
+  final List<Map<String, dynamic>> customerData;
+  final List<Map<String, dynamic>> productData;
+  final List<Map<String, dynamic>> salesmanData;
+
+  PreCalculatedCacheData({
+    required this.customerData,
+    required this.productData,
+    required this.salesmanData,
+  });
+}
+
 /// Service that handles updating screen cache when transactions change
 ///
-/// This service recalculates affected entities' screen data using the
-/// getItemScreenData() method from each screen controller, then saves
-/// the result to Firebase cache.
+/// This service uses a two-phase approach:
+/// 1. calculateAffectedEntities - runs SYNCHRONOUSLY while context is valid
+/// 2. savePreCalculatedData - runs ASYNCHRONOUSLY to save to Firebase
 class ScreenCacheUpdateService {
   ScreenCacheUpdateService(this._ref);
 
   final Ref _ref;
 
-  /// Called when a transaction is added, edited, or deleted
-  /// This runs asynchronously in the background
-  /// Requires BuildContext for translations in getItemScreenData
-  Future<void> onTransactionChanged(
+  /// Phase 1: Calculate screen data for affected entities SYNCHRONOUSLY
+  /// This must be called while BuildContext is still valid
+  PreCalculatedCacheData calculateAffectedEntities(
     BuildContext context,
     Map<String, dynamic>? oldTransaction,
     Map<String, dynamic>? newTransaction,
     TransactionOperation operation,
-  ) async {
+  ) {
+    debugLog('Calculating affected entities for: $operation');
+
+    // Get affected entity dbRefs
+    final affectedEntities =
+        _getAffectedEntities(oldTransaction, newTransaction);
+
+    debugLog('Affected customers: ${affectedEntities.customerDbRefs}');
+    debugLog('Affected products: ${affectedEntities.productDbRefs}');
+    debugLog('Affected salesmen: ${affectedEntities.salesmanDbRefs}');
+
+    // Pre-calculate all screen data while context is valid
+    final customerData = <Map<String, dynamic>>[];
+    final productData = <Map<String, dynamic>>[];
+    final salesmanData = <Map<String, dynamic>>[];
+
+    // Calculate product data
+    final productDbCache = _ref.read(productDbCacheProvider.notifier);
+    final productController = _ref.read(productScreenControllerProvider);
+    for (var productDbRef in affectedEntities.productDbRefs) {
+      final rawData = productDbCache.getItemByDbRef(productDbRef);
+      if (rawData.isNotEmpty) {
+        final screenData =
+            productController.getItemScreenData(context, rawData);
+        productData.add(screenData);
+      }
+    }
+
+    // Calculate customer data
+    final customerDbCache = _ref.read(customerDbCacheProvider.notifier);
+    final customerController = _ref.read(customerScreenControllerProvider);
+    for (var customerDbRef in affectedEntities.customerDbRefs) {
+      final rawData = customerDbCache.getItemByDbRef(customerDbRef);
+      if (rawData.isNotEmpty) {
+        final screenData =
+            customerController.getItemScreenData(context, rawData);
+        customerData.add(screenData);
+      }
+    }
+
+    // Calculate salesman data
+    final salesmanDbCache = _ref.read(salesmanDbCacheProvider.notifier);
+    final salesmanController = _ref.read(salesmanScreenControllerProvider);
+    for (var salesmanDbRef in affectedEntities.salesmanDbRefs) {
+      final rawData = salesmanDbCache.getItemByDbRef(salesmanDbRef);
+      if (rawData.isNotEmpty) {
+        final screenData =
+            salesmanController.getItemScreenData(context, rawData);
+        salesmanData.add(screenData);
+      }
+    }
+
+    debugLog(
+        'Pre-calculated: ${productData.length} products, ${customerData.length} customers, ${salesmanData.length} salesmen');
+
+    return PreCalculatedCacheData(
+      customerData: customerData,
+      productData: productData,
+      salesmanData: salesmanData,
+    );
+  }
+
+  /// Phase 2: Save pre-calculated data to Firebase ASYNCHRONOUSLY
+  /// This can run after navigation - no context needed
+  Future<void> savePreCalculatedData(PreCalculatedCacheData data) async {
     try {
-      debugLog('Screen cache update triggered: $operation');
+      debugLog('Saving pre-calculated data to Firebase...');
 
-      // Get all affected entities from both old and new transaction
-      final affectedEntities =
-          _getAffectedEntities(oldTransaction, newTransaction);
-
-      // Update cache collections sequentially: Products -> Customers -> Salesmen
-      // (Salesman depends on customer data)
-
-      // 1. Update affected products in Firebase cache
-      for (var productDbRef in affectedEntities.productDbRefs) {
-        if (!context.mounted) return;
-        await _updateProductCache(context, productDbRef);
+      // Save products
+      final productRepository = _ref.read(productScreenCacheRepositoryProvider);
+      for (var screenData in data.productData) {
+        await _saveItemToCache(screenData, productRepository);
       }
 
-      // 2. Update affected customers in Firebase cache
-      for (var customerDbRef in affectedEntities.customerDbRefs) {
-        if (!context.mounted) return;
-        await _updateCustomerCache(context, customerDbRef);
+      // Save customers
+      final customerRepository =
+          _ref.read(customerScreenCacheRepositoryProvider);
+      for (var screenData in data.customerData) {
+        await _saveItemToCache(screenData, customerRepository);
       }
 
-      // 3. Update affected salesmen in Firebase cache
-      for (var salesmanDbRef in affectedEntities.salesmanDbRefs) {
-        if (!context.mounted) return;
-        await _updateSalesmanCache(context, salesmanDbRef);
+      // Save salesmen
+      final salesmanRepository =
+          _ref.read(salesmanScreenCacheRepositoryProvider);
+      for (var screenData in data.salesmanData) {
+        await _saveItemToCache(screenData, salesmanRepository);
       }
 
-      debugLog('Screen cache update completed');
+      debugLog('Pre-calculated data saved to Firebase');
     } catch (e) {
-      errorPrint('Error updating screen cache: $e');
+      errorPrint('Error saving pre-calculated data: $e');
     }
   }
 
@@ -157,100 +228,13 @@ class ScreenCacheUpdateService {
         type == TransactionType.initialCredit.name;
   }
 
-  /// Update a single product's cache by recalculating using controller
-  Future<void> _updateProductCache(
-      BuildContext context, String productDbRef) async {
-    try {
-      final productDbCache = _ref.read(productDbCacheProvider.notifier);
-      final productController = _ref.read(productScreenControllerProvider);
-      final repository = _ref.read(productScreenCacheRepositoryProvider);
-
-      // Get raw product data from dbCache
-      final productData = productDbCache.getItemByDbRef(productDbRef);
-      if (productData.isEmpty) {
-        debugLog('Product not found in dbCache: $productDbRef');
-        return;
-      }
-
-      // Recalculate screen data for this product using controller
-      final screenData =
-          productController.getItemScreenData(context, productData);
-
-      // Convert and save to Firebase cache
-      await _saveItemToCache(screenData, repository);
-
-      debugLog('Updated product cache: $productDbRef');
-    } catch (e) {
-      errorPrint('Error updating product cache for $productDbRef: $e');
-    }
-  }
-
-  /// Update a single customer's cache by recalculating using controller
-  Future<void> _updateCustomerCache(
-      BuildContext context, String customerDbRef) async {
-    try {
-      final customerDbCache = _ref.read(customerDbCacheProvider.notifier);
-      final customerController = _ref.read(customerScreenControllerProvider);
-      final repository = _ref.read(customerScreenCacheRepositoryProvider);
-
-      // Get raw customer data from dbCache
-      final customerData = customerDbCache.getItemByDbRef(customerDbRef);
-      if (customerData.isEmpty) {
-        debugLog('Customer not found in dbCache: $customerDbRef');
-        return;
-      }
-
-      // Recalculate screen data for this customer using controller
-      final screenData =
-          customerController.getItemScreenData(context, customerData);
-
-      // Convert and save to Firebase cache
-      await _saveItemToCache(screenData, repository);
-
-      debugLog('Updated customer cache: $customerDbRef');
-    } catch (e) {
-      errorPrint('Error updating customer cache for $customerDbRef: $e');
-    }
-  }
-
-  /// Update a single salesman's cache by recalculating using controller
-  Future<void> _updateSalesmanCache(
-      BuildContext context, String salesmanDbRef) async {
-    try {
-      final salesmanDbCache = _ref.read(salesmanDbCacheProvider.notifier);
-      final salesmanController = _ref.read(salesmanScreenControllerProvider);
-      final repository = _ref.read(salesmanScreenCacheRepositoryProvider);
-
-      // Get raw salesman data from dbCache
-      final salesmanData = salesmanDbCache.getItemByDbRef(salesmanDbRef);
-      if (salesmanData.isEmpty) {
-        debugLog('Salesman not found in dbCache: $salesmanDbRef');
-        return;
-      }
-
-      // Recalculate screen data for this salesman using controller
-      final screenData =
-          salesmanController.getItemScreenData(context, salesmanData);
-
-      // Convert and save to Firebase cache
-      await _saveItemToCache(screenData, repository);
-
-      debugLog('Updated salesman cache: $salesmanDbRef');
-    } catch (e) {
-      errorPrint('Error updating salesman cache for $salesmanDbRef: $e');
-    }
-  }
-
   /// Save a single item to cache collection
   Future<void> _saveItemToCache(
     Map<String, dynamic> screenData,
     DbRepository repository,
   ) async {
-    // Convert transactions to dbRefs for storage
     final cacheItem = convertForCacheSave(screenData);
     final screenCacheItem = ScreenCacheItem(cacheItem);
-
-    // Use dbRef as document ID for consistent cache storage
     await repository.addOrUpdateItemWithRef(screenCacheItem);
   }
 }
