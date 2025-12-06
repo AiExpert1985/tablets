@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
 import 'package:tablets/src/common/classes/screen_cache_item.dart';
@@ -5,9 +6,12 @@ import 'package:tablets/src/common/functions/debug_print.dart';
 import 'package:tablets/src/common/functions/screen_cache_helper.dart';
 import 'package:tablets/src/common/providers/screen_cache_repository_providers.dart';
 import 'package:tablets/src/common/values/constants.dart';
-import 'package:tablets/src/features/customers/controllers/customer_screen_data_notifier.dart';
-import 'package:tablets/src/features/products/controllers/product_screen_data_notifier.dart';
-import 'package:tablets/src/features/salesmen/controllers/salesman_screen_data_notifier.dart';
+import 'package:tablets/src/features/customers/controllers/customer_screen_controller.dart';
+import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
+import 'package:tablets/src/features/products/controllers/product_screen_controller.dart';
+import 'package:tablets/src/features/products/repository/product_db_cache_provider.dart';
+import 'package:tablets/src/features/salesmen/controllers/salesman_screen_controller.dart';
+import 'package:tablets/src/features/salesmen/repository/salesman_db_cache_provider.dart';
 
 /// Provider for the ScreenCacheUpdateService
 final screenCacheUpdateServiceProvider =
@@ -20,9 +24,9 @@ enum TransactionOperation { add, edit, delete }
 
 /// Service that handles updating screen cache when transactions change
 ///
-/// Note: This service runs AFTER setFeatureScreenData() has been called,
-/// so the ScreenDataNotifiers already have fresh data. This service just
-/// saves the affected entities' data to Firebase cache.
+/// This service recalculates affected entities' screen data using the
+/// getItemScreenData() method from each screen controller, then saves
+/// the result to Firebase cache.
 class ScreenCacheUpdateService {
   ScreenCacheUpdateService(this._ref);
 
@@ -30,8 +34,9 @@ class ScreenCacheUpdateService {
 
   /// Called when a transaction is added, edited, or deleted
   /// This runs asynchronously in the background
-  /// No BuildContext needed - reads from already-updated notifiers
+  /// Requires BuildContext for translations in getItemScreenData
   Future<void> onTransactionChanged(
+    BuildContext context,
     Map<String, dynamic>? oldTransaction,
     Map<String, dynamic>? newTransaction,
     TransactionOperation operation,
@@ -48,21 +53,21 @@ class ScreenCacheUpdateService {
 
       // 1. Update affected products in Firebase cache
       for (var productDbRef in affectedEntities.productDbRefs) {
-        await _updateProductCache(productDbRef);
+        if (!context.mounted) return;
+        await _updateProductCache(context, productDbRef);
       }
 
       // 2. Update affected customers in Firebase cache
       for (var customerDbRef in affectedEntities.customerDbRefs) {
-        await _updateCustomerCache(customerDbRef);
+        if (!context.mounted) return;
+        await _updateCustomerCache(context, customerDbRef);
       }
 
       // 3. Update affected salesmen in Firebase cache
       for (var salesmanDbRef in affectedEntities.salesmanDbRefs) {
-        await _updateSalesmanCache(salesmanDbRef);
+        if (!context.mounted) return;
+        await _updateSalesmanCache(context, salesmanDbRef);
       }
-
-      // Note: No need to refresh ScreenDataNotifiers - they were already
-      // updated by setFeatureScreenData() before this method was called
 
       debugLog('Screen cache update completed');
     } catch (e) {
@@ -152,26 +157,27 @@ class ScreenCacheUpdateService {
         type == TransactionType.initialCredit.name;
   }
 
-  /// Update a single product's cache by reading from notifier
-  Future<void> _updateProductCache(String productDbRef) async {
+  /// Update a single product's cache by recalculating using controller
+  Future<void> _updateProductCache(
+      BuildContext context, String productDbRef) async {
     try {
-      final productNotifier = _ref.read(productScreenDataNotifier.notifier);
+      final productDbCache = _ref.read(productDbCacheProvider.notifier);
+      final productController = _ref.read(productScreenControllerProvider);
       final repository = _ref.read(productScreenCacheRepositoryProvider);
 
-      // Get product screen data from the already-updated notifier
-      final allProductData = productNotifier.data;
-      final productData = allProductData.firstWhere(
-        (p) => p['dbRef'] == productDbRef,
-        orElse: () => <String, dynamic>{},
-      );
-
+      // Get raw product data from dbCache
+      final productData = productDbCache.getItemByDbRef(productDbRef);
       if (productData.isEmpty) {
-        debugLog('Product not found in notifier for dbRef: $productDbRef');
+        debugLog('Product not found in dbCache: $productDbRef');
         return;
       }
 
+      // Recalculate screen data for this product using controller
+      final screenData =
+          productController.getItemScreenData(context, productData);
+
       // Convert and save to Firebase cache
-      await _saveItemToCache(productData, repository);
+      await _saveItemToCache(screenData, repository);
 
       debugLog('Updated product cache: $productDbRef');
     } catch (e) {
@@ -179,26 +185,27 @@ class ScreenCacheUpdateService {
     }
   }
 
-  /// Update a single customer's cache by reading from notifier
-  Future<void> _updateCustomerCache(String customerDbRef) async {
+  /// Update a single customer's cache by recalculating using controller
+  Future<void> _updateCustomerCache(
+      BuildContext context, String customerDbRef) async {
     try {
-      final customerNotifier = _ref.read(customerScreenDataNotifier.notifier);
+      final customerDbCache = _ref.read(customerDbCacheProvider.notifier);
+      final customerController = _ref.read(customerScreenControllerProvider);
       final repository = _ref.read(customerScreenCacheRepositoryProvider);
 
-      // Get customer screen data from the already-updated notifier
-      final allCustomerData = customerNotifier.data;
-      final customerData = allCustomerData.firstWhere(
-        (c) => c['dbRef'] == customerDbRef,
-        orElse: () => <String, dynamic>{},
-      );
-
+      // Get raw customer data from dbCache
+      final customerData = customerDbCache.getItemByDbRef(customerDbRef);
       if (customerData.isEmpty) {
-        debugLog('Customer not found in notifier for dbRef: $customerDbRef');
+        debugLog('Customer not found in dbCache: $customerDbRef');
         return;
       }
 
+      // Recalculate screen data for this customer using controller
+      final screenData =
+          customerController.getItemScreenData(context, customerData);
+
       // Convert and save to Firebase cache
-      await _saveItemToCache(customerData, repository);
+      await _saveItemToCache(screenData, repository);
 
       debugLog('Updated customer cache: $customerDbRef');
     } catch (e) {
@@ -206,26 +213,27 @@ class ScreenCacheUpdateService {
     }
   }
 
-  /// Update a single salesman's cache by reading from notifier
-  Future<void> _updateSalesmanCache(String salesmanDbRef) async {
+  /// Update a single salesman's cache by recalculating using controller
+  Future<void> _updateSalesmanCache(
+      BuildContext context, String salesmanDbRef) async {
     try {
-      final salesmanNotifier = _ref.read(salesmanScreenDataNotifier.notifier);
+      final salesmanDbCache = _ref.read(salesmanDbCacheProvider.notifier);
+      final salesmanController = _ref.read(salesmanScreenControllerProvider);
       final repository = _ref.read(salesmanScreenCacheRepositoryProvider);
 
-      // Get salesman screen data from the already-updated notifier
-      final allSalesmanData = salesmanNotifier.data;
-      final salesmanData = allSalesmanData.firstWhere(
-        (s) => s['dbRef'] == salesmanDbRef,
-        orElse: () => <String, dynamic>{},
-      );
-
+      // Get raw salesman data from dbCache
+      final salesmanData = salesmanDbCache.getItemByDbRef(salesmanDbRef);
       if (salesmanData.isEmpty) {
-        debugLog('Salesman not found in notifier for dbRef: $salesmanDbRef');
+        debugLog('Salesman not found in dbCache: $salesmanDbRef');
         return;
       }
 
+      // Recalculate screen data for this salesman using controller
+      final screenData =
+          salesmanController.getItemScreenData(context, salesmanData);
+
       // Convert and save to Firebase cache
-      await _saveItemToCache(salesmanData, repository);
+      await _saveItemToCache(screenData, repository);
 
       debugLog('Updated salesman cache: $salesmanDbRef');
     } catch (e) {
