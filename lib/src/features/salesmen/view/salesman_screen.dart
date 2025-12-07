@@ -206,28 +206,26 @@ class DataRow extends ConsumerWidget {
     final name = salesmanScreenData[salesmanNameKey] as String;
     final commission = salesmanScreenData[commissionKey].toDouble();
     final commissionDetails =
-        salesmanScreenData[commissionDetailsKey] as List<List<dynamic>>;
+        toNestedList(salesmanScreenData[commissionDetailsKey]);
     final numCustomers = salesmanScreenData[customersKey].toDouble();
-    final customersList =
-        salesmanScreenData[customersDetailsKey] as List<List<dynamic>>;
+    final customersList = toNestedList(salesmanScreenData[customersDetailsKey]);
     final totalDebt = salesmanScreenData[totalDebtsKey].toDouble();
     final dueDebt = salesmanScreenData[dueDbetsKey].toDouble();
-    final debtDetails =
-        salesmanScreenData[debtsDetailsKey] as List<List<dynamic>>;
+    final debtDetails = toNestedList(salesmanScreenData[debtsDetailsKey]);
     final openInvoices = salesmanScreenData[openInvoicesKey].toDouble();
     final dueInvoices = salesmanScreenData[dueInvoicesKey].toDouble();
     final openInvoicesDetails =
-        salesmanScreenData[openInvoicesDetailsKey] as List<List<dynamic>>;
+        toNestedList(salesmanScreenData[openInvoicesDetailsKey]);
     final profit = salesmanScreenData[profitKey].toDouble();
     final profitTransactions =
-        salesmanScreenData[profitDetailsKey] as List<List<dynamic>>;
+        toNestedList(salesmanScreenData[profitDetailsKey]);
     final numInvoices = salesmanScreenData[numInvoicesKey].toDouble();
-    final invoices = salesmanScreenData[invoicesKey] as List<List<dynamic>>;
+    final invoices = toNestedList(salesmanScreenData[invoicesKey]);
     final numReceipts = salesmanScreenData[numReceiptsKey].toDouble();
-    final receipts = salesmanScreenData[receiptsKey] as List<List<dynamic>>;
+    final receipts = toNestedList(salesmanScreenData[receiptsKey]);
     final invoicesAmount = salesmanScreenData[invoicesAmountKey].toDouble();
     final receiptAmount = salesmanScreenData[receiptsAmountKey].toDouble();
-    final returns = salesmanScreenData[returnsKey] as List<List<dynamic>>;
+    final returns = toNestedList(salesmanScreenData[returnsKey]);
     final numReturns = salesmanScreenData[numReturnsKey].toDouble();
     final returnsAmount = salesmanScreenData[returnsAmountKey].toDouble();
 

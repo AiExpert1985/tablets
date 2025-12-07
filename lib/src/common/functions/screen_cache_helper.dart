@@ -74,8 +74,14 @@ Map<String, dynamic> enrichWithTransactions(
           // This is a transaction detail list - needs enrichment
           result[key] =
               _enrichDetailListWithTransactions(decoded, transactionDbCache);
+        } else if (decoded is List &&
+            decoded.isNotEmpty &&
+            decoded.first is List) {
+          // This is a nested list (without transactions) - explicitly cast to List<List<dynamic>>
+          result[key] =
+              decoded.map((item) => (item as List).cast<dynamic>()).toList();
         } else {
-          // Just a JSON-encoded nested list without transactions
+          // Just a regular JSON-encoded value
           result[key] = decoded;
         }
       } catch (_) {
