@@ -134,6 +134,10 @@ List<List<dynamic>> _enrichDetailListWithTransactions(
   List<dynamic> detailList,
   List<Map<String, dynamic>> transactionDbCache,
 ) {
+  // Timestamps for year 2000 and 2100 in milliseconds (reasonable date range)
+  const int minValidTimestamp = 946684800000; // 2000-01-01
+  const int maxValidTimestamp = 4102444800000; // 2100-01-01
+
   final List<List<dynamic>> result = [];
 
   for (var item in detailList) {
@@ -153,8 +157,10 @@ List<List<dynamic>> _enrichDetailListWithTransactions(
             // If not found, keep the dbRef as is (transaction might have been deleted)
             newItem.add(element);
           }
-        } else if (j == 3 && element is int) {
-          // Index 3 is the date stored as milliseconds, convert back to DateTime
+        } else if (element is int &&
+            element >= minValidTimestamp &&
+            element <= maxValidTimestamp) {
+          // This looks like a timestamp in milliseconds, convert to DateTime
           newItem.add(DateTime.fromMillisecondsSinceEpoch(element));
         } else {
           // Keep other elements as-is

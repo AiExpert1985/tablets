@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
 import 'package:tablets/src/common/providers/screen_cache_service.dart';
@@ -208,22 +209,19 @@ class DataRow extends ConsumerWidget {
     final invoiceAverageClosingDays =
         customerScreenData[avgClosingDaysKey] as int;
     final closedInvoices =
-        customerScreenData[avgClosingDaysDetailsKey] as List<List<dynamic>>;
+        toNestedList(customerScreenData[avgClosingDaysDetailsKey]);
     final numOpenInvoices = customerScreenData[openInvoicesKey] as int;
     final openInvoices =
-        customerScreenData[openInvoicesDetailsKey] as List<List<dynamic>>;
-    final dueInvoices =
-        customerScreenData[dueDebtDetailsKey] as List<List<dynamic>>;
+        toNestedList(customerScreenData[openInvoicesDetailsKey]);
+    final dueInvoices = toNestedList(customerScreenData[dueDebtDetailsKey]);
     final numDueInvoices = customerScreenData[dueInvoicesKey] as int;
     final totalDebt = customerScreenData[totalDebtKey] as double;
-    final matchingList =
-        customerScreenData[totalDebtDetailsKey] as List<List<dynamic>>;
+    final matchingList = toNestedList(customerScreenData[totalDebtDetailsKey]);
     final dueDebt = customerScreenData[dueDebtKey];
     final invoiceWithProfit =
-        customerScreenData[invoicesProfitDetailsKey] as List<List<dynamic>>;
+        toNestedList(customerScreenData[invoicesProfitDetailsKey]);
     final profit = customerScreenData[invoicesProfitKey] as double;
-    final giftTransactions =
-        customerScreenData[giftsDetailsKey] as List<List<dynamic>>;
+    final giftTransactions = toNestedList(customerScreenData[giftsDetailsKey]);
     final totalGiftsAmount = customerScreenData[giftsKey] as double;
     final inValidCustomer = customerScreenData[inValidUserKey] as bool;
 
