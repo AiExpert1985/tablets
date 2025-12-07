@@ -355,9 +355,6 @@ Future<void> approveTransaction(
     errorPrint('item was previously approved, duplication is not allowed');
     return;
   }
-  // first of all, we delete the transaction (before changing its number)
-  deletePendingTransaction(context, ref, transaction,
-      addToDeletedTransaction: false);
   // then we udpate the transaction number if transaction is a customer invoice
   // for receipts, the number is given by the salesman in the mobile app
   if (transaction.transactionType == TransactionType.customerInvoice.name) {
@@ -367,25 +364,11 @@ Future<void> approveTransaction(
 
   if (!context.mounted) return;
 
-  // save transaction to transaction database
+  // save transaction to transaction database (MUST happen before deleting from pending)
   saveToTransactionCollection(context, ref, transaction);
-  // // finally, we open it form edit (it opens unEditable, if user want he press the edit button)
-  // final imagePickerNotifier = ref.read(imagePickerProvider.notifier);
-  // final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-  // final textEditingNotifier = ref.read(textFieldsControllerProvider.notifier);
-  // final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
-  // final formNavigator = ref.read(formNavigatorProvider);
-  // formNavigator.isReadOnly = true;
-  // TransactionShowForm.showForm(
-  //   context,
-  //   ref,
-  //   imagePickerNotifier,
-  //   formDataNotifier,
-  //   settingsDataNotifier,
-  //   textEditingNotifier,
-  //   transaction: transaction,
-  //   formType: transaction.transactionType,
-  // );
+  // delete the pending transaction after saving to transactions collection
+  deletePendingTransaction(context, ref, transaction,
+      addToDeletedTransaction: false);
 }
 
 void saveToTransactionCollection(
