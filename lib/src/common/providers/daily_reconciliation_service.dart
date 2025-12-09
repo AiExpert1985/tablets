@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/src/common/classes/db_repository.dart';
@@ -23,10 +21,8 @@ class DailyReconciliationService {
   DailyReconciliationService(this._ref);
 
   final Ref _ref;
-  Timer? _reconciliationTimer;
   static const String _settingsDocId = 'reconciliation_config';
   static const int _reconciliationIntervalHours = 24;
-  static const int _delayBeforeReconciliationMinutes = 60; // 1 hour delay
 
   /// Check if reconciliation is needed and schedule it if so
   /// Call this when the app starts
@@ -57,9 +53,8 @@ class DailyReconciliationService {
           'Hours since last reconciliation: $hoursSinceLastReconciliation');
 
       if (hoursSinceLastReconciliation >= _reconciliationIntervalHours) {
-        debugLog(
-            'Scheduling reconciliation after $_delayBeforeReconciliationMinutes minutes');
-        _scheduleReconciliation(context);
+        debugLog('Running reconciliation immediately (24+ hours since last)');
+        await _runReconciliation(context);
       } else {
         debugLog('No reconciliation needed yet');
       }
@@ -77,15 +72,6 @@ class DailyReconciliationService {
     );
     if (allSettings.isEmpty) return {};
     return allSettings.first;
-  }
-
-  /// Schedule reconciliation after delay
-  void _scheduleReconciliation(BuildContext context) {
-    _reconciliationTimer?.cancel();
-    _reconciliationTimer = Timer(
-      const Duration(minutes: _delayBeforeReconciliationMinutes),
-      () => _runReconciliation(context),
-    );
   }
 
   /// Run the actual reconciliation
@@ -126,12 +112,6 @@ class DailyReconciliationService {
     } catch (e) {
       errorPrint('Error updating reconciliation timestamp: $e');
     }
-  }
-
-  /// Cancel any scheduled reconciliation
-  void cancelScheduledReconciliation() {
-    _reconciliationTimer?.cancel();
-    _reconciliationTimer = null;
   }
 
   /// Force run reconciliation immediately (for manual trigger)
