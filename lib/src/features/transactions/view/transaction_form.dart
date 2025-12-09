@@ -306,9 +306,10 @@ class TransactionForm extends ConsumerWidget {
     // then the debt of customer will not accurately calculated
     // also, as a policy, I want always to save before print, because I want to ensure always the transaction in
     // database matches the printed transaction.
+    // isPrinted must be set BEFORE saveTransaction to avoid race condition with subsequent saves
+    formDataNotifier.updateProperties({isPrintedKey: true});
     saveTransaction(context, ref, formDataNotifier.data, true);
     printForm(context, ref, formDataNotifier.data, isLogoB: isLogoB);
-    formDataNotifier.updateProperties({isPrintedKey: true});
   }
 
   void _onSendToWarehousePressed(
