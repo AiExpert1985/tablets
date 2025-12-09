@@ -59,7 +59,9 @@ class DailyReconciliationService {
       if (hoursSinceLastReconciliation >= _reconciliationIntervalHours) {
         debugLog(
             'Scheduling reconciliation after $_delayBeforeReconciliationMinutes minutes');
-        _scheduleReconciliation(context);
+        if (context.mounted) {
+          _scheduleReconciliation(context);
+        }
       } else {
         debugLog('No reconciliation needed yet');
       }
