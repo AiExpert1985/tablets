@@ -2423,6 +2423,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Refreshing data...`
+  String get refreshing_data {
+    return Intl.message(
+      'Refreshing data...',
+      name: 'refreshing_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Data refreshed successfully`
+  String get data_refreshed_successfully {
+    return Intl.message(
+      'Data refreshed successfully',
+      name: 'data_refreshed_successfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to save transaction, please try again`
+  String get transaction_save_failed {
+    return Intl.message(
+      'Failed to save transaction, please try again',
+      name: 'transaction_save_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to delete transaction, please try again`
+  String get transaction_delete_failed {
+    return Intl.message(
+      'Failed to delete transaction, please try again',
+      name: 'transaction_delete_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to approve transaction, please try again`
+  String get transaction_approval_failed {
+    return Intl.message(
+      'Failed to approve transaction, please try again',
+      name: 'transaction_approval_failed',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

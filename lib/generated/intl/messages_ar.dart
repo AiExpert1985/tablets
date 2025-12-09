@@ -464,6 +464,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "transaction_salesman": MessageLookupByLibrary.simpleMessage("المندوب"),
     "transaction_search": MessageLookupByLibrary.simpleMessage("بحث التعاملات"),
+    "transaction_approval_failed": MessageLookupByLibrary.simpleMessage(
+      "فشل اعتماد التعامل، يرجى المحاولة مرة أخرى",
+    ),
+    "transaction_delete_failed": MessageLookupByLibrary.simpleMessage(
+      "فشل حذف التعامل، يرجى المحاولة مرة أخرى",
+    ),
+    "transaction_save_failed": MessageLookupByLibrary.simpleMessage(
+      "فشل حفظ التعامل، يرجى المحاولة مرة أخرى",
+    ),
     "transaction_subTotal_amount": MessageLookupByLibrary.simpleMessage(
       "المبلغ",
     ),

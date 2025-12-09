@@ -504,6 +504,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "transaction_search": MessageLookupByLibrary.simpleMessage(
       "Transactions search",
     ),
+    "transaction_approval_failed": MessageLookupByLibrary.simpleMessage(
+      "Failed to approve transaction, please try again",
+    ),
+    "transaction_delete_failed": MessageLookupByLibrary.simpleMessage(
+      "Failed to delete transaction, please try again",
+    ),
+    "transaction_save_failed": MessageLookupByLibrary.simpleMessage(
+      "Failed to save transaction, please try again",
+    ),
     "transaction_subTotal_amount": MessageLookupByLibrary.simpleMessage(
       "Subtotal",
     ),
