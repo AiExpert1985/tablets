@@ -160,29 +160,36 @@ class ListHeaders extends ConsumerWidget {
   }
 }
 
-class DataRow extends ConsumerWidget {
+class DataRow extends ConsumerStatefulWidget {
   const DataRow(this.transactionScreenData, this.sequence, {super.key});
   final Map<String, dynamic> transactionScreenData;
   final int sequence;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DataRow> createState() => _DataRowState();
+}
+
+class _DataRowState extends ConsumerState<DataRow> {
+  bool _isApproving = false;
+
+  @override
+  Widget build(BuildContext context) {
     ref.watch(pendingTransactionScreenDataNotifier);
-    final dbRef = transactionScreenData['dbRef'];
+    final dbRef = widget.transactionScreenData['dbRef'];
     final dbCache = ref.read(pendingTransactionDbCacheProvider.notifier);
     final transactionData = dbCache.getItemByDbRef(dbRef);
     final translatedTransactionType = translateScreenTextToDbText(
         context, transactionData[transactionTypeKey]);
     final transaction = Transaction.fromMap(
         {...transactionData, transactionTypeKey: translatedTransactionType});
-    final date = transactionScreenData[transactionDateKey].toDate();
+    final date = widget.transactionScreenData[transactionDateKey].toDate();
     final color = _getSequnceColor(transaction.transactionType);
-    final transactionType = transactionScreenData[transactionTypeKey];
+    final transactionType = widget.transactionScreenData[transactionTypeKey];
     bool isWarning = transactionType
             .contains(S.of(context).transaction_type_customer_receipt) ||
         transactionType
             .contains(S.of(context).transaction_type_customer_return);
-    final printStatus = transactionScreenData[isPrintedKey]
+    final printStatus = widget.transactionScreenData[isPrintedKey]
         ? S.of(context).printed
         : S.of(context).not_printed;
     return Column(
@@ -193,38 +200,49 @@ class DataRow extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               MainScreenNumberedEditButton(
-                sequence,
+                widget.sequence,
                 () => showReadOnlyTransaction(context, transaction),
                 color: color,
               ),
-              MainScreenTextCell(transactionScreenData[transactionTypeKey],
+              MainScreenTextCell(widget.transactionScreenData[transactionTypeKey],
                   isWarning: isWarning),
               // we don't add thousand separators to transaction number, so I made it String here
               MainScreenTextCell(
-                  transactionScreenData[transactionNumberKey]
+                  widget.transactionScreenData[transactionNumberKey]
                       .round()
                       .toString(),
                   isWarning: isWarning),
               MainScreenTextCell(date, isWarning: isWarning),
-              MainScreenTextCell(transactionScreenData[transactionNameKey],
+              MainScreenTextCell(widget.transactionScreenData[transactionNameKey],
                   isWarning: isWarning),
-              MainScreenTextCell(transactionScreenData[transactionSalesmanKey],
+              MainScreenTextCell(widget.transactionScreenData[transactionSalesmanKey],
                   isWarning: isWarning),
               MainScreenTextCell(
-                  transactionScreenData[transactionTotalAmountKey],
+                  widget.transactionScreenData[transactionTotalAmountKey],
                   isWarning: isWarning),
               MainScreenTextCell(printStatus, isWarning: isWarning),
-              MainScreenTextCell(transactionScreenData[transactionNotesKey],
+              MainScreenTextCell(widget.transactionScreenData[transactionNotesKey],
                   isWarning: isWarning),
-              IconButton(
-                  onPressed: () async {
-                    await approveTransaction(context, ref, transaction);
-                    if (!context.mounted) return;
-                    ref
-                        .read(pendingTransactionQuickFiltersProvider.notifier)
-                        .applyListFilter(context);
-                  },
-                  icon: const SaveIcon()),
+              if (!_isApproving)
+                IconButton(
+                    onPressed: () async {
+                      setState(() => _isApproving = true);
+                      await approveTransaction(context, ref, transaction);
+                      if (!context.mounted) return;
+                      ref
+                          .read(pendingTransactionQuickFiltersProvider.notifier)
+                          .applyListFilter(context);
+                    },
+                    icon: const SaveIcon())
+              else
+                const SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
               IconButton(
                 onPressed: () {
                   deletePendingTransaction(context, ref, transaction);
