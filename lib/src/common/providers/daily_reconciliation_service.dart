@@ -54,7 +54,8 @@ class DailyReconciliationService {
 
       if (hoursSinceLastReconciliation >= _reconciliationIntervalHours) {
         debugLog('Running reconciliation immediately (24+ hours since last)');
-        await _runReconciliation(context);
+        // ignore: unawaited_futures - intentionally fire-and-forget, doesn't block app startup
+        _runReconciliation(context);
       } else {
         debugLog('No reconciliation needed yet');
       }
