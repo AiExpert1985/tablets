@@ -762,6 +762,8 @@ class PrintStatus extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the provider to rebuild when form data changes
+    ref.watch(transactionFormDataProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final isPrinted = formDataNotifier.data[isPrintedKey];
     final printStatus =
