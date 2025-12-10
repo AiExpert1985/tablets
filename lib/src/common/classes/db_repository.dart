@@ -11,6 +11,7 @@ class DbRepository {
   final String _dbReferenceKey = 'dbRef';
 
   /// Returns true if save succeeded, false if failed
+  /// Uses dbRef as document ID to ensure idempotency (prevents duplicates)
   Future<bool> addItem(BaseItem item) async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.wifi) ||
@@ -19,7 +20,7 @@ class DbRepository {
         connectivityResult.contains(ConnectivityResult.mobile)) {
       // Device is connected to the internet
       try {
-        await _firestore.collection(_collectionName).doc().set(item.toMap());
+        await _firestore.collection(_collectionName).doc(item.dbRef).set(item.toMap());
         tempPrint('Item added to live firestore successfully!');
         return true;
       } catch (e) {
@@ -29,7 +30,7 @@ class DbRepository {
     }
     // Device is offline - Firestore handles offline persistence
     try {
-      final docRef = _firestore.collection(_collectionName).doc();
+      final docRef = _firestore.collection(_collectionName).doc(item.dbRef);
       await docRef.set(item.toMap());
       tempPrint('Item added to firestore cache!');
       return true; // Offline write counts as success (will sync later)
