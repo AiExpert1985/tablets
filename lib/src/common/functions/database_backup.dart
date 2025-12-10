@@ -14,7 +14,8 @@ import 'package:tablets/src/common/providers/daily_backup_provider.dart';
 import 'package:tablets/src/common/providers/user_info_provider.dart';
 import 'package:tablets/src/features/authentication/model/user_account.dart';
 
-Future<void> backupDataBase(BuildContext context, WidgetRef ref) async {
+Future<void> backupDataBase(BuildContext context, WidgetRef ref,
+    {bool isAuto = false}) async {
   final userInfo = ref.read(userInfoProvider);
   if (userInfo == null ||
       !userInfo.hasAccess ||
@@ -24,9 +25,9 @@ Future<void> backupDataBase(BuildContext context, WidgetRef ref) async {
   }
   try {
     final dataBaseNames = _getDataBaseNames(context);
-    final dataBaseMaps = await _getDataBaseMaps(context, ref);
+    final dataBaseMaps = await _getDataBaseMaps(context, ref, isAuto);
     if (context.mounted) {
-      await _saveDbFiles(context, ref, dataBaseMaps, dataBaseNames);
+      await _saveDbFiles(context, ref, dataBaseMaps, dataBaseNames, isAuto);
     }
   } catch (e) {
     errorPrint('Error during database backup -- $e');
@@ -34,7 +35,7 @@ Future<void> backupDataBase(BuildContext context, WidgetRef ref) async {
 }
 
 Future<List<List<Map<String, dynamic>>>> _getDataBaseMaps(
-    BuildContext context, WidgetRef ref) async {
+    BuildContext context, WidgetRef ref, bool isAuto) async {
   await initializeAllDbCaches(context, ref);
   final salesmanData = getSalesmenDbCacheData(ref);
   final regionsData = getRegionsDbCacheData(ref);
@@ -49,9 +50,9 @@ Future<List<List<Map<String, dynamic>>>> _getDataBaseMaps(
       formatDateForJson(getCustomersDbCacheData(ref), 'initialDate');
   final vendorsData =
       formatDateForJson(getVendorsDbCacheData(ref), 'initialDate');
-  final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
-  final dailyBackupStatus = dailyBackupNotifier.state;
-  if (context.mounted && dailyBackupStatus) {
+  // final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
+  // final dailyBackupStatus = dailyBackupNotifier.state;
+  if (context.mounted && !isAuto) {
     // note that we only remove dialog when it is not auto daily backup
     Navigator.of(context).pop();
   }
@@ -82,8 +83,12 @@ List<String> _getDataBaseNames(BuildContext context) {
 }
 
 // Change the name of the function to _saveDbFiles
-Future<void> _saveDbFiles(BuildContext context, WidgetRef ref,
-    List<List<Map<String, dynamic>>> allData, List<String> fileNames) async {
+Future<void> _saveDbFiles(
+    BuildContext context,
+    WidgetRef ref,
+    List<List<Map<String, dynamic>>> allData,
+    List<String> fileNames,
+    bool isAuto) async {
   try {
     final zipFilePath = getBackupFilePath();
     if (zipFilePath == null) {
@@ -102,11 +107,11 @@ Future<void> _saveDbFiles(BuildContext context, WidgetRef ref,
 
     final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
     final dailyBackupStatus = dailyBackupNotifier.state;
-    if (context.mounted && dailyBackupStatus) {
+    if (context.mounted && dailyBackupStatus && !isAuto) {
       successUserMessage(context, S.of(context).db_backup_success);
     }
   } catch (e) {
-    if (context.mounted) {
+    if (context.mounted && !isAuto) {
       failureUserMessage(context, S.of(context).db_backup_failure);
     }
     errorPrint('backup database failed -- $e');
@@ -142,7 +147,7 @@ Future<void> autoDatabaseBackup(BuildContext context, WidgetRef ref) async {
     final dailyBackupStatus = dailyBackupNotifier.state;
     if (!dailyBackupStatus) {
       // we don't await this, so it runs in the background and doesn't block the UI
-      backupDataBase(context, ref);
+      backupDataBase(context, ref, isAuto: true);
       dailyBackupNotifier.update((state) => true);
     }
   } catch (e) {
