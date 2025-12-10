@@ -117,7 +117,11 @@ class ListData extends ConsumerWidget {
           final pendingTransactionData = screenData[index];
           return Column(
             children: [
-              DataRow(pendingTransactionData, index + 1),
+              DataRow(
+                pendingTransactionData,
+                index + 1,
+                key: ValueKey(pendingTransactionData['dbRef']),
+              ),
               const Divider(thickness: 0.2, color: Colors.grey),
             ],
           );
@@ -204,7 +208,8 @@ class _DataRowState extends ConsumerState<DataRow> {
                 () => showReadOnlyTransaction(context, transaction),
                 color: color,
               ),
-              MainScreenTextCell(widget.transactionScreenData[transactionTypeKey],
+              MainScreenTextCell(
+                  widget.transactionScreenData[transactionTypeKey],
                   isWarning: isWarning),
               // we don't add thousand separators to transaction number, so I made it String here
               MainScreenTextCell(
@@ -213,21 +218,25 @@ class _DataRowState extends ConsumerState<DataRow> {
                       .toString(),
                   isWarning: isWarning),
               MainScreenTextCell(date, isWarning: isWarning),
-              MainScreenTextCell(widget.transactionScreenData[transactionNameKey],
+              MainScreenTextCell(
+                  widget.transactionScreenData[transactionNameKey],
                   isWarning: isWarning),
-              MainScreenTextCell(widget.transactionScreenData[transactionSalesmanKey],
+              MainScreenTextCell(
+                  widget.transactionScreenData[transactionSalesmanKey],
                   isWarning: isWarning),
               MainScreenTextCell(
                   widget.transactionScreenData[transactionTotalAmountKey],
                   isWarning: isWarning),
               MainScreenTextCell(printStatus, isWarning: isWarning),
-              MainScreenTextCell(widget.transactionScreenData[transactionNotesKey],
+              MainScreenTextCell(
+                  widget.transactionScreenData[transactionNotesKey],
                   isWarning: isWarning),
               if (!_isApproving)
                 IconButton(
                     onPressed: () async {
                       setState(() => _isApproving = true);
-                      final success = await approveTransaction(context, ref, transaction);
+                      final success =
+                          await approveTransaction(context, ref, transaction);
                       if (!context.mounted) return;
                       // Reset loading state if approval failed (so user can retry)
                       if (!success) {
