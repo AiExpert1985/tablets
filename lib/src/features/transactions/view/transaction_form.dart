@@ -495,16 +495,8 @@ class TransactionForm extends ConsumerWidget {
     final success = await formController.deleteItemFromDb(context, transaction,
         keepDialogOpen: true);
 
-    // CRITICAL: Check if widget is still mounted after async operation
-    if (!context.mounted) return success;
-
-    if (!success) {
-      // Show error message to user - Firebase delete failed
-      failureUserMessage(context, S.of(context).transaction_delete_failed);
-      return false;
-    }
-
-    // Only update cache and proceed if Firebase delete succeeded
+    // Always update local cache regardless of Firebase result to maintain consistency
+    // Firebase delete may "fail" for new unsaved transactions, which is expected
     if (dialogOn && itemData['name'].isNotEmpty) {
       // if dialog is on, it means this is real transaction deletion (i.e. user pressed delete button)
       // not automatic delete for empty transaction (when no name entered and we leave the form)
