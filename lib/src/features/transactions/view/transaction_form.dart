@@ -310,7 +310,9 @@ class TransactionForm extends ConsumerWidget {
     // database matches the printed transaction.
     // isPrinted must be set BEFORE saveTransaction to avoid race condition with subsequent saves
     formDataNotifier.updateProperties({isPrintedKey: true});
-    saveTransaction(context, ref, formDataNotifier.data, true);
+    final success =
+        await saveTransaction(context, ref, formDataNotifier.data, true);
+    if (!success || !context.mounted) return;
     printForm(context, ref, formDataNotifier.data, isLogoB: isLogoB);
   }
 
@@ -598,14 +600,14 @@ class TransactionForm extends ConsumerWidget {
     bool isEditing,
   ) async {
     final formController = ref.read(transactionFormControllerProvider);
-    final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
+
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
     final screenController = ref.read(transactionScreenControllerProvider);
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
 
     // Capture old transaction before editing (for cache update)
     Map<String, dynamic>? oldTransaction;
-    Map<String, dynamic> formDataCopy = {...formDataNotifier.data};
+    Map<String, dynamic> formDataCopy = {...formData};
     if (isEditing) {
       oldTransaction = dbCache.getItemByDbRef(formDataCopy[dbRefKey]);
     }
