@@ -162,7 +162,9 @@ class TransactionForm extends ConsumerWidget {
     return Scaffold(
       appBar: buildArabicAppBar(context, () async {
         // back to transactions screen
-        await onLeavingTransaction(context, ref, formImagesNotifier);
+        if (!await onLeavingTransaction(context, ref, formImagesNotifier)) {
+          return;
+        }
         if (!context.mounted) return;
         Navigator.pop(context);
         // context.goNamed(AppRoute.transactions.name);
@@ -318,7 +320,7 @@ class TransactionForm extends ConsumerWidget {
       ItemFormData formDataNotifier,
       ImageSliderNotifier formImagesNotifier) async {
     // Save/delete current transaction before warehouse operation (similar to navigation)
-    await onLeavingTransaction(context, ref, formImagesNotifier);
+    if (!await onLeavingTransaction(context, ref, formImagesNotifier)) return;
 
     // Check if transaction still has name after cleanup
     if (formDataNotifier.data[nameKey] == '' && context.mounted) {
@@ -360,7 +362,9 @@ class TransactionForm extends ConsumerWidget {
     if (!isDeleting) {
       // as we are leaving the current transaction, we should make sure to delete the transaction if it has no name
       // or to save (update) it if it does have name.
-      await onLeavingTransaction(context, ref, formImagesNotifier);
+      if (!await onLeavingTransaction(context, ref, formImagesNotifier)) {
+        return;
+      }
     }
     // Don't pop here - let showForm handle navigation using pushReplacement
     // Navigator.of(context).pop();
@@ -407,7 +411,8 @@ class TransactionForm extends ConsumerWidget {
   /// this function is called when navigating away from current transaction
   /// or when leaving the form page
   /// unless the transaction has no name, we save (update) it.
-  static Future<void> onLeavingTransaction(BuildContext context, WidgetRef ref,
+  /// Returns true if operation (save or delete) was successful, false otherwise.
+  static Future<bool> onLeavingTransaction(BuildContext context, WidgetRef ref,
       ImageSliderNotifier formImagesNotifier) async {
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final formData = formDataNotifier.data;
@@ -422,8 +427,8 @@ class TransactionForm extends ConsumerWidget {
       // Check if this is the last transaction and decrement counter
       await _decrementCounterIfLastTransaction(ref, formData);
 
-      if (!context.mounted) return;
-      await deleteTransaction(
+      if (!context.mounted) return false;
+      return await deleteTransaction(
           context,
           ref,
           formDataNotifier,
@@ -432,7 +437,6 @@ class TransactionForm extends ConsumerWidget {
           transactionDbCache,
           screenController,
           dialogOn: false);
-      return;
     }
     // if invoice doesn't contain items, delete it
     final isItemedTransaction = type.contains('Invoice') ||
@@ -453,12 +457,17 @@ class TransactionForm extends ConsumerWidget {
     final transDbRef = formDataNotifier.data[dbRefKey];
     // Determine if this is an existing transaction (edit) or new transaction (add)
     final isExisting = dbCache.getItemByDbRef(transDbRef).isNotEmpty;
-    if (context.mounted) {
-      await saveTransaction(context, ref, formDataNotifier.data, isExisting);
-    }
+
+    if (!context.mounted) return false;
+
+    final success =
+        await saveTransaction(context, ref, formDataNotifier.data, isExisting);
+    if (!success) return false;
+
     // clear customer debt info
     final customerDebInfo = ref.read(customerDebtNotifierProvider.notifier);
     customerDebInfo.reset();
+    return true;
   }
 
   /// when delete transaction, we stay in the form but navigate to previous transaction
