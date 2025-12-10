@@ -89,13 +89,13 @@ class DbRepository {
         connectivityResult.contains(ConnectivityResult.ethernet) ||
         connectivityResult.contains(ConnectivityResult.vpn) ||
         connectivityResult.contains(ConnectivityResult.mobile)) {
-      // Device is connected to the internet
+      // Device is connected to the internet - query server to find document
       try {
         final query = _firestore
             .collection(_collectionName)
             .where(_dbReferenceKey, isEqualTo: updatedItem.dbRef);
         final querySnapshot =
-            await query.get(const GetOptions(source: Source.cache));
+            await query.get(); // Query server when online (not just local cache)
         if (querySnapshot.size > 0) {
           final documentRef = querySnapshot.docs[0].reference;
           await documentRef.update(updatedItem.toMap());
@@ -133,12 +133,12 @@ class DbRepository {
         connectivityResult.contains(ConnectivityResult.ethernet) ||
         connectivityResult.contains(ConnectivityResult.vpn) ||
         connectivityResult.contains(ConnectivityResult.mobile)) {
-      // Device is connected to the internet
+      // Device is connected to the internet - query server to find document
       try {
         final querySnapshot = await _firestore
             .collection(_collectionName)
             .where(_dbReferenceKey, isEqualTo: item.dbRef)
-            .get(const GetOptions(source: Source.cache));
+            .get(); // Query server when online (not just local cache)
         if (querySnapshot.size > 0) {
           final documentRef = querySnapshot.docs[0].reference;
           await documentRef.delete();
@@ -146,7 +146,7 @@ class DbRepository {
         }
         return true;
       } catch (e) {
-        errorPrint('Error deleting item from firestore cache: $e');
+        errorPrint('Error deleting item from firestore: $e');
         return false;
       }
     }
