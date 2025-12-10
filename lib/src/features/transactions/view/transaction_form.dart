@@ -775,7 +775,7 @@ class PrintStatus extends ConsumerWidget {
     // Watch the provider to rebuild when form data changes
     ref.watch(transactionFormDataProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
-    final isPrinted = formDataNotifier.data[isPrintedKey];
+    final bool isPrinted = formDataNotifier.data[isPrintedKey] ?? false;
     final printStatus =
         isPrinted ? S.of(context).printed : S.of(context).not_printed;
 
