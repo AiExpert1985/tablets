@@ -510,7 +510,7 @@ class TransactionForm extends ConsumerWidget {
 
     if (!success) {
       // Show error message to user - Firebase delete failed
-      failureUserMessage(context, S.of(context).transaction_delete_failed);
+      failureUserMessage(context, "فشل حذف التعامل، يرجى المحاولة مرة أخرى");
       return false;
     }
 
@@ -628,7 +628,7 @@ class TransactionForm extends ConsumerWidget {
 
     if (!success) {
       // Show error message to user - Firebase save failed
-      failureUserMessage(context, S.of(context).transaction_save_failed);
+      failureUserMessage(context, "فشل حفظ التعامل، يرجى المحاولة مرة أخرى");
       return false;
     }
 

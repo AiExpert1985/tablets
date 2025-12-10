@@ -406,7 +406,7 @@ Future<bool> approveTransaction(
 
   if (!success) {
     // Show error message to user - Firebase save failed
-    failureUserMessage(context, S.of(context).transaction_approval_failed);
+    failureUserMessage(context, "فشل اعتماد التعامل، يرجى المحاولة مرة أخرى");
     return false;
   }
 
