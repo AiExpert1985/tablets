@@ -227,8 +227,13 @@ class _DataRowState extends ConsumerState<DataRow> {
                 IconButton(
                     onPressed: () async {
                       setState(() => _isApproving = true);
-                      await approveTransaction(context, ref, transaction);
+                      final success = await approveTransaction(context, ref, transaction);
                       if (!context.mounted) return;
+                      // Reset loading state if approval failed (so user can retry)
+                      if (!success) {
+                        setState(() => _isApproving = false);
+                        return;
+                      }
                       ref
                           .read(pendingTransactionQuickFiltersProvider.notifier)
                           .applyListFilter(context);
@@ -365,13 +370,15 @@ void addToDeletedTransactionsDb(WidgetRef ref, Map<String, dynamic> itemData) {
       deletionItemData, DbCacheOperationTypes.add);
 }
 
-Future<void> approveTransaction(
+/// Approves a pending transaction by saving it to transactions collection.
+/// Returns true if approval succeeded, false otherwise.
+Future<bool> approveTransaction(
     BuildContext context, WidgetRef ref, Transaction transaction) async {
   final transactionDbCache = ref.read(transactionDbCacheProvider.notifier);
   // below check is added to prevent the bug of duplicating of pressing approve button multiple times
   if (transactionDbCache.getItemByDbRef(transaction.dbRef).isNotEmpty) {
     errorPrint('item was previously approved, duplication is not allowed');
-    return;
+    return false;
   }
   // then we udpate the transaction number if transaction is a customer invoice
   // for receipts, the number is given by the salesman in the mobile app
@@ -380,28 +387,53 @@ Future<void> approveTransaction(
     transaction.number = invoiceNumber;
   }
 
-  if (!context.mounted) return;
+  if (!context.mounted) return false;
 
   // save transaction to transaction database (MUST happen before deleting from pending)
-  saveToTransactionCollection(context, ref, transaction);
-  // delete the pending transaction after saving to transactions collection
+  final success = await saveToTransactionCollection(context, ref, transaction);
+
+  // CRITICAL: Check if widget is still mounted after async operation
+  if (!context.mounted) return success;
+
+  if (!success) {
+    // Show error message to user - Firebase save failed
+    failureUserMessage(context, S.of(context).transaction_approval_failed);
+    return false;
+  }
+
+  // Only delete pending transaction if save to transactions collection succeeded
   deletePendingTransaction(context, ref, transaction,
       addToDeletedTransaction: false);
+  return true;
 }
 
-void saveToTransactionCollection(
+/// Saves transaction to transactions collection in Firebase.
+/// Returns true if save succeeded, false if failed.
+Future<bool> saveToTransactionCollection(
   BuildContext context,
   WidgetRef ref,
   Transaction transaction,
-) {
+) async {
   final formController = ref.read(transactionFormControllerProvider);
   final screenController = ref.read(transactionScreenControllerProvider);
   final dbCache = ref.read(transactionDbCacheProvider.notifier);
   // since Item buyingPrice added by Salesman is the default (not the correct one) we need to update it
   // note that I can't calculate buyingPrice at mobile, because it is CPU expensive
   updateBuyingPricesAndProfit(context, ref, transaction);
-  formController.saveItemToDb(context, transaction, false,
+
+  // Await Firebase save and check result
+  final success = await formController.saveItemToDb(context, transaction, false,
       keepDialogOpen: true);
+
+  // CRITICAL: Check if widget is still mounted after async operation
+  if (!context.mounted) return success;
+
+  if (!success) {
+    // Firebase save failed - don't update cache
+    return false;
+  }
+
+  // Only update cache if Firebase save succeeded
   // update the bdCache (database mirror) so that we don't need to fetch data from db
   final itemData = transaction.toMap();
 
@@ -432,6 +464,7 @@ void saveToTransactionCollection(
       await cacheUpdateService.savePreCalculatedData(preCalculatedData);
     });
   }
+  return true;
 }
 
 void updateBuyingPricesAndProfit(

@@ -451,8 +451,10 @@ class TransactionForm extends ConsumerWidget {
     formImagesNotifier.close();
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     final transDbRef = formDataNotifier.data[dbRefKey];
-    if (dbCache.getItemByDbRef(transDbRef).isNotEmpty && context.mounted) {
-      saveTransaction(context, ref, formDataNotifier.data, true);
+    // Determine if this is an existing transaction (edit) or new transaction (add)
+    final isExisting = dbCache.getItemByDbRef(transDbRef).isNotEmpty;
+    if (context.mounted) {
+      await saveTransaction(context, ref, formDataNotifier.data, isExisting);
     }
     // clear customer debt info
     final customerDebInfo = ref.read(customerDebtNotifierProvider.notifier);
@@ -460,6 +462,7 @@ class TransactionForm extends ConsumerWidget {
   }
 
   /// when delete transaction, we stay in the form but navigate to previous transaction
+  /// Returns true if delete was successful, false otherwise
   static Future<bool> deleteTransaction(
       BuildContext context,
       WidgetRef ref,
@@ -484,15 +487,29 @@ class TransactionForm extends ConsumerWidget {
     final imageUrls = formImagesNotifier.saveChanges();
     final itemData = {...formData, 'imageUrls': imageUrls};
     final transaction = Transaction.fromMap(itemData);
-    if (context.mounted) {
-      formController.deleteItemFromDb(context, transaction,
-          keepDialogOpen: true);
-      if (dialogOn && itemData['name'].isNotEmpty) {
-        // if dialog is on, it means this is real transaction deletion (i.e. user pressed delete button)
-        // not automatic delete for empty transaction (when no name entered and we leave the form)
-        addToDeletedTransactionsDb(ref, itemData);
-      }
+
+    if (!context.mounted) return false;
+
+    // Await Firebase delete and check result
+    final success = await formController.deleteItemFromDb(context, transaction,
+        keepDialogOpen: true);
+
+    // CRITICAL: Check if widget is still mounted after async operation
+    if (!context.mounted) return success;
+
+    if (!success) {
+      // Show error message to user - Firebase delete failed
+      failureUserMessage(context, S.of(context).transaction_delete_failed);
+      return false;
     }
+
+    // Only update cache and proceed if Firebase delete succeeded
+    if (dialogOn && itemData['name'].isNotEmpty) {
+      // if dialog is on, it means this is real transaction deletion (i.e. user pressed delete button)
+      // not automatic delete for empty transaction (when no name entered and we leave the form)
+      addToDeletedTransactionsDb(ref, itemData);
+    }
+
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     const operationType = DbCacheOperationTypes.delete;
     transactionDbCache.update(itemData, operationType);
@@ -563,12 +580,14 @@ class TransactionForm extends ConsumerWidget {
         deletionItemData, DbCacheOperationTypes.add);
   }
 
-  static void saveTransaction(
+  /// Saves transaction to Firebase, then updates local cache only if save succeeded.
+  /// Returns true if save was successful, false otherwise.
+  static Future<bool> saveTransaction(
     BuildContext context,
     WidgetRef ref,
     Map<String, dynamic> formData,
     bool isEditing,
-  ) {
+  ) async {
     final formController = ref.read(transactionFormControllerProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final formImagesNotifier = ref.read(imagePickerProvider.notifier);
@@ -588,8 +607,21 @@ class TransactionForm extends ConsumerWidget {
     final itemData = {...formDataCopy, 'imageUrls': imageUrls};
     final transaction =
         Transaction.fromMap({...formDataCopy, 'imageUrls': imageUrls});
-    formController.saveItemToDb(context, transaction, isEditing,
-        keepDialogOpen: true);
+
+    // Await Firebase save and check result
+    final success = await formController
+        .saveItemToDb(context, transaction, isEditing, keepDialogOpen: true);
+
+    // CRITICAL: Check if widget is still mounted after async operation
+    if (!context.mounted) return success;
+
+    if (!success) {
+      // Show error message to user - Firebase save failed
+      failureUserMessage(context, S.of(context).transaction_save_failed);
+      return false;
+    }
+
+    // Only update cache if Firebase save succeeded
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     if (itemData[transactionDateKey] is DateTime) {
       // in our form the data type usually is DateTime, but the date type in dbCache should be
@@ -620,6 +652,7 @@ class TransactionForm extends ConsumerWidget {
       // Save pre-calculated data to Firebase asynchronously (no context needed)
       _savePreCalculatedDataAsync(cacheUpdateService, preCalculatedData);
     }
+    return true;
   }
 
   /// Save pre-calculated data to Firebase asynchronously (no context needed)
@@ -728,6 +761,8 @@ class PrintStatus extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the provider to rebuild when form data changes
+    ref.watch(transactionFormDataProvider);
     final formDataNotifier = ref.read(transactionFormDataProvider.notifier);
     final isPrinted = formDataNotifier.data[isPrintedKey];
     final printStatus =

@@ -69,14 +69,26 @@ class ScreenCacheService {
       } else {
         // Cache is empty - calculate and save
         debugLog('Customer cache is empty, falling back to calculation...');
+<<<<<<< HEAD
         if (!context.mounted) return;
         await _calculateAndSaveCustomerData(context);
+=======
+        if (context.mounted) {
+          await _calculateAndSaveCustomerData(context);
+        }
+>>>>>>> claude/investigate-transaction-saving-01QQxbJR5p27i8HBi1Rx5YKv
       }
     } catch (e) {
       errorPrint('Error loading customer screen cache: $e');
       // Fall back to calculation
+<<<<<<< HEAD
       if (!context.mounted) return;
       await _calculateAndSaveCustomerData(context);
+=======
+      if (context.mounted) {
+        await _calculateAndSaveCustomerData(context);
+      }
+>>>>>>> claude/investigate-transaction-saving-01QQxbJR5p27i8HBi1Rx5YKv
     }
   }
 
@@ -103,14 +115,26 @@ class ScreenCacheService {
       } else {
         // Cache is empty - calculate and save
         debugLog('Product cache is empty, falling back to calculation...');
+<<<<<<< HEAD
         if (!context.mounted) return;
         await _calculateAndSaveProductData(context);
+=======
+        if (context.mounted) {
+          await _calculateAndSaveProductData(context);
+        }
+>>>>>>> claude/investigate-transaction-saving-01QQxbJR5p27i8HBi1Rx5YKv
       }
     } catch (e) {
       errorPrint('Error loading product screen cache: $e');
       // Fall back to calculation
+<<<<<<< HEAD
       if (!context.mounted) return;
       await _calculateAndSaveProductData(context);
+=======
+      if (context.mounted) {
+        await _calculateAndSaveProductData(context);
+      }
+>>>>>>> claude/investigate-transaction-saving-01QQxbJR5p27i8HBi1Rx5YKv
     }
   }
 
@@ -137,14 +161,26 @@ class ScreenCacheService {
       } else {
         // Cache is empty - calculate and save
         debugLog('Salesman cache is empty, falling back to calculation...');
+<<<<<<< HEAD
         if (!context.mounted) return;
         await _calculateAndSaveSalesmanData(context);
+=======
+        if (context.mounted) {
+          await _calculateAndSaveSalesmanData(context);
+        }
+>>>>>>> claude/investigate-transaction-saving-01QQxbJR5p27i8HBi1Rx5YKv
       }
     } catch (e) {
       errorPrint('Error loading salesman screen cache: $e');
       // Fall back to calculation
+<<<<<<< HEAD
       if (!context.mounted) return;
       await _calculateAndSaveSalesmanData(context);
+=======
+      if (context.mounted) {
+        await _calculateAndSaveSalesmanData(context);
+      }
+>>>>>>> claude/investigate-transaction-saving-01QQxbJR5p27i8HBi1Rx5YKv
     }
   }
 

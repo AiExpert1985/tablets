@@ -96,7 +96,8 @@ class DailyReconciliationService {
   }
 
   /// Update the last reconciliation timestamp in Firebase
-  Future<void> _updateLastReconciliationTimestamp({required bool isFirstTime}) async {
+  Future<void> _updateLastReconciliationTimestamp(
+      {required bool isFirstTime}) async {
     try {
       final repository = _ref.read(reconciliationSettingsRepositoryProvider);
       final data = {
@@ -126,7 +127,8 @@ class DailyReconciliationService {
   Future<DateTime?> getLastReconciliationDate() async {
     try {
       final settings = await _fetchSettings();
-      final lastReconciliation = settings['lastReconciliationTimestamp'] as int?;
+      final lastReconciliation =
+          settings['lastReconciliationTimestamp'] as int?;
       if (lastReconciliation == null) return null;
       return DateTime.fromMillisecondsSinceEpoch(lastReconciliation);
     } catch (e) {
