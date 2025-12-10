@@ -452,8 +452,10 @@ class TransactionForm extends ConsumerWidget {
     formImagesNotifier.close();
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
     final transDbRef = formDataNotifier.data[dbRefKey];
-    if (dbCache.getItemByDbRef(transDbRef).isNotEmpty && context.mounted) {
-      await saveTransaction(context, ref, formDataNotifier.data, true);
+    // Determine if this is an existing transaction (edit) or new transaction (add)
+    final isExisting = dbCache.getItemByDbRef(transDbRef).isNotEmpty;
+    if (context.mounted) {
+      await saveTransaction(context, ref, formDataNotifier.data, isExisting);
     }
     // clear customer debt info
     final customerDebInfo = ref.read(customerDebtNotifierProvider.notifier);
