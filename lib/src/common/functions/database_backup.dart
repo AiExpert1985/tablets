@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io'; // Import dart:io for file handling
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -15,7 +16,9 @@ import 'package:tablets/src/features/authentication/model/user_account.dart';
 
 Future<void> backupDataBase(BuildContext context, WidgetRef ref) async {
   final userInfo = ref.read(userInfoProvider);
-  if (userInfo == null || !userInfo.hasAccess || userInfo.privilage != UserPrivilage.admin.name) {
+  if (userInfo == null ||
+      !userInfo.hasAccess ||
+      userInfo.privilage != UserPrivilage.admin.name) {
     // only admin (who has access) can make backup
     return;
   }
@@ -38,10 +41,14 @@ Future<List<List<Map<String, dynamic>>>> _getDataBaseMaps(
   final categoriesData = getCategoriesDbCacheData(ref);
   final settingsData = getSettingsDbCacheData(ref);
   // because json can't deal with Date classes, we need to convert to String
-  final transactionData = formatDateForJson(getTransactionDbCacheData(ref), 'date');
-  final productsData = formatDateForJson(getProductsDbCacheData(ref), 'initialDate');
-  final customersData = formatDateForJson(getCustomersDbCacheData(ref), 'initialDate');
-  final vendorsData = formatDateForJson(getVendorsDbCacheData(ref), 'initialDate');
+  final transactionData =
+      formatDateForJson(getTransactionDbCacheData(ref), 'date');
+  final productsData =
+      formatDateForJson(getProductsDbCacheData(ref), 'initialDate');
+  final customersData =
+      formatDateForJson(getCustomersDbCacheData(ref), 'initialDate');
+  final vendorsData =
+      formatDateForJson(getVendorsDbCacheData(ref), 'initialDate');
   final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
   final dailyBackupStatus = dailyBackupNotifier.state;
   if (context.mounted && dailyBackupStatus) {
@@ -78,33 +85,52 @@ List<String> _getDataBaseNames(BuildContext context) {
 Future<void> _saveDbFiles(BuildContext context, WidgetRef ref,
     List<List<Map<String, dynamic>>> allData, List<String> fileNames) async {
   try {
-    final archive = Archive();
-    for (int i = 0; i < allData.length; i++) {
-      List<Map<String, dynamic>> data = allData[i];
-      String jsonString = jsonEncode(data);
-      List<int> bytes = utf8.encode(jsonString);
-      archive.addFile(ArchiveFile('${fileNames[i]}.json', bytes.length, bytes));
-    }
-    final zipData = ZipEncoder().encode(archive);
-
     final zipFilePath = getBackupFilePath();
     if (zipFilePath == null) {
       return;
     }
-    final zipFile = File(zipFilePath);
-    if (zipData != null) {
-      await zipFile.writeAsBytes(zipData);
-      final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
-      final dailyBackupStatus = dailyBackupNotifier.state;
-      if (context.mounted && dailyBackupStatus) {
-        successUserMessage(context, S.of(context).db_backup_success);
-      }
+
+    final params = {
+      'allData': allData,
+      'fileNames': fileNames,
+      'zipFilePath': zipFilePath,
+    };
+
+    // Use compute to run the heavy lifting in an isolate
+    // We can't pass the context or ref to the isolate, only data
+    await compute(_backupInIsolate, params);
+
+    final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
+    final dailyBackupStatus = dailyBackupNotifier.state;
+    if (context.mounted && dailyBackupStatus) {
+      successUserMessage(context, S.of(context).db_backup_success);
     }
   } catch (e) {
     if (context.mounted) {
       failureUserMessage(context, S.of(context).db_backup_failure);
     }
     errorPrint('backup database failed -- $e');
+  }
+}
+
+/// This function runs in a separate isolate.
+/// It must be static or a top-level function.
+Future<void> _backupInIsolate(Map<String, dynamic> params) async {
+  final allData = params['allData'] as List<List<Map<String, dynamic>>>;
+  final fileNames = params['fileNames'] as List<String>;
+  final zipFilePath = params['zipFilePath'] as String;
+
+  final archive = Archive();
+  for (int i = 0; i < allData.length; i++) {
+    List<Map<String, dynamic>> data = allData[i];
+    String jsonString = jsonEncode(data);
+    List<int> bytes = utf8.encode(jsonString);
+    archive.addFile(ArchiveFile('${fileNames[i]}.json', bytes.length, bytes));
+  }
+  final zipData = ZipEncoder().encode(archive);
+  final zipFile = File(zipFilePath);
+  if (zipData != null) {
+    await zipFile.writeAsBytes(zipData);
   }
 }
 
@@ -115,7 +141,8 @@ Future<void> autoDatabaseBackup(BuildContext context, WidgetRef ref) async {
     final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
     final dailyBackupStatus = dailyBackupNotifier.state;
     if (!dailyBackupStatus) {
-      await backupDataBase(context, ref);
+      // we don't await this, so it runs in the background and doesn't block the UI
+      backupDataBase(context, ref);
       dailyBackupNotifier.update((state) => true);
     }
   } catch (e) {
