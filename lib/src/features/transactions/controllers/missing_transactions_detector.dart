@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:archive/archive.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -551,9 +552,11 @@ Future<bool> restoreMissingTransaction(
       return false;
     }
 
-    // Add to local cache
+    // Add to local cache with Timestamp (to match Firestore format)
     final dbCache = ref.read(transactionDbCacheProvider.notifier);
-    dbCache.update(transaction.toMap(), DbCacheOperationTypes.add);
+    final cacheData = transaction.toMap();
+    cacheData['date'] = firebase.Timestamp.fromDate(transaction.date);
+    dbCache.update(cacheData, DbCacheOperationTypes.add);
 
     // Remove from missing transactions list
     final currentMissingTransactions = ref.read(missingTransactionsProvider);
