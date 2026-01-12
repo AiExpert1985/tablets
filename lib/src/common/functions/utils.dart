@@ -324,6 +324,21 @@ List<Map<String, dynamic>> formatDateForJson(
   return modifiedList;
 }
 
+/// convert ALL Timestamp fields in a List<Map<String, dynamic>> to formatted date strings
+/// This is useful for backup where we want to ensure all timestamps are JSON-compatible
+List<Map<String, dynamic>> formatAllTimestampsForJson(
+    List<Map<String, dynamic>> data) {
+  List<Map<String, dynamic>> modifiedList = deepCopyDbCache(data);
+  for (var i = 0; i < modifiedList.length; i++) {
+    modifiedList[i].forEach((key, value) {
+      if (value is Timestamp) {
+        modifiedList[i][key] = formatDate(value.toDate());
+      }
+    });
+  }
+  return modifiedList;
+}
+
 /// create completely new copy of dbCache or any List<Map<String, dynamic>>
 List<Map<String, dynamic>> deepCopyDbCache(
     List<Map<String, dynamic>> original) {

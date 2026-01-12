@@ -50,11 +50,9 @@ Future<List<List<Map<String, dynamic>>>> _getDataBaseMaps(
       formatDateForJson(getCustomersDbCacheData(ref), 'initialDate');
   final vendorsData =
       formatDateForJson(getVendorsDbCacheData(ref), 'initialDate');
-  final weeklyTasksData = getWeeklyTasksDbCacheData(ref);
-  final deletedTransactionData = formatDateForJson(
-      formatDateForJson(getDeletedTransactionsDbCacheData(ref), 'date'),
-      'deleteDateTime');
-  final accountsData = getAccountsDbCacheData(ref);
+  final weeklyTasksData = formatAllTimestampsForJson(getWeeklyTasksDbCacheData(ref));
+  final deletedTransactionData = formatAllTimestampsForJson(getDeletedTransactionsDbCacheData(ref));
+  final accountsData = formatAllTimestampsForJson(getAccountsDbCacheData(ref));
   // final dailyBackupNotifier = ref.read(dailyDatabaseBackupNotifier.notifier);
   // final dailyBackupStatus = dailyBackupNotifier.state;
   if (context.mounted && !isAuto) {
