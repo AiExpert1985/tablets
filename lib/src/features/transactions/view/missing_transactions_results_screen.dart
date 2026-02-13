@@ -22,7 +22,7 @@ class MissingTransactionsResultsScreen extends ConsumerWidget {
         title: const Text('القوائم المفقودة'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.goNamed(AppRoute.settings.name),
+          onPressed: () => context.goNamed(AppRoute.printLog.name),
         ),
       ),
       body: Container(
@@ -252,6 +252,11 @@ class MissingTransactionsResultsScreen extends ConsumerWidget {
               child: Text('اخر نسخة ظهر فيها',
                   style: TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center)),
+          Expanded(
+              flex: 1,
+              child: Text('المصدر',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center)),
         ],
       ),
     );
@@ -324,6 +329,14 @@ class MissingTransactionsResultsScreen extends ConsumerWidget {
             flex: 1,
             child: Text(
               missing.backupDate,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 11),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Text(
+              missing.source == 'print-log' ? 'سجل الطباعة' : 'نسخة احتياطية',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 11),
             ),
