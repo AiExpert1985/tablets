@@ -272,26 +272,23 @@ class TransactionForm extends ConsumerWidget {
         },
         icon: const PrintIcon(),
       ),
-      IconButton(
-        onPressed: () {
-          _onPrintPressed(context, ref, formDataNotifier, isLogoB: true);
-          // if not printed due to empty name, don't continue
-          if (!formDataNotifier.getProperty(isPrintedKey)) return;
-          formNavigation.isReadOnly = true;
-          // TODO navigation to self  is added only to layout rebuild because formNavigation is not stateNotifier
-          // TODO later I might change formNavigation to StateNotifier and watch it in this widget
-          final formData = formDataNotifier.data;
-          onNavigationPressed(formDataNotifier, context, ref,
-              formImagesNotifier, formNavigation,
-              targetTransactionData: formData);
-        },
-        icon: const PrintIconB(),
-      ),
+      // Print 2 button - hidden for now, may be re-enabled later
+      const Visibility(visible: false, child: IconButton(
+        onPressed: null,
+        icon: PrintIconB(),
+      )),
       if (transactionType == TransactionType.customerInvoice.name)
         IconButton(
-            onPressed: () {
-              _onSendToWarehousePressed(
+            onPressed: () async {
+              await _onSendToWarehousePressed(
                   context, ref, formDataNotifier, formImagesNotifier);
+              formNavigation.isReadOnly = true;
+              final formData = formDataNotifier.data;
+              if (context.mounted) {
+                onNavigationPressed(formDataNotifier, context, ref,
+                    formImagesNotifier, formNavigation,
+                    targetTransactionData: formData);
+              }
             },
             icon: const SendIcon()),
     ];
@@ -324,11 +321,13 @@ class TransactionForm extends ConsumerWidget {
       failureUserMessage(context, 'فشل حفظ التعامل قبل الطباعة');
       return;
     }
-    ref.read(printLogServiceProvider).logPrint(formDataNotifier.data, 'local');
+    ref.read(printLogServiceProvider).logPrint(
+        {...formDataNotifier.data, 'imageUrls': ref.read(imagePickerProvider)},
+        'local');
     printForm(context, ref, formDataNotifier.data, isLogoB: isLogoB);
   }
 
-  void _onSendToWarehousePressed(
+  Future<void> _onSendToWarehousePressed(
       BuildContext context,
       WidgetRef ref,
       ItemFormData formDataNotifier,
@@ -348,7 +347,9 @@ class TransactionForm extends ConsumerWidget {
     final pdf = await getPdfFile(context, ref, formDataNotifier.data, image);
     if (!context.mounted) return;
 
-    ref.read(printLogServiceProvider).logPrint(formDataNotifier.data, 'warehouse');
+    ref.read(printLogServiceProvider).logPrint(
+        {...formDataNotifier.data, 'imageUrls': ref.read(imagePickerProvider)},
+        'warehouse');
     final warehouseService = ref.read(warehouseServiceProvider);
     if (context.mounted) {
       await warehouseService.sendToWarehouse(
