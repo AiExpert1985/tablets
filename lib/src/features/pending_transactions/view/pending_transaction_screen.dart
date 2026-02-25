@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
@@ -47,6 +48,10 @@ import 'package:tablets/src/features/transactions/repository/transaction_db_cach
 import 'package:tablets/src/features/transactions/view/forms/item_list.dart';
 import 'package:tablets/src/features/counters/repository/counter_repository_provider.dart';
 import 'package:tablets/src/common/providers/screen_cache_update_service.dart';
+
+/// Queue that ensures pending transaction approvals execute one at a time.
+/// Each approval chains onto the previous Future, so they run sequentially.
+Future<void> _approvalQueue = Future.value();
 
 class PendingTransactions extends ConsumerWidget {
   const PendingTransactions({super.key});
@@ -233,19 +238,29 @@ class _DataRowState extends ConsumerState<DataRow> {
                   isWarning: isWarning),
               if (!_isApproving)
                 IconButton(
-                    onPressed: () async {
+                    onPressed: () {
                       setState(() => _isApproving = true);
-                      final success =
-                          await approveTransaction(context, ref, transaction);
-                      if (!context.mounted) return;
-                      // Reset loading state if approval failed (so user can retry)
-                      if (!success) {
-                        setState(() => _isApproving = false);
-                        return;
-                      }
-                      ref
-                          .read(pendingTransactionQuickFiltersProvider.notifier)
-                          .applyListFilter(context);
+                      _approvalQueue = _approvalQueue.then((_) async {
+                        try {
+                          final success = await approveTransaction(
+                                  context, ref, transaction)
+                              .timeout(const Duration(seconds: 5));
+                          if (!context.mounted) return;
+                          if (!success) {
+                            setState(() => _isApproving = false);
+                            return;
+                          }
+                          ref
+                              .read(pendingTransactionQuickFiltersProvider
+                                  .notifier)
+                              .applyListFilter(context);
+                        } on TimeoutException {
+                          if (!context.mounted) return;
+                          failureUserMessage(context,
+                              "فشل اعتماد التعامل، يرجى المحاولة مرة أخرى");
+                          setState(() => _isApproving = false);
+                        }
+                      });
                     },
                     icon: const SaveIcon())
               else
