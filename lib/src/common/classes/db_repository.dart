@@ -19,7 +19,7 @@ class DbRepository {
           .collection(_collectionName)
           .doc(item.dbRef)
           .set(item.toMap())
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 15));
       debugLog('Item added successfully!');
       return true;
     } catch (e) {
@@ -82,18 +82,18 @@ class DbRepository {
           .collection(_collectionName)
           .where(_dbReferenceKey, isEqualTo: updatedItem.dbRef)
           .get(const GetOptions(source: Source.cache))
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 15));
       if (querySnapshot.docs.isNotEmpty) {
         await querySnapshot.docs.first.reference
             .set(updatedItem.toMap())
-            .timeout(const Duration(seconds: 5));
+            .timeout(const Duration(seconds: 15));
       } else {
         // Document not in cache - use direct document ID
         await _firestore
             .collection(_collectionName)
             .doc(updatedItem.dbRef)
             .set(updatedItem.toMap())
-            .timeout(const Duration(seconds: 5));
+            .timeout(const Duration(seconds: 15));
       }
       debugLog('Item updated successfully!');
       return true;
@@ -114,18 +114,18 @@ class DbRepository {
           .collection(_collectionName)
           .where(_dbReferenceKey, isEqualTo: item.dbRef)
           .get(const GetOptions(source: Source.cache))
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 15));
       if (querySnapshot.docs.isNotEmpty) {
         await querySnapshot.docs.first.reference
             .delete()
-            .timeout(const Duration(seconds: 5));
+            .timeout(const Duration(seconds: 15));
       } else {
         // Document not in cache - try direct delete by document ID as fallback
         await _firestore
             .collection(_collectionName)
             .doc(item.dbRef)
             .delete()
-            .timeout(const Duration(seconds: 5));
+            .timeout(const Duration(seconds: 15));
       }
       debugLog('Item deleted successfully!');
       return true;

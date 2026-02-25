@@ -153,7 +153,7 @@ class WarehouseService {
           .collection(collectionName)
           .doc(invoiceId)
           .get()
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 15));
       if (!doc.exists) return null;
       return WarehouseQueueItem.fromMap(doc.data()!);
     } catch (e) {
