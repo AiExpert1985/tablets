@@ -433,7 +433,7 @@ Future<bool> approveTransaction(
       transaction.number = invoiceNumber;
     } catch (e) {
       if (context.mounted) {
-        failureUserMessage(context, "فشل جلب رقم الفاتورة، تحقق من الاتصال بالانترنت");
+        failureUserMessage(context, "تحقق من الاتصال بالانترنت");
       }
       return false;
     }
