@@ -17,10 +17,11 @@ import 'package:tablets/src/features/authentication/model/user_account.dart';
 Future<void> backupDataBase(BuildContext context, WidgetRef ref,
     {bool isAuto = false}) async {
   final userInfo = ref.read(userInfoProvider);
+  final allowedPrivilages = [UserPrivilage.admin.name, UserPrivilage.accountant.name];
   if (userInfo == null ||
       !userInfo.hasAccess ||
-      userInfo.privilage != UserPrivilage.admin.name) {
-    // only admin (who has access) can make backup
+      !allowedPrivilages.contains(userInfo.privilage)) {
+    // only admin or accountant (who has access) can make backup
     return;
   }
   try {
