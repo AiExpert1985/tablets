@@ -428,8 +428,15 @@ Future<bool> approveTransaction(
   // then we udpate the transaction number if transaction is a customer invoice
   // for receipts, the number is given by the salesman in the mobile app
   if (transaction.transactionType == TransactionType.customerInvoice.name) {
-    final invoiceNumber = await getNextCustomerInvoiceNumber(ref);
-    transaction.number = invoiceNumber;
+    try {
+      final invoiceNumber = await getNextCustomerInvoiceNumber(ref);
+      transaction.number = invoiceNumber;
+    } catch (e) {
+      if (context.mounted) {
+        failureUserMessage(context, "فشل جلب رقم الفاتورة، تحقق من الاتصال بالانترنت");
+      }
+      return false;
+    }
   }
 
   if (!context.mounted) return false;

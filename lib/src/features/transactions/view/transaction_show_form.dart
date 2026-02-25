@@ -6,6 +6,7 @@ import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/classes/item_form_data.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
+import 'package:tablets/src/common/functions/user_messages.dart';
 import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/providers/image_picker_provider.dart';
 import 'package:tablets/src/common/providers/text_editing_controllers_provider.dart';
@@ -39,15 +40,22 @@ class TransactionShowForm {
     }
     String transactionType = formType ?? transaction?.transactionType as String;
     imagePickerNotifier.initialize();
-    await initializeFormData(
-      context,
-      formDataNotifier,
-      settingsDataNotifier,
-      transactionType,
-      ref,
-      transaction: transaction,
-      transactionDbCache: transactionDbCache,
-    );
+    try {
+      await initializeFormData(
+        context,
+        formDataNotifier,
+        settingsDataNotifier,
+        transactionType,
+        ref,
+        transaction: transaction,
+        transactionDbCache: transactionDbCache,
+      );
+    } catch (e) {
+      if (context.mounted) {
+        failureUserMessage(context, "فشل جلب الرقم التسلسلي، تحقق من الاتصال بالانترنت");
+      }
+      return;
+    }
 
     // Note: Don't check context.mounted here as context may be from a popped widget
     // when navigating from "new" button. Navigator.push will handle invalid context gracefully.
