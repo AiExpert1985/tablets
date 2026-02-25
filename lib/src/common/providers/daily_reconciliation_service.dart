@@ -44,22 +44,11 @@ class DailyReconciliationService {
         return;
       }
 
-      final lastReconciliationDate =
-          DateTime.fromMillisecondsSinceEpoch(lastReconciliation);
-      final hoursSinceLastReconciliation =
-          DateTime.now().difference(lastReconciliationDate).inHours;
-
-      debugLog(
-          'Hours since last reconciliation: $hoursSinceLastReconciliation');
-
-      if (hoursSinceLastReconciliation >= _reconciliationIntervalHours) {
-        debugLog('Running reconciliation immediately (24+ hours since last)');
-        if (!context.mounted) return;
-        // ignore: unawaited_futures - intentionally fire-and-forget, doesn't block app startup
-        _runReconciliation(context);
-      } else {
-        debugLog('No reconciliation needed yet');
-      }
+      // Always reconcile on app start to ensure mobile devices get fresh data
+      debugLog('Running reconciliation on app start');
+      if (!context.mounted) return;
+      // ignore: unawaited_futures - intentionally fire-and-forget, doesn't block app startup
+      _runReconciliation(context);
     } catch (e) {
       errorPrint('Error checking reconciliation schedule: $e');
     }
