@@ -242,6 +242,7 @@ class _DataRowState extends ConsumerState<DataRow> {
                     onPressed: () {
                       setState(() => _isApproving = true);
                       _approvalQueue = _approvalQueue.then((_) async {
+                        if (!context.mounted) return;
                         try {
                           final success = await approveTransaction(
                                   context, ref, transaction)
