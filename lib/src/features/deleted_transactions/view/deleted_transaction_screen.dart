@@ -11,6 +11,8 @@ import 'package:tablets/src/common/widgets/show_transaction_dialog.dart';
 import 'package:tablets/src/features/deleted_transactions/controllers/deleted_transaction_drawer_provider.dart';
 import 'package:tablets/src/features/deleted_transactions/controllers/deleted_transaction_screen_data_notifier.dart';
 import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_db_cache_provider.dart';
+import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_repository_provider.dart';
+import 'package:tablets/src/features/deleted_transactions/controllers/deleted_transaction_screen_controller.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/generated/l10n.dart';
@@ -210,6 +212,19 @@ class DeletedTransactionsFloatingButtons extends ConsumerWidget {
       visible: true,
       curve: Curves.bounceInOut,
       children: [
+        SpeedDialChild(
+          child: const Icon(Icons.refresh, color: Colors.white),
+          backgroundColor: iconsColor,
+          onTap: () async {
+            ref.read(pageIsLoadingNotifier.notifier).state = true;
+            final newData = await ref.read(deletedTransactionRepositoryProvider).fetchItemListAsMaps();
+            ref.read(deletedTransactionDbCacheProvider.notifier).set(newData);
+            if (context.mounted) {
+              ref.read(deletedTransactionScreenControllerProvider).setFeatureScreenData(context);
+            }
+            ref.read(pageIsLoadingNotifier.notifier).state = false;
+          },
+        ),
         SpeedDialChild(
           child: const Icon(Icons.search, color: Colors.white),
           backgroundColor: iconsColor,
