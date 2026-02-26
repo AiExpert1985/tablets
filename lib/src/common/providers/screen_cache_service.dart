@@ -48,8 +48,15 @@ class ScreenCacheService {
 
   /// Load customer screen data - tries cache first, falls back to calculation
   Future<void> loadCustomerScreenData(BuildContext context) async {
-    final repository = _ref.read(customerScreenCacheRepositoryProvider);
     final screenDataNotifier = _ref.read(customerScreenDataNotifier.notifier);
+
+    // Skip fetching from Firebase if screen data is already loaded in memory
+    if (screenDataNotifier.data.isNotEmpty) {
+      debugLog('Customer screen data already loaded in memory, skipping fetch');
+      return;
+    }
+
+    final repository = _ref.read(customerScreenCacheRepositoryProvider);
     final transactionDbCache = _ref.read(transactionDbCacheProvider);
 
     try {
@@ -83,8 +90,15 @@ class ScreenCacheService {
 
   /// Load product screen data - tries cache first, falls back to calculation
   Future<void> loadProductScreenData(BuildContext context) async {
-    final repository = _ref.read(productScreenCacheRepositoryProvider);
     final screenDataNotifier = _ref.read(productScreenDataNotifier.notifier);
+
+    // Skip fetching from Firebase if screen data is already loaded in memory
+    if (screenDataNotifier.data.isNotEmpty) {
+      debugLog('Product screen data already loaded in memory, skipping fetch');
+      return;
+    }
+
+    final repository = _ref.read(productScreenCacheRepositoryProvider);
     final transactionDbCache = _ref.read(transactionDbCacheProvider);
 
     try {
@@ -117,8 +131,15 @@ class ScreenCacheService {
 
   /// Load salesman screen data - tries cache first, falls back to calculation
   Future<void> loadSalesmanScreenData(BuildContext context) async {
-    final repository = _ref.read(salesmanScreenCacheRepositoryProvider);
     final screenDataNotifier = _ref.read(salesmanScreenDataNotifier.notifier);
+
+    // Skip fetching from Firebase if screen data is already loaded in memory
+    if (screenDataNotifier.data.isNotEmpty) {
+      debugLog('Salesman screen data already loaded in memory, skipping fetch');
+      return;
+    }
+
+    final repository = _ref.read(salesmanScreenCacheRepositoryProvider);
     final transactionDbCache = _ref.read(transactionDbCacheProvider);
 
     try {

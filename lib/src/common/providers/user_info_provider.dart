@@ -7,6 +7,9 @@ import 'package:tablets/src/features/authentication/repository/accounts_reposito
 class UserInfoNotifier extends StateNotifier<UserAccount?> {
   UserInfoNotifier() : super(null);
 
+  DateTime? _lastFetchTime;
+  static const _refreshInterval = Duration(minutes: 30);
+
   void setUserAccount(UserAccount userInfo) {
     state = userInfo;
   }
@@ -21,9 +24,16 @@ class UserInfoNotifier extends StateNotifier<UserAccount?> {
 
   void reset() {
     state = null;
+    _lastFetchTime = null;
   }
 
-  Future<void> loadUserInfo(WidgetRef ref) async {
+  Future<void> loadUserInfo(WidgetRef ref, {bool forceRefresh = false}) async {
+    // Skip fetching if user info was recently loaded (avoids reading entire accounts collection)
+    // Still refresh every 30 minutes to check if user access was revoked by admin
+    if (!forceRefresh && state != null && _lastFetchTime != null) {
+      final elapsed = DateTime.now().difference(_lastFetchTime!);
+      if (elapsed < _refreshInterval) return;
+    }
     final accountsRepository = ref.read(accountsRepositoryProvider);
     final email = FirebaseAuth.instance.currentUser!.email;
     final accounts = await accountsRepository.fetchItemListAsMaps();
@@ -36,6 +46,7 @@ class UserInfoNotifier extends StateNotifier<UserAccount?> {
       final hasAccess = matchingAccounts.first['hasAccess'];
       final userInfo = UserAccount(name, dbRef, email, privilage, hasAccess);
       setUserAccount(userInfo);
+      _lastFetchTime = DateTime.now();
     }
   }
 }

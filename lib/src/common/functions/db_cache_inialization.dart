@@ -186,10 +186,13 @@ Future<void> _initializeDeletedTransactionsDbCache(BuildContext context, WidgetR
   }
 }
 
-Future<void> initializePendingTransactionsDbCache(BuildContext context, WidgetRef ref) async {
+Future<void> initializePendingTransactionsDbCache(BuildContext context, WidgetRef ref,
+    {bool forceRefresh = false}) async {
   final dbCache = ref.read(pendingTransactionDbCacheProvider.notifier);
-  final dbCacheData = await ref.read(pendingTransactionRepositoryProvider).fetchItemListAsMaps();
-  dbCache.set(dbCacheData);
+  if (dbCache.data.isEmpty || forceRefresh) {
+    final dbCacheData = await ref.read(pendingTransactionRepositoryProvider).fetchItemListAsMaps();
+    dbCache.set(dbCacheData);
+  }
 }
 
 List<Map<String, dynamic>> getPendingTransactionDbCacheData(WidgetRef ref) {

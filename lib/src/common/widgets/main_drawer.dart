@@ -274,8 +274,15 @@ class PendingsButton extends ConsumerWidget {
           ]
         ],
       ),
-      onTap: () async => processAndMoveToTargetPage(
-          context, ref, pendingScreenController, route, pageTitle),
+      onTap: () async {
+        // Force refresh pending transactions when navigating to pending screen
+        // so that new phone-submitted transactions are always visible
+        await initializePendingTransactionsDbCache(context, ref, forceRefresh: true);
+        if (context.mounted) {
+          processAndMoveToTargetPage(
+              context, ref, pendingScreenController, route, pageTitle);
+        }
+      },
     );
   }
 }
