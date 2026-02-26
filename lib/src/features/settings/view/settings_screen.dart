@@ -245,7 +245,7 @@ class RadioButtons extends ConsumerWidget {
     final currentValue = settingsDataNotifier.getProperty(propertyName);
     ref.watch(settingsFormDataProvider);
     return RadioGroup<String>(
-      value: currentValue,
+      groupValue: currentValue,
       onChanged: (String? value) {
         settingsDataNotifier.updateProperties({propertyName: value});
       },
