@@ -244,7 +244,7 @@ class _DataRowState extends ConsumerState<DataRow> {
                         try {
                           final success = await approveTransaction(
                                   context, ref, transaction)
-                              .timeout(const Duration(seconds: 15));
+                              .timeout(const Duration(seconds: 5));
                           if (!context.mounted) return;
                           if (!success) {
                             setState(() => _isApproving = false);

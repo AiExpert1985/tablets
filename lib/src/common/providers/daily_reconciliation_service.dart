@@ -22,7 +22,7 @@ class DailyReconciliationService {
 
   final Ref _ref;
   static const String _settingsDocId = 'reconciliation_config';
-  static const int _reconciliationIntervalHours = 24;
+  static const int _reconciliationIntervalHours = 6;
 
   /// Check if reconciliation is needed and schedule it if so
   /// Call this when the app starts
@@ -44,11 +44,22 @@ class DailyReconciliationService {
         return;
       }
 
-      // Always reconcile on app start to ensure mobile devices get fresh data
-      debugLog('Running reconciliation on app start');
-      if (!context.mounted) return;
-      // ignore: unawaited_futures - intentionally fire-and-forget, doesn't block app startup
-      _runReconciliation(context);
+      final lastReconciliationDate =
+          DateTime.fromMillisecondsSinceEpoch(lastReconciliation);
+      final hoursSinceLastReconciliation =
+          DateTime.now().difference(lastReconciliationDate).inHours;
+
+      debugLog(
+          'Hours since last reconciliation: $hoursSinceLastReconciliation');
+
+      if (hoursSinceLastReconciliation >= _reconciliationIntervalHours) {
+        debugLog('Running reconciliation (${_reconciliationIntervalHours}+ hours since last)');
+        if (!context.mounted) return;
+        // ignore: unawaited_futures - intentionally fire-and-forget, doesn't block app startup
+        _runReconciliation(context);
+      } else {
+        debugLog('No reconciliation needed yet');
+      }
     } catch (e) {
       errorPrint('Error checking reconciliation schedule: $e');
     }

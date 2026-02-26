@@ -13,7 +13,7 @@ class CounterRepository {
       final docRef = _firestore.collection(_collectionName).doc(transactionType);
 
       // Get the current counter value (with timeout to prevent hanging on unstable internet)
-      final docSnapshot = await docRef.get().timeout(const Duration(seconds: 15));
+      final docSnapshot = await docRef.get().timeout(const Duration(seconds: 5));
 
       int nextNumber = 1; // Default starting number
 
@@ -66,7 +66,7 @@ class CounterRepository {
   Future<int> getCurrentNumber(String transactionType) async {
     try {
       final docRef = _firestore.collection(_collectionName).doc(transactionType);
-      final docSnapshot = await docRef.get().timeout(const Duration(seconds: 15));
+      final docSnapshot = await docRef.get().timeout(const Duration(seconds: 5));
 
       if (docSnapshot.exists) {
         final data = docSnapshot.data();
@@ -87,7 +87,7 @@ class CounterRepository {
   Future<void> ensureCounterAtLeast(String transactionType, int targetNumber) async {
     try {
       final docRef = _firestore.collection(_collectionName).doc(transactionType);
-      final docSnapshot = await docRef.get().timeout(const Duration(seconds: 15));
+      final docSnapshot = await docRef.get().timeout(const Duration(seconds: 5));
 
       int currentNext = 1;
       if (docSnapshot.exists) {
@@ -116,7 +116,7 @@ class CounterRepository {
   Future<void> decrementCounter(String transactionType) async {
     try {
       final docRef = _firestore.collection(_collectionName).doc(transactionType);
-      final docSnapshot = await docRef.get().timeout(const Duration(seconds: 15));
+      final docSnapshot = await docRef.get().timeout(const Duration(seconds: 5));
 
       if (docSnapshot.exists) {
         final data = docSnapshot.data();
