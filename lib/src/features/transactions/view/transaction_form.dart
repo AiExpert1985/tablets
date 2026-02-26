@@ -323,13 +323,14 @@ class TransactionForm extends ConsumerWidget {
     }
     if (!context.mounted) return;
     if (!success) {
+      formDataNotifier.updateProperties({isPrintedKey: false});
       failureUserMessage(context, 'فشل حفظ التعامل قبل الطباعة');
       return;
     }
+    await printForm(context, ref, formDataNotifier.data, isLogoB: isLogoB);
     ref.read(printLogServiceProvider).logPrint(
         {...formDataNotifier.data, 'imageUrls': ref.read(imagePickerProvider)},
         'local');
-    await printForm(context, ref, formDataNotifier.data, isLogoB: isLogoB);
   }
 
   Future<void> _onSendToWarehousePressed(
