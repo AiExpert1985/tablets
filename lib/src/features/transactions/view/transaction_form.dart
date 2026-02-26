@@ -686,16 +686,24 @@ class TransactionForm extends ConsumerWidget {
   }
 
   /// Save pre-calculated data to Firebase asynchronously (no context needed)
+  /// Retries up to 3 times with increasing delays to handle transient network issues
   static void _savePreCalculatedDataAsync(
     ScreenCacheUpdateService cacheUpdateService,
     PreCalculatedCacheData preCalculatedData,
   ) {
     // Run asynchronously without blocking the UI
     Future.delayed(Duration.zero, () async {
-      try {
-        await cacheUpdateService.savePreCalculatedData(preCalculatedData);
-      } catch (e) {
-        errorPrint('Error saving pre-calculated cache data: $e');
+      const retryDelays = [Duration.zero, Duration(seconds: 3), Duration(seconds: 5)];
+      for (int attempt = 0; attempt < retryDelays.length; attempt++) {
+        try {
+          if (attempt > 0) {
+            await Future.delayed(retryDelays[attempt]);
+          }
+          await cacheUpdateService.savePreCalculatedData(preCalculatedData);
+          return; // success, no need to retry
+        } catch (e) {
+          errorPrint('Attempt ${attempt + 1} failed saving cache data: $e');
+        }
       }
     });
   }
