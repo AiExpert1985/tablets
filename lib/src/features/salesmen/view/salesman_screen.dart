@@ -386,6 +386,7 @@ class SalesmanFloatingButtons extends ConsumerWidget {
     successUserMessage(context, "تحديث البيانات");
     final newData = await ref.read(salesmanRepositoryProvider).fetchItemListAsMaps(source: Source.server);
     ref.read(salesmanDbCacheProvider.notifier).set(newData);
+    if (!context.mounted) return;
     final cacheService = ref.read(screenCacheServiceProvider);
     await cacheService.refreshSalesmanScreenData(context);
     if (context.mounted) {

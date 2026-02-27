@@ -518,6 +518,7 @@ class TransactionForm extends ConsumerWidget {
         .deleteItemFromDb(context, transaction, keepDialogOpen: true)
         .catchError((e) {
       errorPrint('Background delete failed: $e');
+      return false;
     });
 
     if (!context.mounted) return true;
@@ -634,6 +635,7 @@ class TransactionForm extends ConsumerWidget {
         .saveItemToDb(context, transaction, isEditing, keepDialogOpen: true)
         .catchError((e) {
       errorPrint('Background save failed: $e');
+      return false;
     });
 
     if (!context.mounted) return true;
