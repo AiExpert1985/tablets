@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -281,7 +282,7 @@ class TransactionsFloatingButtons extends ConsumerWidget {
             ref.read(pageIsLoadingNotifier.notifier).state = true;
             final newData = await ref
                 .read(transactionRepositoryProvider)
-                .fetchItemListAsMaps();
+                .fetchItemListAsMaps(source: Source.server);
             ref.read(transactionDbCacheProvider.notifier).set(newData);
             if (context.mounted) {
               ref
