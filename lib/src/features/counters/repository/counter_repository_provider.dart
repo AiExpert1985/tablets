@@ -124,6 +124,18 @@ class CounterRepository {
     }
   }
 
+  /// Fetch all counters from server to warm the local cache.
+  /// Called at app startup and from the transaction sync button.
+  Future<void> refreshCountersFromServer() async {
+    try {
+      await _firestore.collection(_collectionName)
+          .get(const GetOptions(source: Source.server));
+      tempPrint('Counters refreshed from server');
+    } catch (e) {
+      errorPrint('Error refreshing counters from server: $e');
+    }
+  }
+
   // Decrement counter by one
   Future<void> decrementCounter(String transactionType) async {
     try {

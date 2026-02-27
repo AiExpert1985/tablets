@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:tablets/src/common/classes/screen_quick_filter.dart';
 import 'package:tablets/src/common/providers/page_is_loading_notifier.dart';
+import 'package:tablets/src/features/counters/repository/counter_repository_provider.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/features_keys.dart';
 import 'package:tablets/src/common/values/gaps.dart';
@@ -289,6 +290,9 @@ class TransactionsFloatingButtons extends ConsumerWidget {
                   .read(transactionScreenControllerProvider)
                   .setFeatureScreenData(context);
             }
+            // Also refresh counters from server to keep cache in sync
+            // ignore: unawaited_futures
+            ref.read(counterRepositoryProvider).refreshCountersFromServer();
             ref.read(pageIsLoadingNotifier.notifier).state = false;
           },
         ),
