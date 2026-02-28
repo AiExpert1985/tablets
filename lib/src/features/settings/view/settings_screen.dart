@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/debug_print.dart';
@@ -9,18 +10,17 @@ import 'package:tablets/src/common/functions/utils.dart';
 import 'package:tablets/src/common/values/constants.dart';
 import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/custom_icons.dart';
+import 'package:tablets/src/common/widgets/main_frame.dart';
+import 'package:tablets/src/features/counters/repository/counter_repository_provider.dart';
 import 'package:tablets/src/features/customers/model/customer.dart';
 import 'package:tablets/src/features/customers/repository/customer_db_cache_provider.dart';
 import 'package:tablets/src/features/customers/repository/customer_repository_provider.dart';
 import 'package:tablets/src/features/home/view/home_screen.dart';
-import 'package:tablets/src/common/widgets/main_frame.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/settings/model/settings.dart';
 import 'package:tablets/src/features/settings/repository/settings_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
-import 'package:tablets/src/features/counters/repository/counter_repository_provider.dart';
 
 final paymentValues = [PaymentType.credit.name, PaymentType.cash.name];
 final currencyValues = [Currency.dinar.name, Currency.dollar.name];
@@ -98,11 +98,14 @@ class FirstColumn extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        SwitchButton(S.of(context).hide_amount_as_text, hideTransactionAmountAsTextKey),
+        SwitchButton(
+            S.of(context).hide_amount_as_text, hideTransactionAmountAsTextKey),
         VerticalGap.xl,
-        SwitchButton(S.of(context).hide_totals_row, hideMainScreenColumnTotalsKey),
+        SwitchButton(
+            S.of(context).hide_totals_row, hideMainScreenColumnTotalsKey),
         VerticalGap.xl,
-        SwitchButton(S.of(context).hide_product_buying_price, hideProductBuyingPriceKey),
+        SwitchButton(
+            S.of(context).hide_product_buying_price, hideProductBuyingPriceKey),
         VerticalGap.xl,
         SwitchButton(S.of(context).hide_customer_profit, hideCustomerProfitKey),
         VerticalGap.xl,
@@ -110,7 +113,8 @@ class FirstColumn extends ConsumerWidget {
         VerticalGap.xl,
         SwitchButton(S.of(context).hide_salesman_profit, hideSalesmanProfitKey),
         VerticalGap.xl,
-        SwitchButton(S.of(context).show_barcode_when_printing, hideCompanyUrlBarCodeKey),
+        SwitchButton(
+            S.of(context).show_barcode_when_printing, hideCompanyUrlBarCodeKey),
       ],
     );
   }
@@ -123,18 +127,22 @@ class SecondColumn extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        RadioButtons(S.of(context).transaction_payment_type, settingsPaymentTypeKey, paymentValues),
+        RadioButtons(S.of(context).transaction_payment_type,
+            settingsPaymentTypeKey, paymentValues),
         VerticalGap.xl,
-        RadioButtons(S.of(context).settings_currency, settingsCurrencyKey, currencyValues),
+        RadioButtons(S.of(context).settings_currency, settingsCurrencyKey,
+            currencyValues),
         VerticalGap.xl,
-        SettingsInputField(S.of(context).max_debt_duration_allowed, settingsMaxDebtDurationKey,
-            FieldDataType.num.name),
+        SettingsInputField(S.of(context).max_debt_duration_allowed,
+            settingsMaxDebtDurationKey, FieldDataType.num.name),
         // SliderButton(
         //     S.of(context).max_debt_duration_allowed, settingsMaxDebtDurationKey, 0, 60, 30),
         VerticalGap.xl,
-        SliderButton(S.of(context).num_printed_invoices, printedCustomerInvoicesKey, 0, 10, 5),
+        SliderButton(S.of(context).num_printed_invoices,
+            printedCustomerInvoicesKey, 0, 10, 5),
         VerticalGap.xl,
-        SliderButton(S.of(context).num_printed_receipts, printedCustomerReceiptsKey, 0, 10, 5),
+        SliderButton(S.of(context).num_printed_receipts,
+            printedCustomerReceiptsKey, 0, 10, 5),
         VerticalGap.xxl,
       ],
     );
@@ -148,14 +156,14 @@ class ThirdColumn extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        SettingsInputField(S.of(context).max_debt_amount_allowed, settingsMaxDebtAmountKey,
-            FieldDataType.num.name),
+        SettingsInputField(S.of(context).max_debt_amount_allowed,
+            settingsMaxDebtAmountKey, FieldDataType.num.name),
         VerticalGap.xl,
-        SettingsInputField(
-            S.of(context).settings_company_url, companyUrlKey, FieldDataType.text.name),
-        VerticalGap.xl,
-        SettingsInputField(S.of(context).settings_main_page_greeting, mainPageGreetingTextKey,
+        SettingsInputField(S.of(context).settings_company_url, companyUrlKey,
             FieldDataType.text.name),
+        VerticalGap.xl,
+        SettingsInputField(S.of(context).settings_main_page_greeting,
+            mainPageGreetingTextKey, FieldDataType.text.name),
         VerticalGap.xl,
         const CustomerInvoiceCounterField(),
       ],
@@ -180,7 +188,8 @@ class SettingLabel extends ConsumerWidget {
 }
 
 class SliderButton extends ConsumerWidget {
-  const SliderButton(this.label, this.propertyName, this.minNumber, this.maxNumber, this.intervals,
+  const SliderButton(this.label, this.propertyName, this.minNumber,
+      this.maxNumber, this.intervals,
       {super.key});
 
   final String label;
@@ -209,7 +218,8 @@ class SliderButton extends ConsumerWidget {
           enableTooltip: true,
           // minorTicksPerInterval: 1,
           onChanged: (dynamic value) {
-            settingsDataNotifier.updateProperties({propertyName: value.round()});
+            settingsDataNotifier
+                .updateProperties({propertyName: value.round()});
           },
         ),
       ],
@@ -284,7 +294,8 @@ class SwitchButton extends ConsumerWidget {
 }
 
 class SettingsInputField extends ConsumerStatefulWidget {
-  const SettingsInputField(this.label, this.propertyName, this.dataType, {super.key});
+  const SettingsInputField(this.label, this.propertyName, this.dataType,
+      {super.key});
 
   final String label;
   final String propertyName;
@@ -301,7 +312,8 @@ class _SettingsInputFieldState extends ConsumerState<SettingsInputField> {
   void initState() {
     super.initState();
     final settingsDataNotifier = ref.read(settingsFormDataProvider.notifier);
-    dynamic currentValue = settingsDataNotifier.getProperty(widget.propertyName);
+    dynamic currentValue =
+        settingsDataNotifier.getProperty(widget.propertyName);
     if (widget.dataType == FieldDataType.num.name) {
       currentValue = currentValue.toString();
     }
@@ -387,7 +399,8 @@ class _SettingsInputFieldState extends ConsumerState<SettingsInputField> {
               if (_controller.text != newValue.toString()) {
                 _controller.text = newValue.toString();
               }
-              settingsDataNotifier.updateProperties({widget.propertyName: newValue});
+              settingsDataNotifier
+                  .updateProperties({widget.propertyName: newValue});
             },
             decoration: formFieldDecoration(),
             controller: _controller,
@@ -441,7 +454,11 @@ class _CustomerInvoiceCounterFieldState
         SizedBox(
           width: 200,
           child: _isLoading
-              ? const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)))
+              ? const Center(
+                  child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2)))
               : FormBuilderTextField(
                   name: 'customerInvoiceCounter',
                   textAlign: TextAlign.center,
@@ -456,12 +473,14 @@ class _CustomerInvoiceCounterFieldState
                     }
                     try {
                       final counterRepo = ref.read(counterRepositoryProvider);
-                      await counterRepo.initializeCounter('customerInvoice', number);
-                      if (mounted) {
-                        successUserMessage(context, 'تم تحديث رقم القائمة القادمة الى $number');
+                      await counterRepo.initializeCounter(
+                          'customerInvoice', number);
+                      if (context.mounted) {
+                        successUserMessage(context,
+                            'تم تحديث رقم القائمة القادمة الى $number');
                       }
                     } catch (e) {
-                      if (mounted) {
+                      if (context.mounted) {
                         failureUserMessage(context, 'خطأ في تحديث الرقم: $e');
                       }
                     }

@@ -8,8 +8,7 @@ import 'package:tablets/src/features/edit_log/edit_log_service.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
 
-final editLogEntriesProvider =
-    StateProvider<List<EditLogEntry>>((ref) => []);
+final editLogEntriesProvider = StateProvider<List<EditLogEntry>>((ref) => []);
 
 final filteredEditLogEntriesProvider =
     StateProvider<List<EditLogEntry>>((ref) => []);
@@ -60,9 +59,11 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
 
     // Transaction type filter - searches both old and new
     if (_selectedType != null && _selectedType!.isNotEmpty) {
-      filtered = filtered.where((e) =>
-          e.oldTransaction['transactionType'] == _selectedType ||
-          e.newTransaction['transactionType'] == _selectedType).toList();
+      filtered = filtered
+          .where((e) =>
+              e.oldTransaction['transactionType'] == _selectedType ||
+              e.newTransaction['transactionType'] == _selectedType)
+          .toList();
     }
 
     // Number filter - searches both old and new
@@ -70,26 +71,36 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
     if (numberText.isNotEmpty) {
       final number = int.tryParse(numberText);
       if (number != null) {
-        filtered = filtered.where((e) =>
-            e.oldTransaction['number'] == number ||
-            e.newTransaction['number'] == number).toList();
+        filtered = filtered
+            .where((e) =>
+                e.oldTransaction['number'] == number ||
+                e.newTransaction['number'] == number)
+            .toList();
       }
     }
 
     // Customer name filter - searches both old and new
     final nameText = _nameController.text.trim();
     if (nameText.isNotEmpty) {
-      filtered = filtered.where((e) =>
-          (e.oldTransaction['name'] ?? '').toString().contains(nameText) ||
-          (e.newTransaction['name'] ?? '').toString().contains(nameText)).toList();
+      filtered = filtered
+          .where((e) =>
+              (e.oldTransaction['name'] ?? '').toString().contains(nameText) ||
+              (e.newTransaction['name'] ?? '').toString().contains(nameText))
+          .toList();
     }
 
     // Salesman filter - searches both old and new
     final salesmanText = _salesmanController.text.trim();
     if (salesmanText.isNotEmpty) {
-      filtered = filtered.where((e) =>
-          (e.oldTransaction['salesman'] ?? '').toString().contains(salesmanText) ||
-          (e.newTransaction['salesman'] ?? '').toString().contains(salesmanText)).toList();
+      filtered = filtered
+          .where((e) =>
+              (e.oldTransaction['salesman'] ?? '')
+                  .toString()
+                  .contains(salesmanText) ||
+              (e.newTransaction['salesman'] ?? '')
+                  .toString()
+                  .contains(salesmanText))
+          .toList();
     }
 
     // Transaction date filter - searches both old and new
@@ -261,7 +272,7 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
             child: Padding(
               padding: filterPadding,
               child: DropdownButtonFormField<String>(
-                value: _selectedType,
+                initialValue: _selectedType,
                 hint: const Text('نوع التعامل', style: hintStyle),
                 isExpanded: true,
                 isDense: true,
@@ -378,7 +389,8 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
                   ),
                   child: Text(
                     _selectedTransactionDate != null
-                        ? DateFormat('dd-MM-yyyy').format(_selectedTransactionDate!)
+                        ? DateFormat('dd-MM-yyyy')
+                            .format(_selectedTransactionDate!)
                         : 'تاريخ التعامل',
                     textAlign: TextAlign.center,
                     style: filterStyle,
@@ -398,25 +410,25 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       color: Colors.grey[200],
-      child: Row(
+      child: const Row(
         children: [
-          const SizedBox(
+          SizedBox(
               width: 40,
-              child: Text('#',
-                  style: headerStyle, textAlign: TextAlign.center)),
-          const Expanded(
+              child:
+                  Text('#', style: headerStyle, textAlign: TextAlign.center)),
+          Expanded(
               flex: 2,
               child: Text('الوقت',
                   style: headerStyle, textAlign: TextAlign.center)),
-          const Expanded(
+          Expanded(
               flex: 3,
               child: Text('النسخة القديمة',
                   style: headerStyle, textAlign: TextAlign.center)),
-          const Expanded(
+          Expanded(
               flex: 3,
               child: Text('النسخة الجديدة',
                   style: headerStyle, textAlign: TextAlign.center)),
-          const Expanded(
+          Expanded(
               flex: 3,
               child: Text('التغييرات',
                   style: headerStyle, textAlign: TextAlign.center)),
@@ -473,8 +485,8 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
   }
 
   Widget _buildSummary(BuildContext context, Map<String, dynamic> tx) {
-    final type = translateDbTextToScreenText(
-        context, tx['transactionType'] ?? '');
+    final type =
+        translateDbTextToScreenText(context, tx['transactionType'] ?? '');
     final number = tx['number']?.toString() ?? '';
     final name = tx['name'] ?? '';
     final amount = tx['totalAmount']?.toString() ?? '';
