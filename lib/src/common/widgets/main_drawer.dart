@@ -566,7 +566,6 @@ class SettingsDialog extends ConsumerWidget {
 
     return AlertDialog(
       alignment: Alignment.center,
-      scrollable: true,
       content: Container(
         padding: const EdgeInsets.all(15),
         width: 450,
