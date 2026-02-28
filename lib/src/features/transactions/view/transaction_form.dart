@@ -30,6 +30,7 @@ import 'package:tablets/src/features/counters/repository/counter_repository_prov
 import 'package:tablets/src/features/deleted_transactions/model/deleted_transactions.dart';
 import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_repository_provider.dart';
+import 'package:tablets/src/features/edit_log/edit_log_service.dart';
 import 'package:tablets/src/features/print_log/print_log_service.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_debt_info_provider.dart';
@@ -231,9 +232,11 @@ class TransactionForm extends ConsumerWidget {
       if (formNavigation.isReadOnly)
         IconButton(
           onPressed: () {
+            // Capture snapshot before editing for edit log
+            final editLogService = ref.read(editLogServiceProvider);
+            ref.read(editLogSnapshotProvider.notifier).state =
+                editLogService.deepCopyMap(formDataNotifier.data);
             formNavigation.isReadOnly = false;
-            // TODO navigation to self  is added only to layout rebuild because formNavigation is not stateNotifier
-            // TODO later I might change formNavigation to StateNotifier and watch it in this widget
             final formData = formDataNotifier.data;
             onNavigationPressed(formDataNotifier, context, ref,
                 formImagesNotifier, formNavigation,
@@ -313,20 +316,9 @@ class TransactionForm extends ConsumerWidget {
     // database matches the printed transaction.
     // isPrinted must be set BEFORE saveTransaction to avoid race condition with subsequent saves
     formDataNotifier.updateProperties({isPrintedKey: true});
-    // Add timeout to prevent app freezing if save hangs (e.g. unstable internet)
-    bool success;
-    try {
-      success = await saveTransaction(context, ref, formDataNotifier.data, true)
-          .timeout(const Duration(seconds: 15), onTimeout: () => false);
-    } catch (e) {
-      success = false;
-    }
+    // Save is non-blocking: writes to Firebase local cache instantly, syncs to server in background
+    await saveTransaction(context, ref, formDataNotifier.data, true);
     if (!context.mounted) return;
-    if (!success) {
-      formDataNotifier.updateProperties({isPrintedKey: false});
-      failureUserMessage(context, 'فشل حفظ التعامل قبل الطباعة');
-      return;
-    }
     await printForm(context, ref, formDataNotifier.data, isLogoB: isLogoB);
     ref.read(printLogServiceProvider).logPrint(
         {...formDataNotifier.data, 'imageUrls': ref.read(imagePickerProvider)},
@@ -487,10 +479,42 @@ class TransactionForm extends ConsumerWidget {
         await saveTransaction(context, ref, formDataNotifier.data, isExisting);
     if (!success) return false;
 
+    // Check edit log: compare snapshot with saved data if edit button was pressed
+    _checkAndLogEdit(ref, formDataNotifier.data);
+
     // clear customer debt info
     final customerDebInfo = ref.read(customerDebtNotifierProvider.notifier);
     customerDebInfo.reset();
     return true;
+  }
+
+  /// Compare the pre-edit snapshot with the current form data and log if different
+  static void _checkAndLogEdit(WidgetRef ref, Map<String, dynamic> currentData) {
+    final snapshot = ref.read(editLogSnapshotProvider);
+    if (snapshot == null) return; // No edit button was pressed, skip
+    // If snapshot is for a different transaction, clear it (stale snapshot)
+    if (snapshot['dbRef'] != currentData[dbRefKey]) {
+      ref.read(editLogSnapshotProvider.notifier).state = null;
+      return;
+    }
+    final editLogService = ref.read(editLogServiceProvider);
+    final currentCopy = editLogService.deepCopyMap(currentData);
+    // Remove items with empty name before comparing
+    _removeEmptyNameItems(snapshot);
+    _removeEmptyNameItems(currentCopy);
+    // If no changes, keep snapshot for next check (user hasn't edited yet)
+    if (!editLogService.hasChanges(snapshot, currentCopy)) return;
+    // Changes found - log and clear snapshot
+    ref.read(editLogSnapshotProvider.notifier).state = null;
+    final changedFields = editLogService.getChangedFields(snapshot, currentCopy);
+    editLogService.logEdit(snapshot, currentCopy, changedFields);
+  }
+
+  static void _removeEmptyNameItems(Map<String, dynamic> transaction) {
+    final items = transaction[itemsKey];
+    if (items is List) {
+      items.removeWhere((item) => item is Map && (item[itemNameKey] == null || item[itemNameKey] == ''));
+    }
   }
 
   /// when delete transaction, we stay in the form but navigate to previous transaction
@@ -522,20 +546,19 @@ class TransactionForm extends ConsumerWidget {
 
     if (!context.mounted) return false;
 
-    // Await Firebase delete and check result
-    final success = await formController.deleteItemFromDb(context, transaction,
-        keepDialogOpen: true);
-
-    // CRITICAL: Check if widget is still mounted after async operation
-    if (!context.mounted) return success;
-
-    if (!success) {
-      // Show error message to user - Firebase delete failed
-      failureUserMessage(context, "فشل حذف التعامل، يرجى المحاولة مرة أخرى");
+    // Fire-and-forget Firebase delete - writes go to Firebase local cache instantly,
+    // then sync to server in background via Firebase persistence
+    // ignore: unawaited_futures
+    formController
+        .deleteItemFromDb(context, transaction, keepDialogOpen: true)
+        .catchError((e) {
+      errorPrint('Background delete failed: $e');
       return false;
-    }
+    });
 
-    // Only update cache and proceed if Firebase delete succeeded
+    if (!context.mounted) return true;
+
+    // Update local cache immediately (Firebase local cache already has the delete)
     if (dialogOn && itemData['name'].isNotEmpty) {
       // if dialog is on, it means this is real transaction deletion (i.e. user pressed delete button)
       // not automatic delete for empty transaction (when no name entered and we leave the form)
@@ -640,20 +663,19 @@ class TransactionForm extends ConsumerWidget {
     final transaction =
         Transaction.fromMap({...formDataCopy, 'imageUrls': imageUrls});
 
-    // Await Firebase save and check result
-    final success = await formController
-        .saveItemToDb(context, transaction, isEditing, keepDialogOpen: true);
-
-    // CRITICAL: Check if widget is still mounted after async operation
-    if (!context.mounted) return success;
-
-    if (!success) {
-      // Show error message to user - Firebase save failed
-      failureUserMessage(context, "فشل حفظ التعامل، يرجى المحاولة مرة أخرى");
+    // Fire-and-forget Firebase save - writes go to Firebase local cache instantly,
+    // then sync to server in background via Firebase persistence
+    // ignore: unawaited_futures
+    formController
+        .saveItemToDb(context, transaction, isEditing, keepDialogOpen: true)
+        .catchError((e) {
+      errorPrint('Background save failed: $e');
       return false;
-    }
+    });
 
-    // Only update cache if Firebase save succeeded
+    if (!context.mounted) return true;
+
+    // Update local cache immediately (Firebase local cache already has the write)
     // update the bdCache (database mirror) so that we don't need to fetch data from db
     if (itemData[transactionDateKey] is DateTime) {
       // in our form the data type usually is DateTime, but the date type in dbCache should be
@@ -668,10 +690,6 @@ class TransactionForm extends ConsumerWidget {
     if (context.mounted) {
       screenController.setFeatureScreenData(context);
     }
-
-    // Update counter in background - not critical for transaction save
-    // ignore: unawaited_futures
-    _updateCounterIfNeeded(ref, formDataCopy);
 
     // PRE-CALCULATE affected entities synchronously while context is still valid
     final cacheUpdateService = ref.read(screenCacheUpdateServiceProvider);
@@ -714,24 +732,6 @@ class TransactionForm extends ConsumerWidget {
         }
       }
     });
-  }
-
-  static Future<void> _updateCounterIfNeeded(
-      WidgetRef ref, Map<String, dynamic> formData) async {
-    final transactionType = formData[transactionTypeKey];
-    var transactionNumber = formData[numberKey];
-
-    if (transactionNumber is double) {
-      transactionNumber = transactionNumber.toInt();
-    }
-
-    if (transactionType != null &&
-        transactionNumber != null &&
-        transactionNumber is int) {
-      final counterRepository = ref.read(counterRepositoryProvider);
-      await counterRepository.ensureCounterAtLeast(
-          transactionType, transactionNumber);
-    }
   }
 
   static Future<void> _decrementCounterIfLastTransaction(
