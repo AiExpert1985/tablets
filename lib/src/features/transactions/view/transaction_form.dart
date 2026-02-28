@@ -499,12 +499,22 @@ class TransactionForm extends ConsumerWidget {
     }
     final editLogService = ref.read(editLogServiceProvider);
     final currentCopy = editLogService.deepCopyMap(currentData);
+    // Remove items with empty name before comparing
+    _removeEmptyNameItems(snapshot);
+    _removeEmptyNameItems(currentCopy);
     // If no changes, keep snapshot for next check (user hasn't edited yet)
     if (!editLogService.hasChanges(snapshot, currentCopy)) return;
     // Changes found - log and clear snapshot
     ref.read(editLogSnapshotProvider.notifier).state = null;
     final changedFields = editLogService.getChangedFields(snapshot, currentCopy);
     editLogService.logEdit(snapshot, currentCopy, changedFields);
+  }
+
+  static void _removeEmptyNameItems(Map<String, dynamic> transaction) {
+    final items = transaction[itemsKey];
+    if (items is List) {
+      items.removeWhere((item) => item is Map && (item[itemNameKey] == null || item[itemNameKey] == ''));
+    }
   }
 
   /// when delete transaction, we stay in the form but navigate to previous transaction
