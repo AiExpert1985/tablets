@@ -588,6 +588,8 @@ class SettingsDialog extends ConsumerWidget {
             const InvoiceValidationButton(),
             const SizedBox(height: 20),
             const PrintLogButton(),
+            const SizedBox(height: 20),
+            const EditLogButton(),
           ],
         ),
       ),
@@ -766,6 +768,36 @@ class PrintLogButton extends ConsumerWidget {
             child: Center(
               child: Text(
                 'سجل الطباعة',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class EditLogButton extends ConsumerWidget {
+  const EditLogButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SizedBox(
+      height: 125,
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).pop();
+          context.goNamed(AppRoute.editLog.name);
+        },
+        child: const Card(
+          elevation: 4,
+          margin: EdgeInsets.all(16),
+          child: SizedBox(
+            height: 40,
+            child: Center(
+              child: Text(
+                'سجل التعديلات',
                 style: TextStyle(fontSize: 18),
               ),
             ),

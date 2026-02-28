@@ -20,7 +20,7 @@ import 'package:tablets/src/features/settings/model/settings.dart';
 import 'package:tablets/src/features/settings/repository/settings_db_cache_provider.dart';
 import 'package:tablets/src/features/settings/repository/settings_repository_provider.dart';
 import 'package:tablets/src/features/settings/view/settings_keys.dart';
-import 'package:tablets/src/features/counters/services/counter_migration_service.dart';
+import 'package:tablets/src/features/counters/repository/counter_repository_provider.dart';
 
 final paymentValues = [PaymentType.credit.name, PaymentType.cash.name];
 final currencyValues = [Currency.dinar.name, Currency.dollar.name];
@@ -157,23 +157,7 @@ class ThirdColumn extends ConsumerWidget {
         SettingsInputField(S.of(context).settings_main_page_greeting, mainPageGreetingTextKey,
             FieldDataType.text.name),
         VerticalGap.xl,
-        // Counter initialization button for multi-user setup
-        ElevatedButton(
-          onPressed: () async {
-            try {
-              final migrationService = ref.read(counterMigrationServiceProvider);
-              await migrationService.initializeAllCounters(context, ref);
-              if (context.mounted) {
-                successUserMessage(context, 'تم تثبيت ارقام القوائم بنجاح');
-              }
-            } catch (e) {
-              if (context.mounted) {
-                failureUserMessage(context, 'خطأ في تثبيت الارقام: $e');
-              }
-            }
-          },
-          child: const Text('تثبيت ارقام القوائم القادمة'),
-        ),
+        const CustomerInvoiceCounterField(),
       ],
     );
   }
@@ -409,6 +393,81 @@ class _SettingsInputFieldState extends ConsumerState<SettingsInputField> {
             controller: _controller,
           ),
         )
+      ],
+    );
+  }
+}
+
+class CustomerInvoiceCounterField extends ConsumerStatefulWidget {
+  const CustomerInvoiceCounterField({super.key});
+
+  @override
+  ConsumerState<CustomerInvoiceCounterField> createState() =>
+      _CustomerInvoiceCounterFieldState();
+}
+
+class _CustomerInvoiceCounterFieldState
+    extends ConsumerState<CustomerInvoiceCounterField> {
+  final TextEditingController _controller = TextEditingController();
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentValue();
+  }
+
+  Future<void> _loadCurrentValue() async {
+    final counterRepo = ref.read(counterRepositoryProvider);
+    final currentValue = await counterRepo.getCurrentNumber('customerInvoice');
+    if (mounted) {
+      _controller.text = currentValue.toString();
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const SettingLabel('رقم القائمة القادمة'),
+        HorizontalGap.xl,
+        SizedBox(
+          width: 200,
+          child: _isLoading
+              ? const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)))
+              : FormBuilderTextField(
+                  name: 'customerInvoiceCounter',
+                  textAlign: TextAlign.center,
+                  controller: _controller,
+                  decoration: formFieldDecoration(),
+                  onSubmitted: (value) async {
+                    if (value == null || value.isEmpty) return;
+                    final number = int.tryParse(value);
+                    if (number == null) {
+                      failureUserMessage(context, 'الرجاء ادخال رقم صحيح');
+                      return;
+                    }
+                    try {
+                      final counterRepo = ref.read(counterRepositoryProvider);
+                      await counterRepo.initializeCounter('customerInvoice', number);
+                      if (mounted) {
+                        successUserMessage(context, 'تم تحديث رقم القائمة القادمة الى $number');
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        failureUserMessage(context, 'خطأ في تحديث الرقم: $e');
+                      }
+                    }
+                  },
+                ),
+        ),
       ],
     );
   }

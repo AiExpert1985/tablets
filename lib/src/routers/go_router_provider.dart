@@ -23,6 +23,7 @@ import 'package:tablets/src/features/warehouse/view/warehouse_print_screen.dart'
 import 'package:tablets/src/features/transactions/view/invoice_validation_results_screen.dart';
 import 'package:tablets/src/features/transactions/view/missing_transactions_results_screen.dart';
 import 'package:tablets/src/features/print_log/print_log_screen.dart';
+import 'package:tablets/src/features/edit_log/edit_log_screen.dart';
 
 enum AppRoute {
   home,
@@ -44,6 +45,7 @@ enum AppRoute {
   invoiceValidationResults,
   missingTransactionsResults,
   printLog,
+  editLog,
 }
 
 final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
@@ -166,6 +168,11 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/print-log',
           name: AppRoute.printLog.name,
           builder: (BuildContext context, GoRouterState state) => const PrintLogScreen(),
+        ),
+        GoRoute(
+          path: '/edit-log',
+          name: AppRoute.editLog.name,
+          builder: (BuildContext context, GoRouterState state) => const EditLogScreen(),
         ),
       ],
       errorBuilder: (context, state) => const NotFoundScreen(),
