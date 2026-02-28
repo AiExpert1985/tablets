@@ -540,29 +540,8 @@ class SettingsDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<String> names = [
-      S.of(context).categories,
-      S.of(context).regions,
-      S.of(context).settings,
-      S.of(context).deleted_transactions,
-      'تخفيضات المجهز'
-    ];
-
-    final List<String> routes = [
-      AppRoute.categories.name,
-      AppRoute.regions.name,
-      AppRoute.settings.name,
-      AppRoute.deletedTransactions.name,
-      AppRoute.supplierDiscount.name
-    ];
-
-    final List<IconData> icons = [
-      Icons.category,
-      Icons.map,
-      Icons.settings,
-      Icons.delete_outline,
-      Icons.discount,
-    ];
+    const double itemWidth = 130;
+    const double itemHeight = 87;
 
     return AlertDialog(
       alignment: Alignment.center,
@@ -572,37 +551,83 @@ class SettingsDialog extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 1.5,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-              ),
-              itemCount: names.length,
-              itemBuilder: (context, index) {
-                return SettingChildButton(names[index], routes[index], icons[index]);
-              },
+            // Section 1: Regions, Categories, Deleted Transactions
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                SizedBox(
+                  width: itemWidth,
+                  height: itemHeight,
+                  child: SettingChildButton(S.of(context).regions, AppRoute.regions.name, Icons.map),
+                ),
+                SizedBox(
+                  width: itemWidth,
+                  height: itemHeight,
+                  child: SettingChildButton(
+                      S.of(context).categories, AppRoute.categories.name, Icons.category),
+                ),
+                SizedBox(
+                  width: itemWidth,
+                  height: itemHeight,
+                  child: SettingChildButton(S.of(context).deleted_transactions,
+                      AppRoute.deletedTransactions.name, Icons.delete_outline),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
             const Divider(),
             const SizedBox(height: 10),
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 3,
-              childAspectRatio: 1.5,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-              children: const [
-                BackupButton(),
-                InvoiceValidationButton(),
-                PrintLogButton(),
-                EditLogButton(),
-                BulkCustomerReassignmentButton(),
-                DuplicateTransactionsButton(),
+            // Section 2: Print Log, Edit Log
+            const Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                SizedBox(width: itemWidth, height: itemHeight, child: PrintLogButton()),
+                SizedBox(width: itemWidth, height: itemHeight, child: EditLogButton()),
+              ],
+            ),
+            const SizedBox(height: 10),
+            const Divider(),
+            const SizedBox(height: 10),
+            // Section 3: Duplicate Transactions, Vendor Discount, Backup, Matching Amounts, Salesman Allocation
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                const SizedBox(
+                    width: itemWidth, height: itemHeight, child: DuplicateTransactionsButton()),
+                SizedBox(
+                  width: itemWidth,
+                  height: itemHeight,
+                  child: SettingChildButton(
+                      'تخفيضات المجهز', AppRoute.supplierDiscount.name, Icons.discount),
+                ),
+                const SizedBox(width: itemWidth, height: itemHeight, child: BackupButton()),
+                const SizedBox(
+                    width: itemWidth, height: itemHeight, child: InvoiceValidationButton()),
+                const SizedBox(
+                    width: itemWidth, height: itemHeight, child: BulkCustomerReassignmentButton()),
+              ],
+            ),
+            const SizedBox(height: 10),
+            const Divider(),
+            const SizedBox(height: 10),
+            // Section 4: Settings
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                SizedBox(
+                  width: itemWidth,
+                  height: itemHeight,
+                  child: SettingChildButton(
+                      S.of(context).settings, AppRoute.settings.name, Icons.settings),
+                ),
               ],
             ),
           ],
