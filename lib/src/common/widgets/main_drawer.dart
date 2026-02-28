@@ -556,40 +556,55 @@ class SettingsDialog extends ConsumerWidget {
       AppRoute.supplierDiscount.name
     ];
 
+    final List<IconData> icons = [
+      Icons.category,
+      Icons.map,
+      Icons.settings,
+      Icons.delete_outline,
+      Icons.discount,
+    ];
+
     return AlertDialog(
       alignment: Alignment.center,
       scrollable: true,
       content: Container(
-        padding: const EdgeInsets.all(25),
-        width: 400, // Increased width for two columns
-        height: 800,
+        padding: const EdgeInsets.all(15),
+        width: 450,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Changed to 2 columns
-                  childAspectRatio: 1.3, // Aspect ratio of each card
-                  crossAxisSpacing: 10, // Space between columns
-                  mainAxisSpacing: 10, // Space between rows
-                ),
-                itemCount: names.length,
-                itemBuilder: (context, index) {
-                  return SettingChildButton(names[index], routes[index]);
-                },
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 1.5,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
               ),
+              itemCount: names.length,
+              itemBuilder: (context, index) {
+                return SettingChildButton(names[index], routes[index], icons[index]);
+              },
             ),
-            const SizedBox(height: 20),
-            // Add the Bulk Customer Reassignment Button
-            const BulkCustomerReassignmentButton(),
-            const SizedBox(height: 20),
-            const BackupButton(),
-            const SizedBox(height: 20),
-            const InvoiceValidationButton(),
-            const SizedBox(height: 20),
-            const PrintLogButton(),
-            const SizedBox(height: 20),
-            const EditLogButton(),
+            const SizedBox(height: 10),
+            const Divider(),
+            const SizedBox(height: 10),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 3,
+              childAspectRatio: 1.5,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              children: const [
+                BackupButton(),
+                InvoiceValidationButton(),
+                PrintLogButton(),
+                EditLogButton(),
+                BulkCustomerReassignmentButton(),
+              ],
+            ),
           ],
         ),
       ),
@@ -598,10 +613,11 @@ class SettingsDialog extends ConsumerWidget {
 }
 
 class SettingChildButton extends ConsumerWidget {
-  const SettingChildButton(this.name, this.route, {super.key});
+  const SettingChildButton(this.name, this.route, this.icon, {super.key});
 
   final String name;
   final String route;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -627,16 +643,17 @@ class SettingChildButton extends ConsumerWidget {
       },
       child: Card(
         elevation: 4,
-        margin: const EdgeInsets.all(16),
-        child: SizedBox(
-          height: 40, // Reduced height for the card
-          child: Center(
-            child: Text(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 28, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 4),
+            Text(
+              name,
               textAlign: TextAlign.center,
-              name, // Use the corresponding name
-              style: const TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 13),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -649,24 +666,23 @@ class BackupButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      height: 125,
-      child: InkWell(
-        onTap: () async {
-          await backupDataBase(context, ref);
-        },
-        child: Card(
-          elevation: 4,
-          margin: const EdgeInsets.all(16),
-          child: SizedBox(
-            height: 40, // Reduced height for the card
-            child: Center(
-              child: Text(
-                S.of(context).save_data_backup, // Use the corresponding name
-                style: const TextStyle(fontSize: 18),
-              ),
+    return InkWell(
+      onTap: () async {
+        await backupDataBase(context, ref);
+      },
+      child: Card(
+        elevation: 4,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.backup, size: 28, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 4),
+            Text(
+              S.of(context).save_data_backup,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -687,61 +703,60 @@ class _InvoiceValidationButtonState
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 125,
-      child: InkWell(
-        onTap: _isValidating
-            ? null
-            : () async {
-                setState(() {
-                  _isValidating = true;
-                });
+    return InkWell(
+      onTap: _isValidating
+          ? null
+          : () async {
+              setState(() {
+                _isValidating = true;
+              });
 
-                try {
-                  final mismatches = await validateCustomerInvoices(ref);
+              try {
+                final mismatches = await validateCustomerInvoices(ref);
 
-                  if (mounted) {
-                    setState(() {
-                      _isValidating = false;
-                    });
+                if (mounted) {
+                  setState(() {
+                    _isValidating = false;
+                  });
 
-                    ref.read(invoiceValidationResultsProvider.notifier).state =
-                        mismatches;
+                  ref.read(invoiceValidationResultsProvider.notifier).state =
+                      mismatches;
 
-                    if (context.mounted) {
-                      Navigator.of(context).pop(); // Close the dialog
-                      context.goNamed(AppRoute.invoiceValidationResults.name);
-                    }
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    setState(() {
-                      _isValidating = false;
-                    });
-                    if (context.mounted) {
-                      failureUserMessage(context, 'خطأ في المطابقة: $e');
-                    }
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                    context.goNamed(AppRoute.invoiceValidationResults.name);
                   }
                 }
-              },
-        child: Card(
-          elevation: 4,
-          margin: const EdgeInsets.all(16),
-          child: SizedBox(
-            height: 40,
-            child: Center(
-              child: _isValidating
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text(
-                      'مطابقة مبالغ القوائم',
-                      style: TextStyle(fontSize: 18),
-                    ),
+              } catch (e) {
+                if (mounted) {
+                  setState(() {
+                    _isValidating = false;
+                  });
+                  if (context.mounted) {
+                    failureUserMessage(context, 'خطأ في المطابقة: $e');
+                  }
+                }
+              }
+            },
+      child: Card(
+        elevation: 4,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _isValidating
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Icon(Icons.fact_check, size: 28, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 4),
+            const Text(
+              'مطابقة مبالغ القوائم',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -753,25 +768,24 @@ class PrintLogButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      height: 125,
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).pop(); // Close settings dialog
-          context.goNamed(AppRoute.printLog.name);
-        },
-        child: const Card(
-          elevation: 4,
-          margin: EdgeInsets.all(16),
-          child: SizedBox(
-            height: 40,
-            child: Center(
-              child: Text(
-                'سجل الطباعة',
-                style: TextStyle(fontSize: 18),
-              ),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pop();
+        context.goNamed(AppRoute.printLog.name);
+      },
+      child: Card(
+        elevation: 4,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.print, size: 28, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 4),
+            const Text(
+              'سجل الطباعة',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -783,25 +797,24 @@ class EditLogButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      height: 125,
-      child: InkWell(
-        onTap: () {
-          Navigator.of(context).pop();
-          context.goNamed(AppRoute.editLog.name);
-        },
-        child: const Card(
-          elevation: 4,
-          margin: EdgeInsets.all(16),
-          child: SizedBox(
-            height: 40,
-            child: Center(
-              child: Text(
-                'سجل التعديلات',
-                style: TextStyle(fontSize: 18),
-              ),
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pop();
+        context.goNamed(AppRoute.editLog.name);
+      },
+      child: Card(
+        elevation: 4,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.edit_note, size: 28, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 4),
+            const Text(
+              'سجل التعديلات',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13),
             ),
-          ),
+          ],
         ),
       ),
     );

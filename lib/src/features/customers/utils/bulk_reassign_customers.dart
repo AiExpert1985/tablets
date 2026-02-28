@@ -19,10 +19,23 @@ class BulkCustomerReassignmentButton extends ConsumerStatefulWidget {
 class _BulkCustomerReassignmentButtonState extends ConsumerState<BulkCustomerReassignmentButton> {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: () => _showReassignmentDialog(context),
-      icon: const Icon(Icons.people_alt),
-      label: const Text('تعيين مندوبين'),
+    return InkWell(
+      onTap: () => _showReassignmentDialog(context),
+      child: Card(
+        elevation: 4,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.people_alt, size: 28, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 4),
+            const Text(
+              'تعيين مندوبين',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

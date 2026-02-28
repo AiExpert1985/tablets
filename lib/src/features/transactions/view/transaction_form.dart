@@ -492,11 +492,17 @@ class TransactionForm extends ConsumerWidget {
   static void _checkAndLogEdit(WidgetRef ref, Map<String, dynamic> currentData) {
     final snapshot = ref.read(editLogSnapshotProvider);
     if (snapshot == null) return; // No edit button was pressed, skip
-    // Clear the snapshot regardless of outcome
-    ref.read(editLogSnapshotProvider.notifier).state = null;
+    // If snapshot is for a different transaction, clear it (stale snapshot)
+    if (snapshot['dbRef'] != currentData[dbRefKey]) {
+      ref.read(editLogSnapshotProvider.notifier).state = null;
+      return;
+    }
     final editLogService = ref.read(editLogServiceProvider);
     final currentCopy = editLogService.deepCopyMap(currentData);
+    // If no changes, keep snapshot for next check (user hasn't edited yet)
     if (!editLogService.hasChanges(snapshot, currentCopy)) return;
+    // Changes found - log and clear snapshot
+    ref.read(editLogSnapshotProvider.notifier).state = null;
     final changedFields = editLogService.getChangedFields(snapshot, currentCopy);
     editLogService.logEdit(snapshot, currentCopy, changedFields);
   }

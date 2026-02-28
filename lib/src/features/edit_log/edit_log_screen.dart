@@ -24,8 +24,10 @@ class EditLogScreen extends ConsumerStatefulWidget {
 class _EditLogScreenState extends ConsumerState<EditLogScreen> {
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _salesmanController = TextEditingController();
   String? _selectedType;
-  DateTime? _selectedDate;
+  DateTime? _selectedEditDate;
+  DateTime? _selectedTransactionDate;
 
   @override
   void initState() {
@@ -47,6 +49,23 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
     final allEntries = ref.read(editLogEntriesProvider);
     var filtered = allEntries.toList();
 
+    // Edit date filter - searches the edit timestamp only
+    if (_selectedEditDate != null) {
+      filtered = filtered.where((e) {
+        return e.editTime.year == _selectedEditDate!.year &&
+            e.editTime.month == _selectedEditDate!.month &&
+            e.editTime.day == _selectedEditDate!.day;
+      }).toList();
+    }
+
+    // Transaction type filter - searches both old and new
+    if (_selectedType != null && _selectedType!.isNotEmpty) {
+      filtered = filtered.where((e) =>
+          e.oldTransaction['transactionType'] == _selectedType ||
+          e.newTransaction['transactionType'] == _selectedType).toList();
+    }
+
+    // Number filter - searches both old and new
     final numberText = _numberController.text.trim();
     if (numberText.isNotEmpty) {
       final number = int.tryParse(numberText);
@@ -57,6 +76,7 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
       }
     }
 
+    // Customer name filter - searches both old and new
     final nameText = _nameController.text.trim();
     if (nameText.isNotEmpty) {
       filtered = filtered.where((e) =>
@@ -64,29 +84,46 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
           (e.newTransaction['name'] ?? '').toString().contains(nameText)).toList();
     }
 
-    if (_selectedType != null && _selectedType!.isNotEmpty) {
+    // Salesman filter - searches both old and new
+    final salesmanText = _salesmanController.text.trim();
+    if (salesmanText.isNotEmpty) {
       filtered = filtered.where((e) =>
-          e.oldTransaction['transactionType'] == _selectedType ||
-          e.newTransaction['transactionType'] == _selectedType).toList();
+          (e.oldTransaction['salesman'] ?? '').toString().contains(salesmanText) ||
+          (e.newTransaction['salesman'] ?? '').toString().contains(salesmanText)).toList();
     }
 
-    if (_selectedDate != null) {
+    // Transaction date filter - searches both old and new
+    if (_selectedTransactionDate != null) {
       filtered = filtered.where((e) {
-        return e.editTime.year == _selectedDate!.year &&
-            e.editTime.month == _selectedDate!.month &&
-            e.editTime.day == _selectedDate!.day;
+        final oldDate = _parseTransactionDate(e.oldTransaction['date']);
+        final newDate = _parseTransactionDate(e.newTransaction['date']);
+        return _isSameDay(oldDate, _selectedTransactionDate!) ||
+            _isSameDay(newDate, _selectedTransactionDate!);
       }).toList();
     }
 
     ref.read(filteredEditLogEntriesProvider.notifier).state = filtered;
   }
 
+  DateTime? _parseTransactionDate(dynamic date) {
+    if (date is DateTime) return date;
+    if (date is String) return DateTime.tryParse(date);
+    return null;
+  }
+
+  bool _isSameDay(DateTime? a, DateTime b) {
+    if (a == null) return false;
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
   void _clearFilters() {
     _numberController.clear();
     _nameController.clear();
+    _salesmanController.clear();
     setState(() {
       _selectedType = null;
-      _selectedDate = null;
+      _selectedEditDate = null;
+      _selectedTransactionDate = null;
     });
     ref.read(filteredEditLogEntriesProvider.notifier).state =
         ref.read(editLogEntriesProvider);
@@ -96,17 +133,22 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
   void dispose() {
     _numberController.dispose();
     _nameController.dispose();
+    _salesmanController.dispose();
     super.dispose();
   }
+
+  bool get _hasFilters =>
+      _numberController.text.isNotEmpty ||
+      _nameController.text.isNotEmpty ||
+      _salesmanController.text.isNotEmpty ||
+      _selectedType != null ||
+      _selectedEditDate != null ||
+      _selectedTransactionDate != null;
 
   @override
   Widget build(BuildContext context) {
     final filteredEntries = ref.watch(filteredEditLogEntriesProvider);
     final allEntries = ref.watch(editLogEntriesProvider);
-    final hasFilters = _numberController.text.isNotEmpty ||
-        _nameController.text.isNotEmpty ||
-        _selectedType != null ||
-        _selectedDate != null;
 
     return Scaffold(
       appBar: AppBar(
@@ -120,8 +162,13 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildHeaderWithFilters(context, hasFilters),
+            // Filters row above the table
+            _buildFiltersRow(context),
+            const SizedBox(height: 8),
+            // Column headers
+            _buildColumnHeaders(),
             const Divider(thickness: 2),
+            // Table data
             Expanded(
               child: allEntries.isEmpty
                   ? const Center(
@@ -150,172 +197,229 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
     );
   }
 
-  Widget _buildHeaderWithFilters(BuildContext context, bool hasFilters) {
-    const headerStyle = TextStyle(fontWeight: FontWeight.bold);
+  Widget _buildFiltersRow(BuildContext context) {
     const filterPadding = EdgeInsets.symmetric(horizontal: 4);
+    const filterStyle = TextStyle(fontSize: 11);
+    const hintStyle = TextStyle(fontSize: 11);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      color: Colors.grey[100],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Clear filters button
+          SizedBox(
+            width: 36,
+            child: _hasFilters
+                ? IconButton(
+                    onPressed: _clearFilters,
+                    icon: const Icon(Icons.cancel_outlined,
+                        color: Colors.red, size: 20),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  )
+                : const SizedBox(),
+          ),
+          const SizedBox(width: 4),
+          // Edit date filter
+          Expanded(
+            child: Padding(
+              padding: filterPadding,
+              child: InkWell(
+                onTap: () async {
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: _selectedEditDate ?? DateTime.now(),
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime.now(),
+                  );
+                  if (date != null) {
+                    setState(() => _selectedEditDate = date);
+                    _applyFilters();
+                  }
+                },
+                child: InputDecorator(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                  ),
+                  child: Text(
+                    _selectedEditDate != null
+                        ? DateFormat('dd-MM-yyyy').format(_selectedEditDate!)
+                        : 'تاريخ التعديل',
+                    textAlign: TextAlign.center,
+                    style: filterStyle,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Transaction type filter
+          Expanded(
+            child: Padding(
+              padding: filterPadding,
+              child: DropdownButtonFormField<String>(
+                value: _selectedType,
+                hint: const Text('نوع التعامل', style: hintStyle),
+                isExpanded: true,
+                isDense: true,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                ),
+                items: [
+                  'customerInvoice',
+                  'customerReceipt',
+                  'customerReturn',
+                  'vendorInvoice',
+                  'vendorReceipt',
+                  'vendorReturn',
+                  'expenditures',
+                  'gifts',
+                  'damagedItems',
+                ]
+                    .map((type) => DropdownMenuItem(
+                          value: type,
+                          child: Text(
+                              translateDbTextToScreenText(context, type),
+                              style: filterStyle),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() => _selectedType = value);
+                  _applyFilters();
+                },
+              ),
+            ),
+          ),
+          // Number filter
+          SizedBox(
+            width: 70,
+            child: Padding(
+              padding: filterPadding,
+              child: TextField(
+                controller: _numberController,
+                decoration: const InputDecoration(
+                  hintText: 'رقم القائمة',
+                  hintStyle: hintStyle,
+                  border: OutlineInputBorder(),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                ),
+                textAlign: TextAlign.center,
+                style: filterStyle,
+                onChanged: (_) => _applyFilters(),
+              ),
+            ),
+          ),
+          // Customer name filter
+          Expanded(
+            child: Padding(
+              padding: filterPadding,
+              child: TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  hintText: 'اسم الزبون',
+                  hintStyle: hintStyle,
+                  border: OutlineInputBorder(),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                ),
+                textAlign: TextAlign.center,
+                style: filterStyle,
+                onChanged: (_) => _applyFilters(),
+              ),
+            ),
+          ),
+          // Salesman name filter
+          Expanded(
+            child: Padding(
+              padding: filterPadding,
+              child: TextField(
+                controller: _salesmanController,
+                decoration: const InputDecoration(
+                  hintText: 'اسم المندوب',
+                  hintStyle: hintStyle,
+                  border: OutlineInputBorder(),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                ),
+                textAlign: TextAlign.center,
+                style: filterStyle,
+                onChanged: (_) => _applyFilters(),
+              ),
+            ),
+          ),
+          // Transaction date filter
+          Expanded(
+            child: Padding(
+              padding: filterPadding,
+              child: InkWell(
+                onTap: () async {
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: _selectedTransactionDate ?? DateTime.now(),
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime.now(),
+                  );
+                  if (date != null) {
+                    setState(() => _selectedTransactionDate = date);
+                    _applyFilters();
+                  }
+                },
+                child: InputDecorator(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                  ),
+                  child: Text(
+                    _selectedTransactionDate != null
+                        ? DateFormat('dd-MM-yyyy').format(_selectedTransactionDate!)
+                        : 'تاريخ التعامل',
+                    textAlign: TextAlign.center,
+                    style: filterStyle,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildColumnHeaders() {
+    const headerStyle = TextStyle(fontWeight: FontWeight.bold);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       color: Colors.grey[200],
-      child: Column(
+      child: Row(
         children: [
-          Row(
-            children: [
-              SizedBox(
-                  width: 40,
-                  child: hasFilters
-                      ? IconButton(
-                          onPressed: _clearFilters,
-                          icon: const Icon(Icons.cancel_outlined,
-                              color: Colors.red, size: 20),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        )
-                      : const Text('#',
-                          style: headerStyle, textAlign: TextAlign.center)),
-              const Expanded(
-                  flex: 2,
-                  child: Text('الوقت',
-                      style: headerStyle, textAlign: TextAlign.center)),
-              const Expanded(
-                  flex: 3,
-                  child: Text('النسخة القديمة',
-                      style: headerStyle, textAlign: TextAlign.center)),
-              const Expanded(
-                  flex: 3,
-                  child: Text('النسخة الجديدة',
-                      style: headerStyle, textAlign: TextAlign.center)),
-              const Expanded(
-                  flex: 3,
-                  child: Text('التغييرات',
-                      style: headerStyle, textAlign: TextAlign.center)),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              const SizedBox(width: 40),
-              // Edit date filter
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: filterPadding,
-                  child: InkWell(
-                    onTap: () async {
-                      final date = await showDatePicker(
-                        context: context,
-                        initialDate: _selectedDate ?? DateTime.now(),
-                        firstDate: DateTime(2020),
-                        lastDate: DateTime.now(),
-                      );
-                      if (date != null) {
-                        setState(() => _selectedDate = date);
-                        _applyFilters();
-                      }
-                    },
-                    child: InputDecorator(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                      ),
-                      child: Text(
-                        _selectedDate != null
-                            ? DateFormat('dd-MM-yyyy').format(_selectedDate!)
-                            : '...',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 11),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // Old version filters: type + number + name
-              Expanded(
-                flex: 3,
-                child: Padding(
-                  padding: filterPadding,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: DropdownButtonFormField<String>(
-                          value: _selectedType,
-                          hint: const Text('نوع', style: TextStyle(fontSize: 11)),
-                          isExpanded: true,
-                          isDense: true,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                          ),
-                          items: [
-                            'customerInvoice',
-                            'customerReceipt',
-                            'customerReturn',
-                            'vendorInvoice',
-                            'vendorReceipt',
-                            'vendorReturn',
-                            'expenditures',
-                            'gifts',
-                            'damagedItems',
-                          ]
-                              .map((type) => DropdownMenuItem(
-                                    value: type,
-                                    child: Text(
-                                        translateDbTextToScreenText(
-                                            context, type),
-                                        style: const TextStyle(fontSize: 11)),
-                                  ))
-                              .toList(),
-                          onChanged: (value) {
-                            setState(() => _selectedType = value);
-                            _applyFilters();
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      SizedBox(
-                        width: 50,
-                        child: TextField(
-                          controller: _numberController,
-                          decoration: const InputDecoration(
-                            hintText: 'رقم',
-                            hintStyle: TextStyle(fontSize: 11),
-                            border: OutlineInputBorder(),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                          ),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 11),
-                          onChanged: (_) => _applyFilters(),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: TextField(
-                          controller: _nameController,
-                          decoration: const InputDecoration(
-                            hintText: 'اسم',
-                            hintStyle: TextStyle(fontSize: 11),
-                            border: OutlineInputBorder(),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                          ),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 11),
-                          onChanged: (_) => _applyFilters(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // New version column - no separate filter needed (filters search both)
-              const Expanded(flex: 3, child: SizedBox()),
-              // Changes column - no filter
-              const Expanded(flex: 3, child: SizedBox()),
-            ],
-          ),
+          const SizedBox(
+              width: 40,
+              child: Text('#',
+                  style: headerStyle, textAlign: TextAlign.center)),
+          const Expanded(
+              flex: 2,
+              child: Text('الوقت',
+                  style: headerStyle, textAlign: TextAlign.center)),
+          const Expanded(
+              flex: 3,
+              child: Text('النسخة القديمة',
+                  style: headerStyle, textAlign: TextAlign.center)),
+          const Expanded(
+              flex: 3,
+              child: Text('النسخة الجديدة',
+                  style: headerStyle, textAlign: TextAlign.center)),
+          const Expanded(
+              flex: 3,
+              child: Text('التغييرات',
+                  style: headerStyle, textAlign: TextAlign.center)),
         ],
       ),
     );
