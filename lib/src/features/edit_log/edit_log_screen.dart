@@ -215,7 +215,10 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      color: Colors.grey[100],
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -307,8 +310,7 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
             ),
           ),
           // Number filter
-          SizedBox(
-            width: 70,
+          Expanded(
             child: Padding(
               padding: filterPadding,
               child: TextField(
@@ -439,7 +441,7 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
 
   Widget _buildTableRow(
       BuildContext context, EditLogEntry entry, int rowNumber) {
-    final dateTimeFormat = DateFormat('dd-MM-yyyy HH:mm');
+    final dateTimeFormat = DateFormat('dd-MM-yyyy hh:mm a');
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
@@ -487,9 +489,9 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
   Widget _buildSummary(BuildContext context, Map<String, dynamic> tx) {
     final type =
         translateDbTextToScreenText(context, tx['transactionType'] ?? '');
-    final number = tx['number']?.toString() ?? '';
+    final number = (tx['number'] as num?)?.toInt().toString() ?? '';
     final name = tx['name'] ?? '';
-    final amount = tx['totalAmount']?.toString() ?? '';
+    final amount = (tx['totalAmount'] as num?)?.toInt().toString() ?? '';
 
     String dateStr = '';
     final dateValue = tx['date'];
@@ -503,15 +505,16 @@ class _EditLogScreenState extends ConsumerState<EditLogScreen> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(4),
+        color: Colors.blue.shade50,
+        border: Border.all(color: Colors.blue.shade200),
+        borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
         '$type | $number | $name | $amount | $dateStr',
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 11, color: Colors.blue),
+        style: TextStyle(fontSize: 13, color: Colors.blue.shade800),
         overflow: TextOverflow.ellipsis,
       ),
     );
