@@ -602,6 +602,7 @@ class SettingsDialog extends ConsumerWidget {
                 PrintLogButton(),
                 EditLogButton(),
                 BulkCustomerReassignmentButton(),
+                DuplicateTransactionsButton(),
               ],
             ),
           ],
@@ -810,6 +811,35 @@ class EditLogButton extends ConsumerWidget {
             const SizedBox(height: 4),
             const Text(
               'سجل التعديلات',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DuplicateTransactionsButton extends ConsumerWidget {
+  const DuplicateTransactionsButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pop();
+        context.goNamed(AppRoute.duplicateTransactions.name);
+      },
+      child: Card(
+        elevation: 4,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.copy_all, size: 28, color: Theme.of(context).colorScheme.primary),
+            const SizedBox(height: 4),
+            const Text(
+              'التعاملات المكررة',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 13),
             ),
