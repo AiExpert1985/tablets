@@ -569,31 +569,31 @@ class SettingsDialog extends ConsumerWidget {
                   child: SettingChildButton(S.of(context).categories,
                       AppRoute.categories.name, Icons.category),
                 ),
-                SizedBox(
-                  width: itemWidth,
-                  height: itemHeight,
-                  child: SettingChildButton(S.of(context).deleted_transactions,
-                      AppRoute.deletedTransactions.name, Icons.delete_outline),
-                ),
               ],
             ),
             const SizedBox(height: 10),
             const Divider(),
             const SizedBox(height: 10),
             // Section 2: Print Log, Edit Log
-            const Wrap(
+            Wrap(
               alignment: WrapAlignment.center,
               spacing: 8,
               runSpacing: 8,
               children: [
-                SizedBox(
+                const SizedBox(
                     width: itemWidth,
                     height: itemHeight,
                     child: PrintLogButton()),
-                SizedBox(
+                const SizedBox(
                     width: itemWidth,
                     height: itemHeight,
                     child: EditLogButton()),
+                SizedBox(
+                  width: itemWidth,
+                  height: itemHeight,
+                  child: SettingChildButton(S.of(context).deleted_transactions,
+                      AppRoute.deletedTransactions.name, Icons.delete_outline),
+                ),
               ],
             ),
             const SizedBox(height: 10),
