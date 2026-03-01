@@ -588,11 +588,14 @@ class SettingsDialog extends ConsumerWidget {
                     width: itemWidth,
                     height: itemHeight,
                     child: EditLogButton()),
-                SizedBox(
-                  width: itemWidth,
-                  height: itemHeight,
-                  child: SettingChildButton(S.of(context).deleted_transactions,
-                      AppRoute.deletedTransactions.name, Icons.delete_outline),
+                Tooltip(
+                  message: 'سلة المهملات لكل للتعاملات التي تم حدفها من البرنامج (من كافة الاجهزة)',
+                  child: SizedBox(
+                    width: itemWidth,
+                    height: itemHeight,
+                    child: SettingChildButton(S.of(context).deleted_transactions,
+                        AppRoute.deletedTransactions.name, Icons.delete_outline),
+                  ),
                 ),
               ],
             ),
@@ -605,11 +608,14 @@ class SettingsDialog extends ConsumerWidget {
               spacing: 8,
               runSpacing: 8,
               children: [
-                SizedBox(
-                  width: itemWidth,
-                  height: itemHeight,
-                  child: SettingChildButton('تخفيضات المجهز',
-                      AppRoute.supplierDiscount.name, Icons.discount),
+                Tooltip(
+                  message: 'تخفيض اسعار المواد التي تم شرائها من المجهز حيث يتم تغيير الاسعار في القوائم و كتابة ملاحظات',
+                  child: SizedBox(
+                    width: itemWidth,
+                    height: itemHeight,
+                    child: SettingChildButton('تخفيضات المجهز',
+                        AppRoute.supplierDiscount.name, Icons.discount),
+                  ),
                 ),
                 const SizedBox(
                     width: itemWidth,
@@ -717,24 +723,27 @@ class BackupButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: () async {
-        await backupDataBase(context, ref);
-      },
-      child: Card(
-        elevation: 4,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.backup,
-                size: 28, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 4),
-            Text(
-              S.of(context).save_data_backup,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 13),
-            ),
-          ],
+    return Tooltip(
+      message: 'عمل نسخة احتياطية من قاعدة البيانات',
+      child: InkWell(
+        onTap: () async {
+          await backupDataBase(context, ref);
+        },
+        child: Card(
+          elevation: 4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.backup,
+                  size: 28, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(height: 4),
+              Text(
+                S.of(context).save_data_backup,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 13),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -755,61 +764,64 @@ class _InvoiceValidationButtonState
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: _isValidating
-          ? null
-          : () async {
-              setState(() {
-                _isValidating = true;
-              });
+    return Tooltip(
+      message: 'مطابقة مبالغ المواد داخل القائمة مع المبلغ الكلي للقائمة لكشف الاختلافات ان وجدت',
+      child: InkWell(
+        onTap: _isValidating
+            ? null
+            : () async {
+                setState(() {
+                  _isValidating = true;
+                });
 
-              try {
-                final mismatches = await validateCustomerInvoices(ref);
+                try {
+                  final mismatches = await validateCustomerInvoices(ref);
 
-                if (mounted) {
-                  setState(() {
-                    _isValidating = false;
-                  });
+                  if (mounted) {
+                    setState(() {
+                      _isValidating = false;
+                    });
 
-                  ref.read(invoiceValidationResultsProvider.notifier).state =
-                      mismatches;
+                    ref.read(invoiceValidationResultsProvider.notifier).state =
+                        mismatches;
 
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                    context.goNamed(AppRoute.invoiceValidationResults.name);
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                      context.goNamed(AppRoute.invoiceValidationResults.name);
+                    }
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    setState(() {
+                      _isValidating = false;
+                    });
+                    if (context.mounted) {
+                      failureUserMessage(context, 'خطأ في المطابقة: $e');
+                    }
                   }
                 }
-              } catch (e) {
-                if (mounted) {
-                  setState(() {
-                    _isValidating = false;
-                  });
-                  if (context.mounted) {
-                    failureUserMessage(context, 'خطأ في المطابقة: $e');
-                  }
-                }
-              }
-            },
-      child: Card(
-        elevation: 4,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _isValidating
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Icon(Icons.fact_check,
-                    size: 28, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 4),
-            const Text(
-              'مطابقة مبالغ القوائم',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13),
-            ),
-          ],
+              },
+        child: Card(
+          elevation: 4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _isValidating
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Icon(Icons.fact_check,
+                      size: 28, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(height: 4),
+              const Text(
+                'مطابقة مبالغ القوائم',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -821,25 +833,28 @@ class PrintLogButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).pop();
-        context.goNamed(AppRoute.printLog.name);
-      },
-      child: Card(
-        elevation: 4,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.print,
-                size: 28, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 4),
-            const Text(
-              'سجل الطباعة',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13),
-            ),
-          ],
+    return Tooltip(
+      message: 'سجل لكل التعاملات التي تمت طباعتها المرسلة الى المخزن للتجهيز و تخص هذا الجهاز فقط',
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).pop();
+          context.goNamed(AppRoute.printLog.name);
+        },
+        child: Card(
+          elevation: 4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.print,
+                  size: 28, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(height: 4),
+              const Text(
+                'سجل الطباعة',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -851,25 +866,28 @@ class EditLogButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).pop();
-        context.goNamed(AppRoute.editLog.name);
-      },
-      child: Card(
-        elevation: 4,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.edit_note,
-                size: 28, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 4),
-            const Text(
-              'سجل التعديلات',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13),
-            ),
-          ],
+    return Tooltip(
+      message: 'سجل جميع التعاملات التي تم تعديلها على هذا الجهاز',
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).pop();
+          context.goNamed(AppRoute.editLog.name);
+        },
+        child: Card(
+          elevation: 4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.edit_note,
+                  size: 28, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(height: 4),
+              const Text(
+                'سجل التعديلات',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -881,25 +899,28 @@ class DuplicateTransactionsButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).pop();
-        context.goNamed(AppRoute.duplicateTransactions.name);
-      },
-      child: Card(
-        elevation: 4,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.copy_all,
-                size: 28, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 4),
-            const Text(
-              'التعاملات المكررة',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13),
-            ),
-          ],
+    return Tooltip(
+      message: 'كشف التعاملات المتكررة بنفس الرقم المرجعي فقط',
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).pop();
+          context.goNamed(AppRoute.duplicateTransactions.name);
+        },
+        child: Card(
+          elevation: 4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.copy_all,
+                  size: 28, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(height: 4),
+              const Text(
+                'التعاملات المكررة',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13),
+              ),
+            ],
+          ),
         ),
       ),
     );
