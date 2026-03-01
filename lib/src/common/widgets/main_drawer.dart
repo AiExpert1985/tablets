@@ -560,13 +560,14 @@ class SettingsDialog extends ConsumerWidget {
                 SizedBox(
                   width: itemWidth,
                   height: itemHeight,
-                  child: SettingChildButton(S.of(context).regions, AppRoute.regions.name, Icons.map),
+                  child: SettingChildButton(
+                      S.of(context).regions, AppRoute.regions.name, Icons.map),
                 ),
                 SizedBox(
                   width: itemWidth,
                   height: itemHeight,
-                  child: SettingChildButton(
-                      S.of(context).categories, AppRoute.categories.name, Icons.category),
+                  child: SettingChildButton(S.of(context).categories,
+                      AppRoute.categories.name, Icons.category),
                 ),
                 SizedBox(
                   width: itemWidth,
@@ -585,38 +586,64 @@ class SettingsDialog extends ConsumerWidget {
               spacing: 8,
               runSpacing: 8,
               children: [
-                SizedBox(width: itemWidth, height: itemHeight, child: PrintLogButton()),
-                SizedBox(width: itemWidth, height: itemHeight, child: EditLogButton()),
+                SizedBox(
+                    width: itemWidth,
+                    height: itemHeight,
+                    child: PrintLogButton()),
+                SizedBox(
+                    width: itemWidth,
+                    height: itemHeight,
+                    child: EditLogButton()),
               ],
             ),
             const SizedBox(height: 10),
             const Divider(),
             const SizedBox(height: 10),
-            // Section 3: Duplicate Transactions, Vendor Discount, Backup, Matching Amounts, Salesman Allocation
+            // Section 3: Utility Tools
             Wrap(
               alignment: WrapAlignment.center,
               spacing: 8,
               runSpacing: 8,
               children: [
-                const SizedBox(
-                    width: itemWidth, height: itemHeight, child: DuplicateTransactionsButton()),
                 SizedBox(
                   width: itemWidth,
                   height: itemHeight,
-                  child: SettingChildButton(
-                      'تخفيضات المجهز', AppRoute.supplierDiscount.name, Icons.discount),
+                  child: SettingChildButton('تخفيضات المجهز',
+                      AppRoute.supplierDiscount.name, Icons.discount),
                 ),
-                const SizedBox(width: itemWidth, height: itemHeight, child: BackupButton()),
                 const SizedBox(
-                    width: itemWidth, height: itemHeight, child: InvoiceValidationButton()),
+                    width: itemWidth,
+                    height: itemHeight,
+                    child: BackupButton()),
                 const SizedBox(
-                    width: itemWidth, height: itemHeight, child: BulkCustomerReassignmentButton()),
+                    width: itemWidth,
+                    height: itemHeight,
+                    child: BulkCustomerReassignmentButton()),
               ],
             ),
             const SizedBox(height: 10),
             const Divider(),
             const SizedBox(height: 10),
-            // Section 4: Settings
+            // Section 4: Detection Tools
+            const Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                SizedBox(
+                    width: itemWidth,
+                    height: itemHeight,
+                    child: DuplicateTransactionsButton()),
+                SizedBox(
+                    width: itemWidth,
+                    height: itemHeight,
+                    child: InvoiceValidationButton()),
+              ],
+            ),
+            const SizedBox(height: 10),
+            const Divider(),
+            const SizedBox(height: 10),
+            // Section 5: Settings
             Wrap(
               alignment: WrapAlignment.center,
               spacing: 8,
@@ -625,8 +652,8 @@ class SettingsDialog extends ConsumerWidget {
                 SizedBox(
                   width: itemWidth,
                   height: itemHeight,
-                  child: SettingChildButton(
-                      S.of(context).settings, AppRoute.settings.name, Icons.settings),
+                  child: SettingChildButton(S.of(context).settings,
+                      AppRoute.settings.name, Icons.settings),
                 ),
               ],
             ),
@@ -685,7 +712,6 @@ class SettingChildButton extends ConsumerWidget {
   }
 }
 
-
 class BackupButton extends ConsumerWidget {
   const BackupButton({super.key});
 
@@ -700,7 +726,8 @@ class BackupButton extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.backup, size: 28, color: Theme.of(context).colorScheme.primary),
+            Icon(Icons.backup,
+                size: 28, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 4),
             Text(
               S.of(context).save_data_backup,
@@ -774,7 +801,8 @@ class _InvoiceValidationButtonState
                     height: 24,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : Icon(Icons.fact_check, size: 28, color: Theme.of(context).colorScheme.primary),
+                : Icon(Icons.fact_check,
+                    size: 28, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 4),
             const Text(
               'مطابقة مبالغ القوائم',
@@ -803,7 +831,8 @@ class PrintLogButton extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.print, size: 28, color: Theme.of(context).colorScheme.primary),
+            Icon(Icons.print,
+                size: 28, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 4),
             const Text(
               'سجل الطباعة',
@@ -832,7 +861,8 @@ class EditLogButton extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.edit_note, size: 28, color: Theme.of(context).colorScheme.primary),
+            Icon(Icons.edit_note,
+                size: 28, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 4),
             const Text(
               'سجل التعديلات',
@@ -861,7 +891,8 @@ class DuplicateTransactionsButton extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.copy_all, size: 28, color: Theme.of(context).colorScheme.primary),
+            Icon(Icons.copy_all,
+                size: 28, color: Theme.of(context).colorScheme.primary),
             const SizedBox(height: 4),
             const Text(
               'التعاملات المكررة',
@@ -1033,8 +1064,10 @@ class _MissingTransactionsDetectionButtonState
               final dbRef = m.fullTransactionData['dbRef']?.toString();
               return dbRef != null && !existingDbRefs.contains(dbRef);
             }).toList();
-            ref.read(missingTransactionsProvider.notifier).state =
-                [...currentResults, ...newFromLog];
+            ref.read(missingTransactionsProvider.notifier).state = [
+              ...currentResults,
+              ...newFromLog
+            ];
           }
           // Navigate to results screen
           context.goNamed(AppRoute.missingTransactionsResults.name);
