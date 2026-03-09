@@ -26,6 +26,7 @@ import 'package:tablets/src/features/transactions/view/duplicate_transactions_sc
 import 'package:tablets/src/features/print_log/print_log_screen.dart';
 import 'package:tablets/src/features/edit_log/edit_log_screen.dart';
 import 'package:tablets/src/features/error_log/error_log_screen.dart';
+import 'package:tablets/src/features/save_log/save_log_screen.dart';
 
 enum AppRoute {
   home,
@@ -49,6 +50,7 @@ enum AppRoute {
   printLog,
   editLog,
   errorLog,
+  saveLog,
   duplicateTransactions,
 }
 
@@ -182,6 +184,11 @@ final goRouterProvider = Provider<GoRouter>(
           path: '/error-log',
           name: AppRoute.errorLog.name,
           builder: (BuildContext context, GoRouterState state) => const ErrorLogScreen(),
+        ),
+        GoRoute(
+          path: '/save-log',
+          name: AppRoute.saveLog.name,
+          builder: (BuildContext context, GoRouterState state) => const SaveLogScreen(),
         ),
         GoRoute(
           path: '/duplicate-transactions',

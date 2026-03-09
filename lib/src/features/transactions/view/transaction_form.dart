@@ -33,6 +33,7 @@ import 'package:tablets/src/features/deleted_transactions/repository/deleted_tra
 import 'package:tablets/src/features/edit_log/edit_log_service.dart';
 import 'package:tablets/src/features/error_log/error_log_service.dart';
 import 'package:tablets/src/features/print_log/print_log_service.dart';
+import 'package:tablets/src/features/save_log/save_log_service.dart';
 import 'package:tablets/src/features/settings/controllers/settings_form_data_notifier.dart';
 import 'package:tablets/src/features/transactions/controllers/customer_debt_info_provider.dart';
 import 'package:tablets/src/features/transactions/controllers/form_navigator_provider.dart';
@@ -671,7 +672,10 @@ class TransactionForm extends ConsumerWidget {
     // ignore: unawaited_futures
     formController
         .saveItemToDb(context, transaction, isEditing, keepDialogOpen: true)
-        .catchError((e) {
+        .then((_) {
+      ref.read(saveLogServiceProvider).logSave(
+          itemData, isEditing ? 'edit' : 'add');
+    }).catchError((e) {
       errorPrint('Background save failed: $e');
       ref.read(errorLogServiceProvider).logError(
           itemData, 'save_failed', isEditing ? 'edit' : 'add', e.toString());
