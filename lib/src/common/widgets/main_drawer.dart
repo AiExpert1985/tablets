@@ -1023,27 +1023,30 @@ class _MissingTransactionsDetectionButtonState
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 125,
+    return Tooltip(
+      message: 'البحث عن القوائم المفقودة من خلال ملفات النسخ الاحتياطي',
       child: InkWell(
         onTap: _isDetecting ? null : _startDetection,
         child: Card(
           elevation: 4,
-          margin: const EdgeInsets.all(16),
-          child: SizedBox(
-            height: 40,
-            child: Center(
-              child: _isDetecting
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _isDetecting
                   ? const SizedBox(
-                      width: 20,
-                      height: 20,
+                      width: 28,
+                      height: 28,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Text(
-                      'البحث عن القوائم المفقودة',
-                      style: TextStyle(fontSize: 18),
-                    ),
-            ),
+                  : Icon(Icons.search_off,
+                      size: 28, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(height: 4),
+              const Text(
+                'القوائم المفقودة',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13),
+              ),
+            ],
           ),
         ),
       ),
