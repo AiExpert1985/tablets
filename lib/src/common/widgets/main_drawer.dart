@@ -588,6 +588,10 @@ class SettingsDialog extends ConsumerWidget {
                     width: itemWidth,
                     height: itemHeight,
                     child: EditLogButton()),
+                const SizedBox(
+                    width: itemWidth,
+                    height: itemHeight,
+                    child: ErrorLogButton()),
                 Tooltip(
                   message: 'سلة المهملات لكل للتعاملات التي تم حدفها من البرنامج (من كافة الاجهزة)',
                   child: SizedBox(
@@ -883,6 +887,39 @@ class EditLogButton extends ConsumerWidget {
               const SizedBox(height: 4),
               const Text(
                 'سجل التعديلات',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ErrorLogButton extends ConsumerWidget {
+  const ErrorLogButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Tooltip(
+      message: 'سجل الاخطاء التي حدثت اثناء حفظ او حذف التعاملات على هذا الجهاز',
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).pop();
+          context.goNamed(AppRoute.errorLog.name);
+        },
+        child: Card(
+          elevation: 4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.error_outline,
+                  size: 28, color: Theme.of(context).colorScheme.error),
+              const SizedBox(height: 4),
+              const Text(
+                'سجل الاخطاء',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 13),
               ),
