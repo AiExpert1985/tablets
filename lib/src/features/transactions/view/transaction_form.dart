@@ -679,7 +679,6 @@ class TransactionForm extends ConsumerWidget {
       errorPrint('Background save failed: $e');
       ref.read(errorLogServiceProvider).logError(
           itemData, 'save_failed', isEditing ? 'edit' : 'add', e.toString());
-      return false;
     });
 
     if (!context.mounted) return true;

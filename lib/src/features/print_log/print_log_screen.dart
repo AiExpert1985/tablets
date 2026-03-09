@@ -3,12 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:tablets/src/common/functions/utils.dart';
-import 'package:tablets/src/common/values/gaps.dart';
 import 'package:tablets/src/common/widgets/show_transaction_dialog.dart';
 import 'package:tablets/src/features/print_log/print_log_service.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
-import 'package:tablets/src/common/widgets/main_drawer.dart';
+
 
 /// Provider that holds the loaded print log entries
 final printLogEntriesProvider =
@@ -190,9 +189,6 @@ class _PrintLogScreenState extends ConsumerState<PrintLogScreen> {
                           },
                         ),
             ),
-            VerticalGap.l,
-            // Missing transactions detection button (moved from SettingsDialog)
-            const MissingTransactionsDetectionButton(),
           ],
         ),
       ),

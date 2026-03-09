@@ -227,7 +227,7 @@ class _SaveLogScreenState extends ConsumerState<SaveLogScreen> {
                 child: Padding(
                   padding: filterPadding,
                   child: DropdownButtonFormField<String>(
-                    value: _selectedTransactionType,
+                    initialValue: _selectedTransactionType,
                     hint: const Text('الكل', style: TextStyle(fontSize: 12)),
                     isExpanded: true,
                     isDense: true,
@@ -312,7 +312,7 @@ class _SaveLogScreenState extends ConsumerState<SaveLogScreen> {
                 child: Padding(
                   padding: filterPadding,
                   child: DropdownButtonFormField<String>(
-                    value: _selectedOperationType,
+                    initialValue: _selectedOperationType,
                     hint: const Text('الكل', style: TextStyle(fontSize: 12)),
                     isExpanded: true,
                     isDense: true,

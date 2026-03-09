@@ -652,6 +652,10 @@ class SettingsDialog extends ConsumerWidget {
                     width: itemWidth,
                     height: itemHeight,
                     child: InvoiceValidationButton()),
+                SizedBox(
+                    width: itemWidth,
+                    height: itemHeight,
+                    child: MissingTransactionsDetectionButton()),
               ],
             ),
             const SizedBox(height: 10),
