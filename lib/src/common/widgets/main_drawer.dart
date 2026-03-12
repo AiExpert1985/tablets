@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,11 +22,11 @@ import 'package:tablets/src/features/deleted_transactions/controllers/deleted_tr
 import 'package:tablets/src/features/pending_transactions/controllers/pending_transaction_screen_controller.dart';
 import 'package:tablets/src/features/pending_transactions/repository/pending_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/regions/controllers/region_screen_controller.dart';
+import 'package:tablets/src/features/transactions/controllers/invoice_validation_controller.dart';
+import 'package:tablets/src/features/transactions/controllers/missing_transactions_detector.dart';
 import 'package:tablets/src/features/transactions/controllers/transaction_screen_controller.dart';
 import 'package:tablets/src/features/vendors/controllers/vendor_screen_controller.dart';
 import 'package:tablets/src/routers/go_router_provider.dart';
-import 'package:tablets/src/features/transactions/controllers/invoice_validation_controller.dart';
-import 'package:tablets/src/features/transactions/controllers/missing_transactions_detector.dart';
 
 class MainDrawer extends ConsumerWidget {
   const MainDrawer({super.key});
@@ -597,12 +598,15 @@ class SettingsDialog extends ConsumerWidget {
                     height: itemHeight,
                     child: SaveLogButton()),
                 Tooltip(
-                  message: 'سلة المهملات لكل للتعاملات التي تم حدفها من البرنامج (من كافة الاجهزة)',
+                  message:
+                      'سلة المهملات لكل للتعاملات التي تم حدفها من البرنامج (من كافة الاجهزة)',
                   child: SizedBox(
                     width: itemWidth,
                     height: itemHeight,
-                    child: SettingChildButton(S.of(context).deleted_transactions,
-                        AppRoute.deletedTransactions.name, Icons.delete_outline),
+                    child: SettingChildButton(
+                        S.of(context).deleted_transactions,
+                        AppRoute.deletedTransactions.name,
+                        Icons.delete_outline),
                   ),
                 ),
               ],
@@ -617,7 +621,8 @@ class SettingsDialog extends ConsumerWidget {
               runSpacing: 8,
               children: [
                 Tooltip(
-                  message: 'تخفيض اسعار المواد التي تم شرائها من المجهز حيث يتم تغيير الاسعار في القوائم و كتابة ملاحظات',
+                  message:
+                      'تخفيض اسعار المواد التي تم شرائها من المجهز حيث يتم تغيير الاسعار في القوائم و كتابة ملاحظات',
                   child: SizedBox(
                     width: itemWidth,
                     height: itemHeight,
@@ -777,7 +782,8 @@ class _InvoiceValidationButtonState
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: 'مطابقة مبالغ المواد داخل القائمة مع المبلغ الكلي للقائمة لكشف الاختلافات ان وجدت',
+      message:
+          'مطابقة مبالغ المواد داخل القائمة مع المبلغ الكلي للقائمة لكشف الاختلافات ان وجدت',
       child: InkWell(
         onTap: _isValidating
             ? null
@@ -846,7 +852,8 @@ class PrintLogButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Tooltip(
-      message: 'سجل لكل التعاملات التي تمت طباعتها المرسلة الى المخزن للتجهيز و تخص هذا الجهاز فقط',
+      message:
+          'سجل لكل التعاملات التي تمت طباعتها المرسلة الى المخزن للتجهيز و تخص هذا الجهاز فقط',
       child: InkWell(
         onTap: () {
           Navigator.of(context).pop();
@@ -912,7 +919,8 @@ class ErrorLogButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Tooltip(
-      message: 'سجل الاخطاء التي حدثت اثناء حفظ او حذف التعاملات على هذا الجهاز',
+      message:
+          'سجل الاخطاء التي حدثت اثناء حفظ او حذف التعاملات على هذا الجهاز',
       child: InkWell(
         onTap: () {
           Navigator.of(context).pop();
@@ -945,7 +953,8 @@ class SaveLogButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Tooltip(
-      message: 'سجل جميع التعاملات التي تم حفظها بنجاح على هذا الجهاز',
+      message:
+          'سجل جميع التعاملات التي تم حفظها على السيرفر بنجاح من هذا الجهاز',
       child: InkWell(
         onTap: () {
           Navigator.of(context).pop();
