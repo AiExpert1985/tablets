@@ -667,18 +667,33 @@ class TransactionForm extends ConsumerWidget {
     final transaction =
         Transaction.fromMap({...formDataCopy, 'imageUrls': imageUrls});
 
+    // Read services before async call — ref may become invalid after widget disposal
+    final saveLogService = ref.read(saveLogServiceProvider);
+    final errorLogService = ref.read(errorLogServiceProvider);
+    final operationLabel = isEditing ? 'edit' : 'add';
+    // Defensive copy — itemData is mutated below (date→Timestamp, dbCache.update)
+    final itemDataForLog = {...itemData};
+
+    // Only log new transactions (old name was empty); edits are tracked by edit log
+    final oldName = oldTransaction?['name']?.toString() ?? '';
+    final isNewTransaction = oldName.isEmpty;
+
     // Fire-and-forget Firebase save - writes go to Firebase local cache instantly,
     // then sync to server in background via Firebase persistence
     // ignore: unawaited_futures
     formController
         .saveItemToDb(context, transaction, isEditing, keepDialogOpen: true)
-        .then((_) {
-      ref.read(saveLogServiceProvider).logSave(
-          itemData, isEditing ? 'edit' : 'add');
+        .then((success) {
+      if (success && isNewTransaction) {
+        saveLogService.logSave(itemDataForLog);
+      } else if (!success) {
+        errorLogService.logError(
+            itemDataForLog, 'save_failed', operationLabel, 'saveItemToDb returned false');
+      }
     }).catchError((e) {
       errorPrint('Background save failed: $e');
-      ref.read(errorLogServiceProvider).logError(
-          itemData, 'save_failed', isEditing ? 'edit' : 'add', e.toString());
+      errorLogService.logError(
+          itemDataForLog, 'save_failed', operationLabel, e.toString());
     });
 
     if (!context.mounted) return true;
