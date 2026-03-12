@@ -14,6 +14,7 @@ class SaveLogEntry {
   final String date; // transaction date as ISO string
   final String name;
   final num totalAmount;
+  final String operationType; // 'add' or 'edit'
 
   SaveLogEntry({
     required this.saveTime,
@@ -23,6 +24,7 @@ class SaveLogEntry {
     required this.date,
     required this.name,
     required this.totalAmount,
+    required this.operationType,
   });
 
   Map<String, dynamic> toJson() {
@@ -34,6 +36,7 @@ class SaveLogEntry {
       'date': date,
       'name': name,
       'totalAmount': totalAmount,
+      'operationType': operationType,
     };
   }
 
@@ -46,11 +49,13 @@ class SaveLogEntry {
       date: json['date'] ?? '',
       name: json['name'] ?? '',
       totalAmount: json['totalAmount'] ?? 0,
+      operationType: json['operationType'] ?? '',
     );
   }
 
   /// Convert transaction data to a SaveLogEntry
-  static SaveLogEntry fromTransactionData(Map<String, dynamic> data) {
+  static SaveLogEntry fromTransactionData(
+      Map<String, dynamic> data, String operationType) {
     // Handle date conversion
     String dateStr = '';
     final dateValue = data['date'];
@@ -70,6 +75,7 @@ class SaveLogEntry {
       date: dateStr,
       name: data['name'] ?? '',
       totalAmount: data['totalAmount'] ?? 0,
+      operationType: operationType,
     );
   }
 }
@@ -90,7 +96,7 @@ class SaveLogService {
   }
 
   /// Log a successful save
-  void logSave(Map<String, dynamic> transactionData) {
+  void logSave(Map<String, dynamic> transactionData, String operationType) {
     try {
       // Skip transactions with empty names
       final name = transactionData['name'];
@@ -100,7 +106,8 @@ class SaveLogService {
       if (!dir.existsSync()) {
         dir.createSync(recursive: true);
       }
-      final entry = SaveLogEntry.fromTransactionData(transactionData);
+      final entry =
+          SaveLogEntry.fromTransactionData(transactionData, operationType);
       final file = File(_getLogFilePath(entry.saveTime));
       file.writeAsStringSync('${jsonEncode(entry.toJson())}\n',
           mode: FileMode.append);

@@ -670,9 +670,18 @@ class TransactionForm extends ConsumerWidget {
     // Read services before async call — ref may become invalid after widget disposal
     final saveLogService = ref.read(saveLogServiceProvider);
     final errorLogService = ref.read(errorLogServiceProvider);
+    final editLogService = ref.read(editLogServiceProvider);
     final operationLabel = isEditing ? 'edit' : 'add';
     // Defensive copy — itemData is mutated below (date→Timestamp, dbCache.update)
     final itemDataForLog = {...itemData};
+
+    // Determine if there are real changes worth logging
+    // For edits: compare with old transaction from cache; skip log if unchanged
+    // For adds (old name was empty): always log
+    final shouldLog = !isEditing ||
+        oldTransaction == null ||
+        oldTransaction.isEmpty ||
+        editLogService.hasChanges(oldTransaction, itemDataForLog);
 
     // Fire-and-forget Firebase save - writes go to Firebase local cache instantly,
     // then sync to server in background via Firebase persistence
@@ -680,9 +689,9 @@ class TransactionForm extends ConsumerWidget {
     formController
         .saveItemToDb(context, transaction, isEditing, keepDialogOpen: true)
         .then((success) {
-      if (success) {
-        saveLogService.logSave(itemDataForLog);
-      } else {
+      if (success && shouldLog) {
+        saveLogService.logSave(itemDataForLog, operationLabel);
+      } else if (!success) {
         errorLogService.logError(
             itemDataForLog, 'save_failed', operationLabel, 'saveItemToDb returned false');
       }

@@ -26,6 +26,7 @@ class _SaveLogScreenState extends ConsumerState<SaveLogScreen> {
   final TextEditingController _numberController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   String? _selectedTransactionType;
+  String? _selectedOperationType;
   DateTime? _selectedSaveDate;
 
   @override
@@ -74,6 +75,13 @@ class _SaveLogScreenState extends ConsumerState<SaveLogScreen> {
           .toList();
     }
 
+    // Filter by operation type
+    if (_selectedOperationType != null && _selectedOperationType!.isNotEmpty) {
+      filtered = filtered
+          .where((e) => e.operationType == _selectedOperationType)
+          .toList();
+    }
+
     // Filter by save date
     if (_selectedSaveDate != null) {
       filtered = filtered.where((e) {
@@ -91,6 +99,7 @@ class _SaveLogScreenState extends ConsumerState<SaveLogScreen> {
     _nameController.clear();
     setState(() {
       _selectedTransactionType = null;
+      _selectedOperationType = null;
       _selectedSaveDate = null;
     });
     ref.read(filteredSaveLogEntriesProvider.notifier).state =
@@ -111,6 +120,7 @@ class _SaveLogScreenState extends ConsumerState<SaveLogScreen> {
     final hasFilters = _numberController.text.isNotEmpty ||
         _nameController.text.isNotEmpty ||
         _selectedTransactionType != null ||
+        _selectedOperationType != null ||
         _selectedSaveDate != null;
 
     return Scaffold(
@@ -195,6 +205,10 @@ class _SaveLogScreenState extends ConsumerState<SaveLogScreen> {
               const Expanded(
                   flex: 1,
                   child: Text('المبلغ',
+                      style: headerStyle, textAlign: TextAlign.center)),
+              const Expanded(
+                  flex: 1,
+                  child: Text('نوع العملية',
                       style: headerStyle, textAlign: TextAlign.center)),
               const Expanded(
                   flex: 2,
@@ -292,6 +306,38 @@ class _SaveLogScreenState extends ConsumerState<SaveLogScreen> {
                 flex: 1,
                 child: SizedBox(),
               ),
+              // Operation type dropdown
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: filterPadding,
+                  child: DropdownButtonFormField<String>(
+                    initialValue: _selectedOperationType,
+                    hint: const Text('الكل', style: TextStyle(fontSize: 12)),
+                    isExpanded: true,
+                    isDense: true,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                          value: 'add',
+                          child:
+                              Text('اضافة', style: TextStyle(fontSize: 12))),
+                      DropdownMenuItem(
+                          value: 'edit',
+                          child:
+                              Text('تعديل', style: TextStyle(fontSize: 12))),
+                    ],
+                    onChanged: (value) {
+                      setState(() => _selectedOperationType = value);
+                      _applyFilters();
+                    },
+                  ),
+                ),
+              ),
               // Save date filter
               Expanded(
                 flex: 2,
@@ -339,6 +385,12 @@ class _SaveLogScreenState extends ConsumerState<SaveLogScreen> {
       BuildContext context, SaveLogEntry entry, int rowNumber) {
     final dateTimeFormat = DateFormat('dd-MM-yyyy HH:mm');
 
+    final operationText = switch (entry.operationType) {
+      'add' => 'اضافة',
+      'edit' => 'تعديل',
+      _ => entry.operationType,
+    };
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       child: Row(
@@ -373,6 +425,14 @@ class _SaveLogScreenState extends ConsumerState<SaveLogScreen> {
             flex: 1,
             child: Text(
               entry.totalAmount.toStringAsFixed(0),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Text(
+              operationText,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 12),
             ),
