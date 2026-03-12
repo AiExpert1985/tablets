@@ -681,10 +681,13 @@ class TransactionForm extends ConsumerWidget {
     // Determine if there are real changes worth logging
     // For edits: compare with old transaction from cache; skip log if unchanged
     // For adds (old name was empty): always log
+    // Normalize both sides (remove empty rows) before comparing
+    final oldNormalized =
+        oldTransaction != null ? removeEmptyRows({...oldTransaction}) : null;
     final shouldLog = !isEditing ||
-        oldTransaction == null ||
-        oldTransaction.isEmpty ||
-        editLogService.hasChanges(oldTransaction, itemDataForLog);
+        oldNormalized == null ||
+        oldNormalized.isEmpty ||
+        editLogService.hasChanges(oldNormalized, itemDataForLog);
 
     // Fire-and-forget Firebase save - writes go to Firebase local cache instantly,
     // then sync to server in background via Firebase persistence
