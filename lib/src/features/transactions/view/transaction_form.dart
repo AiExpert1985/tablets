@@ -670,24 +670,13 @@ class TransactionForm extends ConsumerWidget {
     // Read services before async call — ref may become invalid after widget disposal
     final saveLogService = ref.read(saveLogServiceProvider);
     final errorLogService = ref.read(errorLogServiceProvider);
-    final editLogService = ref.read(editLogServiceProvider);
-    // Determine add vs edit by old transaction's name:
-    // empty/null old name means user is filling a new transaction, not editing
-    final oldName = oldTransaction?['name']?.toString() ?? '';
-    final operationLabel = oldName.isEmpty ? 'add' : 'edit';
+    final operationLabel = isEditing ? 'edit' : 'add';
     // Defensive copy — itemData is mutated below (date→Timestamp, dbCache.update)
     final itemDataForLog = {...itemData};
 
-    // Determine if there are real changes worth logging
-    // For edits: compare with old transaction from cache; skip log if unchanged
-    // For adds (old name was empty): always log
-    // Normalize both sides (remove empty rows) before comparing
-    final oldNormalized =
-        oldTransaction != null ? removeEmptyRows({...oldTransaction}) : null;
-    final shouldLog = !isEditing ||
-        oldNormalized == null ||
-        oldNormalized.isEmpty ||
-        editLogService.hasChanges(oldNormalized, itemDataForLog);
+    // Only log new transactions (old name was empty); edits are tracked by edit log
+    final oldName = oldTransaction?['name']?.toString() ?? '';
+    final isNewTransaction = oldName.isEmpty;
 
     // Fire-and-forget Firebase save - writes go to Firebase local cache instantly,
     // then sync to server in background via Firebase persistence
@@ -695,8 +684,8 @@ class TransactionForm extends ConsumerWidget {
     formController
         .saveItemToDb(context, transaction, isEditing, keepDialogOpen: true)
         .then((success) {
-      if (success && shouldLog) {
-        saveLogService.logSave(itemDataForLog, operationLabel);
+      if (success && isNewTransaction) {
+        saveLogService.logSave(itemDataForLog);
       } else if (!success) {
         errorLogService.logError(
             itemDataForLog, 'save_failed', operationLabel, 'saveItemToDb returned false');
