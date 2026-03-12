@@ -671,7 +671,10 @@ class TransactionForm extends ConsumerWidget {
     final saveLogService = ref.read(saveLogServiceProvider);
     final errorLogService = ref.read(errorLogServiceProvider);
     final editLogService = ref.read(editLogServiceProvider);
-    final operationLabel = isEditing ? 'edit' : 'add';
+    // Determine add vs edit by old transaction's name:
+    // empty/null old name means user is filling a new transaction, not editing
+    final oldName = oldTransaction?['name']?.toString() ?? '';
+    final operationLabel = oldName.isEmpty ? 'add' : 'edit';
     // Defensive copy — itemData is mutated below (date→Timestamp, dbCache.update)
     final itemDataForLog = {...itemData};
 
