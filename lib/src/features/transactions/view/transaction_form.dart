@@ -681,7 +681,7 @@ class TransactionForm extends ConsumerWidget {
         .saveItemToDb(context, transaction, isEditing, keepDialogOpen: true)
         .then((success) {
       if (success) {
-        saveLogService.logSave(itemDataForLog, operationLabel);
+        saveLogService.logSave(itemDataForLog);
       } else {
         errorLogService.logError(
             itemDataForLog, 'save_failed', operationLabel, 'saveItemToDb returned false');
