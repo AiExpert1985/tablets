@@ -75,7 +75,7 @@ class Customer implements BaseItem {
     return Customer(
       dbRef: map['dbRef'] ?? '',
       name: map['name'] ?? '',
-      imageUrls: List<String>.from(map['imageUrls']),
+      imageUrls: List<String>.from(map['imageUrls'] ?? []),
       salesman: map['salesman'] ?? '',
       salesmanDbRef: map['salesmanDbRef'] ?? '',
       region: map['region'] ?? '',
@@ -85,7 +85,7 @@ class Customer implements BaseItem {
       initialDate:
           map['initialDate'] is Timestamp ? map['initialDate'].toDate() : map['initialDate'],
       initialCredit: map['initialCredit']?.toDouble() ?? 0.0,
-      address: map['address'],
+      address: map['address'] ?? '',
       sellingPriceType: map['sellingPriceType'] ?? '',
       phone: map['phone'] ?? '',
       creditLimit: map['creditLimit']?.toDouble() ?? 0.0,

@@ -128,7 +128,7 @@ class SalesPoints extends ConsumerWidget {
     final allSalemenNames =
         salesmenDbCache.map((salesman) => salesman['name']).toList();
     for (var salesmanName in allSalemenNames) {
-      uniqueSalesmanNames.add(salesmanName);
+      uniqueSalesmanNames.add(salesmanName.trim());
     }
 
     Map<String, List<Map<String, dynamic>>> salesmenTasks = {};
