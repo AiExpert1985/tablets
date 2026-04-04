@@ -83,7 +83,7 @@ class Customer implements BaseItem {
       x: map['x']?.toDouble(),
       y: map['y']?.toDouble(),
       initialDate:
-          map['initialDate'] is Timestamp ? map['initialDate'].toDate() : map['initialDate'],
+          map['initialDate'] is Timestamp ? map['initialDate'].toDate() : map['initialDate'] ?? DateTime.now(),
       initialCredit: map['initialCredit']?.toDouble() ?? 0.0,
       address: map['address'] ?? '',
       sellingPriceType: map['sellingPriceType'] ?? '',
