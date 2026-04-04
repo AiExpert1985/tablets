@@ -207,6 +207,10 @@ class DataRow extends ConsumerWidget {
     final customerRef = customerScreenData[customerDbRefKey];
     final customerDbCache = ref.read(customerDbCacheProvider.notifier);
     final customerData = customerDbCache.getItemByDbRef(customerRef);
+    if (customerData == null) {
+      // ignore: avoid_print
+      print('DataRow: customerData is null for customerRef=$customerRef, screenData keys=${customerScreenData.keys.toList()}, name in screenData=${customerScreenData['name']}');
+    }
     final customer = Customer.fromMap(customerData);
     // Lazy Calculation: These detail lists are now empty in the cache.
     // We will calculate them on-demand in the onClick handlers.
