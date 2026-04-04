@@ -84,7 +84,11 @@ class DbCache extends StateNotifier<List<Map<String, dynamic>>> {
 
   Map<String, dynamic> getItemByProperty(String propertyKey, dynamic propertyValue) {
     for (int index = 0; index < state.length; index++) {
-      if (state[index][propertyKey] == propertyValue) {
+      final stateValue = state[index][propertyKey];
+      final isMatch = (stateValue is String && propertyValue is String)
+          ? stateValue.trim() == propertyValue.trim()
+          : stateValue == propertyValue;
+      if (isMatch) {
         return state[index];
       }
     }
