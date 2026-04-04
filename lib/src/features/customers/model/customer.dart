@@ -72,6 +72,10 @@ class Customer implements BaseItem {
   }
 
   factory Customer.fromMap(Map<String, dynamic> map) {
+    if (map['imageUrls'] == null) {
+      // ignore: avoid_print
+      print('Customer.fromMap: imageUrls is null for customer dbRef=${map['dbRef']}, name=${map['name']}');
+    }
     return Customer(
       dbRef: map['dbRef'] ?? '',
       name: map['name'] ?? '',
