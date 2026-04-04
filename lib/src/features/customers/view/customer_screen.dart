@@ -226,6 +226,7 @@ class DataRow extends ConsumerWidget {
     if (customerData.isEmpty) {
       // ignore: avoid_print
       print('DataRow: no customer found in cache for customerRef=$customerRef (name in screenData=${customerScreenData['name']})');
+      return const SizedBox.shrink();
     }
     final customer = Customer.fromMap(customerData);
     // Lazy Calculation: These detail lists are now empty in the cache.
