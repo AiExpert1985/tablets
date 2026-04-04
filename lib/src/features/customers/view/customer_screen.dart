@@ -86,6 +86,22 @@ class ListData extends ConsumerWidget {
     final screenDataNotifier = ref.read(customerScreenDataNotifier.notifier);
     final screenData = screenDataNotifier.data;
     ref.watch(customerScreenDataNotifier);
+
+    // Diagnostic: find screen-cache rows whose dbRef is missing from customerDbCache
+    final customerDbCache = ref.read(customerDbCacheProvider.notifier);
+    final customerCacheRefs = customerDbCache.data.map((m) => m['dbRef']).toSet();
+    final orphanedRows = screenData
+        .where((row) => !customerCacheRefs.contains(row[customerDbRefKey]))
+        .toList();
+    if (orphanedRows.isNotEmpty) {
+      // ignore: avoid_print
+      print(
+        'DIAGNOSTIC: ${orphanedRows.length} screen-cache rows have no matching customer in customerDbCache.\n'
+        'Screen cache total: ${screenData.length}, Customer cache total: ${customerDbCache.data.length}\n'
+        'Orphaned dbRefs: ${orphanedRows.map((r) => "dbRef=${r[customerDbRefKey]}, name=${r['name']}").join(' | ')}',
+      );
+    }
+
     return Expanded(
       child: ListView.builder(
         itemCount: screenData.length,
@@ -207,9 +223,9 @@ class DataRow extends ConsumerWidget {
     final customerRef = customerScreenData[customerDbRefKey];
     final customerDbCache = ref.read(customerDbCacheProvider.notifier);
     final customerData = customerDbCache.getItemByDbRef(customerRef);
-    if (customerData == null) {
+    if (customerData.isEmpty) {
       // ignore: avoid_print
-      print('DataRow: customerData is null for customerRef=$customerRef, screenData keys=${customerScreenData.keys.toList()}, name in screenData=${customerScreenData['name']}');
+      print('DataRow: no customer found in cache for customerRef=$customerRef (name in screenData=${customerScreenData['name']})');
     }
     final customer = Customer.fromMap(customerData);
     // Lazy Calculation: These detail lists are now empty in the cache.
