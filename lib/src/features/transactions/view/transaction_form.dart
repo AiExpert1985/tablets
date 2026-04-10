@@ -687,8 +687,13 @@ class TransactionForm extends ConsumerWidget {
       if (success && isNewTransaction) {
         saveLogService.logSave(itemDataForLog);
       } else if (!success) {
+        // Read the real Firestore error captured by the repository so the log
+        // entry is useful for diagnosing why the save actually failed instead
+        // of just recording the generic "returned false" message.
+        final realError = formController.lastErrorMessage ??
+            'saveItemToDb returned false (no error detail captured)';
         errorLogService.logError(
-            itemDataForLog, 'save_failed', operationLabel, 'saveItemToDb returned false');
+            itemDataForLog, 'save_failed', operationLabel, realError);
       }
     }).catchError((e) {
       errorPrint('Background save failed: $e');
