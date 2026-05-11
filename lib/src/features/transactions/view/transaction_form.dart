@@ -893,8 +893,8 @@ class WarehouseStatus extends ConsumerWidget {
     final invoiceId = formDataNotifier.data[dbRefKey];
     final warehouseService = ref.read(warehouseServiceProvider);
 
-    return FutureBuilder(
-      future: warehouseService.getQueueItem(invoiceId),
+    return StreamBuilder(
+      stream: warehouseService.streamQueueItem(invoiceId),
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data == null) {
           return const SizedBox.shrink();

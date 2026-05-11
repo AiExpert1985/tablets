@@ -147,6 +147,15 @@ class WarehouseService {
     }
   }
 
+  Stream<WarehouseQueueItem?> streamQueueItem(String invoiceId) {
+    return _firestore
+        .collection(collectionName)
+        .doc(invoiceId)
+        .snapshots()
+        .map((doc) =>
+            doc.exists ? WarehouseQueueItem.fromMap(doc.data()!) : null);
+  }
+
   Future<WarehouseQueueItem?> getQueueItem(String invoiceId) async {
     try {
       final doc = await _firestore
