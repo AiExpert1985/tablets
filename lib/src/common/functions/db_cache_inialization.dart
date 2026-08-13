@@ -33,6 +33,7 @@ import 'package:tablets/src/features/daily_tasks/repo/weekly_tasks_repo.dart';
 import 'package:tablets/src/features/authentication/repository/accounts_db_cache_provider.dart';
 import 'package:tablets/src/features/authentication/repository/accounts_repository.dart';
 import 'package:tablets/src/features/counters/repository/counter_repository_provider.dart';
+import 'package:tablets/src/features/transactions/controllers/missing_transactions_detector.dart';
 
 //! Important note
 //! setting the values in the dbCache is done only once for each feature
@@ -132,6 +133,16 @@ Future<void> initializeAllDbCaches(BuildContext context, WidgetRef ref) async {
   // Sync save log to Firebase (fire-and-forget, non-blocking)
   // ignore: unawaited_futures
   ref.read(saveLogServiceProvider).syncToFirebase();
+
+  // Once per app session, check whether any transaction was printed but never
+  // made it into the database (e.g. lost to an unreliable connection), and
+  // alert the user instead of relying on someone remembering to check
+  // manually. Runs after transaction & deleted-transaction caches above have
+  // loaded. Fire-and-forget so it never blocks startup.
+  if (context.mounted) {
+    // ignore: unawaited_futures
+    checkMissingTransactionsOnStartup(context, ref);
+  }
 }
 
 Future<void> _initializeCustomerDbCache(BuildContext context, WidgetRef ref) async {

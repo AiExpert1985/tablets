@@ -5,16 +5,19 @@ import 'package:cloud_firestore/cloud_firestore.dart' as firebase;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 import 'package:tablets/src/common/classes/db_cache.dart';
 import 'package:tablets/src/common/functions/user_messages.dart';
+import 'package:tablets/src/common/providers/startup_checks_provider.dart';
 import 'package:tablets/src/features/deleted_transactions/repository/deleted_transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/print_log/print_log_service.dart';
 import 'package:tablets/src/features/transactions/model/missing_transaction.dart';
 import 'package:tablets/src/features/transactions/model/transaction.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_db_cache_provider.dart';
 import 'package:tablets/src/features/transactions/repository/transaction_repository_provider.dart';
+import 'package:tablets/src/routers/go_router_provider.dart';
 
 // Provider to store missing transactions results
 final missingTransactionsProvider =
@@ -677,4 +680,52 @@ List<MissingTransaction> detectMissingFromPrintLog(WidgetRef ref) {
   }
 
   return missingTransactions;
+}
+
+/// Runs the print-log-vs-current-database check automatically, once per app
+/// session, instead of relying on someone remembering to open the drawer and
+/// run it manually. Call this after transaction & deleted-transaction
+/// dbCaches have finished loading (e.g. at the end of initializeAllDbCaches).
+///
+/// Uses a blocking (non-auto-dismissing) alert dialog rather than a toast,
+/// because a missing transaction is a financial-record issue that shouldn't
+/// be easy to miss or lose in a 6-second popup.
+Future<void> checkMissingTransactionsOnStartup(
+    BuildContext context, WidgetRef ref) async {
+  final checkedNotifier =
+      ref.read(missingTransactionsCheckedNotifier.notifier);
+  if (checkedNotifier.state) return; // already checked this session
+  checkedNotifier.state = true;
+
+  final missing = detectMissingFromPrintLog(ref);
+  if (missing.isEmpty || !context.mounted) return;
+
+  ref.read(missingTransactionsProvider.notifier).state = missing;
+
+  if (!context.mounted) return;
+  await showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (dialogContext) => AlertDialog(
+      title: const Text('تنبيه: تعاملات مفقودة'),
+      content: Text(
+        'تم العثور على ${missing.length} تعامل${missing.length > 1 ? 'ات' : ''} '
+        'تمت طباعتها لكنها غير موجودة في قاعدة البيانات الحالية.\n'
+        'ينصح بمراجعتها الآن لتفادي فقدان بياناتها بشكل نهائي.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(dialogContext).pop(),
+          child: const Text('لاحقاً'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(dialogContext).pop();
+            dialogContext.goNamed(AppRoute.missingTransactionsResults.name);
+          },
+          child: const Text('مراجعة الآن'),
+        ),
+      ],
+    ),
+  );
 }
