@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -356,6 +357,10 @@ class _SettingsInputFieldState extends ConsumerState<SettingsInputField> {
     dynamic currentValue =
         settingsDataNotifier.getProperty(widget.propertyName);
     if (widget.dataType == FieldDataType.num.name) {
+      // show whole numbers without ".0" (e.g. 51.0 -> 51)
+      if (currentValue is num && currentValue == currentValue.roundToDouble()) {
+        currentValue = currentValue.toInt();
+      }
       currentValue = currentValue.toString();
     }
     _controller = TextEditingController(text: currentValue);
@@ -380,6 +385,10 @@ class _SettingsInputFieldState extends ConsumerState<SettingsInputField> {
           child: FormBuilderTextField(
             name: widget.propertyName,
             textAlign: TextAlign.center,
+            // debt duration is whole days only
+            inputFormatters: widget.propertyName == settingsMaxDebtDurationKey
+                ? [FilteringTextInputFormatter.digitsOnly]
+                : null,
             onChanged: (value) {
               // note: debt duration is applied to all customers by the save button
               if (value == null) return; // Check for null
