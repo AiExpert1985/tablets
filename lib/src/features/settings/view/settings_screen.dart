@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tablets/src/common/providers/page_title_provider.dart';
+import 'package:tablets/src/routers/go_router_provider.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:tablets/generated/l10n.dart';
 import 'package:tablets/src/common/classes/db_cache.dart';
@@ -73,11 +76,19 @@ class SettingsParameters extends ConsumerWidget {
               child: IconButton(
                 onPressed: () async {
                   final settingsData = settingDataNotifier.data;
-                  repository.updateItem(Settings.fromMap(settingsData));
-
-                  // success(context, S.of(context).db_success_updaging_doc);
-                  // finally we update the dbCache to mirror the change in db
+                  final success = await repository
+                      .updateItem(Settings.fromMap(settingsData));
+                  if (!context.mounted) return;
+                  if (!success) {
+                    failureUserMessage(context, 'فشل حفظ الاعدادات');
+                    return;
+                  }
+                  // mirror the change in dbCache only after db write succeeded
                   dbCache.update(settingsData, DbCacheOperationTypes.edit);
+                  successUserMessage(context, 'تم حفظ الاعدادات');
+                  // exit settings screen to home (same as drawer home button)
+                  ref.read(pageTitleProvider.notifier).state = '';
+                  context.goNamed(AppRoute.home.name);
                 },
                 icon: const SaveIcon(),
               ),
