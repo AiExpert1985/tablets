@@ -76,6 +76,15 @@ class SettingsParameters extends ConsumerWidget {
               child: IconButton(
                 onPressed: () async {
                   final settingsData = settingDataNotifier.data;
+                  // dbCache still holds the last saved value (form data is a separate copy)
+                  final oldDuration = dbCache.data.isNotEmpty
+                      ? dbCache.data[0][settingsMaxDebtDurationKey]
+                      : null;
+                  final newDuration = settingsData[settingsMaxDebtDurationKey];
+                  final durationChanged = oldDuration != newDuration;
+                  final customers = ref.read(customerDbCacheProvider);
+                  final customerRepo = ref.read(customerRepositoryProvider);
+
                   final success = await repository
                       .updateItem(Settings.fromMap(settingsData));
                   if (!context.mounted) return;
@@ -85,6 +94,27 @@ class SettingsParameters extends ConsumerWidget {
                   }
                   // mirror the change in dbCache only after db write succeeded
                   dbCache.update(settingsData, DbCacheOperationTypes.edit);
+
+                  // when debt duration changes, apply it to all customers
+                  // (request of Jihan - Shamil)
+                  if (durationChanged) {
+                    infoUserMessage(
+                        context, "الرجاء الانتظار عدة دقائق حتى اكتمال التحديث");
+                    int failed = 0;
+                    for (var customerMap in customers) {
+                      customerMap['paymentDurationLimit'] = newDuration;
+                      final ok = await customerRepo
+                          .updateItem(Customer.fromMap(customerMap));
+                      if (!ok) failed++;
+                    }
+                    if (!context.mounted) return;
+                    if (failed > 0) {
+                      failureUserMessage(
+                          context, 'فشل تحديث مدة الدين لـ $failed زبون');
+                      return;
+                    }
+                    successUserMessage(context, 'تم تحديث مدة الدين لجميع الزبائن');
+                  }
                   successUserMessage(context, 'تم حفظ الاعدادات');
                   // exit settings screen to home (same as drawer home button)
                   ref.read(pageTitleProvider.notifier).state = '';
@@ -337,36 +367,6 @@ class _SettingsInputFieldState extends ConsumerState<SettingsInputField> {
     super.dispose();
   }
 
-  // when the date duration is update, we update that for all current clients
-// that was the request of Jihan - Shamil
-  void _updateDurationForAllClients(WidgetRef ref, double value) async {
-    final customersDbCache = ref.watch(customerDbCacheProvider);
-    final customerRepo = ref.watch(customerRepositoryProvider);
-    infoUserMessage(context, "الرجاء الانتظار عدة دقائق حتى اكتمال التحديث");
-    _updateSettings(value);
-    for (var customerMap in customersDbCache) {
-      customerMap['paymentDurationLimit'] = value;
-      await customerRepo.updateItem(Customer.fromMap(customerMap));
-    }
-    if (mounted) {
-      successUserMessage(context, 'تم تحديث مدة الدين لجميع الزبائن');
-    }
-  }
-
-  // this function updates the settings itself (the new value of debtDuration is saved in firebase)
-  void _updateSettings(double value) {
-    final repository = ref.read(settingsRepositoryProvider);
-    final settingDataNotifier = ref.read(settingsFormDataProvider.notifier);
-    final dbCache = ref.read(settingsDbCacheProvider.notifier);
-    final settingsData = settingDataNotifier.data;
-    settingsData['maxDebtDuration'] = value;
-    repository.updateItem(Settings.fromMap(settingsData));
-
-    // success(context, S.of(context).db_success_updaging_doc);
-    // finally we update the dbCache to mirror the change in db
-    dbCache.update(settingsData, DbCacheOperationTypes.edit);
-  }
-
   @override
   Widget build(BuildContext context) {
     final settingsDataNotifier = ref.watch(settingsFormDataProvider.notifier);
@@ -380,20 +380,8 @@ class _SettingsInputFieldState extends ConsumerState<SettingsInputField> {
           child: FormBuilderTextField(
             name: widget.propertyName,
             textAlign: TextAlign.center,
-            onSubmitted: (value) {
-              // this filed is only for changing the values of debtDuration
-              // doesn't used for any other filed
-              if (widget.propertyName == settingsMaxDebtDurationKey) {
-                double duration = double.tryParse(value ?? '21') ?? 21;
-                _updateDurationForAllClients(ref, duration);
-              }
-            },
             onChanged: (value) {
-              if (widget.propertyName == settingsMaxDebtDurationKey) {
-                // if this is the debt duration, return. because it is handled
-                // by the onSubmitted function
-                return;
-              }
+              // note: debt duration is applied to all customers by the save button
               if (value == null) return; // Check for null
               dynamic newValue;
               if (widget.dataType == FieldDataType.num.name) {
@@ -406,10 +394,8 @@ class _SettingsInputFieldState extends ConsumerState<SettingsInputField> {
               } else {
                 newValue = value;
               }
-              // Update the controller text only if it's different
-              if (_controller.text != newValue.toString()) {
-                _controller.text = newValue.toString();
-              }
+              // note: don't write back to _controller here, it re-triggers
+              // onChanged (FormBuilder listens to the controller) and loops
               settingsDataNotifier
                   .updateProperties({widget.propertyName: newValue});
             },
